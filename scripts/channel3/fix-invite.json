@@ -2,7 +2,8 @@
  "name": "showreel-c3-fix-invite",
  "seek": "scripts/channel3/fix-invite.html",
  "engine": "design",
- "dur": 16,
+ "dt": 2,
+ "dur": 20,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,23 +11,31 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "Let's fix this birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.",
+  "text": "Everything here is shouting. Nothing stands out, so nothing gets read. Turns out, it needs one hero. First, make the age the biggest thing. Next, keep one font in two sizes. Then, use one colour, just once. Same party, and now you can read it.",
   "voice": "af_heart",
-  "speed": 1
+  "speed": 1,
+  "gap": [
+   0.3,
+   0.35,
+   0.3,
+   0.3,
+   0.3,
+   0.4
+  ]
  },
  "experiment": {
   "id": "c3-design-series",
-  "change": "design-tutorial format",
+  "change": "design-tutorial format (queue of 10)",
   "vs": "median"
  },
- "caption": "Let's fix this birthday invite. Three moves. 🎈\n\n1. Pick one hero: the age, big.\n2. One font, two sizes.\n3. One colour, used once.\n\nTurns out, a kids' party can look this good. Save this for your next invite. What should we fix next? Comment it.",
+ "caption": "Everything on this birthday invite is shouting. Nothing stands out, so nothing gets read. 🎈\n\n1. Make the age the biggest thing. One hero.\n2. Keep one font in two sizes.\n3. Use one colour, just once.\n\nSave this for your next invite, poster or flyer. Which of these does yours break?",
  "keywords": [
   "invitation design tips",
   "birthday invite design",
   "visual hierarchy",
   "typography tips",
   "graphic design for beginners",
-  "canva design tips"
+  "poster design tips"
  ],
  "hashtags": [
   "#designtips",
@@ -49,21 +58,26 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 18,
+    "to": 20,
     "sides": [
      "left",
      "right",
      "top",
      "bottom"
     ],
-    "why": "the design-tutorial stage (the fridge door) fills the frame by design"
+    "why": "the design-tutorial stage (a fridge door) fills the frame by design"
    }
   ],
   "subject": [
-   90,
-   430,
-   450,
-   790
+   66,
+   400,
+   474,
+   764
   ]
- }
+ },
+ "before": {
+  "mistake": "a first-draft party invite: four fonts, everything centred, confetti in six colours, and no one thing that stands out",
+  "source": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+ },
+ "note": "Rebuilt on the improved design kit (26 Nov 2026; rules-c3.md V1-V3, B1-B3, P1-P2) from the gold reel showreel-c3-grey-text."
 }

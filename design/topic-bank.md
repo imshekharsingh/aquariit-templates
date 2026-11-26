@@ -65,6 +65,7 @@ number that changes when the voice says it, amber for the problem and cyan for t
 - Fact 2: support: Chrome 105, Firefox 121, Safari 15.4 (same page).
 - Fit: black look, a list of option cards (plans, toppings) as the hero; ticking the box lights the whole card mint; a JS counter on a code card drops to 0 lines. Prop: a family tree where the child is tapped and the parent lights.
 - Why pick: strongest "myth that changed" of the 15, big visible result, one line of code.
+- re-checked 26 Nov: same (MDN :has() page read 26 Nov: Baseline widely available since Dec 2023; "selecting a parent element" wording unchanged).
 
 **W26-2 PICK: will-change makes it faster (it does not)**
 - Hook: "This one line makes every animation faster. Everyone believes it." Tension: MDN says the opposite for the common use.
@@ -73,6 +74,7 @@ number that changes when the voice says it, amber for the problem and cyan for t
 - Fact 2: in a stylesheet it keeps the browser's optimizations "for a much longer time"; excessive use "will result in excessive" memory use (same page, "Usage notes").
 - Fit: black look; the hero is a phone with ten cards, each one with a small weight tag that grows as `will-change` is added. No memory number on screen unless measured; show the words, not a made-up MB. Prop: a backpack that gets heavier with each "just in case" item.
 - Why pick: a real surprise (a performance tip that backfires), and the fix is to delete a line.
+- re-checked 26 Nov: same (MDN will-change page read 26 Nov: Baseline widely available since Jan 2020; "last resort" guidance unchanged).
 
 **W26-3: a menu with no JavaScript (popover)**
 - Hook: "This menu closes when you tap outside. There is no JavaScript." Tension: light dismiss and Esc are free.

@@ -2427,10 +2427,38 @@
  "showreel-c3-fix-invite": {
   "channel": "c3",
   "engine": "design",
-  "concept": "Design series · Let's fix this birthday invite. Three moves. 🎈 (a cluttered kids' birthday invite on a fridge door fixed in three moves: one hero (the age), one font in two sizes, one colour used once)",
-  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
-  "hidden": true,
-  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
+  "concept": "Design series · Everything on this birthday invite is shouting. Nothing stands out. 🎈 (a kids' party invite on a fridge door fixed in three moves: one hero (the age), one font in two sizes, one colour used once; the last frame shows BEFORE next to AFTER)",
+  "note": "Rebuilt on the improved design kit (26 Nov 2026) from the gold reel showreel-c3-grey-text; render 1 passed Output QA; critic READY 26 Nov.",
+  "aiLabel": false,
+  "postOn": "2026-11-26",
+  "postAt": "17:00",
+  "keywords": [
+   "invitation design tips",
+   "birthday invite design",
+   "visual hierarchy",
+   "typography tips",
+   "graphic design for beginners",
+   "poster design tips"
+  ],
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.2,
+   "shotChanges": 0,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "party invite on a fridge door",
+   "firstSecondTension": "yes",
+   "payoff": "tip",
+   "source": "mp4"
+  },
+  "caption": "Everything on this birthday invite is shouting. Nothing stands out, so nothing gets read. 🎈\n\n1. Make the age the biggest thing. One hero.\n2. Keep one font in two sizes.\n3. Use one colour, just once.\n\nSave this for your next invite, poster or flyer. Which of these does yours break?",
+  "hashtags": [
+   "#designtips",
+   "#graphicdesign",
+   "#invitationdesign",
+   "#typography",
+   "#designhacks"
+  ]
  },
  "showreel-c3-text-on-photo": {
   "channel": "c3",
@@ -2944,6 +2972,48 @@
    "source": "mp4"
   }
  },
+ "showreel-48-has-parent": {
+  "postOn": "2026-11-26",
+  "postAt": "19:00",
+  "caption": "Still toggling a class in JavaScript to light up a card? Yes or no. 🟣\n\nTick a checkbox and the card stays dull, because CSS could not select a parent. :has() changes that. MDN: it represents an element if any of the relative selectors passed to it match, a way of selecting a parent element. The fix: .card:has(input:checked) styles the whole card when its checkbox is on. Chrome 105, Firefox 121, Safari 15.4 (MDN browser compatibility); Baseline widely available.\n\nWatch the counter: LIT reads 0 while 3 boxes are ticked, then 3 after the fix, and it drops to 2 the moment you untick a box.\n\nComment yes or no, and send it to whoever still toggles that class.",
+  "keywords": [
+   "CSS :has selector",
+   "CSS parent selector",
+   "style parent based on child",
+   "checkbox card CSS",
+   "CSS has checked",
+   "no JavaScript CSS",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#webdev",
+   "#frontend",
+   "#uidesign"
+  ],
+  "channel": "web",
+  "concept": "a:has() rule styles the parent card from the checkbox inside it (.card:has(input:checked) { background: violet }), so a ticked box lights its whole card with no JavaScript; black look with a violet accent (rule 19), hook kit (rule 20), the reel loops into frame 0",
+  "about": "26 Nov: web a myth that changed, CSS can't select a parent (W26-1, Fable pick); visible on mute (rule 15): three ticked boxes with dull cards and LIT 0, then the cards light together and LIT reads 3",
+  "aiLabel": false,
+  "experiment": {
+   "id": "web-parent-selector",
+   "change": "a myth that changed (CSS can't select a parent) shown as three ticked boxes with dull cards, LIT 0 against TICKED 3, then one :has() line lights the cards and a card dims the moment its box is unticked; black look with a violet accent (new hue), a small push and pull, the reel loops into frame 0",
+   "vs": "median"
+  },
+  "palette": "black",
+  "style": {
+   "lengthS": 15,
+   "wordsPerS": 2.0,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "three add-on cards with ticked boxes",
+   "firstSecondTension": "yes",
+   "payoff": "tip",
+   "source": "plan"
+  }
+ },
  "showreel-tech-colour-world-sample": {
   "channel": "tech",
   "sample": true,
@@ -2958,7 +3028,8 @@
   "hidden": true,
   "concept": "SAMPLE for the phase 2 3D kit (design/3d-kit-phase2.md), never posted: 3 apps x 8 tools = 24 connections, then one shared hub = 11. Gold candidate for the colour-world 3D look.",
   "format": "xray",
-  "device": "laptop"
+  "device": "laptop",
+  "aiLabel": false
  },
  "showreel-tech-tag-sounding": {
   "channel": "tech",

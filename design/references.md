@@ -194,3 +194,27 @@ Showed: one continuous 3D world (glossy product block, chips, server racks, glow
 - WE TAKE (patterns): one world with recurring objects; colour on the objects against a dark ground; glowing cables as the story carrier; real artifact cards; ideas as pictures; word-by-word captions near the top with a selection-box key word; roughly one new state a second.
 - WE DO NOT TAKE: their avatar or any presenter (owner: no mascot), their footage, their exact look, layout or object arrangement, their script or words, their music. A stranger must not take our frame for theirs (safety.md item 1 check).
 - Used: rules-tech.md section L; test scene techkit/scenes/sample-colour-world.html and review/tech/study-25nov/ (side-by-side of our frames).
+
+
+## R-ref 26 Nov 2026 · owner uploads, app References ids 9-14 (5 reels; 13 is a duplicate of 12), studied whole clip, 1 frame a second
+(The first look on 25-26 Nov saw only each clip's first 8 seconds: the preview tool sampled only the start. Fixed in scripts/asks.mjs; `refs` with {"full":[ids]} prints the whole clip.)
+- 9 "AI posts reels" (68 s, white + green, flips to dark green at each section): a product world (robot arm, cards, a crowd of avatar coins); a big number counting up (3,200,000 → 3,300,000; 100 → 10x); a new picture every second.
+- 10 "27 security checks" (62 s, owner: "Everything, I loved this one"): a 27-item LIST reel, one item every ~2 s, a "01/27 SECURITY PASS" pill counting the whole way; soft blue-pink gradient, frosted white cards with a blue accent;
+  each item is a mini story on a recreated real UI (login form, code card, env file, CORS, cookie, dependency tree): the problem shows (red "exposed", "Rejected", "EXPIRED"), then the fix lands (green check, "Accepted");
+  one recurring "Your server" card. Ends: the report card, then a typed comment box CTA.
+- 11 "100 trial reels" (44 s, cream → dark amber): a 3D wall of cards behind one hero logo; giant counting numbers (30x, 3,100,000, 14K, 1,341); a gauge needle drops; dashboards rebuilt as clean cards.
+- 12 "What GitHub actually is" (56 s, black + lime glow, one colour the whole reel): ONE timeline line that grows through the reel (commits as glowing nodes, then a branch, a merge, a tag), a 3D-tilted real repo page, a fork counter, avatar bubbles pouring in,
+  a real terminal error then `git reset` and the app works again; a stat card (95.99% of developers).
+- 14 "A skill that makes reels" (37 s, cream + terracotta): big serif headline with italic accent words; small check chips pop in; a word-by-word caption pill at the bottom;
+  "you might be thinking: the reels must suck" → struck through → "not at all." reversal; a stats card counting up; typed comment box CTA.
+SHARED GRAMMAR (all five): 1-3 words appear per beat and build the sentence on screen, the newest word carries the accent (colour, underline or italic), older words go grey;
+the picture changes every ~1 s, never a still shot over 2 s; one persistent object that evolves through the reel (the line, the server card, the hero card); numbers count, never sit;
+problem shown breaking first, then fixed in the same frame; a real interface rebuilt cleanly as the set (not an icon beside text); one colour world per reel, flipping light/dark only at a section change.
+WHICH CHANNEL (studio decision, 26 Nov; the owner left the routing to us):
+- Web: 10 (list format with a counting pill, frosted pastel cards, problem → fix micro-beats on recreated UI) and 12 (one growing diagram line as the spine).
+- Tech: 9 and 11 (the product is the hero, giant counting numbers, light/dark flip at the section change) and 12 (dark + one neon line, a 3D-tilted real screen).
+- Turns Out: 14 (serif headline with italic accent words, check chips, word-by-word caption pill, "you might be thinking" → struck → reversal) and 10's before → after micro-beat.
+- All three: the word-build headline, a change every ~1 s, counting numbers, one persistent evolving object.
+- WE DO NOT TAKE: any mascot (owner: none), their product names, logos, screens or palettes as they are, their scripts, their 37-68 s length (we keep ours), the comment-for-DM ask (no DM automation on our side).
+- Used: 26 Nov web (:has), tech (SmartTag3 channel sounding), Turns Out (fix this invite) builds, before their render.
+- Closed 26 Nov (owner: the studio decides what to keep; references are reported as "what we took" and closed, no Keep/Skip list).

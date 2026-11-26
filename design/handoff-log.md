@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 07:15 IST · claude/source-url-26nov · owner chat: morning builders stalled (no repo)
+- The 04:49 daily run made the web and tech builders without source_url, so they had no repo, add_repo was refused, and both stalled; the 05:11 Turns Out task produced nothing. Owner chat restarted all three at 07:12 with the repo. runbook-daily.md now requires source_url on every child session; the Turns Out task prompt was updated (source_url, outside stills check, no skip days). The Daily studio task prompt still says "dark look with one accent" (stale) and can only be changed from the launcher conversation; runbook and rules-tech.md section L win.
+
 ## 2026-11-25 23:45 IST · claude/owner-chat-25nov-late · owner chat: tech not posted, colour, reference method
 - Owner did not post tech battery-cycles (dated iPhone 14/15 framing, India line, top keyword bar, flat shots). Tech rules changed (all global, last-7-days tech news, freshness, no top bar, every shot alive; merged).
 - Owner: tech reels are not colour rich. Cause: design/tech-direction.md (22 Nov) near-black ground, white/grey, two accents max. Under review.
@@ -799,3 +802,41 @@ Format (at most 6 lines):
 - Done: Feedback read (none new) and owner answers (none); audit numbers read from a dry Instagram collect; rules-tech.md 26 Nov audit line; experiments.md lesson line; started one build session each for web (:has, the researcher's pick) and tech (fresh-news research first, old bank is stale).
 - Left: both builders own their reel to READY (Fable pick, stills check, at most 2 renders, Output QA, critic). The audit card was dispatched from the numbers above.
 - For the other account: the Instagram collect's scheduled run skips the audit step except at 05:23 and 20:14 UTC; a dry dispatch prints it.
+
+## 2026-11-26 · claude/web-26nov-has-parent · Web reel 48 has-parent (W26-1 CSS :has parent selector): build, direction card, review file, stills (pending stills check)
+- Done: Fable pick (KEEP W26-1 W26-3 W26-5, rejected W26-2 W26-4; design/pick-log.md), sources re-checked (MDN :has(), BCD: Chrome 105, Firefox 121, Safari 15.4), scene scripts/explainer/has-parent.html/.json built from the sibling reel 47 (three add-on cards, boxes ticked and cards dull, LIT 0 / TICKED 3, then .card:has(input:checked) lights them; violet accent hue 265), direction card, review file items 1-12 and 14-18 PASS, stills sheet, captions.json entry (postOn 2026-11-26, postAt 19:00), tip demo hasparent, demo-hues.json line, improvements and craft log lines.
+- Left: the Fable stills check (APPROVED line in the direction card), then render 1 on GitHub (Showreel), Output QA, the critic (opus, tag critic).
+- For the other account: a web FOCUS check measures colour on lit pixels, so a reel whose subject is grey cards fails it; give the demo one slate-violet base hue and put the whole screen in the subject box.
+- Update (same session): Fable stills check round 1 said REDO (the reel read as 47 in violet); all five fixes made in one round (three tall icon tiles side by side, no red ring, 56 px reaction words, taps on the checkbox, LIT 0 -> 3 in one step, NO JAVASCRIPT at 52 px in the band); a short Fable confirmation of the new sheet is the next step.
+
+## 2026-11-26 · claude/tech-3d-kit-sample-v4 · 3D kit sample v4: all of the critic's fixes, lessons into rules, README and starter (owner chat, cap ~$13)
+- Done: scene rebuilt (hook = wired tangle + 24 + question from frame 0, camera path with three distinct moves and a loop home, cables on tile side edges, names inside tiles and distinct, no code card, held payoff, captions on a dark fade, numbers step aside in close shots); topic lines/cues/sfx for six lines; aiLabel false; rules-tech.md D1-D8, techkit/README.md, starter note; stills review/tech/study-25nov/kit-phase2-v4.jpg.
+- Left: ONE render (Tech reel, gold3d-sample, preview v4), Output QA, then the independent critic (opus, tag critic).
+- For the other account: nothing new.
+## 2026-11-26 · claude/c3-fix-invite-26nov · Turns Out reel "You asked: fix this invite" rebuilt (Turns Out daily build)
+- Done: showreel-c3-fix-invite rebuilt on the improved kit from the gold reel (optical-centre was withdrawn and stop-centring was posted on 21 Nov, so fix-invite is next in the plan): a party invite on a fridge door (four fonts, all centred, confetti, no hero) fixed in three moves (the age as the hero, one font in two sizes, one colour once), seven spoken sentences with breaths, direction card and review file written, captions entry kept hidden until the critic says READY. Nothing the invite needs is deleted; the 7 is hidden while the before is kept.
+- Left: outside stills check, one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
+- For the other account: check c3-plan.md against captions.json posted marks before picking a held reel (stop-centring was already posted).
+
+## 26 Nov 2026 02:10 IST+: owner chat, reference previews only showed the first 8 seconds
+- Found: the refs preview was `fps=1,tile=4x2`, so every clip preview was its first 8 seconds only; references 4-14 were judged from openings.
+- Fix: scripts/asks.mjs refs preview now spreads 8 frames over the whole clip; `asks.yml refs` with ASKS {"full":[ids]} adds time-stamped sheets of the whole clip at 1 frame a second (24 s a sheet). Timeout 20 min.
+- Owner (26 Nov): full study of refs 9-14 approved (~$4); today's reels move only after it; the studio decides which reference goes to which channel.
+
+## 2026-11-26 · claude/c3-fix-invite-26nov-c · Turns Out fix-invite: reference type treatment (same build)
+- Done: serif headline with italic accent word and pill subtitles from the 26 Nov references; stills checks (overlap, safe zone, text fit, band) pass.
+- Left: one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
+- For the other account: the reversal beat from the references was not added (script length kept).
+- 26 Nov 07:45 IST: refs 9-14 studied whole (design/references.md "R-ref 26 Nov"), routed per channel; today's three builders held before render 1 and sent their lessons.
+
+## 2026-11-26 · claude/tech-3d-kit-sample-v4-result · 3D kit sample v4 rendered: Output QA PASS, app entry, gold numbers (owner chat, one render)
+- Done: render v4 (18.5 s, runner time about 20 min wall) Output QA PASS (HERO warns: no subject box; LOOK passes, one washed-out frame at 11.5-12.0 s, the close-up on the hub); previews.json entry points at v4; gold.json "tech3d" numbers re-measured from v4 (brighter than v3 because of the close-ups).
+- Left: the second independent critic's verdict (review/tech/showreel-tech-gold3d-sample.md, branch claude/critic-gold3d-sample-v4).
+- For the other account: nothing new.
+- Update (same session, 26 Nov): render 1 of web 48 failed Output QA on BULK (near-white ticked boxes) and DEMO (colourfulness 30 of 32); colours fixed and both checks pass on the scene frames; render 2 next. For the other account: scripts/qa/look.py does not run BULK or DEMO; call oqa.bulk_check and oqa.demo_check on the frames before the render.
+
+
+## 2026-11-26 · claude/critic-c3-fix-invite-26nov · Independent critic: Turns Out fix-invite render 1 READY
+- Done: judged the real MP4 (render 1, Output QA PASS): side-by-side with gold, phone-size frames, strips over the three fixes and the BEFORE flashback, loudness (-14.0 LUFS); D1-D4 pass, key info kept, flashback covers no tag; STOP 7, REWATCH 7, PREMIUM 7.5; CRITIC: READY in the review file. captions.json: postOn 2026-11-26, postAt 17:00, hidden and hold removed; keyword "canva design tips" (a real brand) replaced by "poster design tips" in the config and captions.json (post text only); caption, hashtags and a measured style record added to the captions.json entry (check needs them on a dated reel).
+- Left: posting at 17:00 IST.
+- For the other account: Turns Out keywords print into the post text (ig-publish.mjs), so the no-real-brands rule applies to keywords too.

@@ -1,0 +1,89 @@
+{
+ "name": "showreel-48-has-parent",
+ "seek": "scripts/explainer/has-parent.html",
+ "style": "Three add-on cards on a phone with every box ticked and every card still dull grey: a red NOT LIT flare, then one CSS line, .card:has(input:checked), and the cards light by themselves (black look, a violet accent).",
+ "dur": 15,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.39,
+ "palette": "black",
+ "voice": {
+  "text": "Why won't the card light up? The box is ticked, but CSS can't select a parent. The fix: card has checked. Now the card lights itself. One line, no JavaScript.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "qa": {
+  "focus": {
+   "demo": [
+    10,
+    428,
+    530,
+    836
+   ],
+   "subject": [
+    28,
+    444,
+    512,
+    826
+   ],
+   "from": 0.3,
+   "to": 1.3
+  },
+  "mute": {
+   "before": {
+    "say": "ticked"
+   },
+   "after": {
+    "say": "lights"
+   },
+   "span": 1.5
+  }
+ },
+ "caption": "Still toggling a class in JavaScript to light up a card? Yes or no. 🟣\n\nTick a checkbox and the card stays dull, because CSS could not select a parent. :has() changes that. MDN: it represents an element if any of the relative selectors passed to it match, a way of selecting a parent element. The fix: .card:has(input:checked) styles the whole card when its checkbox is on. Chrome 105, Firefox 121, Safari 15.4 (MDN browser compatibility); Baseline widely available.\n\nWatch the counter: LIT reads 0 while 3 boxes are ticked, then 3 after the fix, and it drops to 2 the moment you untick a box.\n\nComment yes or no, and send it to whoever still toggles that class.",
+ "keywords": [
+  "CSS :has selector",
+  "CSS parent selector",
+  "style parent based on child",
+  "checkbox card CSS",
+  "CSS has checked",
+  "no JavaScript CSS",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#webdev",
+  "#frontend",
+  "#uidesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has",
+   "note": "MDN :has() (page source mdn/content, read 26 Nov 2026): represents an element if any of the relative selectors passed as an argument match at least one element when anchored against this element; a way of selecting a parent element or a previous sibling element; Baseline widely available since December 2023"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/selectors/has.json",
+   "note": "MDN BCD css.selectors.has (read 26 Nov 2026): Chrome 105, Edge 105, Firefox 121, Safari 15.4"
+  }
+ ],
+ "tip": {
+  "title": "Why won't the card light up when you tick its checkbox?",
+  "why": "CSS selectors used to stop at the element itself, so a card could not react to the checkbox inside it and pages added JavaScript to toggle a class. :has() represents an element if any of the relative selectors passed to it match (MDN: a way of selecting a parent element), so .card:has(input:checked) styles the whole card when its checkbox is checked. Supported in Chrome 105, Firefox 121 and Safari 15.4 (MDN browser compatibility data).",
+  "code": "<label class=\"card\">\n  <input type=\"checkbox\"> Oat milk\n</label>\n\n/* the card lights when its box is ticked */\n.card:has(input:checked) { background: violet; }",
+  "demo": "hasparent",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has",
+   "label": "MDN :has()"
+  }
+ },
+ "format": "single",
+ "say": {},
+ "experiment": {
+  "id": "web-parent-selector",
+  "change": "a myth that changed (CSS can't select a parent) shown as three ticked boxes with dull cards, LIT 0 against TICKED 3, then one :has() line lights the cards and a card dims the moment its box is unticked; black look with a violet accent (new hue), a small push and pull, the reel loops into frame 0",
+  "vs": "median"
+ }
+}
