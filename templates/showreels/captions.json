@@ -3084,5 +3084,14 @@
   "format": "xray",
   "device": "laptop",
   "aiLabel": false
+ },
+ "showreel-tech-gold3d-v7": {
+  "channel": "tech",
+  "sample": true,
+  "hidden": true,
+  "concept": "SAMPLE v7 of the 3D kit, the last sample, never posted: v6 rebuilt to its critic and the owner's notes. Becomes the tech 3D gold if a critic writes READY.",
+  "format": "xray",
+  "device": "laptop",
+  "aiLabel": false
  }
 }

@@ -1,0 +1,164 @@
+{
+ "slug": "gold3d-v7",
+ "engine": "kit",
+ "scene": "techkit/scenes/gold3d-v7.html",
+ "topic": "SAMPLE v7, the last sample (never posted): the v6 story rebuilt to the v6 critic and the owner's notes (task 10): cables never through the floor or objects, flat counting numbers with leader lines, three big moments, a reason for every camera move, frame-0 tension, every element alive",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "ai tools",
+ "device": "laptop",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.9,
+ "max_end": 30,
+ "experiment": {
+  "id": "tech-3d-kit-v7",
+  "change": "three big moments, flat counting numbers, draped cables, a reason per camera move, idle life",
+  "vs": "showreel-tech-gold3d-v6 render 2"
+ },
+ "lines": [
+  {
+   "text": "Why does one new tool add three cables?",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "Three apps, and eight tools.",
+   "beat": "setup",
+   "source": 0
+  },
+  {
+   "text": "Each app wires to every tool.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "That is twenty four connections to keep.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Add one shared hub, and it drops to eleven.",
+   "beat": "takeaway",
+   "source": 0
+  },
+  {
+   "text": "A new tool is one more cable, not three.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Same apps, same tools, far less wiring.",
+   "beat": "payoff",
+   "source": 0
+  }
+ ],
+ "cues": {
+  "apps": [
+   1,
+   "apps"
+  ],
+  "tools": [
+   1,
+   "tools"
+  ],
+  "wires": [
+   2,
+   "wires"
+  ],
+  "twenty": [
+   3,
+   "twenty"
+  ],
+  "add": [
+   4,
+   "add"
+  ],
+  "hub": [
+   4,
+   "hub"
+  ],
+  "eleven": [
+   4,
+   "eleven"
+  ],
+  "newt": [
+   5,
+   "new"
+  ],
+  "same": [
+   6,
+   "same"
+  ],
+  "final": [
+   6,
+   "wiring"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "wires",
+   "pop",
+   0.45,
+   0
+  ],
+  [
+   "twenty",
+   "impact",
+   0.5,
+   0
+  ],
+  [
+   "hub",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "eleven",
+   "chime",
+   0.45,
+   0
+  ],
+  [
+   "newt",
+   "pop",
+   0.5,
+   0
+  ]
+ ],
+ "post": {
+  "title": "3D kit sample v7",
+  "caption": "Sample, never posted.",
+  "keywords": [],
+  "hashtags": []
+ },
+ "qa": {
+  "sync": [],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 25,
+    "sides": [
+     "left",
+     "right",
+     "bottom",
+     "top"
+    ],
+    "why": "a sample in one full-bleed world"
+   }
+  ]
+ },
+ "say": {},
+ "look": "3d"
+}

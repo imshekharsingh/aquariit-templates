@@ -4,8 +4,9 @@
 //   W3D.camPath(S, keys, { glide })(t)                             one continuous camera move through the world: keys [{ t, pos:[x,y,z], look:[x,y,z], fov }]
 //   W3D.lib.appGlyphs                                              hand-drawn glyph painters for generic app tiles (pay, photos, notes, maps, files, chat, mail, calendar)
 //   W3D.enter(obj, kind, u, { side, amp })                            v6 (26 Nov 2026, rules-tech.md D10): a motion-design entrance at progress u 0..1 (u <= 0 hidden, 1 home):
-//                                                                  'slideTurn' | 'drop' | 'rise' | 'swing' | 'flip' | 'pop'; run u from 1 to 0 for an exit or a rewind
-//   W3D.wire(S, pts, { color, radius, plugs, shadow })             v6 (D12): a matte cable through pts (let it lie on the floor to sag), plugs at both ends, a floor shadow;
+//                                                                  'slideTurn' | 'drop' | 'rise' | 'swing' | 'flip' | 'pop' | 'slam' (v7, for the 2-3 big moments); run u from 1 to 0 for an exit or a rewind
+//   W3D.numbers({ y }).set(t, { show, from, to, k, top, label, anchor, tick })   v7: flat counting numbers with a leader line to their object (one style for all numbers)
+//   W3D.wire(S, pts, { color, radius, plugs, shadow, curve })             v6 (D12): a matte cable through pts (let it lie on the floor to sag), plugs at both ends, a floor shadow;
 //                                                                  .reveal(u) unrolls it (the end plug clicks in at the end), .pulse(k) the only glow (a bead along it), .curve / .tube
 // Real product logos: appTile takes { logo: THREE.Texture } (a licensed file fetched by the Media workflow, design/safety.md item 7) in its logo slot; without one it draws the generic glyph.
 (() => {
@@ -170,13 +171,19 @@
     else if (kind === 'rise') { obj.position.y -= 1.8 * A * (1 - e); obj.rotation.x -= 1.25 * (1 - ease3(u)); sc *= .55 + .45 * ease3(u); }
     else if (kind === 'swing') { const th = side * 1.35 * (1 - e); obj.position.x += Math.sin(th) * 3 * A; obj.position.z += (Math.cos(th) - 1) * 3 * A; obj.rotation.y += th; }
     else if (kind === 'flip') { obj.rotation.y += side * Math.PI * 2 * (1 - ease3(u)); sc *= .3 + .7 * e; }
+    else if (kind === 'slam') {   // v7 big moment: falls from above and close, lands with an overshoot and a short squash
+      const f = clamp(u / .7), land = clamp((u - .7) / .3), dn = ease3(f);
+      obj.position.y += 2.4 * A * (1 - dn); obj.position.z += 1.6 * A * (1 - dn); obj.rotation.x -= .55 * (1 - dn); sc *= 1.45 - .45 * dn;
+      if (u > .7) { const sq = Math.sin(Math.PI * land) * .09 * (1 - land); obj.scale.set(h.s * (1 + sq), h.s * (1 - sq), h.s * (1 + sq)); return; } }
     else { sc *= Math.max(.001, e); }
     obj.scale.setScalar(Math.max(.001, sc));
   }
   // ---------- v6: believable wires (D12) ----------
   function wire(S, points, o = {}) {
-    const THREE = S.THREE, pts = points.map((p) => (p.isVector3 ? p : new THREE.Vector3(...p))), curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', o.tension ?? .5);
-    const SEG = o.segments ?? 120, RAD = 8, r = o.radius ?? .045, col = new THREE.Color(o.color ?? 0x8a5cff);
+    const THREE = S.THREE, pts = points.map((p) => (p.isVector3 ? p : new THREE.Vector3(...p))), curve0 = new THREE.CatmullRomCurve3(pts, false, o.curve ?? 'catmullrom', o.tension ?? .5);
+    const SEG = o.segments ?? 120, RAD = 8, r = o.radius ?? .045;
+    // v7 (floorY): the cable never goes through the floor: the curve is resampled densely with every point kept at least its radius above floorY
+    const curve = o.floorY == null ? curve0 : new THREE.CatmullRomCurve3(curve0.getSpacedPoints(Math.max(80, SEG)).map((q) => { q.y = Math.max(q.y, o.floorY + r + .003); return q; }), false, 'catmullrom', 0), col = new THREE.Color(o.color ?? 0x8a5cff);
     const mat = new THREE.MeshPhysicalMaterial({ color: col.clone().multiplyScalar(o.tone ?? .72), roughness: .62, metalness: 0, clearcoat: .2, clearcoatRoughness: .5, emissive: col, emissiveIntensity: 0 });   // matte rubber, a soft sheen
     const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, SEG, r, RAD, false), mat); tube.castShadow = false; S.scene.add(tube);
     // the floor shadow: a dark strip under the parts that lie low (wider and darker the nearer the floor)
@@ -191,13 +198,38 @@
       b.position.y = -.02; m.position.y = .11; g.add(b, m); const p = curve.getPointAt(u), t = curve.getTangentAt(u).multiplyScalar(dir); g.position.copy(p); g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), t.normalize()); g.userData.at = p.clone(); g.userData.dir = t.clone(); S.scene.add(g); return g; };
     const pA = o.plugs === false ? null : plug(0, -1), pB = o.plugs === false ? null : plug(1, 1);
     const bead = new THREE.Mesh(new THREE.SphereGeometry(r * 1.35, 12, 8), new THREE.MeshBasicMaterial({ color: col.clone().multiplyScalar(2.2), toneMapped: false })); bead.visible = false; S.scene.add(bead);
-    const api = { curve, tube, strip, plugs: [pA, pB], bead,
+    const api = { curve, tube, strip, plugs: [pA, pB], bead, radius: r,
+      lowest() { let m = 1e9; for (let i = 0; i <= 200; i++) m = Math.min(m, curve.getPointAt(i / 200).y); return m - r; },   // v7 check: the cable's lowest surface point (>= 0 = never through the floor)
       reveal(u) { u = clamp(u); const n = Math.floor(u * SEG); tube.geometry.setDrawRange(0, n * RAD * 6); if (strip) strip.geometry.setDrawRange(0, n * 6); const on = u > .001; tube.visible = on; if (strip) strip.visible = on;
         if (pA) pA.visible = on; if (pB) { const k = clamp((u - .94) / .06); pB.visible = k > 0; pB.position.copy(pB.userData.at).addScaledVector(pB.userData.dir, .14 * (1 - k)); } },   // the end plug slides the last 0.14 in: the click
-      pulse(k, t = 0) { k = clamp(k); mat.emissiveIntensity = .35 * Math.sin(Math.PI * k); bead.visible = k > 0 && k < 1 && tube.visible; if (bead.visible) bead.position.copy(curve.getPointAt(k)); } };
+      pulse(k, t = 0, str = 1) { k = clamp(k); mat.emissiveIntensity = .35 * str * Math.sin(Math.PI * k); bead.visible = str > .5 && k > 0 && k < 1 && tube.visible; if (bead.visible) bead.position.copy(curve.getPointAt(k)); } };   // str < 1: a softer pulse without the bead (many cables at once)
     api.reveal(0); return api;
   }
 
+  // ---------- v7: flat counting numbers tied to their object by a thin leader line (owner, 26 Nov 2026; references 10 and 11) ----------
+  // numbers({ y }) -> set(t, { show 0..1, value, from, to, k (count progress 0..1), top: small line above, label: small line below, anchor: [x,y] px | null, tick 0..1 })
+  // One style for every number: flat, crisp white, counting (never popping in), gliding up as it shows, a hairline to the object it is about.
+  function numbers(o = {}) {
+    const box = document.createElement('div'), y = o.y ?? 1530;
+    box.style.cssText = `position:absolute;left:0;top:${y}px;width:100%;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7)`;
+    box.innerHTML = '<div data-top style="font-weight:600;font-size:40px;line-height:1;color:#c9cfdb;letter-spacing:.01em"></div><div data-n style="font-weight:800;font-size:148px;line-height:1.04;letter-spacing:-.03em;font-variant-numeric:tabular-nums"></div><div data-lab style="font-weight:600;font-size:38px;line-height:1;color:#c9cfdb"></div>';
+    const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('width', '1080'); svg.setAttribute('height', '1920');
+    svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;z-index:6';
+    const ln = document.createElementNS(ns, 'line'), dot = document.createElementNS(ns, 'circle');
+    ln.setAttribute('stroke', 'rgba(255,255,255,.78)'); ln.setAttribute('stroke-width', '3'); ln.setAttribute('stroke-linecap', 'round');
+    dot.setAttribute('r', '11'); dot.setAttribute('fill', 'none'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '3'); svg.appendChild(ln); svg.appendChild(dot);
+    document.body.appendChild(svg); document.body.appendChild(box);
+    const top = box.querySelector('[data-top]'), n = box.querySelector('[data-n]'), lab = box.querySelector('[data-lab]');
+    return { el: box, set(t, q) {
+      const sh = clamp(q.show ?? 0), v = Math.round(lerp(q.from ?? q.value, q.to ?? q.value, 1 - Math.pow(1 - clamp(q.k ?? 1), 3)));
+      box.style.opacity = sh.toFixed(3); box.style.transform = `translateY(${(1 - sh) * 46}px) scale(${(1 + .1 * Math.sin(Math.PI * clamp(q.tick ?? 0))).toFixed(3)})`;
+      top.textContent = q.top || ''; n.textContent = String(v); lab.textContent = q.label || '';
+      const ax = q.anchor, ok = ax && sh > .02 && ax[1] < y - 40 && ax[0] > 30 && ax[0] < 1050 && ax[1] > 430;
+      svg.style.opacity = ok ? sh.toFixed(3) : '0';
+      if (ok) { const x0 = 540, y0 = y - 10, k = clamp((sh - .2) / .8); ln.setAttribute('x1', x0); ln.setAttribute('y1', y0); ln.setAttribute('x2', lerp(x0, ax[0], k)); ln.setAttribute('y2', lerp(y0, ax[1], k)); dot.setAttribute('cx', ax[0]); dot.setAttribute('cy', ax[1]); dot.style.opacity = k > .95 ? '1' : '0'; }
+      return { box: [0, y - 50, 1080, y + 250], value: v }; } };
+  }
+
   W3.lib = { appTile, phone, laptop, chip, rack, productBlock, codeCard, dialog, figure, appGlyphs, rr, standingSlab };
-  W3.camPath = camPath; W3.enter = enter; W3.wire = wire;
+  W3.camPath = camPath; W3.enter = enter; W3.wire = wire; W3.numbers = numbers;
 })();

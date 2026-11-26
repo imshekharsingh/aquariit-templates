@@ -9,7 +9,7 @@ const path=require('path'); const pw=require('playwright');
   const tl=times==='auto'?Array.from({length:Math.ceil(D.TOTAL/.5)+1},(_,i)=>Math.min(D.TOTAL,i*.5)):times.split(',').map(Number);
   for(const t of tl){ D.frame(t); S.cam.updateMatrixWorld(); const issues=[];
    const tiles=[...D.apps.map((m,i)=>['app'+i,m]),...D.tools.map((m,i)=>['tool'+i,m]),['new',D.newTool]].filter(([,m])=>m.visible&&m.scale.x>.9);
-   const hubB=D.hub.visible&&D.hub.scale.x>.5?W3.screenBox(S,D.hub):null;
+   const hubB=D.hub.visible&&D.hub.scale.x>.5?W3.screenBox(S,D.hubBox||D.hub):null;   // hubBox: the block alone (v7: the hub stands on a pillar the apps may hide)
    const vbox=(o)=>{ let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; o.updateMatrixWorld(true); const v=new S.THREE.Vector3(); o.traverse(m=>{ if(!m.isMesh) return; const a=m.geometry.attributes.position; for(let i=0;i<a.count;i+=7){ v.fromBufferAttribute(a,i).applyMatrix4(m.matrixWorld).project(S.cam); const sx=(v.x*.5+.5)*1080, sy=(-v.y*.5+.5)*1920; x0=Math.min(x0,sx);x1=Math.max(x1,sx);y0=Math.min(y0,sy);y1=Math.max(y1,sy);} }); return [x0,y0,x1,y1]; }; const figB=D.figs.filter(f=>f.visible&&f.scale.x>.3).map(vbox);
    // cable sample points (visible part only)
    const cabs=[...D.tubes.map(q=>q.c),...D.hubTubes.map(q=>q.c),D.newCable].filter(c=>c.tube.visible);
