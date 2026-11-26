@@ -213,3 +213,48 @@ Move types in order: hold, pull back, crane up, dolly in, truck down, arc, pull 
 - Local checks on the whole reel at the real cue times (scene frames at 10 fps, no render; 27 Nov): COLOUR pass (no hard background cut; the first pass found two, at 13.1 s and 17.7 s, where the near Chat and Mail tiles left the frame edge in one 0.1 s step after the close hub and New shots: fixed by the hub whip from just above the apps, 0.75 s, a slow-start crane, the New truck a little further back, and neutral blacks for the caption fade, the page and the haze, so the empty background reads dark, not blue); GLOW pass (1.1 % median, worst 1 s 3.5 %); frame change median 7.8, last 4 s 5.7; pale frames 0 of 229; 36 cables, none through the floor or an object; no leader crossing a tile, no number over a cable (9.6, 14.4, 18.9 s).
 - The whip is now 0.75 s (asked: a whip pan); at 0.38 s its frame-edge colour jumped 56 degrees in one step (Output QA COLOUR fails over 45).
 - Moved to the first real tech reel, as the upgrade critic listed: live app screens, ripple bumps, the rim light, the subtitle word style, the shake, the rack focus. The whip pan has no extra motion blur beyond the render's frame blend.
+
+## Render 3 plan critic (main account, 27 Nov)
+Judged the builder's "Render 3 plan" and the refreshed stills sheet (review/tech/study-25nov/kit-phase2-v7.jpg, 14 scene frames at the real cue times, frame 0 and 22.86 s side by side) against the upgrade critic's RENDER 3 FIX LIST, critic.md Ambition pass points 1-4 and questions 46-52, and direction.md "Focus, structure, reason" (R-ref 27 Nov: the target reel moves LESS than v7 and reads more designed because of focus, structure and reason). No render, no scene edits. This is the last render, so every item below is either OK or a cheap, exact change.
+
+### What the stills show
+- Good: the board builds (3.4 s), the tools stack as one column flow (4.6, 5.2 s), the problem breaks with the number on a dark backing clear of the cables (10.0 s), the hub lands big (12.6 s), the high wide reads as one clean system with all of Notes whole (13.6 s), the payoff wide with 12 and its leader (19.0 s). This is a clear step up from render 2.
+- Clutter: the "older word in grey" line stacks a second headline under the subtitles in every frame (1.4, 3.4, 4.6, 7.3, 8.5, 10.0, 12.6, 16.2, 19.0 s). With the subtitles above and the number spot beside it, 10.0 s has four text layers in the top 40 % and two "24"s (headline "24 CABLES" and the number 24). At 7.3 and 8.5 s "8 TOOLS / EVERY" sit on the Files and board tiles; at 12.6 and 16.2 s the grey word sits on the Maps tile.
+- 3.4 s: "3 APPS" is on screen while the apps have craned out of the frame (the word names nothing in the picture).
+- 16.2 s: a large cut-off yellow shape (Mail) fills the bottom-left corner of the New shot.
+- The loop: frame 0 shows Notes alone, big (about 68 % of the width) and centred in the upper middle, its "Notes" label bleached by the light sweep; the 22.86 s frame shows Notes smaller (about 45 %) and low, with Chat, the hub, Photos and the wall in frame. The two frames do not match, so the loop still jumps (F3 not fixed).
+
+### The 15 items
+1. Board build: OK (the panel rises with its slot recesses at 3.4 s; the edge light must be visible by 3.6 s, Output QA checks no frame without a lit object).
+2. Tool cascade as one flow: OK (the smaller camera ride is accepted; the reason, keeping the top row clear, is good).
+3. Board alive: OK.
+4. Apps as a chain, Notes on frame 0: CHANGE: start the Notes light sweep at 0.5 s (after the landing), not on frame 0, so the hook frame reads "Notes" clearly (today the label is bleached at 0.0 s).
+5. Floor grid draws, props gone: OK.
+6. The problem breaks: OK, with the focus change (A below).
+7. Tangle sweep 1 s: OK.
+8. Number spot: OK (dark backing, clear of the cables, leader to its object).
+9. Hub landing: OK. The 0.75 s pan is accepted in place of a whip: a 0.38 s whip fails the COLOUR check and the pan has a story reason (the hub arrives).
+10. Collapse as one motion: OK.
+11. Notes whole on the wide: OK (13.6 s).
+12. Green sweep and hub LEDs: OK; the camera under it changes (C below).
+13. Headline words: CHANGE (the open points decided): (a) big headline words on the wide and clean shots only: 0.5-3.0 s ("ONE TOOL", then "3 APPS"), 4.0-5.3 s ("8 TOOLS", it clears the board top), 9.0-11.4 s, 13.5-15.1 s ("11" is the number, so no headline word there), 18.2-21.0 s; none on the close shots 5.3-9.0, 12.3-13.5 and 15.1-18.2 s; (b) "3 APPS" leaves at 3.0 s as the apps leave the frame; (c) at 9.0 s the word is "TANGLED" (red), not "24 CABLES", because the number spot already shows 24 (one subject per beat, no two 24s); (d) drop the grey older-word line everywhere; the step pill (B below) takes its place. No band or bar behind the words (question 46); the words are the picture's, over empty dark only. TEXT CLEAR must pass on the whole reel at the real voice times.
+14. Sound: OK (to be heard on the render: every added hit at least 8 dB under the voice).
+15. End and loop: CHANGE: the last move lands on frame 0's framing exactly: Notes centre within 5 % of the frame size and its width within 10 % of frame 0's (about 68 % of the width), Chat, Mail, the hub and the wall outside the frame by 22.86 s, frame 0's cold light; checked with frame 0 and 22.86 s side by side on the stills sheet before the render.
+
+### Focus, structure, reason
+- FOCUS (one subject lit, the rest dimmed but kept as context): today everything is lit all the time. CHANGE A: three dim windows, everything not the subject brought down to about 30 % brightness over 0.3 s and back up over 0.4 s: (1) 5.3-7.8 s the first cable: only Notes, Pay and that cable stay full; (2) 9.0-11.4 s the problem: the three red crossings, the half-pulled plug and Pay stay full, the other cables and tiles dim to about 50 %; (3) 15.1-18.2 s New: only New, its cable and the hub stay full. Everything returns to full by 18.2 s so the payoff wide is the whole system revealed (the reference's final pull-back). The board build (3.0-3.9 s) needs no dim: the apps have left the frame and the board is alone.
+- STRUCTURE (a fixed frame to hold on to): today none; the headline changes every beat and there is nothing that stays. CHANGE B: one small step pill in the spot of the dropped grey line (centred, about 30 px caps on 1080, a dark capsule, not a bar), on screen 0.5-21.0 s, changing per section with a short slide: "01 / 04 · THE SETUP" (0.5-5.3 s), "02 / 04 · THE WIRING" (5.3-9.0 s), "03 / 04 · THE PROBLEM" (9.0-12.3 s), "04 / 04 · THE FIX" (12.3-21.0 s). At least 24 px clear of the subtitles' lowest line (they wrap to two lines at 0-1.5 s) and of the headline; it leaves at 21.0 s with the headline so the last frame matches frame 0. The number spot keeps its one fixed place (top left) for 24, 11 and 12: that is the second fixed frame.
+- REASON (every camera move goes to the next thing in the story): most moves have one (hold on the hook, pull back to the three, crane to the board, ride the stack, truck to the plug, arc over the cascade, pull back to the tangle, pan to the hub, crane up for the collapse, truck to New, pull back to the payoff). Two do not. CHANGE C: 13.9-15.1 s the orbit becomes a still hold (at most a 2 % push) while the green sweep runs along the 11: the sweep is the subject and the reference holds 0.5-1 s on a beat that needs reading. 21.0-22.86 s "arc, then dolly home" becomes one curved dolly home to Notes (where the story began), not two moves. Keep the last-4 s frame change at 5 or more (the move home from the payoff wide to the close Notes is large enough; check it locally).
+
+### Also
+- CHANGE D: 15.1-18.2 s the New shot: Mail either fully outside the frame or whole; no cut-off tile in the bottom-left corner (16.2 s).
+- Before the render (as the upgrade critic listed): preflight-all PASS with TEXT CLEAR covering the headline, the pill and the number spot; check-wires; COLOUR and GLOW local checks; last-4 s frame change 5+; frame 0 and 22.86 s side by side on the refreshed stills sheet. No new stills round for the critic: the builder checks these and renders.
+
+PLAN: CHANGE FIRST: make seven small changes (fewer headline words, a step pill instead of the grey words, dim the rest in three moments, two calmer camera moves, a matching last frame, a clean New shot, a readable first frame), check them locally, then run render 3 without another plan check.
+1. Item 4: Notes light sweep starts at 0.5 s; frame 0 reads "Notes".
+2. Item 13: headline words on the wide and clean shots only (0.5-3.0, 4.0-5.3, 9.0-11.4, 18.2-21.0 s); "3 APPS" leaves at 3.0 s; "TANGLED" at 9.0 s instead of "24 CABLES"; the grey older-word line removed.
+3. B: a step pill "01 / 04 · THE SETUP" ... "04 / 04 · THE FIX", 0.5-21.0 s, 24 px clear of the subtitles and the headline.
+4. A: dim the non-subjects to about 30 % at 5.3-7.8 s (first cable), to about 50 % at 9.0-11.4 s (the problem) and to about 30 % at 15.1-18.2 s (New); all full again by 18.2 s.
+5. C: 13.9-15.1 s a still hold instead of the orbit; 21.0-22.86 s one curved dolly home instead of arc then dolly.
+6. Item 15: the last frame matches frame 0 (Notes about 68 % wide, same centre within 5 %, nothing else in frame, cold light).
+7. D: the New shot has no cut-off Mail tile.
