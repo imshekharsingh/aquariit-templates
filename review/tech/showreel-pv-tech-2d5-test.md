@@ -13,3 +13,29 @@ No logos, no real card brands on screen. Gap: the 4 cm style distance claim was 
 - F3 brands: none named. PASS. Safety (design/safety.md): all invented, nothing sensitive. PASS.
 - D1 world: not applicable in the 2.5D grammar (owner: not the 3D kit); the map is the world. D2 parts built one by one: PASS in the stills (every interface builds element by element). D3 depth: far dot grid + near motes + glow + cards at three speeds. D4 secondary motion: pulses, ripples, needle, blinking cursor. D5: push, six flights, pull-back. M3 never fully still. M6 words: captions word by word.
 - P1 surprising frame 0 / P3 loop: hub alive in frame 0, last frame = whole map (not the same framing; stated).
+
+## Stills check
+Outside check (session_01AYvWRhHJYnX6N3TktzS9wj, 2026-11-27), builder's sheet + one extra sheet at 0.6, 1.4, 7.6, 11.8, 16.0, 19.6, 24.3, 25.75, 28.4 s. Verdict: REDO (fixes below), no render yet.
+
+Direction card: met 2 (pacing), 3 (one camera, 0 cuts, continuity 76 %), 6 (pulse leads each flight, seen at 3.5 s), 9 (pull-back to the whole lit map at 29.8 s reads well). Not met: 1, 4 (partly), 5 (partly), 8. 7 (sound) cannot be judged from stills.
+Motion-design pass: per-step builds are real (token scramble 6.5 -> 7.6 s, request rows 10.5 -> 11.8 s, ms counter 0 -> 23 ms, network path locks on YOUR BANK, gauge). Not seen: the set building itself (0.6 and 1.4 s show the hub card alone; the other five cards and lines are off frame).
+
+Faults
+- 16.0 s: the pill reads "02 / 06 · TERMINAL" while the camera sits on 03 ACQUIRER (violet). 24.3 s: the pill already reads "06 / 06 · APPROVED" while the bank card is still in view and the voice says "Six:". The pill must change exactly when the flight arrives, never show an older step.
+- Interface labels are about 5-6 px on the 540 sheet (10-12 px at 1080): THE SHOP'S BANK, EXAMPLE TIME, RECEIVES THE REQUEST, FUNDS COVER IT, the pill text. Unreadable on a phone; EXAMPLE TIME is a safety label and must be readable.
+- Token mismatch: the token card shows 9F3A 71C2 D0C8 160C, the payment request shows "9F3A..D0BE". Make it 9F3A..160C.
+- 25.75 s: the APPROVED stamp is not on screen yet (card says it slams at 25.6 s, the thud at 25.65 s). Check stamp and thud land on the same frame.
+
+PREMIUM (against R-ref 27 Nov 2026): about 6.5. Colour worlds, spotlight, fixed title, pill, accent key words and working mini-interfaces all match the grammar. It loses on scale and context: the active card fills only the middle band (about y 25-72 %), the bottom 20 % of the frame is empty black under the caption, and the map around the card is almost never seen, so it reads as a slideshow of boxes rather than one system.
+
+UPGRADES
+- HIGH 0-2.2 s: open WIDE on the whole map assembling (five cards fly in from the ring, lines draw hub -> 6, the hub phone already rippling), then push into the hub by 2.2 s. Today the hook is a phone in a box.
+- HIGH 3.3-27.4 s: hold framing about 15 % wider so 1-2 dimmed neighbours (20 %) and their lines stay in frame as context; scale the active card and its interface up so labels are at least 22 px at 1080; use the empty bottom band (caption down to about 80 % height).
+- HIGH all flights: pill roll synced to arrival (see faults).
+- MED 25.6-27.4 s: after the stamp slam, ease the camera back enough to SEE the mint reply pulse run along the lines toward the hub (the rewatch moment is invisible at today's zoom).
+- MED 25.6 s: stamp slam + ring burst + thud on one frame; add a short white flash on the card edge.
+- LOW 28.4 s: mid pull-back the "LIMITED TO THIS DEVICE" chip floats detached from its card; keep chips parented to their cards.
+
+Focus: yes (one card lit, colour world per step). Structure: yes (title, pill, numbered cards), but the pill desync breaks it. Reason for every move: yes (pulse leads each flight), weaker in the hook and the reply.
+Facts: match the sources listed above; counters labelled EXAMPLE TIME; shop, app and bank names invented; no real brand or logo seen.
+

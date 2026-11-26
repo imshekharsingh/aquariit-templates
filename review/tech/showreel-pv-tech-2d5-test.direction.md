@@ -22,4 +22,4 @@
 - Pull-back (27.4 s): all cards rise to full light; the lines stay lit with pulses in both directions.
 - Nothing simply appears: every element above has its own entrance kind (rise, drop, slide, pop, tilt, slam, draw, scramble, count).
 
-STILLS CHECK: pending
+STILLS CHECK: REDO: lines 1 (map build not seen at 0-2 s), 4 (neighbours off-frame, not dimmed context), 5 (section pill shows the wrong step at 16.0 and 24.3 s; tiny interface labels), 8 (reply pulse along every line not visible); Motion-design pass "the set builds itself" not visible
