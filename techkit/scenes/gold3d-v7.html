@@ -10,7 +10,7 @@
      Cables never pass through the floor or an object (techkit/check-wires.cjs). window.render(t) is a pure function of t. -->
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#090a0e}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0a0a0b}
 </style></head><body>
 <script src="timeline.js"></script>
 <!--THREE-->
@@ -23,7 +23,7 @@ const sm = (u) => (u = clamp(u), u * u * (3 - 2 * u)), ease = (u) => (u = clamp(
 const eout = (u) => 1 - Math.pow(1 - clamp(u), 3), eback = (u, c = 1.6) => { u = clamp(u); return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
 const pulse = (t, at, w = .25) => Math.exp(-Math.pow((t - at) / w, 2));
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
-const S = W3D.stage(THREE, { W, H });
+const S = W3D.stage(THREE, { W, H, ink: 0x0a0a0b, haze: 0x19191c })   // neutral blacks: the empty background reads dark, not blue (no colour cut when the near apps leave the frame edge);
 S.dof.aperture = 2.4; S.dof.focusRange = 7; S.dof.maxR = 20; S.bloom = .12;
 const world = W3D.world(S, { seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, floor: 0x4e4e50, poolPower: .1, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
 world.floor.material.envMapIntensity = .1; world.floor.material.roughness = .93; world.floor.material.metalness = 0; if (world.glow) world.glow.visible = false;   // a matte floor (a glossy one read as a pale wash at low angles)
@@ -127,7 +127,7 @@ const shadows = [...apps.map((m) => W3D.contactShadow(S, m, { w: 2.4, d: .6, str
 
 // ---------- captions ----------
 const KEYS = [[4, 4], [3, 4], [4, 5], [2, 3], [8, 8], [4, 6], [5, 6]];
-const cap = W3D.captions({ y: 190, size: 60, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: i === TL.scenes.length - 1 ? TOTAL + 1 : s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
+const cap = W3D.captions({ y: 190, size: 60, scrimRGB: '10,10,11', lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: i === TL.scenes.length - 1 ? TOTAL + 1 : s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
 
 // ---------- camera: one shot per beat, each with a reason; never the same move type twice in a row ----------
 const START = { pos: [-5.5, 2.1, 9.6], look: [-1.88, .95, 2], fov: 42 };
@@ -139,10 +139,10 @@ const SH = [
   { t: W1 + .5, pos: [-5.0, 3.4, -3.8], look: [-1.75, 4.4, -6.45], fov: 46, mv: 'truck-down' },   // the plug in the lower half (the headline above it)      // 5 the first plug clicks in
   { t: CASC[0] + .9, pos: [-6.2, 4.6, 6.6], look: [0, 2.5, -3.4], fov: 52, mv: 'arc' },               // 6 the tangle grows on the floor
   { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -3.2], fov: 56, mv: 'pull-back' },                   // 7 the tangle at its worst (big moment 2), the problem breaks
-  { t: HUB_IN + .45, pos: [3.8, 3.0, 7.2], look: [0, 2.7, -2.2], fov: 48, mv: 'whip', dur: .38 },     // 8 fix 9 (U14): a whip pan to the hub on "hub" (big moment 3)
-  { t: COLLAPSE[0] + .8, pos: [0, 7.4, 17.4], look: [0, 3.7, -3.0], fov: 54, mv: 'crane-up' },       // 9 the collapse in one wave, from the high wide (fix 11: Notes whole)
+  { t: HUB_IN + .45, pos: [2.6, 4.4, 5.0], look: [0, 2.4, -2.2], fov: 50, mv: 'whip', dur: .75 },     // 8 fix 9 (U14): a whip pan to the hub on "hub" (big moment 3)
+  { t: COLLAPSE[0] + .8, pos: [0, 7.4, 17.4], look: [0, 3.7, -3.0], fov: 54, mv: 'crane-up', frac: .96, ease: 2 },       // 9 the collapse in one wave, from the high wide (fix 11: Notes whole)
   { t: C.eleven + .7, pos: [-1.4, 6.2, 17.6], look: [0, 3.8, -3.1], fov: 54, mv: 'orbit' },           // 10 the clean picture, 11
-  { t: NEW_IN + .05, pos: [3.9, 3.2, 4.8], look: [2.75, 2.2, -1.7], fov: 44, mv: 'truck' },          // 11 the new tool and its one cable
+  { t: NEW_IN + .05, pos: [3.9, 3.5, 6.4], look: [2.75, 2.2, -1.7], fov: 44, mv: 'truck' },          // 11 the new tool and its one cable
   { t: PAY, pos: [0, 6.5, 17.4], look: [0, 3.9, -3.2], fov: 54, mv: 'pull-back' },                   // 12 the payoff wide: 12
   { t: TOTAL - 1.9, pos: [-8.7, 6.0, 15.8], look: [0, 3.9, -3.2], fov: 54, mv: 'arc' },              // 13 a 25 degree arc
   { t: TOTAL, ...START, mv: 'dolly-in' },                                                            // 14 home to frame 0's framing and light (fix 15)
@@ -153,7 +153,7 @@ const newest = (t) => { let n = -1; ORDER.forEach((j, o) => { if (t >= T_IN + o 
 function camAt(t) {
   let i = 0; while (i < SH.length - 2 && t >= SH[i + 1].t) i++;
   const a = SH[i], b = SH[i + 1], gap = b.t - a.t, dur = b.dur ?? Math.min(2.0, gap * (b.frac ?? .72)), ms = b.t - dur;
-  const u = sm(prog(t, ms, b.t)), hold = prog(t, a.t, ms);
+  const u = Math.pow(sm(prog(t, ms, b.t)), b.ease ?? 1), hold = prog(t, a.t, ms);   // ease 2: a slow start (the near apps leave the frame edge gently)
   const drift = (k) => VA(k.pos).lerp(VA(k.look), .025 * hold);
   const pos = drift(a).lerp(VA(b.pos), u), look = VA(a.look).lerp(VA(b.look), u), fov = lerp(a.fov, b.fov, u);
   // fix 2 (N1): the camera rides the stack: it follows the newest tile up and down the board, the newest in the upper part of the frame

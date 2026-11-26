@@ -1,147 +1,152 @@
 {
- "_about": "Projects on the app's Today board (owner, 26 Nov 2026): work that is not a channel reel. The project's session updates its entry at every stage in the same push as the work (design/runbook-studio.md \"Projects\"). stage: planned | building | stills | render | checking | critic | done | waiting (on the owner) | failed. line: one plain sentence. pct: optional 0-100. history: newest last, at most 20. The Worker reads this file from main (GET /api/projects, about 2 min cache) and merges any newer `node scripts/stage.mjs project:<id> <stage>` line. A done project leaves the board 2 days after its last update.",
- "projects": [
-  {
-   "id": "3d-kit-v7",
-   "name": "3D kit v7: the last sample",
-   "account": "other",
-   "stage": "critic",
-   "line": "Render 2 passed every check. Main account's critic judges it.",
-   "pct": 90,
-   "updatedAt": "2026-11-26T18:11:00Z",
-   "history": [
+  "_about": "Projects on the app's Today board (owner, 26 Nov 2026): work that is not a channel reel. The project's session updates its entry at every stage in the same push as the work (design/runbook-studio.md \"Projects\"). stage: planned | building | stills | render | checking | critic | done | waiting (on the owner) | failed. line: one plain sentence. pct: optional 0-100. history: newest last, at most 20. The Worker reads this file from main (GET /api/projects, about 2 min cache) and merges any newer `node scripts/stage.mjs project:<id> <stage>` line. A done project leaves the board 2 days after its last update.",
+  "projects": [
     {
-     "at": "2026-11-26T13:12:00Z",
-     "stage": "stills",
-     "line": "The v7 scene is built to the critic's faults and the owner's notes; one stills sheet."
+      "id": "3d-kit-v7",
+      "name": "3D kit v7: the last sample",
+      "account": "other",
+      "stage": "critic",
+      "line": "Render 3 plan and stills ready: all 15 changes built. Main account checks the plan before the last render.",
+      "pct": 92,
+      "updatedAt": "2026-11-26T19:55:00Z",
+      "history": [
+        {
+          "at": "2026-11-26T13:12:00Z",
+          "stage": "stills",
+          "line": "The v7 scene is built to the critic's faults and the owner's notes; one stills sheet."
+        },
+        {
+          "at": "2026-11-26T13:12:00Z",
+          "stage": "critic",
+          "line": "The plan and one stills sheet are ready. Main account's critic checks them before any render."
+        },
+        {
+          "at": "2026-11-26T16:18:00Z",
+          "stage": "building",
+          "line": "The critic's seven plan changes are made; checks run, then render 1 of 2."
+        },
+        {
+          "at": "2026-11-26T16:29:00Z",
+          "stage": "render",
+          "line": "Render 1 of 2 is being made (about 25 min)."
+        },
+        {
+          "at": "2026-11-26T17:09:00Z",
+          "stage": "building",
+          "line": "Render 1 failed one colour check; fixed, render 2 (the last) is next."
+        },
+        {
+          "at": "2026-11-26T17:37:00Z",
+          "stage": "render",
+          "line": "Render 2 (the last) is being made (about 25 min)."
+        },
+        {
+          "at": "2026-11-26T18:11:00Z",
+          "stage": "critic",
+          "line": "Render 2 passed every check. Main account's critic judges it."
+        },
+        {
+          "at": "2026-11-26T19:55:00Z",
+          "stage": "critic",
+          "line": "Render 3 plan and stills ready: all 15 changes built. Main account checks the plan before the last render."
+        }
+      ]
     },
     {
-     "at": "2026-11-26T13:12:00Z",
-     "stage": "critic",
-     "line": "The plan and one stills sheet are ready. Main account's critic checks them before any render."
+      "id": "3d-kit-v6",
+      "name": "3D kit v6: the tech look as a told story",
+      "account": "other",
+      "stage": "done",
+      "line": "Closed at render 2 (critic NOT READY); v7 replaces it.",
+      "pct": 85,
+      "updatedAt": "2026-11-26T13:12:00Z",
+      "history": [
+        {
+          "at": "2026-11-26T07:20:00Z",
+          "stage": "building",
+          "line": "New rules for beats, entrances and real-looking wires, and a glow check."
+        },
+        {
+          "at": "2026-11-26T07:35:00Z",
+          "stage": "stills",
+          "line": "The v6 sample is built; one stills sheet checked."
+        },
+        {
+          "at": "2026-11-26T07:41:00Z",
+          "stage": "render",
+          "line": "The v6 sample is built and its first video is being made."
+        },
+        {
+          "at": "2026-11-26T09:17:00Z",
+          "stage": "render",
+          "line": "Render 1 failed two checks; both fixed, render 2 is next."
+        },
+        {
+          "at": "2026-11-26T09:23:00Z",
+          "stage": "render",
+          "line": "Render 2 is being made (about 25 min)."
+        },
+        {
+          "at": "2026-11-26T09:57:00Z",
+          "stage": "critic",
+          "line": "Render 2 passed every check. Main account runs the critic on the v6 video."
+        },
+        {
+          "at": "2026-11-26T13:12:00Z",
+          "stage": "done",
+          "line": "Closed at render 2 (critic NOT READY); v7 replaces it."
+        }
+      ]
     },
     {
-     "at": "2026-11-26T16:18:00Z",
-     "stage": "building",
-     "line": "The critic's seven plan changes are made; checks run, then render 1 of 2."
+      "id": "minutes-meter",
+      "name": "GitHub minutes meter in the app",
+      "account": "other",
+      "stage": "done",
+      "line": "The meter always shows now, and says why if the count cannot be read.",
+      "updatedAt": "2026-11-26T06:17:00Z",
+      "history": [
+        {
+          "at": "2026-11-26T06:11:00Z",
+          "stage": "building",
+          "line": "Found the meter was hidden on any error."
+        },
+        {
+          "at": "2026-11-26T06:17:00Z",
+          "stage": "done",
+          "line": "The meter always shows now, and says why if the count cannot be read."
+        }
+      ]
     },
     {
-     "at": "2026-11-26T16:29:00Z",
-     "stage": "render",
-     "line": "Render 1 of 2 is being made (about 25 min)."
+      "id": "app-projects",
+      "name": "Projects on the app's board",
+      "account": "other",
+      "stage": "done",
+      "line": "Projects like the 3D kit now show on the Today board with their stage and history.",
+      "updatedAt": "2026-11-26T08:05:00Z",
+      "history": [
+        {
+          "at": "2026-11-26T08:05:00Z",
+          "stage": "done",
+          "line": "Projects like the 3D kit now show on the Today board with their stage and history."
+        }
+      ]
     },
     {
-     "at": "2026-11-26T17:09:00Z",
-     "stage": "building",
-     "line": "Render 1 failed one colour check; fixed, render 2 (the last) is next."
-    },
-    {
-     "at": "2026-11-26T17:37:00Z",
-     "stage": "render",
-     "line": "Render 2 (the last) is being made (about 25 min)."
-    },
-    {
-     "at": "2026-11-26T18:11:00Z",
-     "stage": "critic",
-     "line": "Render 2 passed every check. Main account's critic judges it."
+      "id": "queue-check",
+      "name": "Hourly check of the other account's task queue",
+      "account": "other",
+      "stage": "done",
+      "line": "An hourly check now starts the next open task by itself.",
+      "updatedAt": "2026-11-26T09:04:00Z",
+      "history": [
+        {
+          "at": "2026-11-26T09:04:00Z",
+          "stage": "done",
+          "line": "An hourly check now starts the next open task by itself."
+        }
+      ]
     }
-   ]
-  },
-  {
-   "id": "3d-kit-v6",
-   "name": "3D kit v6: the tech look as a told story",
-   "account": "other",
-   "stage": "done",
-   "line": "Closed at render 2 (critic NOT READY); v7 replaces it.",
-   "pct": 85,
-   "updatedAt": "2026-11-26T13:12:00Z",
-   "history": [
-    {
-     "at": "2026-11-26T07:20:00Z",
-     "stage": "building",
-     "line": "New rules for beats, entrances and real-looking wires, and a glow check."
-    },
-    {
-     "at": "2026-11-26T07:35:00Z",
-     "stage": "stills",
-     "line": "The v6 sample is built; one stills sheet checked."
-    },
-    {
-     "at": "2026-11-26T07:41:00Z",
-     "stage": "render",
-     "line": "The v6 sample is built and its first video is being made."
-    },
-    {
-     "at": "2026-11-26T09:17:00Z",
-     "stage": "render",
-     "line": "Render 1 failed two checks; both fixed, render 2 is next."
-    },
-    {
-     "at": "2026-11-26T09:23:00Z",
-     "stage": "render",
-     "line": "Render 2 is being made (about 25 min)."
-    },
-    {
-     "at": "2026-11-26T09:57:00Z",
-     "stage": "critic",
-     "line": "Render 2 passed every check. Main account runs the critic on the v6 video."
-    },
-    {
-     "at": "2026-11-26T13:12:00Z",
-     "stage": "done",
-     "line": "Closed at render 2 (critic NOT READY); v7 replaces it."
-    }
-   ]
-  },
-  {
-   "id": "minutes-meter",
-   "name": "GitHub minutes meter in the app",
-   "account": "other",
-   "stage": "done",
-   "line": "The meter always shows now, and says why if the count cannot be read.",
-   "updatedAt": "2026-11-26T06:17:00Z",
-   "history": [
-    {
-     "at": "2026-11-26T06:11:00Z",
-     "stage": "building",
-     "line": "Found the meter was hidden on any error."
-    },
-    {
-     "at": "2026-11-26T06:17:00Z",
-     "stage": "done",
-     "line": "The meter always shows now, and says why if the count cannot be read."
-    }
-   ]
-  },
-  {
-   "id": "app-projects",
-   "name": "Projects on the app's board",
-   "account": "other",
-   "stage": "done",
-   "line": "Projects like the 3D kit now show on the Today board with their stage and history.",
-   "updatedAt": "2026-11-26T08:05:00Z",
-   "history": [
-    {
-     "at": "2026-11-26T08:05:00Z",
-     "stage": "done",
-     "line": "Projects like the 3D kit now show on the Today board with their stage and history."
-    }
-   ]
-  },
-  {
-   "id": "queue-check",
-   "name": "Hourly check of the other account's task queue",
-   "account": "other",
-   "stage": "done",
-   "line": "An hourly check now starts the next open task by itself.",
-   "updatedAt": "2026-11-26T09:04:00Z",
-   "history": [
-    {
-     "at": "2026-11-26T09:04:00Z",
-     "stage": "done",
-     "line": "An hourly check now starts the next open task by itself."
-    }
-   ]
-  }
- ]
+  ]
 }
