@@ -872,3 +872,9 @@ Format (at most 6 lines):
 - Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real v4 MP4 (one contact sheet, two full frames). Of the v3 fix list: hook, code card, distinct names and aiLabel DONE; camera path, cables and held payoff PARTLY. Still failing D2 (0.6-5.2 s and 13.3-18.5 s each one framing, about 5 s), the hub hides two of the eight tools from 7.5 s (the picture says 3+8 but shows 6 tools), "Notes" cut at the edge in the 9.8 s push-in. Six-step EXACT FIX in the file. PREMIUM 6.5 / 7 / 7.5.
 - Left: the owner chat asks the owner about a 5th render of this sample (with its cost); not the 3D gold until a critic writes READY. The v3 critic branch (claude/critic-gold3d-sample) was never merged; this file replaces it.
 - For the other account: the 3D look's camera keys must also cover the opening and the last 5 s, not only the middle beat.
+
+## 2026-11-26 · claude/app-ready-fix-26nov · App: stale status and Post now on unready reels (tooling, owner-approved)
+- Done: the journey cache kept serving its last answer when a rebuild failed (no mark, no error); now an answer over 5 min old is rebuilt in the request, a failed build is remembered, and if it fails the old answer comes back marked stale with the reason. The Ready-to-post list now needs a journey reel with status ready and a fresh journey (no data = a "status not loaded" line); /api/post refuses while stale. showreel-tech-battery-cycles hidden. npm run check has a "ready filter" check; owner-feedback line added.
+- Left: confirm on the live board after the deploy (sign-in needed); if the board still says old, the stale mark now carries the real failure note.
+- For the other account: never treat missing or old status as ready.
+

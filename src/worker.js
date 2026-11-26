@@ -972,17 +972,34 @@ async function uploadedApi(request, env, p) {
 // stale-while-revalidate (owner, 21 Nov 2026: "Journey takes time in populating, why?"): building the journey asks GitHub for the run
 // lists, each reel's jobs and review files (several round trips, 3-8 s on a cold minute). The last answer is kept in this data centre's
 // cache for a day and served at once; when it is over 60 s old a fresh one is built in the background for the next open.
-const J_KEY = 'https://journey.cache/answer-v1', J_FRESH = 60e3;
+const J_KEY = 'https://journey.cache/answer-v1', J_FRESH = 60e3, J_STALE = 300e3;
+// Owner, 26 Nov 2026: the board froze at 00:48 IST because a failed rebuild (journey-failed, or a background job that never finished) left the old
+// answer in the cache with nothing to say it was old. Now: a failed build is remembered (note + time) and shown; an answer over 5 minutes old is
+// rebuilt IN the request (the open waits a few seconds, a background job is not trusted), and if that fails the old answer is returned marked
+// stale:true with the reason, so the app never treats it as current.
 async function journeyFast(env, ctx) {
-  const c = typeof caches !== 'undefined' ? caches.default : null;
-  const build = async () => { const r = await journey(env); if (r.ok && c) { const body = await r.clone().text();
-    try { await c.put(J_KEY, new Response(body, { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=86400', 'X-Built': String(Date.now()) } })); } catch { /* no cache */ } } return r; };
+  const c = typeof caches !== 'undefined' ? caches.default : null, ERR = 'https://journey.cache/error-v1';
+  const build = async () => { let r;
+    try { r = await journey(env); } catch (e) { r = jres({ error: 'journey-failed', note: String(e && e.message || e).slice(0, 80) }, 500); }
+    if (c) { try {
+      if (r.ok) { const body = await r.clone().text();
+        await c.put(J_KEY, new Response(body, { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=86400', 'X-Built': String(Date.now()) } })); await c.delete(ERR); }
+      else { let note = 'journey ' + r.status; try { note = (await r.clone().json()).note || note; } catch { /* plain */ }
+        await c.put(ERR, new Response(JSON.stringify({ note, at: new Date().toISOString() }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=86400' } })); }
+    } catch { /* no cache */ } }
+    return r; };
   if (!c) return build();
   let hit = null; try { hit = await c.match(J_KEY); } catch { /* build */ }
   if (!hit) return build();
   const age = Date.now() - +(hit.headers.get('X-Built') || 0);
-  if (age > J_FRESH && ctx) ctx.waitUntil(build().catch(() => {}));
-  return new Response(hit.body, { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Journey-Age': String(Math.round(age / 1000)) } });
+  let fresh = null;
+  if (age > J_STALE) { try { const r = await build(); if (r.ok) fresh = r; } catch { /* serve the old answer, marked stale */ } }
+  else if (age > J_FRESH && ctx) ctx.waitUntil(build().catch(() => {}));
+  if (fresh) return new Response(fresh.body, { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Journey-Age': '0' } });
+  let j = null; try { j = await hit.json(); } catch { /* unreadable */ }
+  let err = null; try { const e = await c.match(ERR); if (e) err = await e.json(); } catch { /* none */ }
+  if (j && age > J_STALE) { j.stale = true; j.age = Math.round(age / 1000); if (err) j.error = err; }
+  return new Response(JSON.stringify(j || { error: 'journey-unreadable' }), { status: j ? 200 : 500, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Journey-Age': String(Math.round(age / 1000)) } });
 }
 async function journey(env) {
   let captions = {}, uploaded = {}, media = {};
@@ -1107,6 +1124,7 @@ async function postApi(request, env, p) {
     if (await db.prepare('SELECT id FROM reel_uploaded WHERE id = ?1').bind(reel).first()) return no('posted', 'This reel is already marked as posted.');
     if (!env.REELS || !(await env.REELS.head('v/' + reel + '.mp4'))) return no('no-video', 'The video file is not available any more (it is removed 15 days after it is made).');
     try { const j = await (await journeyFast(env, null)).json(), r = ((j && j.reels) || []).find((x) => x.name === reel);   // the second look must have said READY (when the journey can be read)
+      if (j && j.stale) return no('status-old', 'The reel status is out of date, so it cannot be checked. Try again in a minute.');   // 26 Nov 2026
       if (r && !(r.stages && r.stages.ready && r.stages.ready.s === 'done')) return no('not-ready', 'This reel is not ready to post yet.'); } catch { /* the journey is optional */ }
     const ch = chOfReel(reel, m);
     const claim = await db.prepare('INSERT INTO ig_publish (reel, ch, state, line, error, media_id, permalink, at, started) VALUES (?1, ?2, \'queued\', \'Starting\', NULL, NULL, NULL, ?3, ?3) ON CONFLICT(reel) DO UPDATE SET state = \'queued\', line = \'Starting\', error = NULL, media_id = NULL, permalink = NULL, at = ?3, started = ?3 WHERE ig_publish.state = \'failed\' OR (ig_publish.state <> \'posted\' AND ig_publish.at < ?4)')
