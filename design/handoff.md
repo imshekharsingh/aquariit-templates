@@ -14,7 +14,7 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 6, 2, 5, 3
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 6, 7, 2, 5, 3 (3 may continue while a render runs)
 (later numbers after these, in order); report each in Progress.
 Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
 
@@ -111,6 +111,20 @@ app: regular upload notifications; test window notification change". Today the o
    with the on/off switches per type it already has. Keep the existing "server key missing" message when push is not set up.
 4. Tests for src/notify.js (the plan function is pure: add cases for test days, before-slot ready, late, logged), npm run check, merge.
    Then design/runbook-studio.md: the owner chat stops sending its own slot reminders once this is live and only checks the post went out.
+
+## Queued task 7 (owner, 26 Nov 2026): Projects show their workflow and the next action (do it right after task 6)
+Owner: "App's projects section I was hoping to have a workflow and next action being taken on it so that I'll know when it's done". Size S-M.
+1. Each project in design/projects.json gets its own ordered steps (e.g. 3D kit v6: Rules, Build, Stills, Render, Checks, Critic, Kit
+   final, Done; minutes meter: Find cause, Fix, Live, Done), each with state done / now / next / failed, like the reel journey.
+2. Each project carries "next": who does it (other account, main account, owner, GitHub), the action in plain words ("Render 1 running,
+   about 25 min", "Main account runs the critic", "Owner: watch the v6 video"), and an expected time when known.
+3. The Today row shows the step bar (done steps filled, the current one highlighted) plus the "Next:" line; tap opens the full steps and
+   history. "Waiting on you" stays amber and names the one action.
+4. When a project reaches Done, the app sends one push ("3D kit v6 is done: <one line>"), using task 6's notification plan (a new type
+   "project-done", on by default, switchable in Settings).
+5. Rule for every project session (add to the owner rule above and design/runbook-studio.md): at each step, update the step states and
+   "next" in projects.json in the same push. Backfill the current projects now (3d-kit-v6 at its real step).
+Phone-width check on a local build, npm run check, merge.
 
 ## Queued task 5 (owner, 26 Nov 2026): Projects on the app's board (do it BEFORE task 3)
 Owner: "introduce workflow for any design process we are running apart from channel so that we have that progress and status in app,

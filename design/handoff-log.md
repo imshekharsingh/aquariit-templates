@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-projects-flow · owner chat: projects get steps and a next action
+- design/handoff.md task 7 (after task 6): per-project ordered steps with states, a "next" (who, action, expected time), step bar and Next line on the Today row, a project-done push. Order now 0, 6, 7, 2, 5, 3.
+
 ## 2026-11-26 · claude/handoff-notify-policy · owner chat: one notification policy, queued for the other account
 - Owner posted Turns Out at the 14:00 test slot. design/handoff.md task 6 (right after task 0): design/notify-policy.json as the single source (ready before the slot, nudge, last call, summary), test-window pushes (day N of 7, late, logged), Settings shows the active plan. Order now 0, 6, 2, 5, 3.
 
