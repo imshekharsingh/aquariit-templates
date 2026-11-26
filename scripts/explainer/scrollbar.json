@@ -11,7 +11,7 @@
  "cover": 1.39,
  "palette": "black",
  "voice": {
-  "text": "Why is your scroll bar late? A script catches every scroll, so the bar can lag behind the page. The fix: animation timeline scroll. Now the scroll itself drives the bar, so no code runs, and nothing is late.",
+  "text": "Why is your scroll bar late? A script catches every scroll, so the bar can lag behind the page. The fix: animation timeline scroll. Now the scroll drives the bar, so no code runs, and nothing is late.",
   "voice": "af_heart",
   "speed": 1
  },

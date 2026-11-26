@@ -12,4 +12,6 @@ Fill before the build (design/direction.md: the card, and this channel's default
 8. Rewatch moment: about 11.5-12.5 s, the long flick back up: the lime bar shrinks with the page in one smooth move while JS CALLS stays 0; the viewer scrubs back to see the red bar never manage that | Why: it is the surprise that proves the bar is tied to the scroll itself, in both directions.
 9. Payoff: the last 2 s keep SCROLLS counting, JS CALLS 0 in lime, the label "JS CALLS · 0" with a leader to the bar and the code card with animation-timeline: scroll(); on screen for the save | Why: the viewer keeps one copyable line and one number (0 calls).
 
+Stills check round 1 (Fable, session_01AYvWRgnRjMz2sFWFQTauDU, 2026-11-27): REDO (blank top third at 5.7 s before the code card; the gliding pill doubled code lines at 7.7 s; the hatched gap shrank at 4.7-5.7 s; "the" alone on a subtitle line at 8.7 s). Fixed in one round: the cause picture stays until the code card morphs out of it on "The fix"; the glide pill starts exactly on its source line with a solid fill; the bar's lag step 0.3 -> 0.4 s and delay 0.1 -> 0.2 s so the gap stays wide; "itself" dropped from the voice text so the phrase fits one line.
+
 STILLS CHECK: PENDING
