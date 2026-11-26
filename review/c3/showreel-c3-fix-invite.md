@@ -58,3 +58,23 @@ STOP 7/10 (a familiar messy invite and a bold claim from frame 0), REWATCH 7/10 
 CRITIC: READY
 
 CRITIC: NOT READY (owner, 26 Nov 2026, 10:30 IST): texts slightly overlap; fix the spacing and alignment on render 2, then a new critic. The render 1 READY above is withdrawn.
+
+## Critic 2 (independent session, 26 Nov 2026, render 2)
+Judged on the real render 2 MP4 (reel-fetch, 20.0 s, 1080x1920, 30 fps, -14.0 LUFS integrated): one 1 s contact sheet at phone size, full-size frames at 0.0, 2.5, 8.4, 12.3 and 18.5 s, frames at 1.6, 2.0, 2.5, 3.0, 3.5, 4.0 and 4.4 s over the ring tags with pixel reads of the gaps, and the gold side-by-side sheet. Voice not heard (no playback here); unchanged from render 1.
+- 47 Overlap: NOT CLEAR. The ring tags NO HERO and 4 FONTS touch: at 2.5 s their outlines meet at x 338 (one shared border, 0 px gap) and stay that way while the tags are held, about 1.8-4.2 s. 4 FONTS to 6 COLOURS is about 8 px; 6 COLOURS to the confetti ring about 25 px. Near-miss on the end frame (17-20 s): the BEFORE tag starts about 6-9 px right of the tilted thumbnail's edge, which reads as touching at phone size.
+- 47 Clear (fixed since render 1): chips sit in their own band between the subtitle pill and the board (2.5 s: pill ends y 415, chip 435-522, board 572); rings are 14 px apart (name ring to middle ring) and 25 px (middle to confetti ring); confetti stays in its right column and flies clear of every text line (12.2-12.6 s); read-order badges 1-2-3 sit on clear board (8.4 s); the 7 sits clear above the name line (18.5 s); BEFORE/AFTER tags sit under the board, not on its border (18.5 s); the green frame clears RSVP to Mum; nothing sits under the subtitles; nothing touches the frame edge but the rulers, which bleed off by design as in gold.
+- 47 Alignment: headline and subtitle text share x 65; chips are centred on the board (chip centre 515, board centre 515); the invite's lines share x 185 with the 7 at x 180. Off by 13 px: the dial ring's left edge is at x 78, the headline at x 65 (every fix frame, 6-20 s).
+- 43 Gold: matches (same stage, light, pacing and before/after end frame as showreel-c3-grey-text).
+- 0 Safety: yes. 0b AI label false: correct. 1 Frame 0: yes, the hook and the whole lit invite at 0.0 s. 2 Every frame whole: no, the tag touch above. 3-5: unchanged from render 1 and still right (each fix lands on its line; every line shown in the pill and finished). 7 Payoff: yes, 16.5-20 s. D1-D4: unchanged from render 1, all yes; the end frame holds BEFORE and AFTER 3 s.
+- Story and look: intact; the render 1 READY points all still hold.
+STOP: 7/10 (frame 0, a familiar messy invite and a bold claim). REWATCH: 7/10 (the font scan at 9.8-10.2 s, the confetti flying into the 7 at 12.2-12.6 s).
+PREMIUM: animation 7.5/10 (t 7.4-12.6), cleanliness 6.5/10 (t 2.5: two tags share one border), premium 7/10 (t 18.5); weakest: t 1.8-4.2, NO HERO touches 4 FONTS, space the tags.
+ENHANCE: let the frame-0 headline name the object ("This invite has no hero") so a stranger knows what they are looking at in the first half second.
+
+EXACT FIX (scene scripts/channel3/design/fix-invite.js only; story, voice, timing and look unchanged):
+1. Ring tags, line 84 (shown about 1.8-4.2 s): lay the three tags out from their measured widths with at least 16 px clear between each pair at output size, and keep 6 COLOURS at least 16 px left of the confetti ring. The row is too tight at the current size (about 616 px of tags in about 672 px), so first make the 'r sm' tags about 10% narrower (less letter spacing or padding), then space them evenly from the board's inner left edge + 16 px.
+2. End frame (17-20 s): move the BEFORE tag right (or the thumbnail left) so it sits at least 16 px clear of the tilted thumbnail's right edge.
+3. Dial (6-20 s): move #dial left so its ring's outer edge is at x 65, on the headline and subtitle edge (now x 78).
+Then a local check on stills at 2.5 s and 18.5 s with a pixel read of the gaps (every text block 16 px clear) before render 3. Render 3 needs the owner's yes with its cost estimate.
+
+CRITIC: NOT READY: two of the red tags under the invite touch each other at 2-4 s (NO HERO and 4 FONTS share one border). Detail: question 47 at 1.8-4.2 s; also the BEFORE tag is 6-9 px from the thumbnail at 17-20 s and the dial sits 13 px right of the text edge; fix as in EXACT FIX above.
