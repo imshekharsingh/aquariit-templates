@@ -11,6 +11,10 @@ Format (at most 6 lines):
 
 ## 2026-11-26 · claude/critic-ambition-26nov · owner chat: the critic becomes the design lead too
 - Owner: spoon-feeding design notes must stop. design/critic.md "Ambition pass" (premium judged against the owner's references; at least 3 graded UPGRADES every verdict; HIGH ones go into the next fix); design/direction.md "Motion-design pass" in every plan. An upgrade critic re-grades v7 render 2 now for render 3.
+## 2026-11-27 00:01 IST · claude/critic-3d-v7-upgrades · Upgrade critic (main account) of 3D kit v7 render 2: render 3 fix list (15 items)
+- Done: judged the real v7 render 2 MP4 again as design lead, against the owner's references (shared grammar of 26 Nov), not our past reels: one contact sheet, four full frames. Kept the 5 faults; made the owner's two notes concrete (tools cascade as one flow with the camera riding it; the board builds itself and stays alive); 18 graded upgrades (problem breaks red at the tangle, one-motion collapse 24 -> 11, odometer numbers in a fixed spot, cold-to-warm light flip at the hub, kinetic headline words, a sound hit every beat). PREMIUM against the references 6.5 / 6.5 / 6.5. Section "Upgrade critic" in review/tech/showreel-tech-gold3d-v7.md; Progress line in design/handoff.md.
+- Left: the owner's yes for render 3 (the owner chat asks); 6 lower upgrades move to the first real tech reel.
+- For the other account: build the set (board, floor) on screen before anything lands on it, and stack groups as one cascade, never separate pop-ins.
 
 ## 2026-11-26 23:50 IST · claude/critic-3d-v7-r2 · Independent critic (main account) of 3D kit v7 render 2: NOT READY, not stable
 - Done: judged the real v7 render 2 MP4 beside v6 (one contact sheet each, three full frames, frame-change and brightness at 10 fps). Plan changes 2, 4, 6 DONE; 1, 3, 5, 7 PARTLY. Faults: empty dark wall 3.9-4.6 s, the 24 block on top of the cables 9.3-11.4 s, an empty first frame (the loop jumps), a short tangle sweep. PREMIUM 8 / 6.5 / 7.5; verdict and five-step EXACT FIX in review/tech/showreel-tech-gold3d-v7.md; Progress line in design/handoff.md.
