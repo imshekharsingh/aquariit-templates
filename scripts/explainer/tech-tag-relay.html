@@ -94,8 +94,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var LAB = ['', ['YOUR', 'TAG'], ['NEARBY', 'DEVICE'], ['LOCKED', 'PLACE'], ['THE', 'SERVERS'], ['YOUR', 'MAP'], ['THE', 'NETWORK']];
   // camera stops: [x, y, scale] (screen centre of the map area is x 256, y 452); 0 = the whole map, 7 = the whole map again (payoff)
   var WIDE0 = [885, 724, .24], WIDE1 = [885, 744, .24];
-  var STOP = [[745, 690, .94], [740, 600, .5], [1250, 610, .5], [1060, 1080, .51], [1120, 1150, .51], [1000, 1150, .51], [650, 740, .5], WIDE1];
-  var DRIFT = [[0, 0, .01], [15, -8, .007], [-15, 9, .007], [12, 10, .006], [-14, 8, .006], [14, -8, .007], [-15, -9, .007], [8, 12, .002], [0, 0, 0]];
+  var STOP = [[745, 690, .94], [740, 600, .5], [1250, 610, .5], [1060, 1080, .51], [1120, 1150, .51], [1000, 1180, .51], [650, 740, .5], WIDE1];
+  var DRIFT = [[0, 0, .01], [15, -8, .007], [-15, 9, .007], [12, 10, .006], [-14, 8, .006], [14, 2, .005], [-15, -9, .007], [8, 12, .002], [0, 0, 0]];
   STOP.push(STOP[0]);   // the last move goes home: the same framing as frame 0 (the loop)
   var X0 = 252, Y0 = 470;
   // the camera's own clock: the same as the voice, except the opening pull-back from the chat window leaves at 2.6 s (owner, 27 Nov: open on the chat itself)
