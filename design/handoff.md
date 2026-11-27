@@ -23,6 +23,11 @@ nothing glitching, a hint of the next subject before the camera moves, the WHOLE
 This account is a temporary helper for bigger chunks of app, tooling and kit work only. It never builds, renders, schedules or posts the
 daily reels. The main account's owner chat writes the tasks here and reads Progress.
 
+## Owner rule: ALL app work is this account's (owner, 27 Nov 2026, option 1)
+Every app change (features and urgent fixes, even ones blocking today's post) is done here. Done = the "App probe" workflow (scripts/qa/app-live-probe.mjs:
+signs in, iPhone size, opens every tab and every Today card) prints APP PROBE: PASS on the live app after the deploy; paste that line in Progress.
+The main account no longer edits templates/index.html, templates/sw.js or src/worker.js.
+
 ## Owner rule: status every 30 minutes on open tasks (owner, 27 Nov 2026)
 While any task here is started and not "done", write one Progress line at least every 30 minutes, even when nothing moved:
 "<time> IST, other account: task N, <stage>, <what happened since the last line>, next: <next step and when>". Before a session ends for any

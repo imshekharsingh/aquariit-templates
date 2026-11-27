@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/option1-app-to-handoff · owner chat: all app work moves to the other account
+- Owner chose option 1: every app change goes to the other account; this account keeps daily reels, critics and reminders. Done = App probe PASS on the live app. CLAUDE.md Sessions line and a rule in design/handoff.md.
+
 ## 2026-11-27 · claude/app-ready-follows-tab · owner chat: Ready to post always matches the tab
 - Owner (21:48): the tech tab said "Nothing is ready to post for @webin20sec" and hid the tech reel. Opening the reels page from the Today board drew the list but left the Ready box from the last tab. render() now redraws the Ready box first. App probe: fails if a tab's Ready box names another channel, and now also opens the reels page from each board card.
 
