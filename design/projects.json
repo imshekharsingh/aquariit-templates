@@ -267,6 +267,27 @@
           "line": "Live: Inbox > Tests lists every test video with its cover, date, what it tests and a player; never posted, not counted as reels."
         }
       ]
+    },
+    {
+      "id": "refs-thumbs",
+      "name": "References you can tell apart and clean up",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: each reference shows a thumbnail or a 3 s silent loop, its state, the lesson in one line and the reels that used it; Clean up lists the safe ones.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T09:46:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T09:46:00Z",
+          "stage": "building",
+          "line": "Thumbnails, lessons and a Clean up view for references."
+        },
+        {
+          "at": "2026-11-27T09:46:00Z",
+          "stage": "done",
+          "line": "Live: each reference shows a thumbnail or a 3 s silent loop, its state, the lesson in one line and the reels that used it; Clean up lists the safe ones."
+        }
+      ]
     }
   ]
 }
