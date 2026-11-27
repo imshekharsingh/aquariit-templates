@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/app-probe-workflow · owner chat: a live app probe (signs in, phone size, logs what hangs)
+- Owner: posts still do not load in the app. New "App probe" workflow + scripts/qa/app-live-probe.mjs: signs in with the GitHub secrets, opens the live app as an iPhone, waits 25 s, prints every request with status and time, page errors, what Today and each reels tab show, and uploads screenshots. Run it whenever the app misbehaves.
+
 ## 2026-11-27 19:40 IST · claude/3d-kit-v7-r3-render · other account: task 10, why no render yet, glitch fixes
 - Done: the scene passes every check but the new glitch check in a few moments; fixes to entrances, pulses, camera routes; techkit/make.py blends FPS/30 frames (v7 topic "fps": 120); stills sheet refreshed.
 - Left: three moments, one whole-reel check, render 3, Output QA, "v7 ready for critic".
