@@ -2545,10 +2545,38 @@
  "showreel-c3-price-list": {
   "channel": "c3",
   "engine": "design",
-  "concept": "Design series · These prices are hard to compare. They jump around. ✂️ (a salon price list with every row centred so the prices jump left and right, fixed in three moves: one right edge for prices, same-width (tabular) digits, dot leaders to each name)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
-  "hidden": true,
-  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
+  "concept": "Design series · These prices are hard to compare. They jump around. ✂️ (a salon price list with every row centred, fixed in three moves: one right edge, same-width digits, dots to each name; the last frame shows BEFORE next to AFTER)",
+  "note": "Rebuilt on the improved design kit (27 Nov 2026) from the gold reel showreel-c3-grey-text; waits for the stills check, one render, Output QA and a critic READY.",
+  "postOn": "2026-11-27",
+  "postAt": "17:00",
+  "aiLabel": false,
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.2,
+   "shotChanges": 0,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "a salon price list on a wall",
+   "firstSecondTension": "yes",
+   "payoff": "tip",
+   "source": "mp4"
+  },
+  "caption": "These prices are hard to compare. They jump around, because every row is centred. ✂️\n\n1. Line every price up on one right edge.\n2. Use digits of one width (tabular figures), so the columns stay straight.\n3. Add dots from each name to its price.\n\nSave this for your next price list, menu or invoice. Do you read the name first or the price first?",
+  "keywords": [
+   "price list design",
+   "tabular numbers",
+   "typography tips",
+   "salon price list",
+   "graphic design for beginners",
+   "alignment in design"
+  ],
+  "hashtags": [
+   "#designtips",
+   "#graphicdesign",
+   "#typography",
+   "#pricelist",
+   "#smallbusiness"
+  ]
  },
  "showreel-c3-card-margins": {
   "channel": "c3",
