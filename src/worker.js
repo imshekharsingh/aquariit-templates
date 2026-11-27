@@ -343,7 +343,9 @@ async function asksApi(request, env, p, url) {
   if (request.method === 'PUT' && !m[2]) {   // a new item (or a rewrite of an open one); kind picks the buttons
     const q = b && nStr(b.question, 300), kind = b && ['yesno', 'done', 'text'].includes(b.kind) ? b.kind : 'text';
     if (!q || !q.trim()) return jres({ error: 'bad-request' }, 400);
-    const body = JSON.stringify({ question: q.trim(), why: nStr(b.why, 300) || '', kind, channel: ['web', 'tech', 'c3'].includes(b.channel) ? b.channel : null, until: /^\d{4}-\d{2}-\d{2}$/.test(b.until || '') ? b.until : null });
+    const NAME = /^showreel-[a-z0-9-]{1,70}$/;   // task 12 (owner, 27 Nov 2026): an ask may name the reel or preview it is about, so the app shows its cover and player beside the question
+    const body = JSON.stringify({ question: q.trim(), why: nStr(b.why, 300) || '', kind, channel: ['web', 'tech', 'c3'].includes(b.channel) ? b.channel : null, until: /^\d{4}-\d{2}-\d{2}$/.test(b.until || '') ? b.until : null,
+      reel: NAME.test(b.reel || '') ? b.reel : null, preview: NAME.test(b.preview || '') ? b.preview : null });
     await db.prepare('INSERT INTO owner_asks (id, body, created) VALUES (?1, ?2, ?3) ON CONFLICT(id) DO UPDATE SET body = excluded.body, answer = NULL, answered_at = NULL').bind(m[1], body, new Date().toISOString()).run();
     return jres({ ok: true, id: m[1] });
   }
