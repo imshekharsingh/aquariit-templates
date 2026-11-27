@@ -177,8 +177,10 @@ if NOT READY the owner decides. Update projects.json at each step.
   Worker, checked on open and on resume) and reload itself once; if a list request still has no answer after 20 s, reload once before showing
   Try again. Add a note to design/runbook-reels.md. Test: an app test that a version mismatch triggers exactly one reload.
 - **Task 20, channel tabs in posting order.** Tabs ordered by today's next unposted reel time (from design/slots.json and captions.json postAt;
-  today: Turns Out 14:00, web 19:00, tech 20:30), posted channels last, and the app opens on the channel whose post is due next (not the last
-  tab used). Keep each tab showing only its own reels (app test from task 12).
+  today: Turns Out 14:00, web 19:00, tech 20:30), posted channels last. The selected tab ALWAYS follows the workflow the owner came from
+  (owner, 27 Nov 2026: "tabs must only be selected based on workflow selection"): a board card's Open to post / Open reel, a reminder, a Needs
+  you question or a reel link opens that reel's channel, and nothing later (list load, a link hash, the last tab saved) switches it. Only
+  opening All reels with no workflow opens the channel due next. App test: each entry point lands on its own channel, before and after the list loads. Keep each tab showing only its own reels (app test from task 12).
 Both: never touch a reel posting today, one push each, Progress line.
 
 ## Queued tasks 16-18 GO, after tasks 10, 6 and 7 (owner, 27 Nov 2026): web kit and render speed

@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-task-20-tabs · owner chat: the tab follows the workflow you came from
+- Owner: "tabs must only be selected based on workflow selection". Handoff task 20 now says so: every entry point (board card, reminder, Needs you, reel link) opens its reel's channel and nothing switches it later; All reels on its own opens the next due channel. Today's part (the right channel even before the list loads) went live with the service-worker fix.
+
 ## 2026-11-27 · claude/handoff-task-19-20 · owner chat: stale installed app found; two app tasks queued
 - The app hung on "Loading…" all afternoon only in the installed home-screen copy; Safari worked and re-adding the app fixed it (the deploy smoke test listed reels in 1 s). Handoff tasks 19 (app reloads itself on a newer deploy) and 20 (tabs in posting order, open on the next due channel) GO after task 10.
 
