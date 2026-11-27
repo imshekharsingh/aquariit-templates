@@ -152,10 +152,10 @@
       "id": "tech-2d5-test",
       "name": "Tech 2.5D map test (tap to pay), preview only",
       "account": "main",
-      "stage": "critic",
-      "line": "Rendered once; Output QA passes. The independent critic is checking it against the reference and the 3D v7 render.",
-      "pct": 90,
-      "updatedAt": "2026-11-26T21:25:00Z",
+      "stage": "waiting",
+      "line": "Critic: NOT READY but the look is right for tech. One fix render needs your yes.",
+      "pct": 95,
+      "updatedAt": "2026-11-26T21:30:00Z",
       "history": [
         {
           "at": "2026-11-26T22:00:00Z",
@@ -176,6 +176,11 @@
           "at": "2026-11-26T21:25:00Z",
           "stage": "critic",
           "line": "Output QA passes; the independent critic starts."
+        },
+        {
+          "at": "2026-11-26T21:30:00Z",
+          "stage": "waiting",
+          "line": "Critic NOT READY (cleanliness 6.5); fix render waits for the owner's yes."
         }
       ]
     }
