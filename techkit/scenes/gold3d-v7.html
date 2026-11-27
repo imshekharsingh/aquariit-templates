@@ -148,7 +148,7 @@ const SH = [
   { t: T_IN - .1, pos: [.3, 6.95, 3.9], look: [0, 6.95, -6.5], fov: 50, mv: 'dolly-in', frac: .9 },   // the board a little smaller (about 64 % of the width) so the top row sits below the headline     // 4 push to the board as it finishes; the tools stack, the camera rides them
   { t: W1 + .5, pos: [-5.0, 3.4, -3.8], look: [-1.75, 4.4, -6.45], fov: 46, mv: 'truck-down' },   // the plug in the lower half (the headline above it)      // 5 the first plug clicks in
   { t: CASC[0] + .9, pos: [-6.2, 4.6, 6.6], look: [0, 2.5, -3.4], fov: 52, mv: 'arc' },               // 6 the tangle grows on the floor
-  { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back', frac: .96 },   // a longer move (near cables swept past fast)   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
+  { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back', frac: .96, bend: [0, 2.6, 0] },   // a longer move that rises over the apps (they swept past the camera)   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
   { t: PAN, pos: [2.6, 4.4, 5.0], look: [0, 2.4, -2.2], fov: 50, mv: 'whip', dur: 1.1 },     // 8 fix 9 (U14): a whip pan to the hub on "hub" (big moment 3)
   { t: COLLAPSE[0] + .8, pos: [0, 7.4, 17.4], look: [0, 3.7, -3.0], fov: 54, mv: 'crane-up', frac: .96, ease: 2 },       // 9 the collapse in one wave, from the high wide (fix 11: Notes whole)
   { t: C.newt, pos: [0, 7.326, 16.992], look: [0, 3.7, -3.0], fov: 54, mv: 'hold', frac: .96 },       // 10 the clean picture, 11: a still hold (a 2 % push) while the green sweep runs (plan critic C)
@@ -224,7 +224,7 @@ function frame(t) {
   tools.forEach((m, j) => { const o = ORDER.indexOf(j), t0 = T_IN + o * STEP, u = prog(t, t0, t0 + .32), home = V(TX(j), TY(j), WALL_Z);
     const pj = o > 0 ? ORDER[o - 1] : -1, from = pj >= 0 ? V(TX(pj), TY(pj) + .5, WALL_Z + .7) : V(TX(j), TY(j) + 1.2, WALL_Z + .7);   // from just in front of the tile before (it came from behind the panel and popped into view)
     m.visible = u > .001; m.position.copy(from).lerp(home, eout(u)); m.rotation.set(0, 0, 0);   // no overshoot: the back-and-forth read as a one-frame flicker at 30 fps
-    const sq = 0; let sc = (.06 + .94 * eout(u)); m.scale.set(sc * (1 + sq), sc * (1 - sq), sc);   // grows from a speck in front of the tile before it (no full-size pop)
+    const sq = 0; let sc = (.06 + .94 * sm(u)); m.scale.set(sc * (1 + sq), sc * (1 - sq), sc);   // grows from a speck in front of the tile before it (no full-size pop)
     if (u >= 1) { const nx = ORDER[o + 1], nudge = 0;   // no squash or nudge: a back-and-forth inside a few frames reads as a flicker at 30 fps
       const dir = nx !== undefined ? V(TX(j) - TX(nx), TY(j) - TY(nx), 0).normalize() : V(0, 0, 0); m.position.addScaledVector(dir, nudge);
       const bump = 0;   // no landing bump (a quick pulse read as flicker)

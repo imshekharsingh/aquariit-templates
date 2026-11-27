@@ -83,7 +83,7 @@ def main():
             ts = sys.argv[sys.argv.index('--stills') + 1]
             r = subprocess.run(['node', os.path.join(HERE, 'preflight.mjs'), out, ts])
             sys.exit(r.returncode)
-    # ---- frames: 4 workers, 60 fps (a topic with its own motion blur may ask for "fps": 30: half the frames, no frame blend) ----
+    # ---- frames: 4 workers, 60 fps (a topic with its own motion blur may ask for "fps": 30: half the frames, no frame blend; "fps": 120: four frames blended into each) ----
     FPS = int(topic.get('fps', FPS_CAP))
     fr = os.path.join(out, 'frames'); os.makedirs(fr, exist_ok=True)
     n = int(math.ceil(TL['total'] * FPS))
@@ -111,7 +111,7 @@ def main():
     if subj: json.dump(subj, open(os.path.join(out, slug + '.subject0.json'), 'w'))   # the hero's box every 0.5 s (Output QA HERO)
     silent = os.path.join(out, 'video.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', str(FPS), '-i', os.path.join(fr, 'f%05d.jpg'),
-                    '-vf', "tmix=frames=2:weights='1 1',fps=30,format=yuv420p" if FPS > 30 else 'format=yuv420p', '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2',
+                    '-vf', f"tmix=frames={FPS // 30}:weights='{' '.join(['1'] * (FPS // 30))}',fps=30,format=yuv420p" if FPS > 30 else 'format=yuv420p',   # a topic at "fps": 120 blends 4 frames into each (motion blur; 27 Nov 2026: fast moves strobed at 2) '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2',
                     '-preset', 'slow', '-crf', '16', '-g', '60', silent], check=True)
     meas = subprocess.run(['ffmpeg', '-hide_banner', '-i', mix_wav, '-af', 'loudnorm=I=-14.5:TP=-1.5:LRA=7:print_format=json', '-f', 'null', '-'], capture_output=True, text=True).stderr
     m = json.loads(meas[meas.rindex('{'):meas.rindex('}') + 1])
