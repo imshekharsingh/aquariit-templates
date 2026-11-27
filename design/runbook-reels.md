@@ -208,3 +208,8 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Say the check you ran when reporting; if a check is impossible in the session, say so before acting, not after.
 - Automate as we go (owner, 27 Oct 2026): any step done by hand twice becomes a script, check or workflow step in the same change that
   repeats it. The roadmap is in design/webin20sec.md, "Automation roadmap".
+
+## The installed app stays fresh (task 19, 27 Nov 2026)
+The Worker writes the deployed build (a fingerprint of index.html) into the page and answers GET /api/version with the newest one. On open and on every
+resume the app compares them and reloads ONCE after a deploy (the URL then carries ?fresh=<build>, so it never loops); a list with no answer after 20 s
+reloads once (?stall=1) before it shows Try again. Nothing to do in a session: a deploy reaches the installed app by itself. Test: scripts/qa/app-fresh-test.mjs.

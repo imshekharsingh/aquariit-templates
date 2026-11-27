@@ -1124,6 +1124,19 @@ async function testsList(env) {
     .sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 60);
   return jres({ tests });
 }
+// ---- the app's build (task 19, owner 27 Nov 2026: the installed app hung on an old copy all afternoon): a short fingerprint of the deployed
+// index.html. The page is served with it written in (__APP_BUILD__), and GET /api/version returns it; the app compares the two on open and on
+// resume and reloads once when they differ (templates/index.html "fresh").
+let BUILD = null;
+async function buildOf(text) { const h = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))); return [...h.slice(0, 6)].map((b) => b.toString(16).padStart(2, '0')).join(''); }
+async function appVersion(env) { if (!BUILD) { const r = await env.ASSETS.fetch(new Request('https://assets.local/')); BUILD = await buildOf(await r.text()); } return BUILD; }
+async function appPage(request, env) {
+  const r = await env.ASSETS.fetch(request);
+  if (!r.ok || !(r.headers.get('Content-Type') || '').includes('text/html')) return r;
+  const text = await r.text(), v = await buildOf(text); BUILD = BUILD || v;
+  const h = new Headers(r.headers); h.set('Cache-Control', 'no-cache'); h.delete('Content-Length'); h.delete('ETag');
+  return new Response(text.replace('__APP_BUILD__', v), { status: r.status, headers: h });
+}
 async function showreelList(env) {
   if (!env.REELS) return jres({ error: 'no-store' }, 503);
   const [v, c] = await Promise.all([listAll(env.REELS, 'v/'), listAll(env.REELS, 'c/')]);
@@ -1297,6 +1310,7 @@ export default {
     if (p === '/api/probe-log') return (await stageKeyOk(request, env)) ? probeApi(request, env, url) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/stage' && request.method === 'POST') return (await stageKeyOk(request, env)) ? stageApi(request, env, p, ctx) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/slots' && request.method === 'GET') return signedIn ? jres({ slots: SLOT_CONFIG.slots, reviewOn: SLOT_CONFIG.reviewOn }) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p === '/api/version' && request.method === 'GET') return signedIn ? appVersion(env).then((v) => new Response(JSON.stringify({ v }), { headers: { 'Content-Type': 'application/json', ...noStore } })) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (p.startsWith('/api/')) return signedIn ? (p === '/api/projects' ? projectsApi(request, env) : p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/tests' ? testsList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     // Read-only reel key (owner, 23 Nov 2026): critic and review sessions fetch the final reel files with Authorization: Bearer <REELS_READ_KEY>.
     // It opens ONLY GET/HEAD of /reels/<file> from R2: no API, no app pages, no writes, no site-copy fallback. Unset or empty secret = off.
@@ -1304,6 +1318,7 @@ export default {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* not found below */ } return new Response('Not found', { status: 404, headers: noStore }); }
     }
+    if (signedIn && request.method === 'GET' && (p === '/' || p === '/index.html')) return appPage(request, env);   // task 19: the page carries its build, so an old copy knows it is old
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
