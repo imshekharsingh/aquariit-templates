@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/2d5-two-tiers · owner chat: shadow-first builds in two tiers
+- Owner chose two tiers: main elements get the full shadow-first draw-on (0.3-0.5 s, cascaded), small lines and labels a quiet 0.2 s trace or fade with their shadow; everything breathes after. direction.md note 7, critic.md, owner-feedback.md updated.
+
 ## 2026-11-27 · claude/2d5-shadow-draw-on · owner chat: 2.5D elements come alive from their shadow
 - Owner on the AI-words reel: elements should draw on from their shadow, coming alive, for all elements through the reel. design/direction.md "2.5D map reels" note 7, design/critic.md question 5, design/owner-feedback.md line. Next tech reel builds it.
 
