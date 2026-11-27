@@ -29,11 +29,11 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
 
 ## Scheduled tasks: ON
-Three run from the small "Studio launcher (v2)" session (22 Nov 2026): Daily studio run 06:47, Daily owner chat 08:31, Spare usage night Tue 22:44 IST; the Studio probe (fresh haiku session, hourly 06:00-21:00 IST; the scheduler allows at most hourly, replaces the 11:17 Reel critic fallback, owner 26 Nov 2026) follows design/probe.md (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task is ON again at 09:11 IST (the owner chat creates it; owner, 24 Nov 2026).
+Three run from the small "Studio launcher (v2)" session (22 Nov 2026): Daily owner chat 04:43, Daily studio run 04:47, Spare usage night Tue 22:44 IST; the Studio probe (fresh haiku session, hourly 06:00-21:00 IST; the scheduler allows at most hourly, replaces the 11:17 Reel critic fallback, owner 26 Nov 2026) follows design/probe.md (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task is ON again at 05:11 IST (the owner chat creates it; owner, 24 Nov 2026).
 
 ## Daily run
-The "Daily studio run" scheduled task (06:47 IST, every day) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers,
-audit card, rulebooks, build the day's web and tech reels, results line). Turns Out has its own daily task (09:11 IST).
+The "Daily studio run" scheduled task (04:47 IST, every day) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers,
+audit card, rulebooks, build the day's web and tech reels, results line). Turns Out has its own daily task (05:11 IST).
 
 ## Spare usage night
 The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook-spare.md** (Feedback first, Spare check, growth work only, stop by 04:00 IST).

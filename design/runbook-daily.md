@@ -1,4 +1,4 @@
-# Daily run runbook (the "Daily studio run" scheduled task, 06:47 IST, follows this)
+# Daily run runbook (the "Daily studio run" scheduled task, 04:47 IST, follows this)
 
 Moved from CLAUDE.md "Daily run", "Daily improvement loop" and "Accounts and data" on 14 Nov 2026. A fresh session, lean, no subagents,
 in this order:
@@ -49,7 +49,7 @@ Stage board (owner, 24 Nov 2026): at every stage change of a reel build (researc
    both into the captions entry ("format", "device"; npm run check enforces it) and meet the Detail bar and audience pull (rules-tech.md D, P).
    Tech research (owner, 25 Nov 2026; rules-tech.md N1-N4): all global; pull NEWS from the last 7 days from primary sources (maker announcements, official
    pages), each option names its date; phones are one category, never two days running; every fact names the newest models on sale today.
-   Turns Out keeps its own scheduled task (09:11 IST for the 13:00 reel), under the same rulebook gate (design/channel3.md, "Channel brief").
+   Turns Out keeps its own scheduled task (05:11 IST for the 14:00 reel), under the same rulebook gate (design/channel3.md, "Channel brief").
 5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
 
 ## Owner decisions of 25 Nov 2026 (they replace anything above that says otherwise)

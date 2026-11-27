@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/schedule-times-27nov · owner chat: owner chat opens 04:43; rule times match the real schedule
+- Owner: open the daily chat around 05:00. "Daily owner chat" now 04:43 IST (before the 04:47 web/tech builds and the 05:11 Turns Out task, so their stage messages land). CLAUDE.md, runbook-studio.md, runbook-daily.md said 06:47 / 08:31 / 09:11; now 04:47 / 04:43 / 05:11.
+
 ## 2026-11-27 · claude/handoff-queue-16-18 · owner chat: more app and kit work handed over; old to-dos dropped
 - design/handoff.md: tasks 6, 7 GO; new 16 (web before/after piece), 17 (whole-frame web starters), 18 (render speed), all after task 10, with rules that keep them off today's and tomorrow's reels (study clips only, after 21:00 or before 06:30, kit changes added behind new calls).
 - design/todo.md: dropped the 17 Nov re-render, the per-channel script routine, the 26 Nov read-only question and the puzzle channel; Instagram API kept here for later; Turns Out task repo fix added for 28 Nov.
