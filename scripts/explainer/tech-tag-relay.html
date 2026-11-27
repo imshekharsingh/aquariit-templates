@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 /* @techin20sec, 28 Nov 2026: the second 2.5D map reel (kit and engine from showreel-tech-ai-words; design/references.md "R-ref 27 Nov 2026" + the owner's 2.5D notes).
-   Topic: how a lost tag is found with no phone near it (Samsung Galaxy SmartTag3 and the Galaxy Find Network). The map follows the process: a LINE out (the tag pings ->
+   Topic: how a lost tag is found far from your phone (Samsung Galaxy SmartTag3 and the Galaxy Find Network). The map follows the process: a LINE out (the tag pings ->
    a nearby device hears it -> the place is locked), a curve through the servers to your map, and the network that makes it work (900 million+ devices) closing back on the tag.
    One camera over one canvas; moves of 0.45-0.7 s, no dwell; the next card shows as a ghost before the camera goes; light wedges and dim sub-nodes, grid and dust fill the frame;
    every value is continuous in t (no modulo wraps, no per-frame random, no instant swaps); the camera path starts every flight from the real hold position.
@@ -62,7 +62,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
 </div>
 <div id="top" class="a" data-ui></div>
 <div id="logo" class="a" data-ui>TECH IN 20 SEC</div>
-<div id="title" class="a" data-hook><div>FIND A TAG WITH</div><div>NO PHONE NEAR</div></div>
+<div id="title" class="a" data-hook><div>FIND A TAG FAR</div><div>FROM YOUR PHONE</div></div>
 <div id="pillw" class="a" data-ui><span id="p0" class="a"></span><span id="p1" class="a"></span></div>
 <div id="banner" class="a" data-ui><div class="a">ONLY YOU CAN READ IT</div></div>
 <div id="subj" class="a" data-subject style="left:24px;top:268px;width:444px;height:428px;pointer-events:none"></div>
@@ -84,8 +84,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var cmix = function(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k), mix(a[2], b[2], k)]; };
   var DUR = 29.6;
   // ---- the story clock: each step starts on its sentence ("One: ..."); the camera leaves on that word (no dwell), the next card's ghost shows 0.5 s before
-  var AT = [0.25, 3.5, 7.0, 10.6, 14.0, 17.3, 21.0, 24.9, 28.9];
-  var FLY = [0, .6, .5, .5, .45, .45, .6, .6, .7];
+  var AT = [0.25, 3.5, 7.0, 10.6, 14.0, 17.3, 21.0, 24.9, 29.0];
+  var FLY = [0, .6, .5, .5, .45, .45, .6, .6, .6];
   // ---- the map (world px): a line out on top, the loop on the right, a line back along the bottom
   var C = [1060, 1220], R = 360;
   var PT = [null, [420, 380], [1060, 380], [1060, 860], [C[0] + R * Math.cos(Math.PI / 6), C[1] + R * Math.sin(Math.PI / 6)], [C[0] + R * Math.cos(5 * Math.PI / 6), C[1] + R * Math.sin(5 * Math.PI / 6)], [420, 1000]];
@@ -223,12 +223,12 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   })();
   // 3: LOCKED: the place goes into a lock that only the owner can open
   (function(){ var p = PAN[3], cs = rgb(COL[3]); E(p, 'ph', '', 'LOCKED');
-    var chip = E(p, 'chip', 'left:24px;top:96px;--c:' + rgb(COL[3], .85) + ';width:150px', 'WHERE'), lk = svgBox(p, 'left:270px;top:60px', 100, 100), sh;
+    var hole = E(p, '', 'left:24px;top:96px;width:150px;height:54px;border-radius:14px;border:2px dashed ' + rgb(COL[3], .8) + ';opacity:0'), chip = E(p, 'chip', 'left:24px;top:96px;--c:' + rgb(COL[3], .85) + ';width:150px', 'WHERE'), lk = svgBox(p, 'left:270px;top:60px', 100, 100), sh;
     (function(){ var g = document.createElementNS(SVGNS, 'g'); lk._s.appendChild(g); sh = LK(g, 50, 44, cs, 0); lk._g = g; })();
     var tx = E(p, '', 'left:24px;top:190px;font:800 24px/1.25 var(--m);letter-spacing:.04em;color:#fff;white-space:nowrap', 'ONLY YOU CAN OPEN IT');
     X[3] = function(lt, t){ ent(lk, lt, .1, 'pop', .4); var m = io(P(lt, .6, 1.2)), c2 = io(P(lt, 1.15, 1.45));
       chip.style.opacity = (cl(P(lt, .15, .45)) * (1 - cl(P(lt, 1.0, 1.25)))).toFixed(3); chip.style.transform = 'translateX(' + (m * 168).toFixed(2) + 'px) scale(' + (1 - .3 * m).toFixed(3) + ')';
-      sh.setAttribute('transform', 'translate(0,' + (-14 * (1 - c2)).toFixed(2) + ')'); lk.style.filter = 'none'; ent(tx, lt, 1.6, 'up', .4); };
+      sh.setAttribute('transform', 'translate(0,' + (-14 * (1 - c2)).toFixed(2) + ')'); lk.style.filter = 'none'; ent(tx, lt, 1.25, 'up', .4); hole.style.opacity = (.25 * cl(P(lt, 1.0, 1.25))).toFixed(3); };
   })();
   // 4: THE SERVERS: they get the sealed place and cannot read it
   (function(){ var p = PAN[4], cs = rgb(COL[4]); E(p, 'ph', '', 'THE SERVERS');
@@ -277,7 +277,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   // how far an element sits inside the safe zone (x 26-470, y 128-690): 1 inside, fading to 0 within 24 px beyond (no text under the side buttons or the caption overlay)
   function safeK(l, r, tp, b){ return cl(1 - Math.max(0, r - 470, 26 - l, 128 - tp, b - 690) / 24); }
   // labels only (tiles stay, they are background there): fade over 70 px toward the side buttons and the caption overlay, so a fast flight never pops one
-  function labelK(r, b){ return cl(1 - Math.max(0, r - 462, b - 682) / 70); }
+  function labelK(l, r, b){ return cl(1 - Math.max(0, r - 462, b - 640, 26 - l) / 70); }
   function toScreen(p, cm){ return [X0 + (p[0] - cm[0]) * cm[2], Y0 + (p[1] - cm[1]) * cm[2]]; }
   var WEDGE = [null, -135, -45, 0, 40, 140, 180];   // outward direction (deg) of each node's light wedge
   function drawBg(t, cm, col, fo){
@@ -297,7 +297,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   // ---- captions: word by word from the real voice (window.setVoice); the box comes with its first word; groups cross-fade (no instant swap)
   var WORDS = [], GR = [], KEY = { tag: 1, bluetooth: 1, signal: 1, device: 1, devices: 1, locked: 1, servers: 1, map: 1, network: 1, million: 1, yes: 1, only: 1 }, capEls = [], capG = -1;
   // the script itself (the config's voice.text): captions show its words WITH their marks ("One:", "in,", "text."), so every step number keeps its pause
-  var SCRIPT = 'Can a tag be found with no phone near it? One: the tag sends a short Bluetooth signal. Two: any nearby Galaxy device with offline finding hears it. Three: it is locked, so only you can read it. Four: the servers get it, but cannot read it. Five: you open the map, and see where it was. Six: more than nine hundred million Galaxy devices form this network. So yes: other people\'s devices find it, and only you can read where.'.split(/\s+/);
+  var SCRIPT = 'Can a tag be found far from your phone? One: the tag sends a short Bluetooth signal. Two: any nearby Galaxy device with offline finding hears it. Three: it is locked, so only you can read it. Four: the servers get it, but cannot read it. Five: you open the map, and see where it was. Six: more than nine hundred million Galaxy devices form this network. So yes: other people\'s devices find it, and only you can read where.'.split(/\s+/);
   var letters = function(x){ return String(x).toLowerCase().replace(/[^a-z0-9]/g, ''); };
   // a group is one sentence (critic, render 1: no lone words left in the box); a sentence of 10+ words splits once at its comma
   function groups(){ GR = []; var cur = [];
@@ -313,16 +313,17 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var capEl = $('cap');
   function caption(t, col){
     var gi = -1; for (var g = 0; g < GR.length; g++) if (GR[g][0].s - .05 <= t) gi = g;
-    if (gi < 0 && GR.length) gi = 0;   // the hook line shows (dim) from frame 0
+    if (gi < 0 && GR.length) gi = 0;
+    var lateHook = t >= 29.3; if (lateHook && GR.length) gi = 0;   // the last 0.3 s fades the hook plate back in (frame 0), the loop   // the hook line shows (dim) from frame 0
     if (gi < 0){ capEl.style.opacity = 0; return; }
-    var gr = GR[gi], gEnd = gr[gr.length - 1].e, next = GR[gi + 1], fadeOut = next ? P(t, next[0].s - .12, next[0].s - .05) : 0;
+    var gr = GR[gi], gEnd = gr[gr.length - 1].e, next = GR[gi + 1], fadeOut = next && !lateHook ? P(t, next[0].s - .12, next[0].s - .05) : 0;
     if (gi !== capG){ capG = gi; capEl.innerHTML = '<span class="bx"></span>'; var bx = capEl.firstChild;
       capEls = gr.map(function(w){ var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w.w; bx.appendChild(sp); return sp; });
       // a group that needs two lines breaks at its middle (critic, render 2: never "Why do chatbots type like" / "this?"); one line stays one line
       if (capEls.length > 1 && capEls[capEls.length - 1].offsetTop > capEls[0].offsetTop + 4) bx.insertBefore(document.createElement('br'), capEls[Math.ceil(capEls.length / 2)]); }
     var first = gi === 0 ? 1 : P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
-    capEl.style.opacity = (first * last * (1 - io(P(t, 28.9, 29.25)))).toFixed(3);
-    gr.forEach(function(w, n){ var k = gi === 0 && n === 0 ? 1 : P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
+    capEl.style.opacity = (first * last * (t < 29.3 ? 1 - io(P(t, 29.0, 29.3)) : io(P(t, 29.3, 29.6)))).toFixed(3);
+    gr.forEach(function(w, n){ var k = gi === 0 && n === 0 ? 1 : lateHook ? 0 : P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
       s.style.opacity = (.28 + .72 * k).toFixed(3); s.style.color = key ? rgb(col) : '#fff'; });
   }
   // ---- sound: a swish on each move, a soft snap on arrival, blips as interface parts land, a tick per streamed token, a lift at the payoff
@@ -334,7 +335,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   cue({ t: 0, k: 'swell', d: 1.2, g: .26 }); cue({ t: AT[7] + .35, k: 'thud', g: .42, x: 270, r: .2 }); cue({ t: AT[7] + .4, k: 'resolve', notes: [50, 62, 66, 69, 74], g: .28 });
   [[2, 1.3], [3, 1.15], [3, 1.6], [4, 1.0], [5, 1.3], [5, 2.1], [6, 1.3]].forEach(function(a, n){ cue({ t: AT[a[0]] + a[1], k: 'tick', g: .12, p: n }); });
   window.CUES = { dur: DUR, cues: cues.sort(function(a, b){ return a.t - b.t; }), mix: { duck: 8 }, bed: { bpm: 100, origin: 0, gain: .2, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [45, 57, 64, 67, 71]] } };
-  window.COVER = .6; window.HOLDS = [[26.6, 28.9]];   // the payoff: the whole map held (the loop still turns, the camera drifts)
+  window.COVER = .6; window.HOLDS = [[26.6, 29.0]];   // the payoff: the whole map held (the loop still turns, the camera drifts)
   window.TRANSITIONS = [1, 2, 3, 4, 5, 6, 7, 8].map(function(f){ return [CAT[f], CAT[f] + FLY[f], f === 7 ? 'pullback' : 'fly']; });
   // ---- one frame (a pure function of t)
   function seek(t){
@@ -356,11 +357,11 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     // nodes: lit one full, the rest 30 % (kept as context); the next one rises a little as its ghost appears
     var fo = [0]; for (var i = 1; i <= 6; i++){ var f3 = focus(i, t), pre = 0; for (var q = 2; q <= 6; q++) if (q === i) pre = io(P(t, AT[q] - .5, AT[q] - .1)) * (1 - io(P(t, AT[q], AT[q] + FLY[q]))); fo.push(f3);
       var ns = toScreen(PT[i], cm), nz = safeK(ns[0] - 105 * cm[2], ns[0] + 105 * cm[2], ns[1] - 116 * cm[2], ns[1] + 116 * cm[2]);
-      var op = .3 + .7 * Math.max(f3, pre * .55); NODE[i].style.opacity = op.toFixed(3); var lk = labelK(ns[0] + 105 * cm[2], ns[1] + 116 * cm[2]); NODE[i]._tl.style.opacity = ((1 - wide) * lk).toFixed(3); NODE[i]._tn.style.opacity = lk.toFixed(3);
+      var op = .3 + .7 * Math.max(f3, pre * .55); NODE[i].style.opacity = op.toFixed(3); var lk = labelK(ns[0] - 105 * cm[2], ns[0] + 105 * cm[2], ns[1] + 116 * cm[2]); NODE[i]._tl.style.opacity = ((1 - wide) * lk).toFixed(3); NODE[i]._tn.style.opacity = lk.toFixed(3);
       var rg = i >= 2 ? P(t, AT[i] - .5, AT[i] - .2) * (1 - P(t, AT[i] + .1, AT[i] + FLY[i])) : 0; if (i === 2) rg = Math.max(rg, P(t, 2.9, 3.2) * (1 - P(t, 3.7, 4.1)));   // the next card's ghost: a dashed ring round its tile (with the panel ghost where that is inside the safe zone)
       NODE[i]._ring.style.opacity = (rg * .9).toFixed(3); NODE[i]._ring.style.transform = 'scale(' + (1.06 - .06 * rg).toFixed(4) + ')'; NODE[i].style.transform = 'scale(' + (1 + .04 * f3).toFixed(4) + ')'; }
     // sub-nodes: dim context, a gentle bob (continuous), brighter next to the lit node
-    SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = .32 + .4 * f4; s.el.style.opacity = o.toFixed(3); s.sl.style.opacity = ((1 - wide) * labelK(sp2[0] + hw, sp2[1] + 32 * cm[2])).toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
+    SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = .32 + .4 * f4; s.el.style.opacity = o.toFixed(3); s.sl.style.opacity = ((1 - wide) * labelK(sp2[0] - hw, sp2[0] + hw, sp2[1] + 32 * cm[2])).toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
     // links: the one short draw (cause -> effect) just before the camera follows it, then it stays lit
     LINKS.forEach(function(l){ var k = io(P(t, l.drawAt, l.drawAt + .4)); l.lit.setAttribute('stroke-dashoffset', (l.len * (1 - k)).toFixed(1)); l.lit.setAttribute('opacity', (k > 0 ? .55 + .45 * Math.max(fo[l.to], fo[l.from] * .6) : 0).toFixed(3)); if (l.head) l.head.setAttribute('opacity', (P(t, l.drawAt + .3, l.drawAt + .45)).toFixed(3)); });
     // panels: ghost before the move, content builds from 0.15 s after the move starts (before the camera lands), out as the camera leaves
@@ -371,7 +372,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
       PAN[pi].style.opacity = cl(kp * 1.4).toFixed(3); PAN[pi].style.transform = pi === 1 && t < 4 ? 'none' : 'scale(' + (.94 + .06 * kp).toFixed(4) + ')'; PAN[pi].style.visibility = kp > 0 ? 'visible' : 'hidden';
       if (kp > 0) X[pi](t - pin, t); }
     // the opening window: the pin pulses, then it hands over to panel 1 during the pull-back (2.85-3.25 s); the last move (28.9-29.6 s) brings it back (the loop)
-    var cwo = t < 10 ? 1 - io(P(t, 2.85, 3.25)) : io(P(t, 28.95, 29.45)); cw.style.opacity = cwo.toFixed(3); cw.style.visibility = cwo > 0 ? 'visible' : 'hidden';
+    var cwo = t < 10 ? 1 - io(P(t, 2.85, 3.25)) : io(P(t, 29.05, 29.5)); cw.style.opacity = cwo.toFixed(3); cw.style.visibility = cwo > 0 ? 'visible' : 'hidden';
     if (cwo > 0){ pulse(WIN_R, t, 16, 56, 1); wl.style.opacity = '1'; wm.style.opacity = '1';
       var hk0 = t < 10 ? 1 - io(P(t, 2.85, 3.05)) : cwo; CWH.forEach(function(e){ e.style.opacity = hk0.toFixed(3); }); cq.style.opacity = '1'; }
     P1H.style.opacity = t < 4 ? io(P(t, 3.05, 3.25)).toFixed(3) : '1';
@@ -379,7 +380,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
       var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
     // banner: the payoff sweeps in across the top third and holds
-    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = (cl(bk * 1.6) * (1 - io(P(t, 28.9, 29.25)))).toFixed(3); $('banner').style.transform = 'translateX(' + ((1 - bk) * -40).toFixed(1) + 'px) rotate(-3deg) scale(' + (.96 + .04 * bk).toFixed(4) + ')';   // fades and settles in whole (critic, render 2: no bare band edge at the left)
+    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = (cl(bk * 1.6) * (1 - io(P(t, 29.0, 29.3)))).toFixed(3); $('banner').style.transform = 'translateX(' + ((1 - bk) * -40).toFixed(1) + 'px) rotate(-3deg) scale(' + (.96 + .04 * bk).toFixed(4) + ')';   // fades and settles in whole (critic, render 2: no bare band edge at the left)
     drawBg(t, cm, col, fo); caption(t, col);
   }
   window.seek = seek;
