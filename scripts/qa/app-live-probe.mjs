@@ -30,6 +30,7 @@ for (const ch of ['web', 'tech', 'c3']) {
   for (const [k, n] of Object.entries(other)) if (k !== ch && rt.includes(n)) log.push(`PAGE ERROR  tab ${ch}: Ready to post names ${n}`);
   console.log(`REELS ${ch}: tabs=`, await txt('.tabs'), '| ready=', await txt('#t-ready'), '| list=', await txt('#list'));
 }
+const heavy = log.filter((l) => /\.mp4|\/api\/refs\/\d+\/file/.test(l)).length;   // counted before the board step: Open reel opens a reel page, which loads its video on purpose
 // the Today board (task 21, owner chat 27 Nov 2026): each card's button is judged by what it says it does.
 //   "Open to post" -> that channel's reels tab, its Ready box naming only that channel; "Open reel" -> that reel's own page, of that channel.
 const NAMES = { web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' };
@@ -54,7 +55,7 @@ for (const ch of ['tech', 'web', 'c3']) {
     else if (!head.includes(NAMES[ch])) log.push(`PAGE ERROR  Open reel ${ch}: the page is for ${head}`);
   } else console.log(`OPEN FROM BOARD ${ch}: button "${btn}" (not judged)`);
 }
-const heavy = log.filter((l) => /\.mp4|\/api\/refs\/\d+\/file/.test(l)).length, perr = log.filter((l) => l.startsWith('PAGE ERROR')).length;
+const perr = log.filter((l) => l.startsWith('PAGE ERROR')).length;
 console.log(`VIDEO REQUESTS WITHOUT A TAP: ${heavy} (want 0)`);
 console.log(heavy ? 'APP PROBE: FAIL (videos load on open)' : perr ? `APP PROBE: FAIL (${perr} page error)` : 'APP PROBE: PASS');   // one verdict, after every step
 console.log('STILL OPEN after the run:'); for (const [r, s] of open) console.log(`  ${Date.now() - s} ms  ${r.method()} ${new URL(r.url()).pathname}`);
