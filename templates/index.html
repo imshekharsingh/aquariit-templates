@@ -616,7 +616,7 @@
     </div>
     <details class="prof" id="prof" hidden><summary>Profile</summary></details>
     <h1 id="title">Showreels</h1>
-    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (tech 15:00, Turns Out 17:00, web 19:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes at each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
+    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (Turns Out 14:00, web 19:00, tech 20:30 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes at each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
     <section class="tsec" id="r-ready"><h2 class="lbl">Ready to post</h2><div id="t-ready"></div></section>
     <div id="list"><p class="empty">Loading…</p></div>
   </section>
@@ -755,7 +755,7 @@
   // channel defaults come from design/slots.json (25 Nov 2026; GET /api/slots): tech 15:00, Turns Out 17:00, web 19:00
   var SLOTS = { tech: '15:00', c3: '14:00', web: '19:00' }, REVIEW = '2026-12-02';
   // the channel's slot line from design/slots.json (owner, 26 Nov 2026): tech is paused until the 3D kit v6; the others are tests until the review day
-  function slotLine(k, p){ if (k === 'tech') return 'paused'; var t = SLOTS[k]; if (!t) return p.slot; var d = new Date(REVIEW + 'T12:00:00+05:30'); return 'at ' + t + ' IST' + (isFinite(d) && Date.now() < d.getTime() + DAY ? ', slot test until ' + d.getDate() + ' ' + d.toLocaleString('en-GB', { month: 'short', timeZone: 'Asia/Kolkata' }) : ''); }
+  function slotLine(k, p){ if (k === 'tech') return SLOTS[k] ? 'at ' + SLOTS[k] + ' IST' : p.slot;   /* tech restarted 27 Nov 2026 (2.5D look), not part of the slot test */ var t = SLOTS[k]; if (!t) return p.slot; var d = new Date(REVIEW + 'T12:00:00+05:30'); return 'at ' + t + ' IST' + (isFinite(d) && Date.now() < d.getTime() + DAY ? ', slot test until ' + d.getDate() + ' ' + d.toLocaleString('en-GB', { month: 'short', timeZone: 'Asia/Kolkata' }) : ''); }
   fetch('/api/slots', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.slots) { SLOTS = j.slots; if (j.reviewOn) REVIEW = j.reviewOn; Object.keys(SLOTS).forEach(function(k){ if (CH[k]) CH[k].slot = SLOTS[k] + ' IST'; }); if (typeof profile === 'function' && prof) profile(); if (DATA) render(); } }).catch(function(){});
   function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; return SLOTS[chOf(s, DATA ? DATA.c : {})] || '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
@@ -768,7 +768,7 @@
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
   var DATA = null, openName = { web: null, tech: null, c3: null }, tabs = document.querySelectorAll('.tab');
-  Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) render(); else paint(); if (sec === 'growth') growth(); }); });
+  Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) { render(); readyRender(); } else paint(); if (sec === 'growth') growth(); }); });
   // the profile card: one entry per channel in /channels/channels.json (logo, name, username, bio, posting window); a channel without one shows no card
   var PROF = {}, prof = document.getElementById('prof');
   function copyBtn(text){ var b = el('button', 'btn g', 'Copy'); b.type = 'button';
@@ -1030,7 +1030,7 @@
     var todo = items.filter(function(s){ return !ticks[s.name] && s.video && rdy.indexOf(s.name) < 0; }), done = items.filter(function(s){ return ticks[s.name]; });
     todo.sort(function(x, y){ var mx = c[x.name] || {}, my = c[y.name] || {}, dx = dueOf(x, mx), dy = dueOf(y, my); if (dx !== dy) return dx < dy ? -1 : 1; var cx = mx.concept || '', cy = my.concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
     done.sort(function(x, y){ return ticks[x.name] < ticks[y.name] ? 1 : -1; });
-    if (!todo.length) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));
+    if (!todo.length && !rdy.some(function(n){ return items.some(function(s){ return s.name === n; }); })) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));   // not when this channel has one under Ready to post
     var horizon = Date.parse(istToday() + 'T00:00:00+05:30') + 2 * DAY;   // end of tomorrow, IST
     var next = todo.filter(function(s){ return !(c[s.name] || {}).sample && dueOf(s, c[s.name] || {}) < horizon; });   // sample (6 Nov 2026, temporary): never Up next
     if (!next.length && todo.length && isFinite(dueOf(todo[0], c[todo[0].name] || {}))) next = [todo[0]];
@@ -1264,9 +1264,9 @@
       var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !!r && status(r).k === 'ready'; })
       .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); }).forEach(function(x){ out.push(x); });
     return out; }
-  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = readyReels(); rBox.textContent = '';
+  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = readyReels().filter(function(x){ return chOf(x, DATA.c) === ch; }); rBox.textContent = '';   // this tab's channel only (owner, 27 Nov 2026: the web tab showed the tech reel)
     if (!j || jOld(j)) rBox.appendChild(el('p', 'empty', j ? 'Status not up to date' + ', so nothing is shown here. It rebuilds on its own.' : 'Status not loaded yet, so nothing is shown here.'));
-    else if (!list.length) rBox.appendChild(el('p', 'empty', 'Nothing is ready to post yet.'));
+    else if (!list.length) rBox.appendChild(el('p', 'empty', 'Nothing is ready to post for ' + CH[ch].name + ' yet.'));
     list.forEach(function(x){ var card = reelCard(x, DATA.c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); });
     syncNeeds(); }
   function tRender(){ var j = jLast;
