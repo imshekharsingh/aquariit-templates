@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/price-list.json.
 10. Facts: PASS: tabular figures are set on a fixed width and are essential for vertically aligned columns, as in grids of numbers (Butterick, Alternate figures); tables are the right tool for grids of numbers and side-by-side layouts (Butterick, Tables); the scene switches Space Grotesk to its real tabular figures (font-variant-numeric: tabular-nums); the salon and prices are invented; sources (read in full in the Sources run 44949452447): Alternate figures (Butterick's Practical Typography); Tables (Butterick's Practical Typography)
 11. Post data: PASS: captions.json entry (c3, engine design, postOn 2026-11-27, postAt 17:00, concept, aiLabel false); caption: the claim, the 3 fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags, 2 sources
 12. Review file: PASS: this file and the direction card with its stills check line; local preflight-all (Output QA preview, LOOK vs gold, ELEMENTS, TEXT CLEAR) passed before the render
-13. After the render: PENDING (render 1)
+13. After the render: render 1 (run 45948452212) failed Output QA on two measures (PACE: "First, line them up on the right." 5.22 words/s; ELEMENTS: 3.1 s with nothing new at 16.9-20 s); fixed for render 2 (the fix render): that sentence is now "First, align them to the right." (6 words), an extra spark at the end and the reel cut to 19.2 s; preflight-all PASS; render 2 result below when it is in
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 97% (median step 1.2, 0 declared transitions)
@@ -33,4 +33,4 @@ Rebuild notes (27 Nov): the before is plain centring with ordinary proportional 
 PREMIUM: animation 7/10 (t 6-13), cleanliness 7.5/10 (t 2.5), premium 7/10 (t 18); weakest: t 12-14, the dots draw while the title line cross-fades.
 
 Critic: PENDING.
-PREFLIGHT-ALL: PASS ca34e14c (showreel-c3-price-list, 30 s)
+PREFLIGHT-ALL: PASS b4f1a7de (showreel-c3-price-list, 32 s)

@@ -2,7 +2,7 @@
  "name": "showreel-c3-price-list",
  "seek": "scripts/channel3/price-list.html",
  "engine": "design",
- "dur": 20,
+ "dur": 19.2,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,7 +10,7 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "These prices are hard to compare. They jump around. Turns out, numbers need one edge. First, line them up on the right. Next, use digits of one width. Then add dots to each name. Now the cheapest stands out.",
+  "text": "These prices are hard to compare. They jump around. Turns out, numbers need one edge. First, align them to the right. Next, use digits of one width. Then add dots to each name. Now the cheapest stands out.",
   "voice": "af_heart",
   "speed": 1,
   "gap": [

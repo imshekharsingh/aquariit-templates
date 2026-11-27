@@ -782,13 +782,13 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
 
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff9ab0', '#ffb35a');
-  var TEXT = "These prices are hard to compare. They jump around. Turns out, numbers need one edge. First, line them up on the right. Next, use digits of one width. Then add dots to each name. Now the cheapest stands out.";
-  var DUR = 20, BX = 66, BY = 424, W = 408, L = 32, R = 376, Y0 = 90, DY = 36, V, PH, A = {}, CAM, N = 6;   // rows are plain centred (no extra scatter: B1, a believable before)
+  var TEXT = "These prices are hard to compare. They jump around. Turns out, numbers need one edge. First, align them to the right. Next, use digits of one width. Then add dots to each name. Now the cheapest stands out.";
+  var DUR = 19.2, BX = 66, BY = 424, W = 408, L = 32, R = 376, Y0 = 90, DY = 36, V, PH, A = {}, CAM, N = 6;   // rows are plain centred (no extra scatter: B1, a believable before)
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
-    A.hook = at('They') - .1; A.jump = at('jump'); A.turns = at('Turns'); A.up = at('edge'); A.f1 = at('First'); A.edge = at('line'); A.f2 = at('Next'); A.digits = at('digits'); A.f3 = at('Then'); A.dots = at('dots');
-    A.spot = at('Now'); A.cheap = at('cheapest'); A.proof = A.cheap + 1; A.e1 = A.proof + 1.2; A.e2 = A.e1 + .9; A.e3 = A.e2 + 1.2; A.e4 = A.e3 + 1.2; A.end = Math.min(DUR - .2, A.e4 + .8);
+    A.hook = at('They') - .1; A.jump = at('jump'); A.turns = at('Turns'); A.up = at('edge'); A.f1 = at('First'); A.edge = at('align'); A.f2 = at('Next'); A.digits = at('digits'); A.f3 = at('Then'); A.dots = at('dots');
+    A.spot = at('Now'); A.cheap = at('cheapest'); A.proof = A.cheap + 1.12; A.e1 = A.proof + 1.2; A.e2 = A.e1 + .9; A.e3 = A.e2 + 1.2; A.e4 = A.e3 + 1.2; A.end = Math.min(DUR - .2, A.e4 + .8);
     window.COVER = .6;
     var S = DT.S; S.sting(0); [.35, .65].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4);
     for (var i = 0; i < 6; i++) KM.cue({ t: A.jump - .2 + i * .1, k: 'tick', g: .07, p: (i * 3) % 7, x: 200 + (i % 2) * 140, synth: true }); S.tint(A.up, 270);
@@ -834,12 +834,12 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     var ey = P(t, A.spot - .1, A.cheap - .1); DT.line('eye', BX + R + 14, BY + Y0, BX + R + 14, BY + Y0 + 4 * DY * ey + 14, ey > 0 && t < A.proof ? 1 : 0, '#5ee0a0', 4);
     DT.proof(t, A.proof, { flash: .5, x: 30, y: 778, s: .26, tx: 52, ty: 764 });
     DT.chip('win', 'CHEAPEST · <b>AT ONCE</b>', 150, 356, P(t, A.cheap - .2, A.cheap + .1) - P(t, A.e1 - .2, A.e1 + .1), 'g');
-    DT.chip('win2', 'SAME LIST · <b>ONE GLANCE</b>', 120, 356, P(t, A.e1, A.e1 + .3) - P(t, A.e3 - .2, A.e3 + .1), 'g'); DT.chip('win3', 'EDGE ✓ · WIDTH ✓ · <b>DOTS ✓</b>', 90, 356, P(t, A.e3, A.e3 + .3), 'g'); DT.burst('b4', BX + R + 20, BY + Y0 + 2 * DY + 12, t, A.e4, '#5ee0a0');
+    DT.chip('win2', 'SAME LIST · <b>ONE GLANCE</b>', 120, 356, P(t, A.e1, A.e1 + .3) - P(t, A.e3 - .2, A.e3 + .1), 'g'); DT.chip('win3', 'EDGE ✓ · WIDTH ✓ · <b>DOTS ✓</b>', 90, 356, P(t, A.e3, A.e3 + .3), 'g'); DT.burst('b4', BX + 402, BY + Y0 + 2 * DY + 12, t, A.e4, '#5ee0a0'); DT.burst('b5', BX + 402, BY + Y0 + 5 * DY + 12, t, A.e4 + .5, '#5ee0a0');
     DT.box('ok', { x: BX + 10, y: BY + 10, w: 388, h: 324, r: 14 }, P(t, A.e2, A.e2 + .5), '#5ee0a0');
-    DT.burst('b3', BX + R + 20, BY + Y0 + 4 * DY + 12, t, A.e1, '#5ee0a0');
+    DT.burst('b3', BX + 402, BY + Y0 + 4 * DY + 12, t, A.e1, '#5ee0a0');
     DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.spot, end: 1, sym: '✓', label: 'LINED UP' }]);
     DT.title(t, [{ t: A.hook, html: 'Prices <em>jump around</em>' }, { t: A.f1, html: 'Fix 1 · <em>right edge</em>' }, { t: A.f2, html: 'Fix 2 · <em>even digits</em>' }, { t: A.f3 - .2, html: 'Fix 3 · <em>dot leaders</em>' }, { t: A.spot, html: 'One glance. <em>Done.</em>' }]);
-    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .6), function(w){ return /^(compare|jump|line|edge|digits|dots|cheapest)/i.test(w) ? 'var(--amb)' : null; });
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .6), function(w){ return /^(compare|jump|line|align|edge|digits|dots|cheapest)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
   window.seek = seek; window.DURATION = DUR; window.__A = A;

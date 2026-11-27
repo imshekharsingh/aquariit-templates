@@ -1127,3 +1127,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/c3-price-list-27nov · Turns Out price-list: stills check round 1 REDO applied
 - Done: all six points of the REDO fixed: thumbnail smaller with its BEFORE tag on its own top edge, cover frame shows all rows and the ring at full strength, card line 9 matches, the Fix 3 chip and title swap on "Then", the first snap starts on "line", the last subtitle clears 0.6 s after the voice. SAFE ZONE ok, OVERLAP none, preflight-all passes but for the new stills line.
 - Left: second stills check, one render, Output QA, critic.
+## 2026-11-27 · claude/c3-price-list-27nov · Turns Out price-list: render 1 failed Output QA (PACE, ELEMENTS), fixed for render 2
+- Done: render 1 (run 45948452212) failed two Output QA measures; sentence 3 of the fixes shortened to 6 words ("First, align them to the right."), an end spark added, reel cut to 19.2 s, proof 0.12 s later (a TEXT CLEAR sample hit the flash). preflight-all PASS, npm run check passes.
+- Left: render 2, Output QA, critic.
