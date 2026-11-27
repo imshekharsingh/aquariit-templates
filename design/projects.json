@@ -183,6 +183,27 @@
           "line": "Critic NOT READY (cleanliness 6.5); fix render waits for the owner's yes."
         }
       ]
+    },
+    {
+      "id": "ref-upload-bar",
+      "name": "Reference uploads: progress bar and resume",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: uploads show a bar with the percent and the part, retry a failed part, continue after a stop, and end with \"Added\" and a preview. Owner to try one upload.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T09:22:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T09:22:00Z",
+          "stage": "building",
+          "line": "Building the upload bar, part retries and resume."
+        },
+        {
+          "at": "2026-11-27T09:22:00Z",
+          "stage": "done",
+          "line": "Live: uploads show a bar with the percent and the part, retry a failed part, continue after a stop, and end with \"Added\" and a preview. Owner to try one upload."
+        }
+      ]
     }
   ]
 }
