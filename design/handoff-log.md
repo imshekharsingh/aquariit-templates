@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/app-fix-only-when-stuck · owner chat: Fix shows only on a reel that is really stuck
+- Owner: Fix showed on all three channels. bProblem() judged old morning stage rows even after the reel was ready or posted. Now: ready or posted = no Fix (except a missed post time), and a stage row older than the reel's newest render or checks is ignored. Three new cases in scripts/qa/app-board-test.mjs.
+
 ## 2026-11-27 · claude/schedule-times-27nov · owner chat: owner chat opens 04:43; rule times match the real schedule
 - Owner: open the daily chat around 05:00. "Daily owner chat" now 04:43 IST (before the 04:47 web/tech builds and the 05:11 Turns Out task, so their stage messages land). CLAUDE.md, runbook-studio.md, runbook-daily.md said 06:47 / 08:31 / 09:11; now 04:47 / 04:43 / 05:11.
 

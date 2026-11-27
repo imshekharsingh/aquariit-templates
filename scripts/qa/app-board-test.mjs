@@ -30,4 +30,7 @@ ok('a NOT READY verdict: Fix on Second look, with the reason', p && p.idx === 6 
 p = P(null, { stages: { render: { s: 'done' }, checks: { s: 'done' }, critic: { s: 'done' }, ready: { s: 'done' }, posted: { s: 'fail' } } });
 ok('the posting time passed: Fix on the post row', p && p.idx === BST.length);
 ok('a ready reel has no problem', P(null, { stages: { render: { s: 'done' }, checks: { s: 'done' }, critic: { s: 'done' }, ready: { s: 'done' }, posted: { s: 'wait' } } }) === null);
+ok('a posted reel with an old failed morning row has no Fix (27 Nov, all three channels)', P({ stage: 'failed', line: 'building: no access', at: ago(400) }, { stages: { render: { s: 'done', at: ago(200) }, ready: { s: 'done' }, posted: { s: 'done' } } }) === null);
+ok('a ready reel with a stale building row has no Fix', P({ stage: 'building', at: ago(500) }, { stages: { render: { s: 'done', at: ago(100) }, checks: { s: 'done', at: ago(90) }, critic: { s: 'done' }, ready: { s: 'done' }, posted: { s: 'wait' } } }) === null);
+ok('a redone reel ignores the old failed row and judges the new render', P({ stage: 'failed', line: 'building: no access', at: ago(300) }, { stages: { render: { s: 'now', at: ago(20) } } }) === null);
 console.log(bad ? `APP BOARD TEST: ${bad} FAILED` : 'APP BOARD TEST: all passed'); process.exit(bad ? 1 : 0);
