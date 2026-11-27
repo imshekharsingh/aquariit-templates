@@ -53,7 +53,7 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - Tests: `scripts/qa/post-now-test.mjs` (mock GitHub, R2 and Instagram; nothing is posted for real). Without GH_DISPATCH_TOKEN the button says Post now is not switched on.
 
 ## Making a web reel
-- Every new @webin20sec reel starts from `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit
+- Every new @webin20sec reel starts from the gold reel (`node scripts/starter.mjs web <slug>`; `node scripts/explainer/newweb.mjs <slug>` does the same by default since 28 Nov 2026, task 17: the gold reel fills the whole frame). The old template (`newweb.mjs <slug> --classic "Hook?" "Sentence." ...`) squeezes the picture and fails Output QA SPREAD; it was: `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit
   scripts/explainer/kitmotion.js (camera rig with drift and named moves, declared transitions, springs, text and secondary motion, cues, and
   the slow-mo "details" pieces: live easing curve, time scale, spec chip, part bar). `newweb.mjs <slug> --details N` makes a compilation of
   N small UI motions with a recap grid (owner, 8 Nov 2026). Premium motion by default, not hand-built per reel (owner, 7 Nov 2026).

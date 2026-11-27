@@ -957,6 +957,45 @@
         }
       ],
       "next": null
+    },
+    {
+      "id": "web-start-gold",
+      "name": "Web starts use the whole frame",
+      "account": "other",
+      "stage": "done",
+      "line": "Done: a new web reel now starts from the gold reel (whole frame) by default; the old squeezed template only runs if asked for.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T21:40:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T21:40:00Z",
+          "stage": "done",
+          "line": "Done: a new web reel now starts from the gold reel (whole frame) by default; the old squeezed template only runs if asked for."
+        }
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Test",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     }
   ]
 }
