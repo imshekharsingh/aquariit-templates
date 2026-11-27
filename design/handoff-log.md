@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 15:11 IST · claude/fix-at-stage · other account: task 13, Fix at the exact stage
+- Done: templates/index.html board: bProblem() finds the failed or stalled step (failed stage line, render/checks/critic fail, slot passed; render > 60 min, critic > 45 min after checks, build step quiet 2 h); that row turns red with its reason and the Fix button, the card opens once. New "Second look" row. stage.mjs + Worker: stage "failed" with --step. scripts/qa/app-board-test.mjs in npm run check.
+- Left: tasks 14, 15 and 9.
+- For the main account: a build or stills step that cannot go on sends `node scripts/stage.mjs <channel> failed --step <step> --line "why"` at once (design/runbook-reels.md).
+
 ## 2026-11-27 15:06 IST · claude/needs-you-today · other account: task 12, Needs you at the top of Today
 - Done: templates/index.html: Needs you moved to the top of Today (count in the heading, badge on the Today tab), an ask can name "reel" or "preview" (src/worker.js stores it; scripts/asks.mjs add passes it) and the app shows its cover, name and an inline player. scripts/qa/app-today-test.mjs (npm run check): channel tabs show only their own ready reels; a question finds its reel or preview.
 - Left: tasks 13, 14, 15 and 9.

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node scripts/build-tips.mjs --check && node scripts/check.mjs && node scripts/qa/c3-script.mjs && node scripts/qa/reel-key-test.mjs && node scripts/qa/stage-test.mjs && node scripts/qa/refs-test.mjs && node scripts/qa/post-now-test.mjs && node scripts/qa/notify-test.mjs && node scripts/qa/plain-words-test.mjs && node scripts/qa/app-today-test.mjs && node scripts/cover.mjs --check && html-validate \"templates/**/*.html\"",
+    "check": "node scripts/build-tips.mjs --check && node scripts/check.mjs && node scripts/qa/c3-script.mjs && node scripts/qa/reel-key-test.mjs && node scripts/qa/stage-test.mjs && node scripts/qa/refs-test.mjs && node scripts/qa/post-now-test.mjs && node scripts/qa/notify-test.mjs && node scripts/qa/plain-words-test.mjs && node scripts/qa/app-today-test.mjs && node scripts/qa/app-board-test.mjs && node scripts/cover.mjs --check && html-validate \"templates/**/*.html\"",
     "icons": "node scripts/make-icons.mjs"
   },
   "devDependencies": {
