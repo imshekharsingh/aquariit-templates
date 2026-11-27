@@ -5,10 +5,10 @@
       "id": "3d-kit-v7",
       "name": "3D kit v7: the last sample",
       "account": "other",
-      "stage": "checking",
-      "line": "Render 4 checks: the cable cascade is now filmed from the far high wide (no more stepped copies); the last glitch checks run before the render.",
+      "stage": "render",
+      "line": "Render 4 (the last) is being made on GitHub (about 40 min); every local glitch check passes. After it: the critic, then v7 closes whatever the verdict.",
       "pct": 97,
-      "updatedAt": "2026-11-27T19:21:00Z",
+      "updatedAt": "2026-11-27T21:02:00Z",
       "history": [
         {
           "at": "2026-11-26T13:12:00Z",
@@ -79,6 +79,11 @@
           "at": "2026-11-27T19:21:00Z",
           "stage": "checking",
           "line": "Render 4 checks: the cable cascade is now filmed from the far high wide (no more stepped copies); the last glitch checks run before the render."
+        },
+        {
+          "at": "2026-11-27T21:02:00Z",
+          "stage": "render",
+          "line": "Render 4 (the last) is being made on GitHub (about 40 min); every local glitch check passes. After it: the critic, then v7 closes whatever the verdict."
         }
       ],
       "steps": [
@@ -96,11 +101,11 @@
         },
         {
           "name": "Render",
-          "state": "done"
+          "state": "now"
         },
         {
           "name": "Checks",
-          "state": "now"
+          "state": "next"
         },
         {
           "name": "Critic",
@@ -116,9 +121,9 @@
         }
       ],
       "next": {
-        "who": "other",
-        "action": "Full-size glitch checks at 1.2, 2.8, 14.5 and 22.3 s, then render 4 on GitHub (about 40 min) and Output QA",
-        "eta": "tonight"
+        "who": "github",
+        "action": "Render 4 running, then Output QA; then the main account's critic",
+        "eta": "about 40 min"
       }
     },
     {

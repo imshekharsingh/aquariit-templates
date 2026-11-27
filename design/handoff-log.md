@@ -1311,3 +1311,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/t7-done · Handoff: task 7 done (APP PROBE: PASS), v7 render 4 cascade fix found
 - Done: task 7 live and probed; v7 r4 glitch screen finished; cascade restaged (far high wide, 1.7 s move, dim edge entry).
 - Left: full-size checks at the other flagged moments, then render 4.
+## 2026-11-28 · claude/t10-r4-running · Handoff: v7 render 4 dispatched (the last)
+- Done: local glitch checks all pass; render 4 started on GitHub; owner: v7 closes after this render.
+- Left: Output QA, v7 ready for critic; then tasks 16, 17, 18.
