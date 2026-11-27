@@ -3006,7 +3006,7 @@
   "palette": "black",
   "style": {
    "lengthS": 15,
-   "wordsPerS": 2.0,
+   "wordsPerS": 2,
    "shotChanges": 0,
    "hookType": "question",
    "look": "dark",
@@ -3135,14 +3135,14 @@
   "palette": "black",
   "style": {
    "lengthS": 15,
-   "wordsPerS": 2.1,
+   "wordsPerS": 2.53,
    "shotChanges": 0,
    "hookType": "question",
    "look": "dark",
    "hero": "a feed of cards with a scroll bar on top",
    "firstSecondTension": "yes",
-   "payoff": "tip",
-   "source": "plan"
+   "payoff": "fact",
+   "source": "mp4"
   }
  }
 }
