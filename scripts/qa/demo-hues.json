@@ -56,6 +56,10 @@
   "showreel-48-has-parent": {
    "hue": 265,
    "world": "black,violetaccent"
+  },
+  "showreel-49-scrollbar": {
+   "hue": 85,
+   "world": "black,limeaccent"
   }
  }
 }
