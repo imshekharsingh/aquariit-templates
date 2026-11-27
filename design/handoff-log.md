@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/c3-price-list-1400 · owner chat: Turns Out back on its 14:00 slot
+- The price-list rebuild was set to 17:00 when 14:00 looked out of reach; it was READY at 13:30, so postAt is 14:00 again (slot test day 2 kept).
+
 ## 2026-11-27 · claude/handoff-lift-hold-27nov · owner chat: other account HOLD lifted, v7 render 3 is GO
 - Owner: the other account starts the 3D kit v7 now. design/handoff.md: HOLD replaced by "HOLD LIFTED": 7 plan-critic changes, render 3 (last), QA, "v7 ready for critic"; apply the owner's 27 Nov 2.5D notes where they fit. Its queue check stays paused, so the owner starts it there.
 
