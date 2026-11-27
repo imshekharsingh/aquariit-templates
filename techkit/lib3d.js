@@ -212,11 +212,11 @@
   //   bar 0..1 (a thin bar under the number, its length = the value's share), color, anchor: [x,y] px | null, at: [x,y] block centre px, tick 0..1 })
   //   -> { box, leader, value }. One style for every number: flat, crisp white, an odometer count (the digits roll, never pop), a hairline to its object.
   function numbers(o = {}) {
-    const box = document.createElement('div'), y = o.y ?? 1530, BW = o.w ?? 300, BH = 270;
-    box.style.cssText = `position:absolute;left:0;top:${y}px;width:${BW}px;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7);padding:14px 0 12px;border-radius:28px;background:${o.back === false ? 'none' : 'rgba(9,10,14,.8)'}`;   // a dark backing: the number never sits on a busy picture
+    const box = document.createElement('div'), y = o.y ?? 1530, BW = o.w ?? 300, BH = o.back === false ? 270 : 296;
+    box.style.cssText = `position:absolute;left:0;top:${y}px;width:${BW}px;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7);padding:14px 0 12px;border-radius:28px;background:${o.back === false ? 'none' : 'rgba(10,10,11,.97)'}`;   // a dark backing (nearly opaque: no cable shows through under the digits): the number never sits on a busy picture
     box.innerHTML = '<div data-top style="font-weight:600;font-size:40px;line-height:1;height:42px;color:#c9cfdb;letter-spacing:.01em;white-space:pre"></div>'
       + '<div data-n style="font-weight:800;font-size:148px;line-height:1.04;height:154px;letter-spacing:-.03em;display:flex;justify-content:center;overflow:hidden"></div>'
-      + '<div data-bar style="height:8px;margin:6px auto 10px;width:260px;border-radius:4px;background:rgba(255,255,255,.16);overflow:hidden"><i style="display:block;height:100%;width:0;background:#fff;border-radius:4px"></i></div>'
+      + '<div data-bar style="height:8px;margin:' + (o.back === false ? '6px auto 10px' : '16px auto 20px') + ';width:260px;border-radius:4px;background:rgba(255,255,255,.16);overflow:hidden"><i style="display:block;height:100%;width:0;background:#fff;border-radius:4px"></i></div>'
       + '<div data-lab style="font-weight:600;font-size:38px;line-height:1;color:#c9cfdb"></div>';
     const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('width', '1080'); svg.setAttribute('height', '1920');
     svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;z-index:6';
