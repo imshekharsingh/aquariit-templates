@@ -1136,3 +1136,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/tech-ai-words-r2 · Tech showreel-tech-ai-words: render 1 Output QA PASS, critic NOT READY (captions), fix for render 2
 - Done: render 1 (run 45944079244, 2 parts, 31 min): OUTPUT QA PASS incl. FLICKER (0 at 60 fps), LOUD -14.2, PACE 2.42. Critic (opus) NOT READY 7.5 / 7.0 / 7.5: captions lost the pause marks and left lone words. Fixed in the scene: captions use the script's words with marks, one group per sentence (comma split for 10+ words), two lines max; panel 6 fades in later. Preflight-all PASS 410c1ad3.
 - Left: render 2 after the owner's notes window (owner chat), Output QA, a fresh critic. Post 20:30 IST.
+## 2026-11-27 · claude/critic-tech-ai-words-r2 · Critic: showreel-tech-ai-words render 2, NOT READY (one lone word in the hook caption)
+- Done: judged the real render 2 MP4 (119 frames at 270 px, caption crops at 1.0, 3.9, 11.8, 22.5, 26.5 s, 30 fps strips at 3.4, 21.4 and 24.85 s, -14.1 LUFS). Render 1's caption fault is fixed (pause marks kept, one sentence per group, comma splits), panel 6 is clean; the 6-word hook still wraps with "this?" alone at 0-3.4 s. PREMIUM 7.5 / 7.0 / 7.5.
+- Left: the builder applies the one-line break fix (caption(), line 301); a third render needs the owner's yes with its cost. Post 20:30 IST.
