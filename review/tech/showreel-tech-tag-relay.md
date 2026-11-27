@@ -11,7 +11,7 @@ Owner 2.5D notes, how each is met: (1) moves 0.45-0.7 s with a quick ease leavin
 3. Safe zone: PASS: SAFE ZONE: ok (the first sheet found a three-line caption at 8.5-10.0 s and the banner at 26 s under the right buttons; captions now split at the comma or the middle, the banner text is 31 px)
 4. No overlap: PASS: OVERLAP: none; BAND: clear (every text on its own plate; the banner fades in place)
 5. Motion: PASS: STATIC STRETCH: none (least change 1.0 at 0 s, median 2.8)
-5b. Flicker: see the FLICKER line in item 13a (60 fps local capture, full resolution)
+5b. Flicker: PASS: OQA FLICKER on a 60 fps local full-resolution capture, 1776 frames: one-frame flicker over 4.0: none; one-frame jumps over 5.0: none (28 Nov, before render 1)
 6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; every spoken line shown and finished on the stills; groups fade (no instant swap), the box comes with its first word; no lone words (checked at 8.5, 10, 12.2, 15.5, 16.4, 19.8, 22.5, 23.4 s)
 7. Voice: PASS: PREFLIGHT voice: 8 timed sentences, 79 words, simulated voice ends about 28.9 s (reel 29.6 s): fits (the real voice is judged on the render; preflight-all rewrites this line)
 8. Sound: PASS (by design; measured on the render at item 13): a swell and soft ticks under the opening, a swish on each of the 8 moves and a snap on each landing, blips as panel parts land (toggle, lock, pin, network), a thud and a resolve chord as the banner lands, a bed ducked under the voice
