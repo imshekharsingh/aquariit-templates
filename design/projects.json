@@ -225,6 +225,27 @@
           "line": "Live: questions sit at the top of Today with a count on the Today tab; a question about a reel shows its cover, and a tap plays it."
         }
       ]
+    },
+    {
+      "id": "fix-at-stage",
+      "name": "Fix at the exact stage",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: the board puts Fix and its reason on the exact step that failed or got stuck, and opens that card by itself.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T09:41:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T09:41:00Z",
+          "stage": "building",
+          "line": "Putting Fix on the step that failed or got stuck."
+        },
+        {
+          "at": "2026-11-27T09:41:00Z",
+          "stage": "done",
+          "line": "Live: the board puts Fix and its reason on the exact step that failed or got stuck, and opens that card by itself."
+        }
+      ]
     }
   ]
 }

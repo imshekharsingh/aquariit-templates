@@ -632,7 +632,8 @@ async function probeApi(request, env, url) {
 // (sessions: one network secret per host; 26 Nov 2026); unset or empty secret = off). `reel` is a reel name or a channel (web / tech / c3), as early as the
 // research, before the reel has a name. The app reads GET /api/stage (signed in): today's rows, newest first. Render % still comes from /api/journey.
 // thumb = a small JPEG as base64 (at most 200 KB), kept in R2 under stage/ and shown on the card.
-const STAGE_IDS = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted'], STAGE_THUMB_MAX = 200 * 1024;
+const STAGE_IDS = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted', 'failed'],   // failed (task 13, 27 Nov 2026): the line starts with the step that failed ("building: no access to the repo")
+      STAGE_THUMB_MAX = 200 * 1024;
 let stageReady = null;
 async function stageDb(env) {
   if (!env.DB) return null;
