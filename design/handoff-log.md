@@ -1323,3 +1323,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/v7-closed · 3D kit v7 closed after render 4
 - Done: render 4 Output QA recorded (all pass but FLICKER at 0.8 s); v7 closed per the owner; project marked done.
 - Left: none for v7.
+## 2026-11-28 · claude/tech-28nov-stills · Stills check: showreel-tech-tag-relay, APPROVED with two fixes before the render
+- Done: outside check of the card and the 18-moment sheet (verdict in review/tech/showreel-tech-tag-relay.direction.md "Stills check"). Owner notes 1-6, the opening, caption groups, 24 px+ text and facts hold; premium about 7.5. HIGH: the title and hook say "no phone near" while step 2 needs a nearby device (say "far from your phone"); sub-node labels are cut by the left edge at 8.5, 18.8-24.5 s (labelK has no left term). MED: card 3 blank at 12.0-12.4 s, the move home is 0.7 s, a label touches the caption at 3.3 s.
+- Left: the builder applies faults 1-5 in one edit, re-runs the text checks and preflight, then render 1.
