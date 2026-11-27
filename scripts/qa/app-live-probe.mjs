@@ -28,6 +28,8 @@ for (const ch of ['web', 'tech', 'c3']) {
   const t = await page.$(`.tab[data-ch=${ch}]`); if (t) await t.click(); await page.waitForTimeout(3000); await shot(`2-reels-${ch}`);
   console.log(`REELS ${ch}: tabs=`, await txt('.tabs'), '| ready=', await txt('#t-ready'), '| list=', await txt('#list'));
 }
+const heavy = log.filter((l) => /\.mp4|\/api\/refs\/\d+\/file/.test(l)).length;
+console.log(`VIDEO REQUESTS WITHOUT A TAP: ${heavy} (want 0)`); console.log(heavy ? 'APP PROBE: FAIL (videos load on open)' : 'APP PROBE: PASS');
 console.log('STILL OPEN after the run:'); for (const [r, s] of open) console.log(`  ${Date.now() - s} ms  ${r.method()} ${new URL(r.url()).pathname}`);
 console.log('REQUESTS AND ERRORS:'); for (const l of log) console.log('  ' + l);
 await b.close();

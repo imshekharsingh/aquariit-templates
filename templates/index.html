@@ -1550,7 +1550,7 @@
   // REF-VIEW-START (scripts/qa/app-refs-test.mjs runs this function): what a reference shows at a glance and whether it is safe to remove
   function refView(r, caps, now){ caps = caps || {};
     var f = r.file || null, img = f && /^image\//.test(f.type) && f.type !== 'image/heic', vid = f && /^video\//.test(f.type) && !f.deleted,
-      thumb = img ? { kind: 'img', src: '/api/refs/' + r.id + '/file' } : vid ? { kind: 'loop', src: '/api/refs/' + r.id + '/file' } : (r.stills || []).length ? { kind: 'img', src: r.stills[0] } : null,
+      thumb = img ? { kind: 'img', src: '/api/refs/' + r.id + '/file' } : (r.stills || []).length ? { kind: 'img', src: r.stills[0] } : vid ? { kind: 'loop', src: '/api/refs/' + r.id + '/file' } : null,   // a still first: clips stream only on a tap (owner, 27 Nov 2026: the app stalled on open)
       reels = Object.keys(caps).filter(function(n){ var rf = (caps[n] || {}).refs; return Array.isArray(rf) && rf.some(function(x){ return String(x).replace(/\s+/g, '').toLowerCase() === 'app:' + r.id; }); }),
       lesson = r.reply ? String(r.reply).split(/\.\s/)[0].replace(/\.?$/, '.') : r.state === 'new' ? 'Not studied yet.' : '',
       ck = r.checklist || [], skipped = ck.length > 0 && ck.every(function(c){ return c.c === 'skip'; }), old = r.done_at && now - Date.parse(r.done_at) > 2 * 864e5,
@@ -1558,7 +1558,7 @@
       state = reels.length ? 'Used in ' + reels.length + ' reel' + (reels.length > 1 ? 's' : '') : r.state === 'used' ? 'Used' : r.state === 'studied' ? 'Studied' : r.state === 'uploading' ? 'Uploading' : 'New';
     return { thumb: thumb, reels: reels, lesson: lesson, state: state, safe: safe, why: skipped ? 'every point skipped' : safe ? 'studied and used' : '' }; }
   // REF-VIEW-END
-  function refLoop(v){ v.muted = true; v.playsInline = true; v.autoplay = true; v.preload = 'metadata'; v.setAttribute('aria-hidden', 'true');
+  function refLoop(v){ v.muted = true; v.playsInline = true; v.preload = 'none'; v.controls = true;   /* no autoplay: up to 1 GB clips streamed on every open blocked the reel list on phones (27 Nov 2026) */ v.setAttribute('aria-hidden', 'true');
     v.addEventListener('timeupdate', function(){ if (v.currentTime > 3) v.currentTime = 0; }); }   // the first 3 s, silent, again and again (only those seconds load)
   function refItem(r){ var box = el('div', 'fbi refi'), h = el('div', 'h'), vw = refView(r, REFCAPS, Date.now());
     h.appendChild(el('span', null, fbWhen(r.created) + (r.channel && FBN[r.channel] ? ' · ' + FBN[r.channel] : ''))); h.appendChild(el('span', 'st' + (r.state !== 'new' ? ' done' : ''), vw.state));
@@ -1571,7 +1571,7 @@
     hd.appendChild(hx); if (hd.children.length > 1 || vw.lesson || vw.reels.length) box.appendChild(hd);
     if (r.url) { var a = el('a', null, r.url); a.href = r.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; var p0 = el('p'); p0.appendChild(a); box.appendChild(p0); }
     if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { if (!vw.thumb) { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); } }
-      else if (/^video\//.test(r.file.type) && !r.file.deleted) { var v = el('video', 'th'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
+      else if (/^video\//.test(r.file.type) && !r.file.deleted) { var v = el('video', 'th'); v.controls = true; v.preload = 'none'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
       else box.appendChild(el('p', null, r.file.name || 'File')); }
     if (r.file && r.file.deleted) box.appendChild(el('p', 'note', 'The video was deleted when you closed this. The report, stills and checklist are kept.'));
     if (r.note) box.appendChild(el('p', null, r.note));
@@ -1691,7 +1691,7 @@
   function testsPaint(){ var box = document.getElementById('slog-list'), slog = document.getElementById('slog'); if (!TESTS) return;
     var list = testsMerge(TESTS, PV_ITEMS); box.textContent = ''; document.getElementById('slog-n').textContent = list.length ? '(' + list.length + ')' : ''; slog.hidden = !list.length;
     list.forEach(function(x){ var d = el('div', 'tst'), bt = el('button', 'about'), th = el('span', 'th'), tx = el('span'); bt.type = 'button';
-      if (x.cover) th.style.backgroundImage = 'url("' + x.cover + '")'; else { var pv = document.createElement('video'); pv.muted = true; pv.preload = 'metadata'; pv.src = x.video + '#t=0.6'; pv.setAttribute('aria-hidden', 'true'); th.appendChild(pv); }
+      if (x.cover) th.style.backgroundImage = 'url("' + x.cover + '")'; else th.classList.add('nocover');   // no video fetch for a missing cover (27 Nov 2026: ~40 test videos loaded on every open)
       tx.appendChild(el('b', null, x.title)); tx.appendChild(el('i', null, (x.channel && CH[x.channel] ? CH[x.channel].name + ' · ' : '') + new Date(x.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' }) + ' · tap to play'));
       bt.appendChild(th); bt.appendChild(tx); d.appendChild(bt); d.appendChild(el('p', null, x.what));
       bt.addEventListener('click', function(){ var v = d.querySelector('video.play'); if (v) { v.remove(); return; } v = document.createElement('video'); v.className = 'play'; v.src = x.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (x.cover) v.poster = x.cover;
@@ -1714,7 +1714,7 @@
     it.forEach(function(p){ var d = el('div', 'pvi'), src = p.src || '/reels/study/' + p.name + '-preview.mp4', v = el('video'), row = el('div', 'row');
       var c = el('span', 'ch', (CH[p.channel] && CH[p.channel].name) || p.channel || ''); c.style.setProperty('--cc', CCV[p.channel] || 'var(--mute)'); d.appendChild(c);
       d.appendChild(el('div', 'ask', p.ask)); d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about)); if (p.techniques) d.appendChild(el('p', 'tq', 'From the reference: ' + p.techniques));
-      v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = src + '?v=' + (j.v || 1) + '#t=0.6'; d.appendChild(v);
+      v.controls = true; v.preload = 'none'; v.playsInline = true; v.src = src + '?v=' + (j.v || 1) + '#t=0.6'; d.appendChild(v);
       [['Like', 'btn'], ['Reject', 'btn g']].forEach(function(b){ var bt = el('button', b[1], b[0]); bt.type = 'button';
         bt.addEventListener('click', function(){ [].forEach.call(row.querySelectorAll('button'), function(x){ x.disabled = true; });
           fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' },
