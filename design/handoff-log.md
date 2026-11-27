@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-task-22-2d5-depth · owner chat: 2.5D kit borrows 3D's best parts (task 22)
+- Owner: no full 2.5D+3D merge now; keep 2.5D, add 3D's strengths (light, depth, materials, contact shadows, two-tier shadow builds) and one drop-in 3D object moment; compare first, one study sample (max 2 renders, ~$10-15), our critic judges. Revisit a full hybrid after a week of 2.5D numbers. Queued after v7 render 4 and tasks 21, 19, 20.
+
 ## 2026-11-27 22:40 IST · claude/app-probe-cards · other account: task 21, App probe judges each Today button by what it says
 - Done: scripts/qa/app-live-probe.mjs: "Open to post" must open that channel's reels tab (selected, Ready box names only that channel); "Open reel" must open that channel's reel page; one verdict line after every step (it printed PASS before the board step).
 - Left: the App probe run on the live app (PASS line in Progress).

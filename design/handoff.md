@@ -191,7 +191,20 @@ Owner: "Let the handoff session continue fixing the issues." In this order, stat
    further back so the tips move slowly, and fix the weak spots at 0.8, 3.9, 14.5 s). Glitch check must pass locally first. Then render 4, Output
    QA (FLICKER must pass), "v7 ready for critic". The main account's critic judges it.
 2. Task 21 (App probe checks what each Today card button really does), then tasks 19, 20 (installed app never stale; tabs in posting order,
-   tab follows the workflow), then 6, 7, 16, 17, 18. Each app change: App probe PASS on the live app, pasted in Progress.
+   tab follows the workflow), then task 22 (2.5D kit with 3D's best parts), then 6, 7, 16, 17, 18. Each app change: App probe PASS on the live app, pasted in Progress.
+
+## Queued task 22 GO, after v7 render 4 and tasks 21, 19, 20 (owner, 27 Nov 2026 23:00 IST): 2.5D kit gets 3D's best parts (no full hybrid)
+Owner chose: keep 2.5D as the tech look and borrow 3D's strengths into it; no full 2.5D+3D merge now (revisit after a week of 2.5D numbers).
+1. Compare first, no new render: score v7 (latest render) and the 27 Nov 2.5D reel (showreel-tech-ai-words) against the owner's reference
+   (design/references.md R-ref 27 Nov) on: opening, explanation clarity, depth/material, motion, shadow-first builds, glitches, pace. One page
+   in review/tech/kit-2d5-depth.md: which wins each point and what to take from 3D.
+2. Add to the 2.5D kit (behind new options; existing reels render the same): soft directional light and depth on cards, real-looking materials
+   and contact shadows, the two-tier shadow-first builds (design/direction.md "2.5D map reels" note 7), and ONE drop-in "3D object moment"
+   (a single short shot of a physical object, e.g. a phone or chip, for topics about a real thing; reuses v7's good parts: board, hub, type,
+   payoff shot).
+3. One study sample, at most 2 renders (about $10-15; ask the owner chat before more), Output QA incl. FLICKER, then "2.5D depth ready for
+   critic". The main account's critic judges it against the reference and the 27 Nov reel; if better, builders use it from the next day.
+Never touch a daily reel; status every 30 min.
 
 ## Queued task 21 GO, first after task 10 (owner chat, 27 Nov 2026 22:00 IST): App probe, posted cards
 The App probe's "OPEN FROM BOARD" step clicks each Today card's button. For a channel whose reel is already posted, that button is "Open reel"
