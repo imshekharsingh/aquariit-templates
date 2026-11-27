@@ -33,7 +33,7 @@ Every task here is also a project on the app's board: update its entry in design
 Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
 when the owner asks). The hourly "Handoff queue check" starts a session only for an open GO task that is not already started (a
 "task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
-Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3; task 11 may be done while a v7 render runs), then task 11 (upload progress bar) if not done yet, then task 12, 13, 14, 15 (the owner's app gaps of 27 Nov), then task 9 (references, measured; do it together with task 15). Every other open task waits until it is marked GO.
+Current GO list, in this order: task 10 (3D kit v7, FIRST: no other task starts while task 10 has no "v7 ready for critic" line, except during its render wait), then task 6 (notification policy), task 7 (projects show their steps), task 16 (web kit before/after piece), task 17 (web starters use the whole frame), task 18 (render speed). Tasks 9, 11-15 are done. Every other open task waits until it is marked GO.
 
 ## Owner rule for task 10: keep going until stable (owner, 26 Nov 2026)
 Task 10 (3D kit v7) continues on its own through the hourly queue check until it is STABLE or capped, without waiting to be told:
@@ -122,7 +122,7 @@ render under the owner's render rule above, Output QA. For the critic: this acco
 "v6 ready for critic" and stop; the main account runs the critic and writes its verdict in Progress. If READY, v6 replaces v5 as the
 tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
 
-## Queued task 6 (owner, 26 Nov 2026): one notification policy the app follows (do it right after task 0)
+## Queued task 6 GO, after task 10 (owner, 26 and 27 Nov 2026): one notification policy the app follows (do it right after task 0)
 Owner: "design control for notifications ... if we are running tests, we should have defined notifications approach which is used by
 app: regular upload notifications; test window notification change". Today the owner chat sent its own 13:58 reminder and the app's
 "ready" push came later from a separate rule; two systems, no shared plan. Size M.
@@ -171,6 +171,23 @@ and stills against points 1-7 before any render. (b) On its OK: one render, Outp
 v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
 if NOT READY the owner decides. Update projects.json at each step.
 
+## Queued tasks 16-18 GO, after tasks 10, 6 and 7 (owner, 27 Nov 2026): web kit and render speed
+Rules so this never gets in the way of the daily reels (owner, 27 Nov: "these tasks must not hamper our strategy today"):
+- Never touch a reel posting today or tomorrow (its scene, its review file, its captions.json entry) and never run the Showreel workflow on a
+  daily reel. Test only on study clips (reels/study/, short, at most 8 s) and only after the day's last post (21:00 IST) or before 06:30 IST.
+- A shared kit change (scripts/explainer/kitmotion.js, KM.*, the starters) is ADDED behind a new call or option; existing calls render exactly as
+  before (check: node scripts/preflight-all.mjs on the last 3 web reels prints the same PASS). The daily builder picks the new piece up next day.
+- Each task ends with one line in design/rules-web.md or design/runbook-reels.md saying how a builder uses it, a Progress line, and a stills
+  sheet of a study clip. Ask the owner chat before anything over about $5.
+- **Task 16, the before/after "split" piece** (todo 12 Nov, E23): one call in kitmotion.js that runs the broken and the fixed version of the
+  same component side by side in sync, labelled BEFORE / AFTER, the broken one visibly misbehaving; fits the whole-frame zones (KM.ZONES).
+- **Task 17, web starters use the whole frame** (todo 14 Nov, owner: "squeezing most of it in one place of the screen"): move
+  starterweb.html, starterdetails.html and newweb.mjs to the whole-frame layout of showreel-36-tabs (rules-web.md rule 16: KM.ZONES, subtitles
+  under the top zone, hero to y 780, card edges locked with KM.worldY). Output QA SPREAD already fails a squeezed reel.
+- **Task 18, render speed** (todo 14 Nov): a 20 s whole-frame web reel took 33 GitHub minutes (rule 12 caps 30). Measure the frame cost per
+  effect on a study clip (the blurred line glow .inkg filter, the bigger cards), replace the slow one with a cheaper look that reads the same at
+  phone size, and bring a 20 s reel under 25 minutes. Report before/after minutes in Progress.
+
 ## Queued tasks 12-15 GO, after tasks 10 and 11 (owner, 27 Nov 2026): the app does not show the owner what they need
 Owner (27 Nov): "If there's a Needs you in app, how do I know where it is or what it is?" and three more. Also design/todo.md P1 (27 Nov).
 Each task: plain words in the app, phone first (390 px), no tool names or codes on screen, npm run check, one push each, a Progress line,
@@ -216,7 +233,7 @@ already added on main (design/critic.md question 52). This task is the measuring
    pattern against reels without, per channel, and per pattern once a pattern has 3+ reels. One plain line per channel.
 4. Runbook: design/runbook-daily.md references step gets the three items above. npm run check, merge.
 
-## Queued task 7 (owner, 26 Nov 2026): Projects show their workflow and the next action (do it right after task 6)
+## Queued task 7 GO, after task 6 (owner, 26 and 27 Nov 2026): Projects show their workflow and the next action (do it right after task 6)
 Owner: "App's projects section I was hoping to have a workflow and next action being taken on it so that I'll know when it's done". Size S-M.
 1. Each project in design/projects.json gets its own ordered steps (e.g. 3D kit v6: Rules, Build, Stills, Render, Checks, Critic, Kit
    final, Done; minutes meter: Find cause, Fix, Live, Done), each with state done / now / next / failed, like the reel journey.
@@ -300,6 +317,7 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 27 Nov 01:30 IST, main account plan critic: PLAN: CHANGE FIRST + seven small changes (fewer headline words and a step pill instead of the grey words, dim everything but the subject in three moments, a still hold and one move home, a last frame that matches frame 0, a clean New shot, a readable first frame), then render 3 with no further plan check (review/tech/showreel-tech-gold3d-v7.md "Render 3 plan critic").
 - 27 Nov ~13:00 IST, owner (via the owner chat): HOLD lifted; start task 10 now (7 plan-critic changes, then render 3, Output QA, "v7 ready for critic").
 - 27 Nov ~14:45 IST, owner (via the owner chat): tasks 12-15 queued GO after tasks 10 and 11 (Needs you, Fix at the stage, Tests list, references with thumbnails and cleanup).
+- 27 Nov ~15:50 IST, owner (via the owner chat): tasks 6 and 7 GO, new tasks 16-18 GO (web before/after piece, whole-frame starters, render speed), all after task 10, with the "never in the way of daily reels" rules in their section.
 - 27 Nov 14:52 IST, other account: task 11 started and done in one push: task 11 live, owner to try an upload. Inbox > Ideas and references: a bar with the percent and the part count ("62% · part 5 of 8"), a failed part is retried up to 3 times with a short wait, a final stop keeps the upload and "Try again" continues from the last good part (same file chosen), and the finish says Added with a small preview; the list updates at once. Checked at phone width against a local test server (51 parts, part 3 failing 4 times: stopped after part 2, resumed from part 3, finished; a small image: bar, Added, preview). task 11 done.
 - 27 Nov 15:06 IST, other account: task 12 started and done in one push: "Needs you" is now at the top of Today (above the studio board) with its count in the heading and on the Today tab; a question can name the reel or test video it is about (Owner answers add: "reel" or "preview"), and the app shows its cover and name beside the question, a tap plays it there; an answered question leaves at once. New app test (in npm run check): each channel tab shows only its own ready reels, and a question finds its reel. Checked at 390 px against a local test server. Owner-chat messages that ask something say "on Today, top" (design/runbook-studio.md). task 12 done.
 - 27 Nov 15:11 IST, other account: task 13 started and done in one push: on the studio board, the step that failed or got stuck turns red and carries its one-line reason and the Fix button, and the card opens by itself once for each new problem. Steps: Researching, Topic picked, Building, Stills check, Making the video, Machine checks, Second look (new row), Ready to post / posted. Stalled on its own: the video over 60 min, no second look 45 min after the checks, a build step with no news for 2 h. A build that cannot go on reports `stage.mjs <channel> failed --step building --line "why"` (design/runbook-reels.md); today's Turns Out case (no repo access) would show as "Problem at building" with Fix under Building. New app test (npm run check): 12 cases. Checked at 390 px against a local test server. task 13 done.

@@ -6,6 +6,10 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-queue-16-18 · owner chat: more app and kit work handed over; old to-dos dropped
+- design/handoff.md: tasks 6, 7 GO; new 16 (web before/after piece), 17 (whole-frame web starters), 18 (render speed), all after task 10, with rules that keep them off today's and tomorrow's reels (study clips only, after 21:00 or before 06:30, kit changes added behind new calls).
+- design/todo.md: dropped the 17 Nov re-render, the per-channel script routine, the 26 Nov read-only question and the puzzle channel; Instagram API kept here for later; Turns Out task repo fix added for 28 Nov.
+
 ## 2026-11-27 15:34 IST · claude/3d-kit-v7-r3 · other account: task 10, v7 render 3 build (no render yet)
 - Done: techkit/scenes/gold3d-v7.html: the plan critic's 7 changes and the no-glitch fixes; techkit/lib3d.js headline (fades, pill), numbers (letter fades, rolling tens), slam tilt/grow; techkit/world3d.js captions scrimRGB/scrimA/handles, sky colours; techreel/topics/gold3d-v7.json qa.subs (subtitles at the top).
 - Left: the last glitch check, then ONE render 3, Output QA, "v7 ready for critic".
