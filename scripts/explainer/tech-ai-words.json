@@ -1,0 +1,61 @@
+{
+ "name": "showreel-tech-ai-words",
+ "seek": "scripts/explainer/tech-ai-words.html",
+ "style": "Tech 2.5D system map (design/references.md R-ref 27 Nov 2026 and its rules; owner 2.5D notes of 27 Nov): one camera over one canvas, a line out, a loop, a line back; one colour world per step; fixed title, step pill, ghost of the next card, light wedges and dim sub-nodes filling the frame",
+ "dur": 29.6,
+ "fps": 60,
+ "blur": 2,
+ "shutter": 0.4,
+ "width": 540,
+ "height": 960,
+ "vignette": false,
+ "grain": 2,
+ "cover": 0.6,
+ "voice": {
+  "text": "Why do chatbots type like this? One: your question goes in, as text. Two: it is cut into small pieces, called tokens. Three: the model reads every token, so far. Four: it predicts the next token, just one. Five: that token is added on, and the loop runs again. Six: each new token streams to your screen. So a shorter answer means fewer loops, and it arrives faster.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "at": [
+   0.25,
+   3.5,
+   7.0,
+   10.6,
+   14.0,
+   17.3,
+   21.4,
+   24.9
+  ]
+ },
+ "qa": {},
+ "caption": "Why does AI type its answer word by word? 💬 It is not an effect: that is how it works.\n\n1. Your question goes in as text.\n2. It is cut into tokens (pieces of words).\n3. The model reads every token so far.\n4. It predicts one next token.\n5. That token is added on, and the loop runs again.\n6. Each new token streams to your screen as it is made.\n\nThe useful bit: generating tokens is the slow step, so asking for a shorter answer means fewer loops and a faster reply.\n\nWould you rather have a short answer fast, or a long one slow?\n\nSources: Anthropic docs (glossary: next-token prediction, tokens; streaming messages), OpenAI latency optimization guide (output tokens drive latency). The token split and the odds in the video are examples.",
+ "keywords": [
+  "why AI types word by word",
+  "how chatbots work",
+  "what are tokens AI",
+  "next token prediction",
+  "AI streaming answer",
+  "how LLMs generate text",
+  "AI explained"
+ ],
+ "hashtags": [
+  "#ai",
+  "#tech",
+  "#chatbot",
+  "#techexplained",
+  "#llm"
+ ],
+ "sources": [
+  {
+   "url": "https://platform.claude.com/docs/en/about-claude/glossary",
+   "note": "Anthropic glossary (read 27 Nov 2026): autoregressive language models are pretrained to predict the next word given the previous context; tokens are the smallest units of a language model and can be words, subwords, characters or bytes"
+  },
+  {
+   "url": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+   "note": "Anthropic, Streaming messages (read 27 Nov 2026): a response can be streamed incrementally with server-sent events"
+  },
+  {
+   "url": "https://developers.openai.com/api/docs/guides/latency-optimization",
+   "note": "OpenAI, Latency optimization (read through search 27 Nov 2026; the page itself was not reachable from the build session): generating tokens is almost always the highest-latency step; cutting 50% of output tokens may cut about 50% of latency"
+  }
+ ]
+}

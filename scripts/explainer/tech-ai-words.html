@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why AI types word by word</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* @techin20sec, 27 Nov 2026: the first real 2.5D map reel (design/references.md "R-ref 27 Nov 2026" + its rules; owner's 2.5D notes 1-6 of 27 Nov).
+   Topic: why an AI chat types its answer word by word. The map follows the process: a LINE out (your prompt -> tokens -> the model), a LOOP on the
+   right (the model reads everything so far -> predicts one next token -> adds it on -> again), a LINE back (each token streams to your screen).
+   One camera over one canvas; moves of 0.45-0.7 s with a quick ease, no dwell before a move; the next card shows as a ghost before the camera goes;
+   coloured light wedges and dim sub-nodes, grid and dust fill the frame; text on plates, 26 world px+ at the hold scale (26 px+ at 1080).
+   Glitch rules (owner note 2): every value is continuous in t (no modulo wraps, no per-frame random, no instant swaps, no will-change raster pops);
+   the camera path is built from the real hold position, so a flight starts exactly where the hold ends.
+   Facts: Anthropic glossary (models predict the next token given the text so far; tokens are pieces of words), Anthropic streaming docs (a reply is
+   sent incrementally), OpenAI latency guide (generating tokens is the slowest step; fewer output tokens, lower latency). The token split and the odds
+   bars are labelled EXAMPLE. See review/tech/showreel-tech-ai-words.md. */
+:root{--f:'Inter Tight',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-family:var(--f);-webkit-font-smoothing:antialiased;color:#fff}
+.a{position:absolute}
+#stage{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#bgc{left:0;top:0;width:540px;height:960px}
+#view{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:10px;height:10px;transform-origin:0 0}
+.tile{width:210px;height:232px;border-radius:30px;border:3px solid var(--c);background:linear-gradient(165deg,var(--ct),#10121a 86%)}
+.tn{left:16px;top:14px;width:46px;height:46px;border-radius:50%;border:3px solid var(--c);color:var(--c);font:800 25px/40px var(--m);text-align:center}
+.tl{left:0;width:100%;text-align:center;font:800 29px/1.08 var(--f);letter-spacing:.01em;white-space:nowrap}
+.sub{height:64px;border-radius:18px;border:2px solid var(--c);background:#10131b;padding:0 18px 0 62px;font:700 26px/60px var(--m);letter-spacing:.04em;white-space:nowrap;color:rgba(255,255,255,.86)}
+.sub svg{position:absolute;left:16px;top:14px}
+.pan{border-radius:30px;border:3px solid var(--c);background:linear-gradient(170deg,var(--ct),#0d0f16 80%)}
+.ph{left:24px;top:20px;font:800 27px/1 var(--m);letter-spacing:.1em;color:var(--c);white-space:nowrap}
+.ghost{border-radius:30px;border:3px dashed var(--c);background:rgba(255,255,255,.03)}
+.chip{height:54px;border-radius:14px;border:2px solid var(--c);background:rgba(255,255,255,.04);font:700 30px/50px var(--m);padding:0 12px;white-space:pre;color:#fff}
+.bub{border-radius:24px;padding:14px 20px;font:700 32px/1.25 var(--f);color:#fff}
+#tags .tg{height:30px;border-radius:15px;background:#0c0e14;border:1.5px solid var(--c);padding:0 11px 0 4px;font:800 13px/27px var(--f);letter-spacing:.06em;white-space:nowrap;color:#fff}
+#tags .tg i{display:inline-block;width:21px;height:21px;margin:0 6px 0 0;border-radius:50%;background:var(--c);color:#0b0c10;font:800 12px/21px var(--m);font-style:normal;text-align:center;vertical-align:1px}
+#top{left:0;top:0;width:540px;height:262px;background:linear-gradient(#08090d 0,#08090d 70%,rgba(8,9,13,0) 100%)}
+#logo{left:50%;top:100px;margin-left:-64px;width:128px;height:26px;border-radius:13px;background:#14161e;border:1.5px solid rgba(255,255,255,.22);font:800 12px/23px var(--m);letter-spacing:.08em;text-align:center;color:rgba(255,255,255,.9)}
+#title{left:0;top:132px;width:540px;text-align:center;font:900 38px/1.02 var(--f);letter-spacing:-.01em;white-space:nowrap;text-transform:uppercase}
+#pillw{left:50%;top:216px;width:260px;margin-left:-130px;height:30px;overflow:hidden;border-radius:999px;border:2px solid var(--c);background:#0c0e14}
+#pillw span{left:0;top:0;width:100%;text-align:center;font:800 13px/26px var(--m);letter-spacing:.12em;color:var(--c);white-space:nowrap}
+#hook{left:44px;top:262px;width:430px;height:84px}
+#banner{left:-60px;top:254px;width:660px;height:56px;transform-origin:50% 50%}
+#banner div{left:0;top:0;width:660px;height:56px;background:var(--c);color:#0a0b10;font:900 36px/56px var(--f);letter-spacing:.02em;text-align:center;white-space:nowrap}
+#cap{left:44px;top:708px;width:410px;text-align:center;font:800 27px/1.22 var(--f);letter-spacing:-.01em}
+#cap .bx{display:inline-block;padding:10px 18px 12px;border-radius:16px;background:#12141b;border:1px solid rgba(255,255,255,.08)}
+#cap .w{display:inline-block;margin:0 .12em;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="stage" class="a">
+  <canvas id="bgc" class="a" width="1080" height="1920"></canvas>
+  <div id="view" class="a" data-fit="free"><div id="world" class="a">
+    <svg id="lines" class="a" width="2600" height="1800" viewBox="0 0 2600 1800" style="left:0;top:0;overflow:visible"></svg>
+    <div id="subs" class="a"></div>
+    <div id="nodes" class="a"></div>
+    <div id="pans" class="a"></div>
+  </div></div>
+  <div id="tags" class="a" style="left:0;top:0"></div>
+</div>
+<div id="top" class="a" data-ui></div>
+<div id="logo" class="a" data-ui>TECH IN 20 SEC</div>
+<div id="title" class="a" data-hook><div>WHY AI TYPES</div><div>WORD BY WORD</div></div>
+<div id="pillw" class="a" data-ui><span id="p0" class="a"></span><span id="p1" class="a"></span></div>
+<div id="hook" class="a" data-ui></div>
+<div id="banner" class="a" data-ui><div class="a">SHORTER = FASTER</div></div>
+<div id="subj" class="a" data-subject style="left:24px;top:268px;width:444px;height:428px;pointer-events:none"></div>
+<div id="bandm" class="a" data-band style="left:0;top:700px;width:540px;height:100px;pointer-events:none"></div>
+<div id="cap" class="a" data-subs></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k * k * k * (k * (k * 6 - 15) + 10); };
+  var back = function(k){ var c = 1.6; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+  var hh = function(a, b){ var x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return x - Math.floor(x); };
+  var rgb = function(c, a){ return 'rgba(' + c.map(Math.round).join(',') + ',' + (a == null ? 1 : a) + ')'; };
+  var cmix = function(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k), mix(a[2], b[2], k)]; };
+  var DUR = 29.6;
+  // ---- the story clock: each step starts on its sentence ("One: ..."); the camera leaves on that word (no dwell), the next card's ghost shows 0.5 s before
+  var AT = [0.25, 3.5, 7.0, 10.6, 14.0, 17.3, 21.4, 24.9];
+  var FLY = [0, .6, .5, .5, .45, .45, .65, .75];
+  // ---- the map (world px): a line out on top, the loop on the right, a line back along the bottom
+  var C = [1060, 1220], R = 360;
+  var PT = [null, [420, 380], [1060, 380], [1060, 860], [C[0] + R * Math.cos(Math.PI / 6), C[1] + R * Math.sin(Math.PI / 6)], [C[0] + R * Math.cos(5 * Math.PI / 6), C[1] + R * Math.sin(5 * Math.PI / 6)], [420, 1000]];
+  var COL = [[236,228,214],[86,152,255],[255,178,64],[176,118,255],[255,96,170],[70,226,146],[255,104,88]];
+  var NAME = ['', 'YOUR PROMPT', 'TOKENS', 'THE MODEL', 'NEXT TOKEN', 'ADD IT ON', 'STREAM'];
+  var LAB = ['', ['YOUR', 'PROMPT'], ['TOKENS', 'PIECES'], ['THE', 'MODEL'], ['NEXT', 'TOKEN'], ['ADD', 'IT ON'], ['STREAM', 'TO YOU']];
+  // camera stops: [x, y, scale] (screen centre of the map area is x 256, y 452); 0 = the whole map, 7 = the whole map again (payoff)
+  var WIDE0 = [885, 724, .24], WIDE1 = [885, 744, .24];
+  var STOP = [WIDE0, [740, 600, .5], [1250, 610, .5], [1060, 1080, .51], [1120, 1150, .51], [1000, 1150, .51], [650, 740, .5], WIDE1];
+  var DRIFT = [[-12, 9, .005], [15, -8, .007], [-15, 9, .007], [12, 10, .006], [-14, 8, .006], [14, -8, .007], [-15, -9, .007], [8, 12, .002]];
+  var X0 = 252, Y0 = 470;
+  function holdPos(i, t){ var a = STOP[i], d = DRIFT[i], h = Math.max(0, t - (AT[i] + FLY[i])); return [a[0] + d[0] * h, a[1] + d[1] * h, a[2] + d[2] * h]; }
+  function cam(t){
+    for (var i = 7; i >= 1; i--) if (t >= AT[i]){
+      var e = AT[i] + FLY[i]; if (t >= e) return holdPos(i, t);
+      var k = io(P(t, AT[i], e)), a = holdPos(i - 1, AT[i]), b = STOP[i], s = Math.exp(mix(Math.log(a[2]), Math.log(b[2]), k));
+      return [mix(a[0], b[0], k), mix(a[1], b[1], k), s];
+    }
+    return holdPos(0, t);
+  }
+  // which step is lit: switches mid-flight
+  function stepAt(t){ var s = 0; for (var i = 1; i <= 6; i++) if (t >= AT[i] + FLY[i] * .45) s = i; if (t >= AT[7] + FLY[7] * .45) s = 7; return s; }
+  // focus of a node 0..1, eased (never a snap)
+  function focus(i, t){
+    var f = .85, k;   // the whole map at the start: every node at 85 %
+    for (var j = 1; j <= 7; j++){ var on = j === i ? 1 : (j === 7 ? .85 : 0), a = AT[j] + FLY[j] * .2, b = AT[j] + FLY[j] * .8; k = io(P(t, a, b)); if (t >= a) f = mix(f, on, k); }
+    return f;
+  }
+  // ---- build
+  var SVGNS = 'http://www.w3.org/2000/svg', lines = $('lines'), nodesEl = $('nodes'), subsEl = $('subs'), pans = $('pans'), tagsEl = $('tags');
+  function E(par, cls, css, html){ var d = document.createElement('div'); d.className = 'a ' + (cls || ''); d.setAttribute('data-ui', ''); if (css) d.style.cssText = css; if (html != null) d.innerHTML = html; par.appendChild(d); return d; }
+  function S(par, tag, at){ var e = document.createElementNS(SVGNS, tag); for (var k in at) e.setAttribute(k, at[k]); par.appendChild(e); return e; }
+  function ent(el, lt, delay, kind, dur){   // an element's own entrance (each its own way), continuous in t
+    var k = cl((lt - delay) / (dur || .4)), b = back(k), tr = '';
+    if (kind === 'up') tr = 'translateY(' + ((1 - b) * 24).toFixed(2) + 'px)'; else if (kind === 'dn') tr = 'translateY(' + (-(1 - b) * 24).toFixed(2) + 'px)';
+    else if (kind === 'l') tr = 'translateX(' + (-(1 - b) * 36).toFixed(2) + 'px)'; else if (kind === 'r') tr = 'translateX(' + ((1 - b) * 36).toFixed(2) + 'px)';
+    else if (kind === 'pop') tr = 'scale(' + (.6 + .4 * b).toFixed(4) + ')';
+    el.style.opacity = cl(k * 2.5).toFixed(3); el.style.transform = tr; return k;
+  }
+  function ico(i, col){
+    var a = 'fill="none" stroke="' + col + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"', o = '<svg width="84" height="84" viewBox="0 0 84 84" ' + a + '>';
+    if (i === 1) return o + '<rect x="22" y="6" width="40" height="72" rx="9"/><path d="M32 30h20M32 42h14"/></svg>';
+    if (i === 2) return o + '<rect x="6" y="28" width="22" height="28" rx="5"/><rect x="31" y="28" width="22" height="28" rx="5"/><rect x="56" y="28" width="22" height="28" rx="5"/></svg>';
+    if (i === 3) return o + '<rect x="18" y="18" width="48" height="48" rx="8"/><path d="M30 6v12M42 6v12M54 6v12M30 66v12M42 66v12M54 66v12M6 30h12M6 42h12M6 54h12M66 30h12M66 42h12M66 54h12"/><rect x="31" y="31" width="22" height="22" rx="3"/></svg>';
+    if (i === 4) return o + '<path d="M12 72V50M30 72V22M48 72V40M66 72V58"/><circle cx="30" cy="12" r="5"/></svg>';
+    if (i === 5) return o + '<path d="M66 40a24 24 0 1 1-8-18"/><path d="M60 8l0 16l-16 0"/><path d="M42 30v20M32 40h20"/></svg>';
+    return o + '<path d="M10 22h40M10 38h30M10 54h22"/><path d="M56 46l14 12-14 12"/></svg>';
+  }
+  function sico(kind, col){
+    var a = 'fill="none" stroke="' + col + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"', o = '<svg width="34" height="34" viewBox="0 0 34 34" ' + a + '>';
+    if (kind === 'chat') return o + '<path d="M5 8h24v14H14l-7 6v-6H5z"/></svg>';
+    if (kind === 'text') return o + '<path d="M6 8h22M17 8v20"/></svg>';
+    if (kind === 'cut') return o + '<path d="M17 4v26" stroke-dasharray="3 4"/><rect x="4" y="10" width="9" height="14" rx="2"/><rect x="21" y="10" width="9" height="14" rx="2"/></svg>';
+    if (kind === 'cloud') return o + '<path d="M9 26h17a6 6 0 0 0 0-12 9 9 0 0 0-17 2 5 5 0 0 0 0 10z"/></svg>';
+    if (kind === 'eye') return o + '<path d="M3 17s5-9 14-9 14 9 14 9-5 9-14 9S3 17 3 17z"/><circle cx="17" cy="17" r="4"/></svg>';
+    if (kind === 'odds') return o + '<path d="M7 28V18M15 28V8M23 28V14M31 28V22"/></svg>';
+    if (kind === 'plus') return o + '<path d="M17 6v22M6 17h22"/></svg>';
+    if (kind === 'again') return o + '<path d="M27 17a10 10 0 1 1-3-7"/><path d="M25 3v7h-7"/></svg>';
+    return o + '<path d="M6 17h18M18 9l8 8-8 8"/></svg>';
+  }
+  var NODE = [null], TAG = [null];
+  for (var i = 1; i <= 6; i++){
+    var c = COL[i], ct = rgb(cmix(c, [16, 18, 26], .62));
+    var nd = E(nodesEl, 'tile', 'left:' + (PT[i][0] - 105) + 'px;top:' + (PT[i][1] - 116) + 'px;--c:' + rgb(c) + ';--ct:' + ct, '');
+    E(nd, 'tn', '', String(i)); E(nd, '', 'left:63px;top:34px', ico(i, rgb(c)));
+    E(nd, 'tl', 'top:136px', LAB[i][0] + '<br>' + LAB[i][1]);
+    NODE.push(nd);
+    var tg = E(tagsEl, 'tg', '--c:' + rgb(c), '<i>' + i + '</i>' + NAME[i]); TAG.push(tg);
+  }
+  // sub-nodes: 1-2 small real things per node (icon + short label), dim context that fills the map (each bobs gently, continuous)
+  var SUBD = [[1, 'chat', 'CHAT', -260, -40], [1, 'text', 'TEXT', -250, 200], [2, 'cut', 'PIECES', 300, -40], [3, 'cloud', 'SERVER', -300, -60], [3, 'eye', 'READS', 290, 20],
+    [4, 'odds', 'ODDS', 120, 260], [4, 'again', 'PICK 1', 260, -170], [5, 'plus', '+1', -230, 170], [5, 'again', 'REPEAT', -40, 300], [6, 'arrow', 'LIVE', -250, 120], [6, 'chat', 'SCREEN', -110, 300]];
+  var SUBS = SUBD.map(function(d, n){ var c = COL[d[0]], w = 62 + 18 + d[2].length * 16.2 + 8; var el = E(subsEl, 'sub', 'left:' + (PT[d[0]][0] + d[3] - w / 2) + 'px;top:' + (PT[d[0]][1] + d[4] - 32) + 'px;--c:' + rgb(c, .7), sico(d[1], rgb(c)) + d[2]);
+    var x1 = PT[d[0]][0] + d[3], y1 = PT[d[0]][1] + d[4], L = S(lines, 'line', { x1: PT[d[0]][0], y1: PT[d[0]][1], x2: x1, y2: y1, stroke: rgb(c, .32), 'stroke-width': 2, 'stroke-dasharray': '4 9' });
+    var dt = S(lines, 'circle', { cx: x1, cy: y1, r: 5, fill: rgb(c, .7) });
+    return { el: el, i: d[0], n: n, ln: L, dt: dt }; });
+  // lines: thin, with small end dots; each link is pre-drawn faint (the map exists from frame 0) and drawn bright ONCE, just before the camera follows it
+  function trimLine(a, b, ta, tb){ var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L; return [[a[0] + ux * ta, a[1] + uy * ta], [b[0] - ux * tb, b[1] - uy * tb]]; }
+  var LINKS = [];   // {from, to, path d, len, colour, drawAt}
+  function addLink(fi, ti, d, len, col, drawAt){
+    var base = S(lines, 'path', { d: d, fill: 'none', stroke: 'rgba(255,255,255,.16)', 'stroke-width': 3, 'stroke-dasharray': '10 10' });
+    var lit = S(lines, 'path', { d: d, fill: 'none', stroke: rgb(col), 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-dasharray': len + ' ' + len, 'stroke-dashoffset': len });
+    LINKS.push({ base: base, lit: lit, len: len, col: col, drawAt: drawAt, from: fi, to: ti });
+  }
+  function straight(fi, ti, drawAt){ var q = trimLine(PT[fi], PT[ti], 130, 130); addLink(fi, ti, 'M' + q[0][0] + ' ' + q[0][1] + 'L' + q[1][0] + ' ' + q[1][1], Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]), COL[ti], drawAt);
+    S(lines, 'circle', { cx: q[0][0], cy: q[0][1], r: 7, fill: rgb(COL[fi], .9) }); S(lines, 'circle', { cx: q[1][0], cy: q[1][1], r: 7, fill: rgb(COL[ti], .9) }); }
+  function arc(fi, ti, a0, a1, drawAt){ var g = 21 * Math.PI / 180, s0 = a0 + g, s1 = a1 - g, x0 = C[0] + R * Math.cos(s0), y0 = C[1] + R * Math.sin(s0), x1 = C[0] + R * Math.cos(s1), y1 = C[1] + R * Math.sin(s1);
+    addLink(fi, ti, 'M' + x0 + ' ' + y0 + 'A' + R + ' ' + R + ' 0 0 1 ' + x1 + ' ' + y1, R * (s1 - s0), COL[ti], drawAt);
+    S(lines, 'circle', { cx: x0, cy: y0, r: 7, fill: rgb(COL[fi], .9) }); S(lines, 'circle', { cx: x1, cy: y1, r: 7, fill: rgb(COL[ti], .9) });
+    var ah = S(lines, 'path', { d: 'M-12 -11L4 0L-12 11', fill: 'none', stroke: rgb(COL[ti]), 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0, transform: 'translate(' + x1 + ',' + y1 + ') rotate(' + ((s1 * 180 / Math.PI) + 90) + ')' }); LINKS[LINKS.length - 1].head = ah; }
+  straight(1, 2, AT[2] - .5); straight(2, 3, AT[3] - .5);
+  arc(3, 4, -Math.PI / 2, Math.PI / 6, AT[4] - .5); arc(4, 5, Math.PI / 6, 5 * Math.PI / 6, AT[5] - .5); arc(5, 3, 5 * Math.PI / 6, 3 * Math.PI / 2, AT[5] + 1.2);
+  straight(5, 6, AT[6] - .5); straight(6, 1, AT[6] + 1.6);
+  var RUN = S(lines, 'path', { d: '', fill: 'none', stroke: rgb(COL[5]), 'stroke-width': 9, 'stroke-linecap': 'round', opacity: 0 });
+  LINKS.forEach(function(l){ if (l.head) lines.appendChild(l.head); });   // arrow heads above the runner (no one-frame cover as it passes)
+  // the loop runner: a bright short arc that goes round the loop (the loop running IS the subject of steps 5-6, not decoration); continuous in angle
+  var T5 = AT[5] + .35;
+  function omega(t){ var w = Math.min(1.2, .7 + .25 * (t - T5)); if (t > AT[7]) w = mix(w, .55, io(P(t, AT[7], AT[7] + 1.2))); return w; }
+  function phi(t){ if (t <= T5) return 0; var s = 0, dt = 1 / 240, x = T5; while (x < t){ var h = Math.min(dt, t - x); s += omega(x + h / 2) * h; x += h; } return s; }
+  // the answer, one token per loop (EXAMPLE); a token lands when the runner passes "ADD IT ON" (angle 150 deg = phase 2/3 of a turn from the top)
+  var ANS = ['Sun', 'light', ' scatters', ' off', ' air,', ' and', ' blue', ' scatters', ' most.'];
+  function tokTimes(){ var r = [], k = 0, t = T5, s = 0; while (k < ANS.length && t < DUR){ var h = 1 / 240; s += omega(t + h / 2) * h; t += h; if (s >= k + 2 / 3){ r.push(t); k++; } } return r; }
+  var TT = tokTimes();
+  // ---- panels (one working interface per step); ghost outline shows before the camera goes there
+  var PAN = [null], GH = [null], X = [null];
+  var PPOS = [null, [745, 690, 470, 300], [1380, 650, 520, 300], [1060, 1150, 430, 260], [1060, 1150, 430, 260], [1060, 1150, 430, 260], [700, 690, 470, 300]];
+  for (var j = 1; j <= 6; j++){ var pp = PPOS[j], c2 = COL[j];
+    GH.push(E(pans, 'ghost', 'left:' + (pp[0] - pp[2] / 2) + 'px;top:' + (pp[1] - pp[3] / 2) + 'px;width:' + pp[2] + 'px;height:' + pp[3] + 'px;--c:' + rgb(c2, .7) + ';opacity:0'));
+    var pn = E(pans, 'pan', 'left:' + (pp[0] - pp[2] / 2) + 'px;top:' + (pp[1] - pp[3] / 2) + 'px;width:' + pp[2] + 'px;height:' + pp[3] + 'px;--c:' + rgb(c2) + ';--ct:' + rgb(cmix(c2, [16, 18, 26], .7)) + ';opacity:0');
+    PAN.push(pn); }
+  var PROMPT = ['Why', ' is', ' the', ' sky', ' blue', '?'];
+  var CHC = [[86,152,255],[255,178,64],[176,118,255],[255,96,170],[70,226,146],[255,104,88]];
+  // 1: the chat, the question typed, then sent as text
+  (function(){ var p = PAN[1], cs = rgb(COL[1]);
+    E(p, 'ph', '', 'YOUR PROMPT');
+    var bub = E(p, 'bub', 'right:24px;top:84px;background:' + rgb(COL[1], .9) + ';white-space:nowrap', '');
+    var snd = E(p, '', 'right:24px;top:196px;height:56px;border-radius:28px;border:2.5px solid ' + cs + ';padding:0 22px;font:800 26px/51px var(--m);letter-spacing:.08em;color:' + cs + ';white-space:nowrap', 'SENT AS TEXT &rsaquo;');
+    var Q = 'Why is the sky blue?', QS = Q.split('').map(function(ch){ var s = document.createElement('span'); s.textContent = ch; s.style.opacity = 0; bub.appendChild(s); return s; });
+    // typed: each letter fades in over 0.08 s (no letter pops in a single frame); the bubble keeps its full size
+    X[1] = function(lt, t){ QS.forEach(function(s, n){ var a = .15 + n * .05; s.style.opacity = cl(P(lt, a, a + .08)).toFixed(3); }); bub.style.opacity = cl(P(lt, 0, .2)).toFixed(3);
+      ent(snd, lt, 1.6, 'pop', .4); };
+  })();
+  // 2: the question splits into token chips
+  (function(){ var p = PAN[2]; E(p, 'ph', '', 'EXAMPLE SPLIT');
+    var x = 24, ch = PROMPT.map(function(w, n){ w = w.trim(); var wd = 26 + w.length * 18.1, el = E(p, 'chip', 'left:' + x + 'px;top:96px;--c:' + rgb(CHC[n]) + ';width:' + wd + 'px', w.replace(/^ /, '&nbsp;')); el._x = x; x += wd + 10; return el; });
+    var tot = E(p, '', 'left:24px;top:196px;height:56px;border-radius:28px;border:2.5px solid ' + rgb(COL[2]) + ';padding:0 22px;font:800 26px/51px var(--m);letter-spacing:.08em;color:' + rgb(COL[2]) + ';white-space:nowrap', 'SIX TOKENS');
+    X[2] = function(lt, t){ ch.forEach(function(el, n){ var k = out(P(lt, .1 + n * .13, .45 + n * .13)); el.style.opacity = cl(k * 2).toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * -30).toFixed(2) + 'px) rotate(' + ((1 - k) * (n % 2 ? 9 : -9)).toFixed(2) + 'deg)'; });
+      ent(tot, lt, 1.2, 'up', .4); };
+  })();
+  // 3: the model reads every token so far (a reading bar sweeps the row once, the core lights)
+  (function(){ var p = PAN[3]; E(p, 'ph', '', 'READS ALL SO FAR');
+    var x = 24, row = PROMPT.map(function(w, n){ w = w.trim(); var wd = 22 + w.length * 14.5, el = E(p, 'chip', 'left:' + x + 'px;top:76px;--c:' + rgb(CHC[n], .8) + ';width:' + wd + 'px;font-size:24px', w.replace(/^ /, '&nbsp;')); x += wd + 8; return el; });
+    var bar = E(p, '', 'left:24px;top:146px;width:380px;height:10px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden', '<div class="a" style="left:0;top:0;height:10px;width:380px;border-radius:5px;background:' + rgb(COL[3]) + ';transform-origin:0 0"></div>');
+    var fill = bar.firstChild, core = E(p, '', 'left:24px;top:172px;width:380px;height:66px;border-radius:18px;border:2.5px solid ' + rgb(COL[3], .8) + ';background:#121022', '');
+    var cells = []; for (var q = 0; q < 11; q++){ cells.push(E(core, '', 'left:' + (14 + q * 32) + 'px;top:13px;width:24px;height:36px;border-radius:6px;background:' + rgb(COL[3]))); }
+    X[3] = function(lt, t){ row.forEach(function(el, n){ el.style.opacity = '1'; var k = P(lt, .5 + n * .16, .7 + n * .16); el.style.background = rgb(CHC[n], .06 + .22 * k); });
+      ent(bar, lt, .2, 'l', .35); fill.style.transform = 'scaleX(' + io(P(lt, .5, 1.6)).toFixed(4) + ')'; ent(core, lt, .35, 'up', .4);
+      cells.forEach(function(c3, n){ c3.style.opacity = (.15 + .75 * cl(P(lt, .6 + n * .08, 1.0 + n * .08)) * (.75 + .25 * Math.sin(t * 3 + n * .7))).toFixed(3); }); };
+  })();
+  // 4: it predicts ONE next token: three candidate bars grow, the top one is picked (no numbers: EXAMPLE odds)
+  (function(){ var p = PAN[4]; E(p, 'ph', '', 'EXAMPLE ODDS');
+    var cand = [['Sun', .86], ['Blue', .42], ['The', .22]], rows = cand.map(function(c4, n){ var r = E(p, '', 'left:24px;top:' + (68 + n * 60) + 'px;width:380px;height:50px', '<div class="a" style="left:0;top:0;width:110px;font:800 28px/50px var(--m);color:#fff">' + c4[0] + '</div><div class="a" style="left:116px;top:12px;width:256px;height:26px;border-radius:13px;background:rgba(255,255,255,.08)"></div><div class="a" style="left:116px;top:12px;width:' + Math.round(256 * c4[1]) + 'px;height:26px;border-radius:13px;background:' + rgb(COL[4], n ? .45 : 1) + ';transform-origin:0 0"></div>'); return r; });
+    var pick = E(p, '', 'left:14px;top:60px;width:402px;height:66px;border-radius:16px;border:3px solid ' + rgb(COL[4]), '');
+    X[4] = function(lt, t){ rows.forEach(function(r, n){ ent(r, lt, .15 + n * .15, n % 2 ? 'r' : 'l', .4); r.lastChild.style.transform = 'scaleX(' + out(P(lt, .45 + n * .15, 1.15 + n * .15)).toFixed(4) + ')'; });
+      var k = P(lt, 1.6, 2.0); pick.style.opacity = cl(k * 2).toFixed(3); pick.style.transform = 'scale(' + (1.08 - .08 * out(k)).toFixed(4) + ')';
+      rows[1].style.opacity = (cl(+rows[1].style.opacity) * (1 - .5 * k)).toFixed(3); rows[2].style.opacity = (cl(+rows[2].style.opacity) * (1 - .5 * k)).toFixed(3); };
+  })();
+  // 5: add it on: the answer row grows one token per loop (the runner passing ADD IT ON)
+  (function(){ var p = PAN[5]; E(p, 'ph', '', 'ADD IT ON, AGAIN');
+    var qrow = E(p, '', 'left:24px;top:66px;width:380px;height:40px;font:700 26px/40px var(--m);color:rgba(255,255,255,.5);white-space:pre', 'Why is the sky blue?');
+    var box = E(p, '', 'left:24px;top:116px;width:380px;height:130px', '');
+    var x = 0, y = 0, ch = ANS.map(function(w, n){ var wd = 20 + w.length * 15.5; if (x + wd > 380){ x = 0; y += 62; } var el = E(box, 'chip', 'left:' + x + 'px;top:' + y + 'px;--c:' + rgb(COL[5]) + ';width:' + wd + 'px;font-size:26px;opacity:0', w.replace(/^ /, '&nbsp;')); x += wd + 8; return el; });
+    X[5] = function(lt, t){ ent(qrow, lt, .1, 'dn', .35); ch.forEach(function(el, n){ var k = TT[n] ? out(P(t, TT[n], TT[n] + .22)) : 0; el.style.opacity = cl(k * 2.2).toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 18).toFixed(2) + 'px) scale(' + (.8 + .2 * back(k)).toFixed(4) + ')'; }); };
+  })();
+  // 6: each new token streams to your screen (the reply fills piece by piece, the same token times)
+  (function(){ var p = PAN[6]; E(p, 'ph', '', 'ON YOUR SCREEN');
+    E(p, 'bub', 'right:24px;top:72px;background:' + rgb(COL[1], .9) + ';white-space:nowrap;font-size:24px;padding:10px 16px', 'Why is the sky blue?');
+    var ab = E(p, 'bub', 'left:24px;top:126px;width:420px;height:160px;background:#1d2029;border:2px solid ' + rgb(COL[6], .7), '');
+    var spans = ANS.map(function(w){ var s = document.createElement('span'); s.textContent = w; s.style.opacity = 0; ab.appendChild(s); return s; });
+    X[6] = function(lt, t){ ent(ab, lt, .05, 'up', .35); spans.forEach(function(s, n){ s.style.opacity = TT[n] ? cl(P(t, TT[n] + .05, TT[n] + .2)).toFixed(3) : 0; }); };
+  })();
+  // the hook (0-3.5 s): a chat answer typing word by word over the whole map, then it shrinks into the map as the camera goes in
+  var hk = $('hook');
+  var ha = E(hk, 'bub', 'left:0;top:0;width:430px;height:94px;background:#1b1e27;border:2px solid rgba(255,255,255,.18);font-size:27px;line-height:1.2', '');
+  var HSP = ANS.map(function(w){ var s = document.createElement('span'); s.textContent = w; s.style.opacity = 0; ha.appendChild(s); return s; });
+  var hcur = document.createElement('span'); hcur.textContent = '▍'; hcur.style.color = rgb(COL[6]); ha.appendChild(hcur);
+  // ---- background (canvas, screen space): torch-like light wedges from the lit node, a faint grid with parallax, slow dust. No blur stacks.
+  var bg = $('bgc').getContext('2d');
+  // how far an element sits inside the safe zone (x 26-470, y 128-690): 1 inside, fading to 0 within 24 px beyond (no text under the side buttons or the caption overlay)
+  function safeK(l, r, tp, b){ return cl(1 - Math.max(0, r - 470, 26 - l, 128 - tp, b - 690) / 24); }
+  function toScreen(p, cm){ return [X0 + (p[0] - cm[0]) * cm[2], Y0 + (p[1] - cm[1]) * cm[2]]; }
+  var WEDGE = [null, -135, -45, 0, 40, 140, 180];   // outward direction (deg) of each node's light wedge
+  function drawBg(t, cm, col, fo){
+    bg.setTransform(2, 0, 0, 2, 0, 0); bg.clearRect(0, 0, 540, 960);
+    // wedges: each node casts a soft coloured beam outward; the lit one strongest; dim and low contrast
+    for (var i = 1; i <= 6; i++){ var sp = toScreen(PT[i], cm), a = (.05 + .17 * fo[i]) * (1 + .06 * Math.sin(t * .9 + i)), L = 520, ang = WEDGE[i] * Math.PI / 180, wd = 26 * Math.PI / 180;
+      var g = bg.createRadialGradient(sp[0], sp[1], 10, sp[0], sp[1], L); g.addColorStop(0, rgb(COL[i], a)); g.addColorStop(.55, rgb(COL[i], a * .35)); g.addColorStop(1, rgb(COL[i], 0));
+      bg.fillStyle = g; bg.beginPath(); bg.moveTo(sp[0], sp[1]); bg.arc(sp[0], sp[1], L, ang - wd, ang + wd); bg.closePath(); bg.fill();
+      var g2 = bg.createRadialGradient(sp[0], sp[1], 0, sp[0], sp[1], 240 * Math.max(cm[2] * 2, .6)); g2.addColorStop(0, rgb(COL[i], a * .7)); g2.addColorStop(1, rgb(COL[i], 0)); bg.fillStyle = g2; bg.fillRect(0, 0, 540, 960); }
+    // grid: faint dots at the world's own spacing (moves with the map, a far layer at 0.6x)
+    var sp0 = 120 * cm[2] * .6, ox = (X0 - cm[0] * cm[2] * .6) % sp0, oy = (Y0 - cm[1] * cm[2] * .6) % sp0; if (ox < 0) ox += sp0; if (oy < 0) oy += sp0;
+    bg.fillStyle = 'rgba(255,255,255,.075)'; for (var gx = ox - sp0; gx < 560; gx += sp0) for (var gy = oy - sp0; gy < 980; gy += sp0){ if (gy < 268) continue; bg.fillRect(gx - 1, gy - 1, 2, 2); }
+    // dust: slow, continuous (sine drift, no wrap), tinted by the lit step
+    for (var n = 0; n < 72; n++){ var px = hh(n, 1) * 540, py = 270 + hh(n, 2) * 690, sx = px + Math.sin(t * (.25 + hh(n, 3) * .3) + n) * 26 - (cm[0] - 1140) * cm[2] * .15, sy = py + Math.cos(t * (.2 + hh(n, 4) * .3) + n * 2) * 22 - (cm[1] - 700) * cm[2] * .15;
+      sx = ((sx % 600) + 600) % 600 - 30; if (sy < 270 || sx < -10 || sx > 550) continue; var r = .7 + hh(n, 5) * 1.6; bg.fillStyle = rgb(cmix(col, [255, 255, 255], .4), .1 + .18 * hh(n, 6)); bg.beginPath(); bg.arc(sx, sy, r, 0, 6.283); bg.fill(); }
+  }
+  // ---- captions: word by word from the real voice (window.setVoice); the box comes with its first word; groups cross-fade (no instant swap)
+  var WORDS = [], GR = [], KEY = { tokens: 1, token: 1, model: 1, predicts: 1, loop: 1, streams: 1, faster: 1, chatbots: 1, text: 1 }, capEls = [], capG = -1;
+  function groups(){ GR = []; var cur = null; WORDS.forEach(function(w, n){ var prev = WORDS[n - 1]; if (!cur || (prev && w.s - prev.e > .18) || cur.length >= 6){ cur = []; GR.push(cur); } cur.push(w); }); }
+  window.setVoice = function(v){ if (v && v.words && v.words.length){ WORDS = v.words.map(function(w){ return { w: String(w.w).replace(/[‘’]/g, "'"), s: +w.s, e: +w.e }; }); groups(); capG = -1; } };
+  var capEl = $('cap');
+  function caption(t, col){
+    var gi = -1; for (var g = 0; g < GR.length; g++) if (GR[g][0].s - .05 <= t) gi = g;
+    if (gi < 0){ capEl.style.opacity = 0; return; }
+    var gr = GR[gi], gEnd = gr[gr.length - 1].e, next = GR[gi + 1], fadeOut = next ? P(t, next[0].s - .12, next[0].s - .05) : 0;
+    if (gi !== capG){ capG = gi; capEl.innerHTML = '<span class="bx"></span>'; capEls = gr.map(function(w){ var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w.w; capEl.firstChild.appendChild(sp); return sp; }); }
+    var first = P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
+    capEl.style.opacity = (first * last).toFixed(3);
+    gr.forEach(function(w, n){ var k = P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
+      s.style.opacity = (.28 + .72 * k).toFixed(3); s.style.color = key ? rgb(col) : '#fff'; });
+  }
+  // ---- sound: a swish on each move, a soft snap on arrival, blips as interface parts land, a tick per streamed token, a lift at the payoff
+  var cues = [], cue = function(o){ cues.push(o); };
+  for (var f = 1; f <= 7; f++){ cue({ t: AT[f] - .05, k: 'move', d: FLY[f] + .1, g: .28, dir: 1, x: 270, r: .25 }); cue({ t: AT[f] + FLY[f], k: 'snap', g: .26, p: 4 + f, x: 270, r: .2 }); }
+  for (var f2 = 2; f2 <= 6; f2++) cue({ t: AT[f2] - .5, k: 'blip', g: .12, p: 9 + f2, x: 300, r: .1 });
+  [[1, .7], [1, 1.7], [2, .5], [2, 1.0], [2, 1.3], [3, .9], [3, 1.6], [4, .8], [4, 1.7]].forEach(function(a, n){ cue({ t: AT[a[0]] + a[1], k: 'blip', g: .15, p: 3 + n, x: 160 + n * 30, r: .15 }); });
+  TT.forEach(function(tt, n){ cue({ t: tt, k: 'tick', g: .12, p: n }); });
+  [0, .5, 1.0, 1.45, 1.9, 2.3, 2.7].forEach(function(tt, n){ cue({ t: .3 + tt, k: 'tick', g: .1, p: n + 2 }); });
+  cue({ t: 0, k: 'swell', d: 1.2, g: .26 }); cue({ t: AT[7] + .35, k: 'thud', g: .42, x: 270, r: .2 }); cue({ t: AT[7] + .4, k: 'resolve', notes: [50, 62, 66, 69, 74], g: .28 });
+  window.CUES = { dur: DUR, cues: cues.sort(function(a, b){ return a.t - b.t; }), mix: { duck: 8 }, bed: { bpm: 100, origin: 0, gain: .2, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [45, 57, 64, 67, 71]] } };
+  window.COVER = .6; window.HOLDS = [[26.6, 29.6]];   // the payoff: the whole map held (the loop still turns, the camera drifts)
+  window.TRANSITIONS = [1, 2, 3, 4, 5, 6, 7].map(function(f){ return [AT[f], AT[f] + FLY[f], f === 7 ? 'pullback' : 'fly']; });
+  // ---- one frame (a pure function of t)
+  function seek(t){
+    t = cl(t, 0, DUR); var cm = cam(t), W = $('world');
+    W.style.transform = 'translate(' + (X0 - cm[0] * cm[2]).toFixed(2) + 'px,' + (Y0 - cm[1] * cm[2]).toFixed(2) + 'px) scale(' + cm[2].toFixed(5) + ')';
+    // the colour of the moment: cross-fades during each move (never a jump)
+    var col = COL[0]; for (var j = 1; j <= 7; j++){ var k = io(P(t, AT[j] + FLY[j] * .1, AT[j] + FLY[j] * .9)); col = cmix(col, j === 7 ? COL[0] : COL[j], k); }
+    document.documentElement.style.setProperty('--c', rgb(col));
+    var tint = cmix([8, 9, 13], col, .11), tcs = 'rgb(' + tint.map(Math.round).join(',') + ')'; $('stage').style.background = tcs; document.body.style.background = tcs; document.documentElement.style.background = tcs;
+    $('top').style.background = 'linear-gradient(' + tcs + ' 0,' + tcs + ' 72%,' + rgb(tint, 0) + ' 100%)';
+    // pill: rolls to the new step (both texts move together; continuous)
+    var st = stepAt(t), ptxt = st === 0 ? 'HOW AN AI ANSWERS' : st === 7 ? 'THE WHOLE LOOP' : '0' + st + ' / 06 · ' + NAME[st];
+    var prevTxt = st <= 1 ? 'HOW AN AI ANSWERS' : st === 7 ? '06 / 06 · STREAM' : '0' + (st - 1) + ' / 06 · ' + NAME[st - 1], sw = st === 0 ? 0 : AT[st] + FLY[st] * .45, rr = st === 0 ? 1 : out(P(t, sw, sw + .3));
+    var p0 = $('p0'), p1 = $('p1'); if (p0.textContent !== prevTxt) p0.textContent = prevTxt; if (p1.textContent !== ptxt) p1.textContent = ptxt;
+    p0.style.transform = 'translateY(' + (-rr * 28).toFixed(2) + 'px)'; p0.style.opacity = (1 - rr).toFixed(3); p1.style.transform = 'translateY(' + ((1 - rr) * 28).toFixed(2) + 'px)'; p1.style.opacity = rr.toFixed(3);
+    // nodes: lit one full, the rest 30 % (kept as context); the next one rises a little as its ghost appears
+    var fo = [0]; for (var i = 1; i <= 6; i++){ var f3 = focus(i, t), pre = 0; for (var q = 2; q <= 6; q++) if (q === i) pre = io(P(t, AT[q] - .5, AT[q] - .1)) * (1 - io(P(t, AT[q], AT[q] + FLY[q]))); fo.push(f3);
+      var ns = toScreen(PT[i], cm), nz = safeK(ns[0] - 105 * cm[2], ns[0] + 105 * cm[2], ns[1] - 116 * cm[2], ns[1] + 116 * cm[2]);
+      var op = (.3 + .7 * Math.max(f3, pre * .55)) * mix(.0, 1, nz); NODE[i].style.opacity = op.toFixed(3); NODE[i].style.transform = 'scale(' + (1 + .04 * f3).toFixed(4) + ')'; }
+    // sub-nodes: dim context, a gentle bob (continuous), brighter next to the lit node
+    SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = (.32 + .4 * f4) * sz; s.el.style.opacity = o.toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
+    // links: the one short draw (cause -> effect) just before the camera follows it, then it stays lit
+    LINKS.forEach(function(l){ var k = io(P(t, l.drawAt, l.drawAt + .4)); l.lit.setAttribute('stroke-dashoffset', (l.len * (1 - k)).toFixed(1)); l.lit.setAttribute('opacity', (k > 0 ? .55 + .45 * Math.max(fo[l.to], fo[l.from] * .6) : 0).toFixed(3)); if (l.head) l.head.setAttribute('opacity', (P(t, l.drawAt + .3, l.drawAt + .45)).toFixed(3)); });
+    // loop runner: steps 5-7
+    var ph = phi(t), ra = (-90 + 360 * ph) * Math.PI / 180, rl = 34 * Math.PI / 180, ro = cl(P(t, T5, T5 + .3));
+    if (ro > 0){ var a0 = ra - rl; RUN.setAttribute('d', 'M' + (C[0] + R * Math.cos(a0)).toFixed(1) + ' ' + (C[1] + R * Math.sin(a0)).toFixed(1) + 'A' + R + ' ' + R + ' 0 0 1 ' + (C[0] + R * Math.cos(ra)).toFixed(1) + ' ' + (C[1] + R * Math.sin(ra)).toFixed(1)); }
+    RUN.setAttribute('opacity', ro.toFixed(3));
+    // panels: ghost before the move, content builds from 0.15 s after the move starts (before the camera lands), out as the camera leaves
+    for (var pi = 1; pi <= 6; pi++){ var pin = AT[pi], pout = pi < 6 ? AT[pi + 1] : AT[7], kin = out(P(t, pin + .05, pin + .45)), kout = io(P(t, pout + .02, pout + .32)), kp = kin * (1 - kout);
+      var gk = P(t, pin - .5, pin - .2) * (1 - P(t, pin + .2, pin + .45)); if (pi === 1) gk = 0;
+      GH[pi].style.opacity = (gk * .8).toFixed(3); GH[pi].style.transform = 'scale(' + (.97 + .03 * gk).toFixed(4) + ')';
+      PAN[pi].style.opacity = cl(kp * 1.4).toFixed(3); PAN[pi].style.transform = 'scale(' + (.94 + .06 * kp).toFixed(4) + ')'; PAN[pi].style.visibility = kp > 0 ? 'visible' : 'hidden';
+      if (kp > 0) X[pi](t - pin, t); }
+    // the hook: a reply typing word by word (0-3.5 s), then it shrinks away as the camera pushes in
+    var hko = 1 - io(P(t, AT[1] - .1, AT[1] + .18)); hk.style.opacity = hko.toFixed(3); hk.style.transform = 'translateY(' + ((1 - hko) * 40).toFixed(2) + 'px) scale(' + (.8 + .2 * hko).toFixed(4) + ')'; hk.style.visibility = hko > 0 ? 'visible' : 'hidden';
+    if (hko > 0){ HSP.forEach(function(s, n){ s.style.opacity = (.3 + .7 * cl(P(t, .3 + n * .3, .42 + n * .3))).toFixed(3); }); hcur.style.opacity = (.55 + .45 * Math.cos(t * 7)).toFixed(3); }
+    // tags (screen space) on the wide shots, so every node's name reads at phone size on the whole map
+    var wide = cl((.29 - cm[2]) / .04);
+    for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
+      var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
+    // banner: the payoff sweeps in across the top third and holds
+    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = cl(bk * 3).toFixed(3); $('banner').style.transform = 'rotate(-3deg)'; $('banner').style.clipPath = 'inset(0 ' + ((1 - bk) * 100).toFixed(2) + '% 0 0)';
+    drawBg(t, cm, col, fo); caption(t, col);
+  }
+  window.seek = seek;
+  document.fonts.load("900 41px 'Inter Tight'").then(function(){ return document.fonts.load("700 26px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

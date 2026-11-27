@@ -25,6 +25,16 @@ Where it fits: tech 3D kit (spotlight + dimming instead of glow everywhere; a st
 beats), tech/web node maps (the full grammar), Turns Out (spotlight on the part being fixed, step pill over the before/after spine).
 The critic's Ambition pass asks these three for every reel.
 
+## 2.5D map reels (owner, 27 Nov 2026, notes 1-6 on the tap-to-pay test; design/references.md "R-ref 27 Nov 2026" rules)
+Every 2.5D map reel (tech, and web "how the browser does X") plans these on its card:
+1. Moves 0.4-0.6 s with a quick ease, leaving on the spoken step number (no dwell); no line glow or flowing pulses; one short line draw per move (cause -> effect).
+2. Zero glitches: every value continuous in t (no modulo wraps, no per-frame random, fades instead of instant swaps, no will-change layers); flights start from the real hold position. Output QA FLICKER passes on a 60 fps local capture before the render.
+3. A ghost of the next card 0.5 s before the camera goes there; ambient life outside the cards (dust, sub-nodes drifting, light breathing).
+4. Torch-like light wedges in each node's hue; faint sub-nodes, grid and dust fill the background; dim, low contrast, no blur stacks.
+5. A whole-frame map per beat on the card: top band, middle subject, edges, background, empty zones (none), Instagram zones (bottom ~25 %, right edge) with background only.
+6. The structure is the topic's shape (line, loop, tree; a hub only when there is one); the camera follows the action; the explained part stays in the middle safe area.
+Plus: frame 0 is the whole map with something already happening; a pause mark after every step number; all panel text 24 px+ at 1080 (or dropped).
+
 ## Motion-design pass (owner, 26 Nov 2026), part of every direction card and 3D plan
 Before the critic sees a plan, the builder writes, per element and per set piece: its entrance (how it arrives), how groups stack or
 cascade, how the set itself builds (boards, walls, floors are animated in, never pre-set), and its life after landing. Taken from the

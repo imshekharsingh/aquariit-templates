@@ -50,6 +50,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'elements': '16 Nov Turns Out Liberty arm "elements are few and are spread ... through the whole video. We should design it such that there are more elements to show on screen as the storyline moves forward"',
     'reuse': '16 Nov Turns Out Liberty arm (one photo used 3 times; "elements are few")',
     'cover': '16 Nov Turns Out "I used to have reel cover element in video itself ... we should have that back so that people understand what is it about from profile grid, no add-on cover"',
+    'flicker': '27 Nov tech 2.5D test "cards glitched at many moments" (flicker, pop, jump between frames; zero tolerance)',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
@@ -75,6 +76,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=4,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
          var_ssim=.65, var_max=.60,
+         flk_w=108, flk_h=192, flk_k=12, flk_max=4.0, flk_jump=5.0, flk_ratio=2.5, flk_floor=1.5, flk_fps=24,
          el_lag=.3, el_shift=3, el_cell=9, el_top=.21, el_px=18, el_k=4, el_cells=1, el_cut=.35, el_gap=3.0, el_win=10, el_pics=4)
 # ELEMENTS (16 Nov 2026, Turns Out; owner on the Liberty arm reel: "elements are few and are spread ... through the whole video"): a NEW visual
 # element is a place on the frame that changes on its own. At 135x240, 10 fps, the frame below the badge and chapter title (el_top) with the
@@ -1112,8 +1114,56 @@ def hero_check(F, fps, mp4):
          f'median change {np.median(a):.1%}), spans {wm:.0%} of the frame width (at least {T["hero_w"]:.0%}); still at {", ".join(still[:14]) or "none"}{" ..." if len(still) > 14 else ""} s; render 5 (bobbing, glowing 5 ATM watch) 44%, screen-120hz 67%' + (': ' + '; '.join(bad) if bad else ''))
 
 
+# FLICKER (27 Nov 2026, every channel; owner on the tech 2.5D tap-to-pay test: "cards glitched at many moments", flicker / pop / jump, zero tolerance).
+# Every frame of the MP4 at its own frame rate, grey, 108x192, cut in 12 px tiles (the subtitle band left out: its word groups change on purpose).
+# For each frame i and tile: a = change i-1 -> i, b = change i -> i+1, c = change i-1 -> i+1 (mean absolute, 0-255).
+#   FLICKER: a frame that differs from both neighbours while the neighbours match each other (A B A): min(a, b) - c over flk_max. A card that
+#   blinks, z-fights or vanishes for a frame, a value that resets for one frame.
+#   JUMP: a one-frame step far bigger than the motion around it: a - flk_ratio x max(a of i-1, b, flk_floor) over flk_jump. A position that snaps,
+#   a card that pops in or out in one frame, a random scramble, a wrapped pulse jumping from a line's end back to its start.
+# Calibrated 27 Nov on the tap-to-pay test render 2 (the reel the owner called glitchy), 60 fps: the ACQUIRER side panel vanishing in one frame at
+# 16.35 s scored FLICKER 7.5; the token scramble 5.3-6.1 s JUMP 9-12.7; the network dot hunting 18.2-19.0 s JUMP 8.5-9.0. A preview under flk_fps
+# frames a second (scripts/preflight-all.mjs, 10 fps) is SKIP: one frame there is 0.1 s of motion; judge the render, or a 60 fps local capture
+# (python3 scripts/qa/output-qa.py <capture.mp4> <config> --only flicker).
+# FAIL for tech reels (showreel-tech-*, the 2.5D map and the 3D kit) and any config with "qa": {"flicker": true}; a WARN elsewhere for now: web
+# reels show steps on purpose (the scroll bar reel's lagging bar, typing, flicks), so a web FAIL waits for its own calibration (design/todo.md).
+def flicker_check(mp4, subs, must=True, ok=()):
+    r = subprocess.run(['ffmpeg', '-hide_banner', '-i', mp4], capture_output=True, text=True).stderr
+    m = re.search(r'([\d.]+) fps', r); fps = float(m.group(1)) if m else 0
+    if fps < T['flk_fps']:
+        line('FLICKER', 'SKIP', f'{fps:.0f} fps: one frame is too much motion to judge a one-frame glitch (the render is judged at its own rate)'); return
+    W, H, k = T['flk_w'], T['flk_h'], T['flk_k']
+    G = np.frombuffer(ff(['-i', mp4, '-vf', f'scale={W}:{H}:flags=area', '-f', 'rawvideo', '-pix_fmt', 'gray', '-']), np.uint8).reshape(-1, H, W).astype(np.float32)
+    th, tw = H // k, W // k
+    rows = np.arange(th) * k; keep = ~((rows + k > subs[0] * H) & (rows < subs[1] * H))
+    def tiles(D): return D[:th * k, :tw * k].reshape(th, k, tw, k).mean(axis=(1, 3))[keep]
+    n = len(G); D = [tiles(np.abs(G[i] - G[i - 1])) for i in range(1, n)]   # D[i-1] = change i-1 -> i
+    flk, jmp = [], []
+    for i in range(2, n - 1):
+        a, b, pa = D[i - 1], D[i], D[i - 2]
+        c = tiles(np.abs(G[i + 1] - G[i - 1]))
+        f = float((np.minimum(a, b) - c).max()); j = float((a - T['flk_ratio'] * np.maximum(np.maximum(pa, b), T['flk_floor'])).max())
+        tt = i / fps
+        if any(w[0] <= tt <= w[1] for w in ok): continue   # "qa": {"flicker_ok": [[t0, t1, "why"]]}: a declared one-frame change (a stepping bar shown on purpose)
+        if f > T['flk_max']: flk.append((tt, f))
+        if j > T['flk_jump']: jmp.append((tt, j))
+    def runs(ev):   # merge hits less than 0.2 s apart into moments
+        out_ = []
+        for t, v in ev:
+            if out_ and t - out_[-1][1] < .2: out_[-1][1] = t; out_[-1][2] = max(out_[-1][2], v)
+            else: out_.append([t, t, v])
+        return out_
+    F_, J_ = runs(flk), runs(jmp)
+    fmt = lambda L: ', '.join(f'{a:.2f}' + (f'-{b:.2f}' if b - a > .01 else '') + f' s ({v:.1f})' for a, b, v in L[:10]) + (' ...' if len(L) > 10 else '')
+    bad = F_ or J_
+    line('FLICKER', ('FAIL' if must else 'WARN') if bad else 'PASS', f'{n} frames at {fps:.0f} fps, {th}x{tw} tiles outside the subtitle band: one-frame flicker (A B A) over {T["flk_max"]}: '
+         f'{fmt(F_) or "none"}; one-frame jumps over {T["flk_jump"]} ({T["flk_ratio"]}x the motion around them): {fmt(J_) or "none"} (tap-to-pay test render 2: panel vanish 7.5, token scramble 12.7)')
+
+
 def main():
     a = sys.argv[1:]; mp4, cfgp = a[0], a[1]
+    if '--only' in a and a[a.index('--only') + 1] == 'flicker':   # a quick local look at one check (a 60 fps capture before the render)
+        c, text, speeds, cover, ch, name = config(cfgp); flicker_check(mp4, (c.get('qa') or {}).get('subs') or T['subs'][ch], ch == 'tech' or name.startswith('showreel-tech-') or bool((c.get('qa') or {}).get('flicker')), (c.get('qa') or {}).get('flicker_ok', [])); print('OUTPUT QA: PASS' if not fails else 'OUTPUT QA: FAIL'); sys.exit(1 if fails else 0)
     logs = [a[i + 1] for i, x in enumerate(a) if x == '--log']
     summary = a[a.index('--summary') + 1] if '--summary' in a else None
     failf = a[a.index('--fails') + 1] if '--fails' in a else None
@@ -1156,6 +1206,7 @@ def main():
     if qa.get('mute'): mute_check(G, fps, qa['mute'], heard)
     else: line('MUTE', 'SKIP' if ch != 'web' else 'WARN', 'no "qa": {"mute": {before, after}} in the config' + (' (web: declare the before/after moments)' if ch == 'web' else ''))
     split_check(G, fps, mp4)
+    flicker_check(mp4, qa.get('subs') or T['subs'][ch], ch == 'tech' or name.startswith('showreel-tech-') or bool(qa.get('flicker')), qa.get('flicker_ok', []))
     verdict = 'OUTPUT QA: PASS' if not fails else f'OUTPUT QA: FAIL ({len(fails)}): ' + ' | '.join(f[:160] for f in fails)
     print(verdict)
     if summary:
