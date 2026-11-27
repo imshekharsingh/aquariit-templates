@@ -248,6 +248,22 @@ export function checks(d, k, now = Date.now(), T = targets()) {
   return out;
 }
 
+// reference work, measured (task 9, owner 26 Nov 2026): the last 30 days' reels WITH a reference pattern (captions.json "refs", the "app:<id>"
+// tags not counted as a pattern) against reels without one: median reach, median watch (s) and saves per 1,000 reached; per pattern once it has 3+ reels.
+// One plain line per channel, REFS <ch>: ...; the weekly review reads them (design/runbook-daily.md, References).
+export function refsCompare({ media = [] }, k, today, caps = CAPS) {
+  const from = new Date(Date.parse(today + 'T00:00:00Z') - 30 * DAY).toISOString().slice(0, 10);
+  const seen = media.filter((m) => m.posted_at && m.reach != null && istDay(m.posted_at) > from);
+  const pats = (m) => ((caps[m.template_id] || {}).refs || []).filter((x) => typeof x === 'string' && !/^app:/i.test(x.replace(/\s+/g, '')));
+  const sum = (a) => (a.length ? { n: a.length, reach: med(a.map((m) => m.reach)), watch: med(a.map(watchS)), saves: med(a.map((m) => (m.reach ? (1000 * (m.saves || 0)) / m.reach : null))) } : null);
+  const w = sum(seen.filter((m) => pats(m).length)), wo = sum(seen.filter((m) => !pats(m).length));
+  const say = (x) => `${x.n} reel${x.n === 1 ? '' : 's'}, median reach ${fmt(x.reach)}${x.watch != null ? `, watch ${one(x.watch)} s` : ''}${x.saves != null ? `, ${one(x.saves)} saves per 1,000` : ''}`;
+  const by = {}; seen.forEach((m) => pats(m).forEach((p) => (by[p] = by[p] || []).push(m)));
+  const per = Object.entries(by).filter(([, a]) => a.length >= 3).map(([p, a]) => `${p}: ${say(sum(a))}`);
+  const line = `REFS ${k}, 30 days: ` + (w ? `with a reference pattern ${say(w)}` : 'no reel with a reference pattern yet') + (wo ? `; without ${say(wo)}` : '') + (per.length ? ` · per pattern: ${per.join(' | ')}` : '');
+  return { line, with: w, without: wo, perPattern: Object.fromEntries(Object.entries(by).filter(([, a]) => a.length >= 3).map(([p, a]) => [p, sum(a)])) };
+}
+
 async function load() {
   if (fx > 0) return JSON.parse(readFileSync(process.argv[fx + 1], 'utf8'));
   const { BASIC_AUTH_USER: u, BASIC_AUTH_PASS: p } = process.env;
@@ -275,5 +291,6 @@ const sig = {}, chk = {}; for (const k of Object.keys(CH)) if (data[k]) { sig[k]
 console.log('AUDIT_CHECKS (design/targets.md; design/runbook-daily.md step 2):'); Object.values(chk).forEach((c) => c.lines.forEach((l) => console.log(l)));
 for (const [k, v] of Object.entries(drv)) if (sig[k]) sig[k].drivers = { last7: v.last7, discovery: v.discovery, reels: v.reels };
 for (const [k, c] of Object.entries(chk)) sig[k].checks = { lines: c.lines, trend: c.trend, experiments: c.experiments, rules: c.rules };
+console.log('AUDIT_REFS (reels with a reference pattern vs without, 30 days; design/runbook-daily.md References):'); for (const k of Object.keys(sig)) { const r = refsCompare(data[k], k, today); console.log(r.line); sig[k].refs = { with: r.with, without: r.without, perPattern: r.perPattern }; }
 console.log('AUDIT_SIGNALS=' + JSON.stringify(sig));
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### Audit numbers, 7 days to ' + today + '\n' + Object.values(chk).flatMap((c) => c.lines).map((l) => '- **' + l + '**').join('\n') + '\n\n' + Object.entries(channels).map(([k, a]) => `**${CH[k].username}**\n` + a.map((l) => '- ' + l).join('\n')).join('\n\n') + '\n');
