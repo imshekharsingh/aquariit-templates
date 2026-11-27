@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/owner-chat-27nov · owner chat: day summary
+- Decisions: tech restarted in the 2.5D map look (4 renders incl. a chat-window opening, owner's six 2.5D notes + "open on the real-life moment" now rules); the other account does app/kit work only (tasks 19-20, 6-7, 16-18 queued after v7), status every 30 min; owner chat opens 04:43; Turns Out back on 14:00.
+- Posted: Turns Out price list (14:00), web scroll bar (19:00, app shows posted); tech AI-words due 20:30. App: stuck "Loading…" was videos streaming on open (fixed, App probe PASS: 0 videos, list 0.24 s); false Fix, tab mix-up, stale home-screen copy fixed.
+- Broken / owed (owner chat, 28 Nov): 05:11 Turns Out task started without the repo ($9 lost); builder spend ran past caps (tech ~$64, Turns Out ~$23): read spend at every stage; probe repeats stale alerts and started a v7 critic early; status messages at 09:00, 14:00, 19:00, 21:15; v7 render 3 still pending on the other account.
+
 ## 2026-11-27 · claude/app-ready-null · owner chat: no page error when today's status arrives before the reel list
 - App probe after the video fix: PASS on videos (0 without a tap; reel list 0.26 s, today's status 0.23 s, was 11 s), but one page error: readyRender read DATA.c before the list loaded. Guarded; the probe now FAILs on any page error.
 
