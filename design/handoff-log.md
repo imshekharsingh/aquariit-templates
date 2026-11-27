@@ -1098,3 +1098,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/critic-web-49-scrollbar-r2 · Critic: showreel-49-scrollbar, READY (render 2)
 - Done: judged the render 2 MP4 (frames every 0.25 s at 390 px, a 20 fps strip of 7.6-8.2 s, -14.0 LUFS, side-by-side vs gold tabwiggle). All three fixes show: whole dim hook at frame 0, no ghost pill (the lit lines sweep in place, bar lime at 8.25 s), 22 px bar. CRITIC: READY, item 22 in review/web/showreel-49-scrollbar.md; STOP 7.5, REWATCH 7.5, PREMIUM 7.5 / 7.5 / 7.5. Stage set to ready.
 - Left: post at 19:00 IST (design/slots.json).
+## 2026-11-27 · claude/tech-2d5-test-stillscheck2 · Stills check 2: tech 2.5D tap-to-pay map (preview, never posted), REDO
+- Done: outside stills check of round 2 (builder sheet + one extra sheet, 12 moments). Owner notes 3, 4, 5, 6 met; 1 and 2 partly (hook is one card, panel text 10-12 px at 1080). PREMIUM about 7.0.
+- Left: builder fixes HIGH first (EXAMPLE TIME readable, panels to 1-3 words at 24 px+, open on the whole map), then MED (bottom quarter, token resolves by 6.8 s, earlier pull-back with reply pulses); direction card has the exact list.

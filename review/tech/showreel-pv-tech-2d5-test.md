@@ -46,3 +46,28 @@ Facts: match the sources listed above; counters labelled EXAMPLE TIME; shop, app
 - preflight-all on the preview (local): Output QA 12 pass 0 fail, TEXT CLEAR ok; its review lint stays FAIL on items 1-12 and PREMIUM lines because this is a preview study, not a posting reel (previews skip the Mandatory Gate).
 - Stills check: REDO from the outside session (see the direction card, builder reply there). Not met by the builder: hold framing 15 % wider, mono labels 22 px at 1080 (they are about 21), the mint reply pulse visible during 25.6-27.4 s, chips attached in the pull-back.
 - PREMIUM (builder, from the stills; the critic scores the render): animation 7, cleanliness 7.5, premium feel 6.5.
+
+## Stills check 2
+Outside check round 2 (session_01AYvWRkU1KKuoVYQHbSPYqG, 2026-11-27): builder's sheet + one extra sheet at 0.3, 3.8, 5.0, 7.4, 8.4, 9.3, 12.6, 13.5, 17.5, 24.0, 26.5, 28.4 s. Tool lines: empty frames none, static none, text fit ok, safe zone ok, overlap none, cuts 0, page errors none. Verdict: REDO (fixes in the direction card).
+
+Owner notes
+1. Closer to the reference in structure, scale, rhythm: PARTLY. One camera, colour worlds, fixed title, pill, tracker, flights led by a pulse (3.8, 8.4, 12.6 s) all match. The map as one system is seen only at 29.8 s; the hook (0-2.6 s) is a single card, never the map.
+2. Small nodes, icon + 1-2 word label: MET for nodes (8.4, 12.6, 24.0, 28.4 s: TOKEN, TERMINAL, YOUR BANK, APPROVED). NOT MET for the panels: their text is 10-12 px at 1080 (14.5, 18.5 s).
+3. Expand-then-shrink for 1, 5, 6 and a side panel for 2, 3, 4: MET (token grows 4.6-5.5 s and is small again at 8.4; bank 22.5 -> 24.0; approved 25.8 -> 28.4; panels at 9.3, 14.5, 18.5 s).
+4. Space between nodes, lines carry the life: MET (8.4 and 12.6 s: long lines with a moving packet, neighbours dimmed in place).
+5. Background takes each step's colour, cross-fading: MET (teal, lime, violet, coral, gold, mint; mid-flight frames 3.8 and 12.6 s blend through a neutral). No black bands top or bottom, but the lowest ~25 % under the caption stays an empty dim band at every hold.
+6. Explanation not lost: MET by voice and captions; the panels add nothing readable.
+
+Critic fixes: content before landing MET mostly (4.6 s faint, 5.0 s token half empty: LOW). Wider framing with dimmed neighbours PARTLY (14.5 and 18.5 s yes; 5.5-7.4 s and 25.8-27.0 s the expanded card fills the width, no neighbours). Stamp inside its card MET (25.8, 26.5 s). Eased pull-back with reply pulse PARTLY (28.4 s one pulse on one line; whole map only ~0.5 s). Captions split MET (10.5, 12.6 s). Token 9F3A..5B64 MET in the source (card 9F3A 71C2 D08E 5B64, request 9F3A..5B64), but the card still scrambles at 7.4 s when the camera leaves at 7.5 s.
+
+PREMIUM (against R-ref 27 Nov 2026): about 7.0. Up from 6.5: the map now breathes (space, lines with packets, tints). Still below 7.5 because the hook is a box, the bottom quarter is unused and every panel's text is too small to read.
+
+UPGRADES
+- HIGH 0-2.6 s: open on the whole small map, lines drawing hub -> 6 with pulses, then push into the hub.
+- HIGH 9.5-21 s panels: one short line each at 24 px+ (e.g. "SHOP'S BANK", "ROUTES TO YOUR BANK", "EXAMPLE 38 ms"), not 4-6 tiny rows.
+- MED all holds: use the bottom quarter (caption and tracker lower, map centred higher) so the subject fills more of the frame.
+- MED 26.8-30 s: earlier, eased pull-back, hold the whole lit map 1.5 s with mint pulses running on every line back to the hub.
+- LOW 7.5 s: as the token card shrinks, let the resolved token ride the line as the packet to the terminal (the cause of the flight is the token itself).
+
+Focus: yes (one lit node, tinted world, neighbours dimmed). Structure: yes (title, pill in sync at 14.5, 24.0, 25.8 s, step tracker). Reason for every move: yes (a packet leads each flight).
+Facts: match the sources above (token limited to the device, terminal -> shop's bank -> network -> your bank and back, checks, "usually a few seconds"); counters say EXAMPLE TIME but too small to read (HIGH fix); shop, app, bank names invented; no brand or logo seen.
