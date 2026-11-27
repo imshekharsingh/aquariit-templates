@@ -31,9 +31,9 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .hd .t{left:22px;top:15px;width:190px;height:16px;background:rgba(255,255,255,.42)}
 .hd .s{left:22px;top:40px;width:120px;height:10px;background:rgba(255,255,255,.17)}
 .sc{position:absolute;left:0;top:76px;width:484px;height:1400px}
-.cd2{position:absolute;left:20px;width:444px;height:68px;border-radius:18px;background:linear-gradient(120deg,#272f1a,#181d11);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.cd2{position:absolute;left:20px;width:444px;height:68px;border-radius:18px;background:linear-gradient(120deg,#35501a,#21320f);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .cd2 i{position:absolute;display:block}
-.cd2 .th{left:10px;top:10px;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#59652f,#2b3315)}
+.cd2 .th{left:10px;top:10px;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#9ccc34,#4a7413)}
 .cd2 .l1{left:72px;top:18px;height:11px;border-radius:6px;background:rgba(255,255,255,.34)}
 .cd2 .l2{left:72px;top:40px;height:9px;border-radius:5px;background:rgba(255,255,255,.16)}
 .good{visibility:hidden}
@@ -41,7 +41,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #fg{position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.75);z-index:6;opacity:0}
 .tr{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--red);z-index:6;opacity:0}
 .rp{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--acc);z-index:6;opacity:0}
-#ghost{left:0;top:0;padding:8px 12px;border-radius:12px;background:var(--raise);border:2px solid var(--acc);font:500 17px/1 var(--m);color:var(--acc);white-space:nowrap;opacity:0;z-index:5}
+#ghost{left:0;top:0;padding:8px 12px;border-radius:12px;background:#17171b;border:2px solid var(--acc);font:500 17px/1 var(--m);color:var(--acc);white-space:nowrap;opacity:0;z-index:5}
 /* screen space: the label row, the hook, the width picture, the code card, the payoff label, the subtitles, the measurement */
 #lbl{left:34px;top:130px;font:500 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
 #hook{left:34px;top:158px;font-weight:var(--hw);font-size:50px;line-height:.98;letter-spacing:var(--ht)}
@@ -644,12 +644,12 @@ var KM = (function(){
 /*kithook:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.black({ acc: '#c6f24e' });   // the black look (rules-web.md rule 19) with a lime accent: one accent a reel, a new one each time (rule 17, Output QA HUE)
   [['--soft', 'rgba(198,242,78,.16)'], ['--ring', 'rgba(198,242,78,.55)'], ['--on', '#0f1704']].forEach(function(q){ document.documentElement.style.setProperty(q[0], q[1]); });
-  var TEXT = "Why is your scroll bar late? A script catches every scroll, so the bar can lag behind the page. The fix: animation timeline scroll. Now the scroll itself drives the bar, so no code runs, and nothing is late.", DUR = 15, HOOK_N = 6, FIX_S = 2;
+  var TEXT = "Why is your scroll bar late? A script catches every scroll, so the bar can lag behind the page. The fix: animation timeline scroll. Now the scroll drives the bar, so no code runs, and nothing is late.", DUR = 15, HOOK_N = 6, FIX_S = 2;
   // the code: the scroll-driven bar (the two lit lines are the fix; the dim lines are the bar itself)
   var CODE = '<span class="dim">.bar { width: 0;</span>\n  <b>animation: grow linear;</b>\n  <b>animation-timeline: scroll(); }</b>\n<span class="dim">@keyframes grow {</span>\n<span class="dim">  to { width: 100% } }</span>';
   var V, PH, A = {}, CAM, T = {}, TB = [], TG = [], FLK = [], CALLS = [];
   // the feed: a long list of cards; every flick scrolls it; the bar shows how far (BEFORE a script moves it late, in steps; AFTER the scroll itself drives it)
-  var MAXS = 1100, W = 484, AMPB = 170, AMPG = [100, 100, -400, 400], LAGSTEP = .3, LAGBY = .1;
+  var MAXS = 1100, W = 484, AMPB = 170, AMPG = [100, 100, -400, 400], LAGSTEP = .4, LAGBY = .2;
   var BOX = { x: 30, y: 150, w: 450, h: 110, r: 20 }, CARD = { x: 30, y: 124, w: 450, h: 164, r: 20 };
   var fb = $('fb'), lb = $('lb'), tkb = $('tkb'), fa = $('fa'), sc1 = $('sc1'), sc2 = $('sc2');
   (function(){ var h = '', i, w1 = [210, 170, 240, 150, 200, 180, 230, 160, 190, 220, 150, 210, 175, 235, 165, 205, 185];
@@ -734,7 +734,7 @@ var KM = (function(){
     KM.rise($('hook').querySelectorAll('.ln > span'), t, st, gone);
     $('lbl').style.opacity = (1 - P(t, A.leave - .2, A.leave)).toFixed(3);
     // ---- why: scroll -> your JS -> bar; the middle chip turns red when the voice says the bar can lag ----
-    var wi = E.out3(P(t, A.wideIn, A.wideIn + .35)) * (1 - P(t, A.fix - .4, A.fix - .15)), hot = E.inOut3(P(t, A.hot - .05, A.hot + .3)), wp = P(t, A.late, A.late + .25);
+    var wi = E.out3(P(t, A.wideIn, A.wideIn + .35)) * (1 - P(t, A.fix + .15, A.fix + .4)), hot = E.inOut3(P(t, A.hot - .05, A.hot + .3)), wp = P(t, A.late, A.late + .25);
     $('wide').style.opacity = wi.toFixed(3); $('wide').style.transform = 'translateY(' + ((1 - E.out3(P(t, A.wideIn, A.wideIn + .35))) * 12).toFixed(2) + 'px)';
     ['c1', 'c2', 'c3'].forEach(function(id, k){ var e = E.back(P(t, A.wideIn + k * .12, A.wideIn + .35 + k * .12), 1.6); $(id).style.transform = 'scale(' + mix(.7, 1, e).toFixed(3) + ')'; });
     var c2 = $('c2'); c2.style.color = hot > .5 ? '#ff8f9a' : 'var(--paper)'; c2.style.borderColor = 'rgba(255,' + Math.round(mix(255, 95, hot)) + ',' + Math.round(mix(255, 109, hot)) + ',' + mix(.32, 1, hot).toFixed(2) + ')';
@@ -745,7 +745,7 @@ var KM = (function(){
     KM.type($('cd'), CODE, t, A.typeStart, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
     [].forEach.call($('cd').querySelectorAll('b'), function(b, k){ KM.sweep(b, t, A.typeEnd + .05 + k * .12, .4, 'var(--soft)'); });
     // the fix line glides from the code card to the bar (a copy: the card keeps it on screen for the save)
-    var g = T.glide(t), gh = $('ghost'), a = { x: 62, y: 164, w: 300, h: 32, r: 12 }, sc = CAM.toScreen(c, 270, 480), b = { x: sc[0] - 165, y: sc[1] - 16, w: 330, h: 32, r: 14 };
+    var g = T.glide(t), gh = $('ghost'), a = { x: 40, y: 188, w: 392, h: 34, r: 8 }, sc = CAM.toScreen(c, 270, 480), b = { x: sc[0] - 165, y: sc[1] - 16, w: 330, h: 32, r: 14 };
     KM.shared(gh, a, b, g); gh.style.opacity = (t >= A.typeEnd + .1 && g < 1 ? 1 - P(g, .8, 1) : 0).toFixed(3);
     // ---- payoff: a leader line from the bar to its label, in the header's empty right half ----
     var lp = CAM.toScreen(c, 270, 486), lk = P(t, A.lab, A.lab + .7);
