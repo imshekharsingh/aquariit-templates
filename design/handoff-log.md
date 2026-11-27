@@ -1124,3 +1124,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/c3-price-list-27nov · Turns Out: showreel-c3-price-list rebuilt on the improved kit (build pushed, stills check next)
 - Done: new scene scripts/channel3/design/prices.js (plain centred before, one ring plus a red zigzag, three fixes: right edge, same-width digits, dot leaders; dark teal stage; chips in their own band; BEFORE proof and tail ticks), script with seven spoken sentences and breaths, direction card, review file, captions.json (c3, 2026-11-27, 17:00; hold removed). preflight-all passes except the stills-check line; npm run check passes.
 - Left: outside stills check (opus, tag stills), one render, Output QA, critic (opus, tag critic).
+## 2026-11-27 · claude/c3-price-list-27nov · Turns Out price-list: stills check round 1 REDO applied
+- Done: all six points of the REDO fixed: thumbnail smaller with its BEFORE tag on its own top edge, cover frame shows all rows and the ring at full strength, card line 9 matches, the Fix 3 chip and title swap on "Then", the first snap starts on "line", the last subtitle clears 0.6 s after the voice. SAFE ZONE ok, OVERLAP none, preflight-all passes but for the new stills line.
+- Left: second stills check, one render, Output QA, critic.
