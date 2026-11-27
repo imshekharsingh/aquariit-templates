@@ -1,0 +1,42 @@
+name: Ref compare
+
+# Reference vs our reel, measured (task 9, owner 26 Nov 2026): the main account dispatches this for each reel built from a reference
+# (design/runbook-daily.md, References). It signs in like Owner answers, downloads our final MP4 and the app reference's clip, and prints
+# both rows and the gap in plain words (scripts/ref-compare.mjs); copy the "REF COMPARE:" line into the reel's review file. A minute or two.
+on:
+  workflow_dispatch:
+    inputs:
+      reel:
+        description: our reel name (e.g. showreel-tech-buds)
+        type: string
+        required: true
+      ref:
+        description: the app reference id (Inbox > Ideas and references; the number in the Owner answers refs line)
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+      - name: ffmpeg and tesseract
+        run: (which ffmpeg && which tesseract) || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg tesseract-ocr >/dev/null)
+      - name: Ref compare
+        env:
+          REEL: ${{ inputs.reel }}
+          REF: ${{ inputs.ref }}
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          [[ "$REEL" =~ ^showreel-[a-z0-9-]{1,60}$ ]] || { echo "reel must look like showreel-..."; exit 1; }
+          [[ "$REF" =~ ^[0-9]{1,9}$ ]] || { echo "ref must be the reference number"; exit 1; }
+          node scripts/ref-compare.mjs "$REEL" "$REF"
