@@ -465,6 +465,8 @@
   .bstages .on i{background:var(--ok)}.bstages .now i{background:var(--act)}
   .bstages em{font-style:normal}
   .bstages li span{margin-left:auto;color:var(--mute);font-size:.76rem;text-align:right}
+  .bstages .bad i{background:var(--bad)}.bstages li.bad{align-items:flex-start}.bstages li.bad em{font-weight:700;color:var(--bad)}.bstages li.bad span{color:var(--ink);max-width:62%}
+  .bstages .bfix{list-style:none;padding:0 0 10px}
   .bstages .now span{color:var(--ink)}
   .bopen{display:block;margin:4px 14px 14px;min-height:40px}
   .bedge{position:absolute;left:0;right:0;bottom:0;height:3px;opacity:0;transition:opacity .25s ease}
@@ -1279,11 +1281,27 @@
     readyRender(); }
   // ---- the live studio board (owner, 24 Nov 2026): one card per channel's reel today. Stages come from GET /api/stage (sessions and workflows call
   // scripts/stage.mjs); the render % and the final Ready / Posted come from the journey data above. Cards are built once and updated in place.
-  var BST = [['researching', 'Researching'], ['topic', 'Topic picked'], ['building', 'Building'], ['stills', 'Stills check'], ['video', 'Making the video'], ['checking', 'Checking']],
+  var BST = [['researching', 'Researching'], ['topic', 'Topic picked'], ['building', 'Building'], ['stills', 'Stills check'], ['video', 'Making the video'], ['checking', 'Machine checks'], ['critic', 'Second look']],
       BFIN = { ready: 'Ready to post', skipped: 'Skipped today', posted: 'Posted' }, SROWS = [], sTimer = null, bCards = {}, bOpen = null;
   var MODEL = [[/fable/i, 'Fable'], [/opus/i, 'Opus'], [/sonnet/i, 'Sonnet'], [/haiku/i, 'Haiku']];
   function modelName(m){ for (var i = 0; i < MODEL.length; i++) if (MODEL[i][0].test(m || '')) return MODEL[i][1]; return m || ''; }
   function bIndex(id){ for (var i = 0; i < BST.length; i++) if (BST[i][0] === id) return i; return -1; }
+  // Fix at the exact stage (task 13, owner 27 Nov 2026): which step failed or stalled, and why in one line. A step past its expected time counts as
+  // stalled: the video over 60 min, the second look over 45 min after the checks, a build step with no update for 2 h. idx = BST.length is the post row.
+  // B-PROBLEM-START (scripts/qa/app-board-test.mjs runs this function)
+  function bProblem(row, r, now, bst){ var at = function(id){ for (var i = 0; i < bst.length; i++) if (bst[i][0] === id) return i; return -1; },
+      mins = function(t){ var x = Date.parse(t || ''); return isNaN(x) ? 0 : Math.round((now - x) / 60000); }, sg = (r && r.stages) || {}, g = function(k){ return sg[k] || { s: 'wait' }; };
+    if (row && row.stage === 'failed') { var m = /^([a-z]+):\s*(.*)$/.exec(row.line || ''), st = m && at(m[1]) >= 0 ? m[1] : 'building'; return { idx: at(st), why: (m ? m[2] : row.line) || 'It stopped here.', stalled: false }; }
+    if (r) {
+      if (g('render').s === 'fail') return { idx: at('video'), why: 'The video did not finish: ' + (g('render').why || g('render').t || ''), stalled: false };
+      if (g('checks').s === 'fail') return { idx: at('checking'), why: 'A check found a problem: ' + String(g('checks').t || '').replace(/^Failed:\s*/, ''), stalled: false };
+      if (g('critic').s === 'fail') return { idx: at('critic'), why: 'Not ready yet: ' + (g('critic').why || 'see its notes'), stalled: false };
+      if (g('ready').s === 'done' && g('posted').s === 'fail') return { idx: bst.length, why: 'The posting time passed and it is not marked posted.', stalled: false };
+      if (g('render').s === 'now' && mins(g('render').at) > 60) return { idx: at('video'), why: 'Making the video for ' + mins(g('render').at) + ' min (it takes under 60).', stalled: true };
+      if (g('checks').s === 'done' && g('critic').s === 'wait' && g('ready').s !== 'done' && mins(g('checks').at) > 45) return { idx: at('critic'), why: 'Waiting ' + mins(g('checks').at) + ' min for the second look (it takes under 45).', stalled: true }; }
+    if (row && at(row.stage) >= 0 && at(row.stage) < at('video') && mins(row.at) > 120) return { idx: at(row.stage), why: 'No news for ' + Math.floor(mins(row.at) / 60) + ' h at this step.', stalled: true };
+    return null; }
+  // B-PROBLEM-END
   // what a channel's card says now: { fin, idx, pct (inside the stage), line, model, thumb, name, making }
   function bState(k){
     var row = SROWS.filter(function(x){ return x.ch === k; })[0] || null, j = jLast && jLast.today, r = jLast ? (jLast.reels || []).filter(function(x){ return x.ch === k && x.day === j; })[0] : null,
@@ -1298,8 +1316,10 @@
           if (stt.k === 'checking') { o.idx = 5; o.line = 'Checking the video'; }
           else if (stt.k === 'fixing') { o.idx = 5; o.line = 'Found a problem: ' + (stt.why || '').slice(0, 90); }
           else if (stt.k === 'building') { o.idx = 2; o.line = stt.t; } } } }
-    if (stt && stt.k === 'fixing') { var sg = r.stages || {}, stp = sg.render && sg.render.s === 'fail' ? 'making the video' : sg.checks && sg.checks.s === 'fail' ? 'machine checks' : 'second look';
-      o.fail = 'Reel ' + r.name + ', step: ' + stp + ', why: ' + String(stt.why || '').slice(0, 400); }
+    if (r && !o.fin && !o.making) { var sg2 = r.stages || {}; if (sg2.checks && sg2.checks.s === 'done' && (!sg2.critic || sg2.critic.s !== 'done')) { o.idx = bIndex('critic'); o.line = 'Waiting for the second look'; } }
+    var pb = o.fin === 'posted' ? null : bProblem(row, r, Date.now(), BST);
+    if (pb) { o.prob = pb; if (pb.idx < BST.length) o.idx = pb.idx; o.line = (pb.stalled ? 'Stuck at ' : 'Problem at ') + (pb.idx < BST.length ? BST[pb.idx][1].toLowerCase() : 'posting') + ': ' + pw(pb.why).slice(0, 110);
+      o.fail = 'Reel ' + (o.name || k) + ', step: ' + (pb.idx < BST.length ? BST[pb.idx][1] : 'Post') + (pb.stalled ? ' (stalled)' : '') + ', why: ' + String(pb.why).slice(0, 400); }
     if (!o.line) o.line = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Not started yet';
     if (jOld(jLast)) o.line += ' (old status)';
     return o; }
@@ -1315,8 +1335,8 @@
     body.appendChild(top); body.appendChild(line); body.appendChild(dots); body.appendChild(bar); body.appendChild(meta);
     main.appendChild(th); main.appendChild(body); inner.appendChild(ol); inner.appendChild(open); more.appendChild(inner);
     card.appendChild(main); card.appendChild(more); card.appendChild(edge);
-    var fix = el('div', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix'), c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, fix: fix, fixb: fixb, prev: null, img: null };
-    fixb.type = 'button'; fix.hidden = true; fix.appendChild(fixb); card.insertBefore(fix, more);
+    var fix = el('li', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix'), c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, fix: fix, fixb: fixb, prev: null, img: null };
+    fixb.type = 'button'; fix.hidden = true; fix.appendChild(fixb); ol.appendChild(fix);   // moved under the step that failed or stalled (task 13)
     fixb.addEventListener('click', function(){ if (!c.fail) return; fixb.disabled = true; fixb.textContent = 'Sending';
       fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ channel: k, priority: true, text: 'FIX (from the board, top priority) ' + c.fail }) })
         .then(function(r){ if (!r.ok) throw 0; c.sent = c.fail; fixb.textContent = 'Sent to the studio'; }).catch(function(){ fixb.disabled = false; fixb.textContent = 'Try again'; }); });
@@ -1330,12 +1350,13 @@
     if (o.fin === 'ready' && prev && prev.fin !== 'ready' && prev.fin !== 'posted') { c.card.classList.add('lift'); setTimeout(function(){ c.card.classList.remove('lift'); }, 420); }
     c.st.textContent = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Waiting';
     if (!prev || prev.line !== o.line) { c.line.textContent = o.line; if (prev) { c.line.classList.remove('draw'); void c.line.offsetWidth; c.line.classList.add('draw'); } }
-    var kids = c.dots.children, rows = c.ol.children, built = rows.length === BST.length + 1;
-    if (!built) { c.ol.textContent = ''; BST.concat([['fin', '']]).forEach(function(s2){ var li = el('li'); li.appendChild(el('i')); li.appendChild(el('em', null, s2[1])); li.appendChild(el('span')); c.ol.appendChild(li); }); rows = c.ol.children; }
+    var stRows = function(){ return Array.prototype.filter.call(c.ol.children, function(x){ return x !== c.fix; }); };   // the step rows (the Fix row is not one)
+    var kids = c.dots.children, rows = stRows(), built = rows.length === BST.length + 1;
+    if (!built) { rows.forEach(function(x){ x.remove(); }); BST.concat([['fin', '']]).forEach(function(s2){ var li = el('li'); li.appendChild(el('i')); li.appendChild(el('em', null, s2[1])); li.appendChild(el('span')); c.ol.insertBefore(li, c.fix); }); rows = stRows(); }
     for (var i = 0; i < BST.length; i++) { var done = i < cur, now = !o.fin && i === o.idx, was = prev ? (prev.fin ? (prev.fin === 'skipped' ? i < Math.max(prev.idx, 0) : true) : i < prev.idx) : false;
       kids[i].className = done ? 'on' : now ? 'now' : ''; if (done && !was && prev) { kids[i].classList.add('pop'); rows[i].querySelector('i').classList.add('pop'); }
-      rows[i].className = done ? 'on' : now ? 'now' : ''; rows[i].lastChild.textContent = done ? 'done' : now ? (i === 4 && o.pct != null ? o.pct + '%' : o.line) : ''; }
-    var fr = rows[BST.length]; fr.className = o.fin === 'skipped' ? '' : o.fin ? 'on' : ''; fr.querySelector('em').textContent = o.fin === 'skipped' ? 'Skipped today' : o.fin === 'posted' ? 'Posted' : 'Ready to post'; fr.lastChild.textContent = o.fin ? (o.fin === 'skipped' ? 'not today' : 'done') : '';
+      var badRow = o.prob && o.prob.idx === i; rows[i].className = badRow ? 'bad' : done ? 'on' : now ? 'now' : ''; rows[i].lastChild.textContent = badRow ? pw(o.prob.why) : done ? 'done' : now ? (i === 4 && o.pct != null ? o.pct + '%' : o.line) : ''; }
+    var fr = rows[BST.length]; fr.className = o.prob && o.prob.idx === BST.length ? 'bad' : o.fin === 'skipped' ? '' : o.fin ? 'on' : ''; fr.querySelector('em').textContent = o.fin === 'skipped' ? 'Skipped today' : o.fin === 'posted' ? 'Posted' : 'Ready to post'; fr.lastChild.textContent = o.fin ? (o.fin === 'skipped' ? 'not today' : 'done') : '';
     c.bi.style.width = p + '%'; c.bp.textContent = p + '%';
     c.ei.style.width = (o.making && o.pct != null ? Math.max(3, o.pct) : 0) + '%';
     var sm = o.name && DATA && DATA.c ? DATA.c[o.name] : null, slot = sm && /^\d{2}:\d{2}$/.test(sm.postAt || '') ? sm.postAt : SLOTS[c.k],
@@ -1344,7 +1365,9 @@
     var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
     if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
     // Fix (owner, 26 Nov 2026): a red step sends its failure line (reel, step, why) as a top-priority Feedback item
-    var bad = o.fail && !o.fin; c.fix.hidden = !bad;
+    var bad = !!(o.fail && o.prob); c.fix.hidden = !bad;
+    if (bad) { var at2 = rows[o.prob.idx]; if (c.fix.parentNode !== at2) at2.after(c.fix); if (o.prob.idx === BST.length) fr.lastChild.textContent = pw(o.prob.why);   // the Fix button sits under the row that failed or stalled
+      if (c.openFor !== o.fail) { c.openFor = o.fail; c.card.classList.add('open'); c.main.setAttribute('aria-expanded', 'true'); } }   // opened once for each new problem, so the row shows
     if (bad) { if (c.fail !== o.fail) { c.fail = o.fail; c.sent = null; } c.fixb.disabled = c.sent === c.fail; c.fixb.textContent = c.sent === c.fail ? 'Sent to the studio' : 'Fix'; } else c.fail = null;
     c.prev = o; }
   function bRender(){
