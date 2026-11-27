@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 15:20 IST · claude/refs-measured · other account: task 9, references measured
+- Done: scripts/ref-compare.mjs + .github/workflows/ref-compare.yml (Ref compare: reel, ref); captions "refs" tag with a check warning; scripts/audit-numbers.mjs AUDIT_REFS lines (with vs without a reference pattern, per pattern 3+ reels); design/runbook-daily.md "References, measured"; scripts/qa/ref-compare-test.mjs.
+- Left: none of tasks 9-15; task 10 render 3 follows.
+- For the main account: tag reels with "refs" (the 5 warned reels), dispatch Ref compare after each reel built from a reference, read AUDIT_REFS in the weekly review.
+
 ## 2026-11-27 15:16 IST · claude/refs-thumbs · other account: task 15, references you can tell apart and clean up
 - Done: templates/index.html References: refView() (thumbnail or 3 s silent loop of the clip, state, one-line lesson, reels that used it via captions "refs": ["app:<id>"], safe-to-remove), a Clean up view with one Remove each. scripts/qa/app-refs-test.mjs in npm run check.
 - Left: task 9 (refs tags, ref-compare, weekly numbers); it defines "app:<id>" in the refs tag.

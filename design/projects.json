@@ -288,6 +288,27 @@
           "line": "Live: each reference shows a thumbnail or a 3 s silent loop, its state, the lesson in one line and the reels that used it; Clean up lists the safe ones."
         }
       ]
+    },
+    {
+      "id": "refs-measured",
+      "name": "References, measured",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: a side-by-side measure of our reel against its reference, a reference tag per reel, and the nightly numbers compare reels with and without one.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T09:50:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T09:50:00Z",
+          "stage": "building",
+          "line": "Measuring our reels against their references."
+        },
+        {
+          "at": "2026-11-27T09:50:00Z",
+          "stage": "done",
+          "line": "Live: a side-by-side measure of our reel against its reference, a reference tag per reel, and the nightly numbers compare reels with and without one."
+        }
+      ]
     }
   ]
 }
