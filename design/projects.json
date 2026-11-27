@@ -334,6 +334,22 @@
           "line": "Live: a side-by-side measure of our reel against its reference, a reference tag per reel, and the nightly numbers compare reels with and without one."
         }
       ]
+    },
+    {
+      "id": "app-probe-cards",
+      "name": "App probe: Today buttons",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: the App probe checks what each Today button really does; APP PROBE: PASS on the live app.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T17:18:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T17:18:00Z",
+          "stage": "done",
+          "line": "Live: the App probe checks what each Today button really does; APP PROBE: PASS on the live app."
+        }
+      ]
     }
   ]
 }
