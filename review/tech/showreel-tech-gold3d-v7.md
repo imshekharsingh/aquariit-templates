@@ -290,3 +290,17 @@ Faults (visible at phone size):
 PREMIUM: animation 6.5/10 (t 7.7-8.7 four-copy strobe on the main beat; t 0-3 slam and pull-back and t 18-21 payoff good), cleanliness 6.5/10 (t 3.0 empty middle, t 7.93 ghosted labels, t 17.25 cut tiles), premium 7.5/10 (t 9.5 tangle, t 16.5 New, t 19.5 payoff wide); weakest: 7.7-8.7 s the cascade strobes; show it from the high wide (tips moving slowly on screen) or fade the cables in, so no part moves more than about 8 px per 120 fps sub-frame.
 
 CRITIC: NOT READY: v7 render 3 is not STABLE: the cable cascade at 7.7-8.7 s shows four stepped copies of every cable and tile (a visible glitch on the story's main beat), with an empty frame at 3.0 s and cut tiles at 17.25 s; animation 6.5, cleanliness 6.5, premium 7.5. Exact fix (a kit pass, needs a render the owner must approve): (1) 7.7-8.7 s film the cascade from the high wide used at 9.0 s, or let the 23 cables fade in along their path instead of growing their tips past the lens, then re-check FLICKER at 60 fps; (2) 2.6-3.4 s start the crane before the apps reach the bottom so the board's frame enters by 3.0 s; (3) 16.9-17.6 s frame the truck so the hub and New stay whole or fully out. Is v7 usable for a tech reel as-is? No for the 7.7-8.7 s stretch; yes as a source of parts (the board, tiles, hub, materials, headline type, step pill and the payoff wide are good enough to reuse). Render cap reached: the owner decides.
+
+
+## Render 4 (builder, 28 Nov 2026): the last render; v7 closed (owner: "do render 4 as the last one, then move on")
+- MP4: R2 study/showreel-tech-gold3d-v7-r4-preview.mp4 (22.87 s); stills: study/showreel-tech-gold3d-v7-r4-preview-stills.png.
+- What changed from render 3: the whole-reel glitch screen showed the real cause of the stepped cascade (the move into the "high wide" took 0.62 s
+  with the camera low over the floor, so the cables passed right in front of the lens). The cascade is now filmed from the far high wide (1.7 s move
+  on a higher arc after the first plug's click), the cables land once the camera is still, the 3 x 8 counter counts with them, Chat and Mail enter
+  the frame edge dim, the board rises over 0.9 s, the counter's ones digit rolls and fades (lib3d numbers), "TANGLED" no longer sits on the board.
+- Output QA: everything PASS (PACE, STRAY, LOUD, SOUND, COLOUR, EDGES, GLOW, VARIETY, LOOK, NUMBERS, DEAD, SHEEN; LICENCE and HERO warn as before)
+  except FLICKER: FAIL 0.77 s (A-B-A 4.7, limit 4.0) and a one-frame jump at 0.83 s (7.8, limit 5.0): Notes slamming in at the start. The cascade
+  (render 3's fault, up to 64) is clean.
+- Verdict: NOT READY as a whole reel (FLICKER fails), and no render is left: v7 is closed. No critic session is started for it. Its good parts
+  (the wall build, the far high wide over the cascade, the collapse and the payoff wide) can be reused as pieces in the 2.5D tech reels; the opening
+  slam would need a slower landing first.

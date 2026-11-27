@@ -1320,3 +1320,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-start-gold · Web: a new reel starts from the gold reel by default (task 17)
 - Done: newweb.mjs defaults to the gold start; --classic keeps the old template; runbook-reels.md updated.
 - Left: none.
+## 2026-11-28 · claude/v7-closed · 3D kit v7 closed after render 4
+- Done: render 4 Output QA recorded (all pass but FLICKER at 0.8 s); v7 closed per the owner; project marked done.
+- Left: none for v7.
