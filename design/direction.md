@@ -33,6 +33,11 @@ Every 2.5D map reel (tech, and web "how the browser does X") plans these on its 
 4. Torch-like light wedges in each node's hue; faint sub-nodes, grid and dust fill the background; dim, low contrast, no blur stacks.
 5. A whole-frame map per beat on the card: top band, middle subject, edges, background, empty zones (none), Instagram zones (bottom ~25 %, right edge) with background only.
 6. The structure is the topic's shape (line, loop, tree; a hub only when there is one); the camera follows the action; the explained part stays in the middle safe area.
+7. Every element comes alive from its shadow (owner, 27 Nov 2026, after the AI-words reel: "elements should draw on its shadow with an approach of
+   coming alive", for ALL elements through the whole reel): first its soft shadow lands on the surface, then the element draws itself on above it
+   (outline or stroke traces, then the fill and content arrive, a small settle/overshoot), then it stays alive (light breathing, a slow idle). Cards,
+   nodes, sub-nodes, panels, icons, lines and labels alike; no element appears without its shadow-first build. Keep each build 0.3-0.5 s and
+   overlap builds in a cascade so the pace stays fast (note 1), and keep it continuous so the glitch check passes (note 2).
 Plus (owner, 27 Nov 2026, replaces "frame 0 is the whole map"): frame 0 is the real-life moment the topic is about, the thing viewers already know (a chat window with the reply streaming in, a phone at the till, a tag in a bag), readable at phone size with the hook line on screen; within about 2.5-3 s one quick pull-back (0.5-0.6 s) turns it into the map's first card (a match cut) with the next card's ghost showing; never open on an abstract map. A pause mark after every step number; all panel text 24 px+ at 1080 (or dropped).
 
 ## Motion-design pass (owner, 26 Nov 2026), part of every direction card and 3D plan
