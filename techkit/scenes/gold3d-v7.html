@@ -46,7 +46,7 @@ const PAY = C.same + .4;
 const TILT = +(window.__TILT ?? .15);   // plan critic item 4: Notes leans back less while it slams in, so frame 0 reads "Notes" (the label faced the key light)
 const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slam', s: -1, amp: .4, d: 1.0, tilt: TILT }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'rise', s: 1, amp: .5, d: .5 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'slideTurn', s: 1, amp: .45, d: .5 }];
 const TOOLS = [['Pay', 0x6b3cff, 'pay'], ['Photos', 0xe0449a, 'photos'], ['Files', 0x2f7bff, 'files'], ['Maps', 0x1fb86a, 'maps'], ['Calendar', 0xff6a3c, 'calendar'], ['Docs', 0x7a4cff, 'files'], ['Tasks', 0x1294d6, 'tasks'], ['Music', 0xd9a21b, 'music']];
-const WALL_Y = 2.3, WALL_Z = -6.5, HUB_P = V(0, 1.25, -2.2), NEW_P = [2.85, HUB_P.y - .05, -1.7], R = .04, FL = R + .006;
+const WALL_Y = 2.3, WALL_Z = -6.5, HUB_P = V(0, 1.25, -2.2), NEW_P = [2.85, HUB_P.y - .05, -1.7], R = .048, FL = R + .006;
 const AX = (i) => (i - 1) * 1.88, TX = (j) => (j % 2 - .5) * 2.2, TY = (j) => WALL_Y + Math.floor(j / 2) * 1.45, SIDE = (j) => (j % 2 ? 1 : -1);
 const EDGE = (j, k = 1, n = 3) => [TX(j) + SIDE(j) * .71, TY(j) + .65 + (k - (n - 1) / 2) * .2, WALL_Z];
 const apps = APPS.map((a, i) => { const g = L.appTile(THREE, { size: 1.7, color: a.c, glyph: L.appGlyphs[a.g], name: a.n, label: 'inside' }); g.position.set(AX(i), 0, 2); S.scene.add(g); return g; });
@@ -148,7 +148,7 @@ const SH = [
   { t: T_IN - .1, pos: [.3, 6.95, 3.9], look: [0, 6.95, -6.5], fov: 50, mv: 'dolly-in', frac: .9 },   // the board a little smaller (about 64 % of the width) so the top row sits below the headline     // 4 push to the board as it finishes; the tools stack, the camera rides them
   { t: W1 + .5, pos: [-5.0, 3.4, -3.8], look: [-1.75, 4.4, -6.45], fov: 46, mv: 'truck-down' },   // the plug in the lower half (the headline above it)      // 5 the first plug clicks in
   { t: CASC[0] + .9, pos: [-2.6, 5.0, 7.4], look: [0, 2.5, -3.4], fov: 52, mv: 'arc' },   // a smaller arc (a wide sideways sweep slid the apps' gaps across the frame in one frame)               // 6 the tangle grows on the floor
-  { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back', frac: .96, bend: [0, 2.6, 0] },   // a longer move that rises over the apps (they swept past the camera)   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
+  { t: WORST - .4, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back', frac: .96, bend: [0, 2.6, 0] },   // a longer move that rises over the apps (they swept past the camera)   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
   { t: PAN, pos: [2.6, 4.4, 5.0], look: [0, 2.4, -2.2], fov: 50, mv: 'whip', dur: 1.1 },     // 8 fix 9 (U14): a whip pan to the hub on "hub" (big moment 3)
   { t: COLLAPSE[0] + .8, pos: [0, 7.4, 17.4], look: [0, 3.7, -3.0], fov: 54, mv: 'crane-up', frac: .96, ease: 2 },       // 9 the collapse in one wave, from the high wide (fix 11: Notes whole)
   { t: C.newt, pos: [0, 7.326, 16.992], look: [0, 3.7, -3.0], fov: 54, mv: 'hold', frac: .96 },       // 10 the clean picture, 11: a still hold (a 2 % push) while the green sweep runs (plan critic C)
@@ -217,7 +217,7 @@ function frame(t) {
     const plug = Math.max(pulse(t, landT(j), .3), pulse(t, landT(8 + j), .3), pulse(t, landT(16 + j), .3), pulse(t, hubT(3 + j) + .45, .3)) * .7; m.material.emissiveIntensity = .55 * plug; });   // a soft, slower glow (a 0.1 s pulse blinked)
   const runs = [[BOARD + .4, .9], [WORST - .5, .9], [LAND, .9], [PAY + 1.4, .9]];   // slower runs (a small fast bead twinkled)   // fix 1 and 3: the edge light runs once round the board (ending at slot 1, top left) at the build, the tangle, the hub, the payoff
   let bu = -1; for (const [s0, d] of runs) { const k = prog(t, s0, s0 + d); if (k > 0 && k < 1) bu = k; }
-  if (bu >= 0) { bead.visible = true; bead.position.copy(perim(bu)); bead.scale.setScalar(Math.max(.001, 2.4 * Math.sin(Math.PI * bu))); } else bead.visible = false;   // a bigger, softer bead that grows in and out (a tiny bright dot twinkled)
+  bead.visible = false;   // no running bead (a small bright dot blinked in every move); the board's edges glow as the light runs   // a bigger, softer bead that grows in and out (a tiny bright dot twinkled)
   edgeMat.opacity = rise > .5 ? (.22 + .03 * Math.sin(t * 2.1)) + .5 * Math.max(...runs.map(([s0, d]) => pulse(t, s0 + d / 2, d / 2))) : 0;
   // tools (fix 2): one flow along the S path, each landing against the one before with a squash, a contact flash and a nudge
   flash.visible = false; let flashK = 0;
