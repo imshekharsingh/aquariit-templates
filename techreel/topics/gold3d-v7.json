@@ -256,5 +256,7 @@
   "subs_why": "v7 has its subtitles at the top (y 190-400 of 1920), not in the tech default band; the checks leave this band out (its words change on purpose)"
  },
  "say": {},
- "look": "3d"
+ "look": "3d",
+ "fps": 120,
+ "fps_why": "four frames blended into each 30 fps frame (motion blur): fast near-camera moves strobed with two (27 Nov 2026)"
 }
