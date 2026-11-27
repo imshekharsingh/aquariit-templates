@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-lift-hold-27nov · owner chat: other account HOLD lifted, v7 render 3 is GO
+- Owner: the other account starts the 3D kit v7 now. design/handoff.md: HOLD replaced by "HOLD LIFTED": 7 plan-critic changes, render 3 (last), QA, "v7 ready for critic"; apply the owner's 27 Nov 2.5D notes where they fit. Its queue check stays paused, so the owner starts it there.
+
 ## 2026-11-27 · claude/tech-27nov-stills-check · outside stills check: showreel-tech-ai-words APPROVED
 - Verdict appended to review/tech/showreel-tech-ai-words.direction.md (owner notes 1-6, faults, UPGRADES). Two HIGH fixes before the one render: no type under 24 px on the wide shots (tile names and sub-node labels fade with the tags), ghosts kept out of the caption, bottom band and right edge. The builder's branch was already merged, so this went on its own branch. No render, no scene edit.
 
