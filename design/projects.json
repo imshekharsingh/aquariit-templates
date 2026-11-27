@@ -5,10 +5,10 @@
       "id": "3d-kit-v7",
       "name": "3D kit v7: the last sample",
       "account": "other",
-      "stage": "building",
-      "line": "Render 4 (owner-approved, the last): the critic's fixes are in; checks before the render.",
+      "stage": "checking",
+      "line": "Render 4 checks: the cable cascade is now filmed from the far high wide (no more stepped copies); the last glitch checks run before the render.",
       "pct": 97,
-      "updatedAt": "2026-11-27T18:10:00Z",
+      "updatedAt": "2026-11-27T19:21:00Z",
       "history": [
         {
           "at": "2026-11-26T13:12:00Z",
@@ -74,6 +74,11 @@
           "at": "2026-11-27T17:09:00Z",
           "stage": "building",
           "line": "Render 4 (owner-approved, the last): the critic's fixes are in; checks before the render."
+        },
+        {
+          "at": "2026-11-27T19:21:00Z",
+          "stage": "checking",
+          "line": "Render 4 checks: the cable cascade is now filmed from the far high wide (no more stepped copies); the last glitch checks run before the render."
         }
       ],
       "steps": [
@@ -112,8 +117,8 @@
       ],
       "next": {
         "who": "other",
-        "action": "Whole-reel glitch check, then render 4 on GitHub (about 40 min) and Output QA",
-        "eta": "render 4 tonight"
+        "action": "Full-size glitch checks at 1.2, 2.8, 14.5 and 22.3 s, then render 4 on GitHub (about 40 min) and Output QA",
+        "eta": "tonight"
       }
     },
     {
@@ -865,15 +870,20 @@
       "id": "project-steps",
       "name": "Projects show their steps",
       "account": "other",
-      "stage": "building",
-      "line": "Building: each project shows its own steps and the next action on Today; a push when a project is done.",
-      "pct": null,
-      "updatedAt": "2026-11-27T18:10:00Z",
+      "stage": "done",
+      "line": "Live: each project shows its steps and the next action on Today; a push when one is done; APP PROBE: PASS.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T19:21:00Z",
       "history": [
         {
           "at": "2026-11-27T18:10:00Z",
           "stage": "building",
           "line": "Building: each project shows its own steps and the next action on Today; a push when a project is done."
+        },
+        {
+          "at": "2026-11-27T19:21:00Z",
+          "stage": "done",
+          "line": "Live: each project shows its steps and the next action on Today; a push when one is done; APP PROBE: PASS."
         }
       ],
       "steps": [
@@ -883,30 +893,26 @@
         },
         {
           "name": "Build",
-          "state": "now"
+          "state": "done"
         },
         {
           "name": "Tests",
-          "state": "next"
+          "state": "done"
         },
         {
           "name": "Merge",
-          "state": "next"
+          "state": "done"
         },
         {
           "name": "Live check",
-          "state": "next"
+          "state": "done"
         },
         {
           "name": "Done",
-          "state": "next"
+          "state": "done"
         }
       ],
-      "next": {
-        "who": "other",
-        "action": "Tests and a phone-size check, then merge and the live check",
-        "eta": "about 30 min"
-      }
+      "next": null
     }
   ]
 }
