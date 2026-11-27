@@ -1317,3 +1317,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-split · Web kit: before/after split piece (task 16)
 - Done: scripts/explainer/kitsplit.js (KM.split), its kit-inline entry, study clip scripts/explainer/demo/split.html, rules-web.md rule 21.
 - Left: none; the next web builder can use it.
+## 2026-11-28 · claude/web-start-gold · Web: a new reel starts from the gold reel by default (task 17)
+- Done: newweb.mjs defaults to the gold start; --classic keeps the old template; runbook-reels.md updated.
+- Left: none.

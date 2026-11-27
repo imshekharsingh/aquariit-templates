@@ -21,6 +21,10 @@ import { fileURLToPath } from 'node:url';
 import { nextPalette } from './palette.mjs';
 const here = dirname(fileURLToPath(import.meta.url)), root = join(here, '..', '..');
 // --gold (24 Nov 2026, design/gold.md): start from the gold web reel (showreel-46-tabwiggle) instead of this template: scripts/starter.mjs web <slug>
+// task 17 (28 Nov 2026): the gold start is the DEFAULT for a plain web reel (the gold reel already fills the whole frame, rules-web.md rule 16);
+// the old template below squeezes the picture into one place and Output QA SPREAD fails it, so it runs only with --classic (or --details).
+if (!process.argv.includes('--classic') && !process.argv.includes('--details') && !process.argv.includes('--gold')) process.argv.push('--gold');
+if (process.argv.includes('--classic')) process.argv.splice(process.argv.indexOf('--classic'), 1);
 if (process.argv.includes('--gold')) { const r = process.argv.slice(2).filter((x) => x !== '--gold'); execFileSync('node', [join(dirname(fileURLToPath(import.meta.url)), '..', 'starter.mjs'), 'web', ...r], { stdio: 'inherit' }); process.exit(0); }
 const args = process.argv.slice(2), flag = (f) => { const i = args.indexOf(f); if (i < 0) return null; const v = args[i + 1]; args.splice(i, 2); return v; };
 const out = flag('--out') || 'scripts/explainer', force = args.includes('--force'); if (force) args.splice(args.indexOf('--force'), 1);
