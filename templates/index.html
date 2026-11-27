@@ -788,9 +788,21 @@
   function firstLine(c){ return headline(String(c).split('\n')[0].replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, '').trim()); }
   // the first sentence (to the first ? ! or . after 12 characters), at most ~90 characters
   function headline(t){ t = String(t || '').trim(); var m = /^(.{12,}?[?!.])(\s|$)/.exec(t); if (m) t = m[1]; return t.length > 90 ? t.slice(0, 89).replace(/\s+\S*$/, '') + '…' : t; }
-  var ch = 'web';
-  try { var saved = localStorage.getItem('studio-ch'); if (CH[saved]) ch = saved; } catch (e) {}
-  if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
+  // the channel shown follows the workflow the owner came from (task 20, owner 27 Nov 2026: "tabs must only be selected based on workflow
+  // selection"): a board card's Open to post / Open reel, a reminder or reel link, a tab tap, or All reels (the channel due next). Nothing else
+  // switches it: not the list loading, not a saved last tab, not the Growth picker.
+  var ch = 'web', chSet = false;
+  if (CH[location.hash.slice(1)]) { ch = location.hash.slice(1); chSet = true; }
+  // TAB-ORDER-START (scripts/qa/app-tabs-test.mjs runs this): the tabs in posting order: today's next reel still to post first (its postAt, else
+  // the channel's slot), channels already posted today last
+  function chanOrder(shows, caps, ticks, today, slots){ var due = {}, posted = {};
+    ['web', 'tech', 'c3'].forEach(function(k){ due[k] = null; posted[k] = false; });
+    (shows || []).forEach(function(s){ var m = caps[s.name] || {}, k = CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web';
+      if (m.hidden || m.sample || m.postOn !== today) return; if (ticks[s.name]) { posted[k] = true; return; }
+      var at = /^\d{2}:\d{2}$/.test(m.postAt || '') ? m.postAt : slots[k] || '23:59'; if (due[k] == null || at < due[k]) due[k] = at; });
+    return ['web', 'tech', 'c3'].map(function(k, i){ return { k: k, i: i, key: due[k] != null ? '0' + due[k] : posted[k] ? '2' : '1' + (slots[k] || '23:59') }; })
+      .sort(function(a, b){ return a.key < b.key ? -1 : a.key > b.key ? 1 : a.i - b.i; }).map(function(x){ return x.k; }); }
+  // TAB-ORDER-END
   // the exact slot (owner, 5 Nov 2026): "postAt" (HH:MM IST) in captions.json, else the channel's default: web 13:00 (19:00 when the note says so),
   // tech 19:00, Turns Out 20:00 (E15 from 6 Nov). The same rule is in src/worker.js (the reminders) and scripts/check.mjs
   // channel defaults come from design/slots.json (25 Nov 2026; GET /api/slots): tech 15:00, Turns Out 17:00, web 19:00
@@ -809,7 +821,7 @@
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
   var DATA = null, openName = { web: null, tech: null, c3: null }, tabs = document.querySelectorAll('.tab');
-  Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) { render(); readyRender(); } else paint(); if (sec === 'growth') growth(); }); });
+  Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); chSet = true; if (DATA) { render(); readyRender(); } else paint(); }); });
   // the profile card: one entry per channel in /channels/channels.json (logo, name, username, bio, posting window); a channel without one shows no card
   var PROF = {}, prof = document.getElementById('prof');
   function copyBtn(text){ var b = el('button', 'btn g', 'Copy'); b.type = 'button';
@@ -833,7 +845,9 @@
       var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); }, 60000);
     }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; setTimeout(function(){ btn.textContent = idle; }, 1800); }); }
   var profP = fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
+  function dueNext(){ return DATA ? chanOrder(DATA.d && DATA.d.showreels, DATA.c, ticks, istToday(), SLOTS)[0] : ch; }
   function paint(counts){
+    if (DATA) { var bar = tabs[0] && tabs[0].parentNode; chanOrder(DATA.d && DATA.d.showreels, DATA.c, ticks, istToday(), SLOTS).forEach(function(k){ var t = bar && bar.querySelector('.tab[data-ch="' + k + '"]'); if (t) bar.appendChild(t); }); }   // tabs in posting order
     document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
@@ -981,8 +995,8 @@
     gains.forEach(function(r){ ul.lastChild.appendChild(el('b', null, '+' + r.g + ' followers on ' + dShort(r.d) + ' · ' + r.what)); });
     if (gains.length) ul.lastChild.removeChild(ul.lastChild.children[1]);
     c.appendChild(ul); return c; }
-  function growth(){ var k = ch; gBox.textContent = ''; gBox.appendChild(el('p', 'empty', 'Loading numbers…'));
-    perfFor(k).then(function(j){ if (k !== ch || sec !== 'growth') return; gBox.textContent = '';
+  function growth(){ var k = CH[gSel] ? gSel : ch; gBox.textContent = '';   /* Growth shows its own pick (task 20: it no longer moves the reels tab) */ gBox.appendChild(el('p', 'empty', 'Loading numbers…'));
+    perfFor(k).then(function(j){ if (k !== (CH[gSel] ? gSel : ch) || sec !== 'growth') return; gBox.textContent = '';
       var acc = ((j && j.account) || []).filter(function(r){ return r.followers != null; });
       var reels = ((j && j.media) || []).filter(function(m){ return m.reach != null && m.posted_at; }).sort(function(a, b){ return a.posted_at < b.posted_at ? -1 : 1; }).slice(-30);
       if (!acc.length && !reels.length) { gBox.appendChild(el('p', 'empty', 'No numbers for ' + CH[k].name + ' yet. They arrive with the nightly Instagram collect.')); return; }
@@ -1052,12 +1066,12 @@
           var t = el('span'); t.appendChild(el('small', null, q[0])); t.appendChild(el('b', null, q[1])); g3.appendChild(t); });
         body.appendChild(g3); body.appendChild(el('span', 'note', 'Typical of the last ' + media.length + ' reel' + (media.length === 1 ? '' : 's') + '. Tap for charts.')); } });
     return b; }
-  function gPick(k){ gSel = k; try { localStorage.setItem('studio-g', k); } catch (e) {} if (CH[k]) ch = k; gShow(); window.scrollTo(0, 0); }
+  function gPick(k){ gSel = k; try { localStorage.setItem('studio-g', k); } catch (e) {} gShow(); window.scrollTo(0, 0); }   // Growth keeps its own pick: it never switches the reels tab (task 20)
   function gShow(){ var all = document.getElementById('g-all');
     Array.prototype.forEach.call(document.querySelectorAll('#g-seg button'), function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-g') === gSel)); });
     all.hidden = gSel !== 'all'; gBox.hidden = gSel === 'all';
     if (gSel === 'all') { all.textContent = ''; all.appendChild(scoreAll()); ['web', 'tech', 'c3'].forEach(function(k){ all.appendChild(gCard(k)); }); }
-    else { ch = gSel; growth(); } }
+    else growth(); }
   Array.prototype.forEach.call(document.querySelectorAll('#g-seg button'), function(b){ b.addEventListener('click', function(){ gPick(b.getAttribute('data-g')); }); });
   function render(){
     readyRender();   // the Ready to post box always matches the tab being drawn (owner, 27 Nov 2026: the tech tab said "Nothing is ready to post for @webin20sec" after Open to post)
@@ -1173,7 +1187,7 @@
     if (!DATA) { pendingReel = name; return; }
     var s = ((DATA.d && DATA.d.showreels) || []).filter(function(x){ return x.name === name; })[0];
     var k = s ? chOf(s, DATA.c) : CH[(DATA.c[name] || {}).channel] ? DATA.c[name].channel : null;
-    if (k) ch = k;
+    if (k) { ch = k; chSet = true; }
     reelName = name; go('reel'); }
   // after "I posted it" (or Undo): the reel list, Today and an open reel page all update
   function rerender(){ if (DATA) render(); tRender(); if (sec === 'reel' && reelName) rPage(reelName); }
@@ -1204,8 +1218,9 @@
     window.scrollTo(0, 0); }
   Array.prototype.forEach.call(secBtns, function(b){ b.addEventListener('click', function(){ go(b.getAttribute('data-sec')); }); });
   backBtn.addEventListener('click', function(){ go(lastMain); });
-  document.getElementById('t-all').addEventListener('click', function(){ go('reels'); });
-  document.getElementById('d-reels').addEventListener('click', function(){ menu(false); go('reels'); });
+  function allReels(){ ch = dueNext(); chSet = true; go('reels'); }   // All reels with no workflow: the channel due next
+  document.getElementById('t-all').addEventListener('click', allReels);
+  document.getElementById('d-reels').addEventListener('click', function(){ menu(false); allReels(); });
   // the settings sheet (gear): notifications, GitHub minutes, all reels, sign out
   var drawer = document.getElementById('drawer'), scrim = document.getElementById('scrim'), menuBtn = document.getElementById('menu-btn');
   function menu(open){ drawer.classList.toggle('open', open); scrim.hidden = !open; menuBtn.setAttribute('aria-expanded', String(open));
@@ -1380,7 +1395,7 @@
       fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ channel: k, priority: true, text: 'FIX (from the board, top priority) ' + c.fail }) })
         .then(function(r){ if (!r.ok) throw 0; c.sent = c.fail; fixb.textContent = 'Sent to the studio'; }).catch(function(){ fixb.disabled = false; fixb.textContent = 'Try again'; }); });
     main.addEventListener('click', function(){ var on = !card.classList.contains('open'); card.classList.toggle('open', on); main.setAttribute('aria-expanded', String(on)); });
-    open.addEventListener('click', function(){ if (c.ready) { ch = k; go('reels'); } else if (c.name) openReel(c.name); });
+    open.addEventListener('click', function(){ if (c.ready) { ch = k; chSet = true; go('reels'); } else if (c.name) openReel(c.name); });
     return c; }
   function bUpdate(c, o){
     var prev = c.prev, p = bPct(o), cur = o.fin ? (o.fin === 'skipped' ? Math.max(o.idx, 0) : BST.length) : o.idx;

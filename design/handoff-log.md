@@ -6,6 +6,10 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 22:53 IST · claude/tabs-order · other account: task 20, channel tabs in posting order, the tab follows the workflow
+- Done: templates/index.html chanOrder() orders the tabs by today's next reel to post (postAt, else the slot), posted channels last; only workflow entry points set the channel (board Open to post / Open reel, reel link or reminder, tab tap, All reels = the channel due next); the saved last tab and the Growth picker no longer switch it (Growth shows its own pick). scripts/qa/app-tabs-test.mjs in npm run check.
+- Left: App probe PASS on the live app (Progress).
+- For the main account: nothing.
 ## 2026-11-27 22:50 IST · claude/app-fresh · other account: task 19, the installed app never runs an old copy
 - Done: src/worker.js stamps index.html with its build (appPage) and serves GET /api/version; templates/index.html checks it on open and resume and reloads once (?fresh=), and a 20 s stalled list reloads once (?stall=1). scripts/qa/app-fresh-test.mjs (exactly one reload); design/runbook-reels.md note.
 - Left: App probe PASS on the live app (Progress).
