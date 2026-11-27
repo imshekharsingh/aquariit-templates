@@ -127,6 +127,11 @@
   .ask .about b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .ask .about i{font-style:normal;font-size:13px;color:var(--mute)}
   .ask video{display:block;width:min(100%,320px);aspect-ratio:9/16;margin:8px 0 4px;border-radius:14px;background:#000;object-fit:cover}
+  .tst{padding:12px 0;border-top:1px solid var(--line)}.tst:first-child{border-top:0}
+  .tst .about{display:flex;align-items:center;gap:12px;width:100%;padding:0;border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+  .tst .th{flex:none;width:54px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:#000 center/cover no-repeat}.tst .th video{width:100%;height:100%;object-fit:cover;display:block}
+  .tst .about span{display:flex;flex-direction:column;gap:2px;min-width:0}.tst b{font-size:15px}.tst i{font-style:normal;font-size:13px;color:var(--mute)}
+  .tst p{margin:8px 0 0;font-size:14px;color:var(--mute)}.tst video.play{display:block;width:min(100%,320px);aspect-ratio:9/16;margin:10px 0 0;border-radius:14px;background:#000;object-fit:cover}
   .refprev{display:flex;align-items:center;gap:10px;margin:8px 0 4px}
   .refprev img,.refprev video{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--soft)}
   .refprev span{font-size:14px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -664,7 +669,7 @@
     <h2 class="lbl" id="cards-h" hidden>Daily reports</h2>
     <div id="cards"></div>
     <p class="empty" id="inbox-empty" hidden>Nothing new.</p>
-    <details class="fb" id="slog" hidden><summary>Studio log <span id="slog-n"></span></summary><p class="mute" style="margin-top:8px">Records only. Nothing here needs you.</p><div id="slog-list"></div></details>
+    <details class="fb" id="slog" hidden><summary>Tests <span id="slog-n"></span></summary><p class="mute" style="margin-top:8px">Test videos and kit samples. Never posted, not counted as reels. Nothing here needs you.</p><div id="slog-list"></div></details>
   </section>
 </main>
 <nav class="bnav" aria-label="Sections"><button type="button" data-sec="today"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg><span>Today</span><i class="badge" id="today-n" hidden></i></button><button type="button" data-sec="growth"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 19.6h16.6"/><path d="M5 15.6l4.4-4.3 3.4 2.8 6.4-6.6"/><path d="M15.2 7.3l4-.1.1 3.9"/></svg><span>Growth</span></button><button type="button" data-sec="inbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13.4l2.4-7.6c.2-.6.7-.9 1.3-.9h8.6c.6 0 1.1.3 1.3.9l2.4 7.6v4.8c0 .8-.6 1.4-1.4 1.4H5.4c-.8 0-1.4-.6-1.4-1.4z"/><path d="M4.2 13.4h4.5l1.2 2.3h4.2l1.2-2.3h4.5"/></svg><span>Inbox</span><i class="badge" id="inbox-n" hidden></i></button></nav>
@@ -1634,6 +1639,27 @@
   // /reels/study/<name>-preview.mp4 and <name>-preview-stills.png (the Showreel workflow's "seconds" mode). "Like" / "Not this" go to the
   // owner's Feedback (D1, /api/feedback) as "Preview <name>: Like|Not this", which the daily run reads (owner, 23 Nov 2026).
   var pvPending = 0;
+  // Tests (task 14, owner 27 Nov 2026: "tests and previews are invisible"): every video under study/ from GET /api/tests, newest first, with its cover,
+  // name, date, a plain "what it tests" line (from previews.json when it has an entry) and a player. Never posted, never counted as a reel.
+  // TESTS-START (scripts/qa/app-tests-test.mjs runs this function)
+  function testsMerge(tests, items){ items = items || [];
+    return (tests || []).map(function(t){ var file = '/reels/study/' + t.name + '.mp4', e = items.filter(function(p){ return (p.src || '/reels/study/' + p.name + '-preview.mp4') === file; })[0] || null,
+        bare = t.name.replace(/^showreel-(pv-)?/, '').replace(/-preview$/, ''), m = /^(tech|web|c3)-(.*)$/.exec(bare), ch = e && e.channel || (m ? m[1] : null), rest = m ? m[2] : bare,
+        rn = /-r(\d+)$/.exec(rest), title = e ? e.title : rest.replace(/-r\d+$/, '').replace(/-/g, ' ') + (rn ? ', render ' + rn[1] : ''),
+        what = e && e.about ? String(e.about).split(/\.\s/)[0].replace(/\.?$/, '.') : 'A test render, never posted.';   // the first sentence
+      return { name: t.name, title: title.charAt(0).toUpperCase() + title.slice(1), what: what, channel: ch, at: t.at, video: t.video, cover: t.cover || (e && e.cover) || null }; }); }
+  // TESTS-END
+  var TESTS = null;
+  function testsPaint(){ var box = document.getElementById('slog-list'), slog = document.getElementById('slog'); if (!TESTS) return;
+    var list = testsMerge(TESTS, PV_ITEMS); box.textContent = ''; document.getElementById('slog-n').textContent = list.length ? '(' + list.length + ')' : ''; slog.hidden = !list.length;
+    list.forEach(function(x){ var d = el('div', 'tst'), bt = el('button', 'about'), th = el('span', 'th'), tx = el('span'); bt.type = 'button';
+      if (x.cover) th.style.backgroundImage = 'url("' + x.cover + '")'; else { var pv = document.createElement('video'); pv.muted = true; pv.preload = 'metadata'; pv.src = x.video + '#t=0.6'; pv.setAttribute('aria-hidden', 'true'); th.appendChild(pv); }
+      tx.appendChild(el('b', null, x.title)); tx.appendChild(el('i', null, (x.channel && CH[x.channel] ? CH[x.channel].name + ' · ' : '') + new Date(x.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' }) + ' · tap to play'));
+      bt.appendChild(th); bt.appendChild(tx); d.appendChild(bt); d.appendChild(el('p', null, x.what));
+      bt.addEventListener('click', function(){ var v = d.querySelector('video.play'); if (v) { v.remove(); return; } v = document.createElement('video'); v.className = 'play'; v.src = x.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (x.cover) v.poster = x.cover;
+        v.setAttribute('aria-label', x.title); d.appendChild(v); v.play().catch(function(){}); });
+      box.appendChild(d); }); }
+  fetch('/api/tests', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ TESTS = j.tests || []; testsPaint(); }).catch(function(){});
   fetch('/showreels/previews.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
     PV_ITEMS = (j && j.items) || []; askFill();   // task 12: asks about a preview show its name and player
     // cleanup rule (owner, 23 Nov 2026): a preview leaves the list once answered (Like / Not this, from any device) or 7 days after its "added" date
@@ -1641,11 +1667,7 @@
     var now0 = Date.now(), all = ((j && j.items) || []).filter(function(p){ var t = Date.parse((p.added || '') + 'T00:00:00+05:30'); return !isNaN(t) && now0 - t <= 30 * 864e5; }),
       it = all.filter(function(p){ var t = Date.parse((p.added || '') + 'T00:00:00+05:30'); return p.needsOwner === true && p.ask && now0 - t <= 7 * 864e5; }),
       lg = all.filter(function(p){ return it.indexOf(p) < 0; }), slog = document.getElementById('slog');
-    if (lg.length) { lg.forEach(function(p){ var d = el('div', 'pvi lg'), c = el('span', 'ch', (CH[p.channel] && CH[p.channel].name) || p.channel || ''); d.appendChild(c);
-        d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about));
-        var a = el('a', null, 'Watch'); a.href = (p.src || '/reels/study/' + p.name + '-preview.mp4') + '?v=' + (j.v || 1); a.target = '_blank'; a.rel = 'noopener'; d.appendChild(a);
-        document.getElementById('slog-list').appendChild(d); });
-      document.getElementById('slog-n').textContent = '(' + lg.length + ')'; slog.hidden = false; }
+    testsPaint();   // the Tests list (task 14) uses these entries for its titles
     var box = document.getElementById('pv-list'), n = document.getElementById('pv-n'); if (!it.length) return;
     document.getElementById('pv-note').textContent = j.note || '';
     var CCV = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' }, rows = {};
