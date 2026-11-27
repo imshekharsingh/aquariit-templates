@@ -204,6 +204,27 @@
           "line": "Live: uploads show a bar with the percent and the part, retry a failed part, continue after a stop, and end with \"Added\" and a preview. Owner to try one upload."
         }
       ]
+    },
+    {
+      "id": "needs-you-today",
+      "name": "Needs you you can find",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: questions sit at the top of Today with a count on the Today tab; a question about a reel shows its cover, and a tap plays it.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T09:36:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T09:36:00Z",
+          "stage": "building",
+          "line": "Moving Needs you to the top of Today, with the reel each question is about."
+        },
+        {
+          "at": "2026-11-27T09:36:00Z",
+          "stage": "done",
+          "line": "Live: questions sit at the top of Today with a count on the Today tab; a question about a reel shows its cover, and a tap plays it."
+        }
+      ]
     }
   ]
 }

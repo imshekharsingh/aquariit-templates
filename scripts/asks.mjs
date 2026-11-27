@@ -11,6 +11,8 @@
 //                  node scripts/media/from-log.mjs <run id> <dir> turns them back into files. Study each into design/references.md, then refs-done
 //   refs-done:     (also "checklist", "stills", "replies", "close": true, see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
+//          optional "reel": "showreel-..." or "preview": "showreel-pv-..." (task 12, 27 Nov 2026): the app shows that reel's cover and player beside the question,
+//          at the top of Today (owner-chat messages say "on Today, top")
 //   clear: ASKS = ["tech-bio", ...] (after acting on the replies; removes them for good)
 //   mark:  ASKS = {"showreel-19-numbers": "2026-10-31T07:51:00Z", ...} marks reels uploaded at their real post time (an answer such as
 //          "these are already on Instagram"); a reel already marked keeps its own time (POST /api/uploaded/import, insert-or-ignore)

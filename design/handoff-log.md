@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 15:06 IST · claude/needs-you-today · other account: task 12, Needs you at the top of Today
+- Done: templates/index.html: Needs you moved to the top of Today (count in the heading, badge on the Today tab), an ask can name "reel" or "preview" (src/worker.js stores it; scripts/asks.mjs add passes it) and the app shows its cover, name and an inline player. scripts/qa/app-today-test.mjs (npm run check): channel tabs show only their own ready reels; a question finds its reel or preview.
+- Left: tasks 13, 14, 15 and 9.
+- For the main account: when an ask is about a reel or a preview, add "reel" or "preview" to it; messages say "on Today, top".
+
 ## 2026-11-27 14:52 IST · claude/ref-upload-progress · other account: task 11, reference upload progress bar
 - Done: templates/index.html References upload: progress bar (percent, part n of N, XHR progress within a part), 3 retries per part with back-off, a stop keeps the multipart upload and Try again resumes from the last good part, Added with a small preview. Worker unchanged (it already accepts a part again).
 - Left: the owner tries one upload. Next GO: tasks 12-15, then 9 (after v7 render 3).

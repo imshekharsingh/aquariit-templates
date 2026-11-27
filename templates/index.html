@@ -119,6 +119,14 @@
   .use[open] .bar{margin-bottom:6px}
   .use summary::-webkit-details-marker{display:none}
   .bar{height:8px;margin:9px 0 6px;border-radius:99px;background:var(--soft);overflow:hidden}
+  /* task 12 (owner, 27 Nov 2026: "If there's a Needs you in app, how do I know where it is or what it is?"): at the top of Today, each with its reel */
+  .needs{margin-top:4px}
+  .ask .about{display:flex;align-items:center;gap:12px;width:100%;margin:10px 0 2px;padding:0;border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+  .ask .about .th{flex:none;width:54px;aspect-ratio:9/16;border-radius:10px;background:#000 center/cover no-repeat}
+  .ask .about span{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .ask .about b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ask .about i{font-style:normal;font-size:13px;color:var(--mute)}
+  .ask video{display:block;width:min(100%,320px);aspect-ratio:9/16;margin:8px 0 4px;border-radius:14px;background:#000;object-fit:cover}
   .refprev{display:flex;align-items:center;gap:10px;margin:8px 0 4px}
   .refprev img,.refprev video{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--soft)}
   .refprev span{font-size:14px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -599,13 +607,13 @@
     <h1 id="t-title">Today</h1>
     <p class="lede" id="t-sub">Loading…</p>
     <button type="button" class="chk on" id="t-chk" hidden></button>
+    <section class="tsec needs" id="needs" hidden><h2 class="lbl" id="needs-h">Needs you</h2><div id="needs-list"></div></section>
     <section class="board" id="board" aria-label="Studio board">
       <div class="bhead"><div class="ring" id="b-ring" role="img" aria-label="0 of 3 reels ready"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="rt" cx="22" cy="22" r="18"/><circle class="rf" id="b-arc" cx="22" cy="22" r="18" pathLength="100" stroke-dasharray="0 100"/></svg><b id="b-n">0</b></div>
         <div class="bt"><b id="b-t">0 of 3 ready</b><span id="b-s">Waiting for the studio</span></div></div>
       <div id="b-cards"></div>
       <div class="pbox" id="p-box" hidden><h2 class="lbl">Projects</h2><div id="p-cards"></div></div>
     </section>
-    <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div></section>
     <div class="tlist tlinks"><button type="button" class="trow" id="t-all"><span class="m"><span class="n">All reels and posted</span><span class="s">Every reel by channel, post text, channel profiles</span></span><span class="chev" aria-hidden="true">›</span></button></div>
     <button type="button" class="astat" id="astat" aria-label="Today's audit, open the daily report"><b>Daily report:</b> <span id="astat-t">checking…</span></button>
     <p class="foot" id="j-note"></p>
@@ -743,7 +751,10 @@
   // the channel's name), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
   var CH = { web: { name: '@webin20sec', slot: '13:00–21:00 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '13:00–21:00 IST', sub: 'Tech explained' },
     c3: { name: '@itturns.out', slot: '13:00–21:00 IST', sub: 'Design fixes' } };
+  // TAB-ONLY-START (scripts/qa/app-today-test.mjs runs these two)
   function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web'; }
+  function tabOnly(list, c, ch){ return list.filter(function(x){ return chOf(x, c) === ch; }); }   // a channel tab shows only its own reels (owner, 27 Nov 2026)
+  // TAB-ONLY-END
   // a reel's title, the same way on every tab: its concept, else the first line of its caption (once loaded), else its name made readable
   var TITLES = {};
   function label(s){ if (TITLES[s.name]) return TITLES[s.name]; var t = s.name.replace(/^showreel-(tech-|c3-|t\d+-)?(\d+-)?/, '').replace(/-/g, ' '); return t.charAt(0).toUpperCase() + t.slice(1); }
@@ -1197,7 +1208,7 @@
     top.textContent = say; top.className = 'chk' + (n ? ' on' : ''); tc.hidden = !n; tc.textContent = say + ' in Inbox'; tc.className = 'chk on'; }
   document.getElementById('t-chk').addEventListener('click', function(){ go('inbox'); });
   function syncNeeds(){ var q = needsList.children.length, rd = (typeof readyReels === 'function' ? readyReels().length : 0), n = q + rd, b = document.getElementById('today-n');   // questions + reels that are ready
-    needs.hidden = !q; b.textContent = n; b.hidden = !n; tSub(n); }
+    needs.hidden = !q; document.getElementById('needs-h').textContent = q > 1 ? 'Needs you · ' + q : 'Needs you'; b.textContent = n; b.hidden = !n; tSub(n); }
   // ---- the reel journey (owner, 15 Nov 2026: "cover the whole flow of reel making in the app"): GET /api/journey, one card per reel, its seven
   // stages in order. The Worker caches GitHub for a minute; this page asks again every minute only while a reel is rendering and Journey is open.
   var STAGES = [['planned', 'Planned'], ['built', 'Built'], ['render', 'Rendering'], ['checks', 'Checks'], ['critic', 'Critic'], ['ready', 'Ready to post'], ['posted', 'Posted']];
@@ -1267,7 +1278,7 @@
       var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !!r && status(r).k === 'ready'; })
       .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); }).forEach(function(x){ out.push(x); });
     return out; }
-  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = readyReels().filter(function(x){ return chOf(x, DATA.c) === ch; }); rBox.textContent = '';   // this tab's channel only (owner, 27 Nov 2026: the web tab showed the tech reel)
+  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = tabOnly(readyReels(), DATA.c, ch); rBox.textContent = '';   // this tab's channel only (owner, 27 Nov 2026: the web tab showed the tech reel)
     if (!j || jOld(j)) rBox.appendChild(el('p', 'empty', j ? 'Status not up to date' + ', so nothing is shown here. It rebuilds on its own.' : 'Status not loaded yet, so nothing is shown here.'));
     else if (!list.length) rBox.appendChild(el('p', 'empty', 'Nothing is ready to post for ' + CH[ch].name + ' yet.'));
     list.forEach(function(x){ var card = reelCard(x, DATA.c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); });
@@ -1426,9 +1437,29 @@
       .then(jSchedule); }
   document.addEventListener('visibilitychange', function(){ if (document.hidden) { clearTimeout(jTimer); clearTimeout(sTimer); } else if (sec === 'today' || sec === 'reel') { if (sec === 'today') sLoad(); if (Date.now() - jAt > 60000) jLoad(); else jSchedule(); } });
   go(sec);
-  // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list
+  // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list.
+  // Task 12 (owner, 27 Nov 2026): the list sits at the top of Today, and an ask about a reel or a preview shows its cover and name; a tap plays it right there.
+  // ASK-ABOUT-START (scripts/qa/app-today-test.mjs runs this function)
+  function askAbout(a, shows, caps, previews){ if (!a) return null;
+    if (a.reel) { var s = (shows || []).filter(function(x){ return x.name === a.reel; })[0], m = (caps || {})[a.reel] || {};
+      return { name: a.reel, title: m.concept || m.title || a.reel.replace(/^showreel-/, '').replace(/-/g, ' '), kind: 'Reel', cover: s && s.cover || null, video: s && (s.video || s.play) || null }; }
+    if (a.preview) { var p = (previews || []).filter(function(x){ return x.name === a.preview; })[0] || {};
+      return { name: a.preview, title: p.title || a.preview.replace(/^showreel-(pv-)?/, '').replace(/-/g, ' '), kind: 'Test video', cover: p.cover || null, video: p.src || '/reels/study/' + a.preview + '-preview.mp4' }; }
+    return null; }
+  // ASK-ABOUT-END
+  var PV_ITEMS = null, askBoxes = [];
+  function aboutRow(box, a){ var old = box.querySelector('.about'); if (old) old.remove(); var v0 = box.querySelector('video'); if (v0) v0.remove();
+    var ab = askAbout(a, DATA && DATA.d && DATA.d.showreels, DATA && DATA.c, PV_ITEMS); if (!ab) return;
+    var bt = el('button', 'about'); bt.type = 'button'; var th = el('span', 'th'); if (ab.cover) th.style.backgroundImage = 'url("' + ab.cover + '")';
+    var tx = el('span'); tx.appendChild(el('b', null, ab.title)); tx.appendChild(el('i', null, ab.kind + (ab.video ? ' · tap to play' : ' · not uploaded yet'))); bt.appendChild(th); bt.appendChild(tx);
+    bt.addEventListener('click', function(){ if (!ab.video) return; var v = box.querySelector('video'); if (v) { v.remove(); return; }
+      v = document.createElement('video'); v.src = ab.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (ab.cover) v.poster = ab.cover; v.setAttribute('aria-label', ab.title);
+      bt.after(v); v.play().catch(function(){}); });
+    (box.querySelector(':scope > p') || box.querySelector(':scope > b')).after(bt); }   // question, why, then the reel
+  function askFill(){ askBoxes.forEach(function(x){ if (x.box.isConnected) aboutRow(x.box, x.a); }); }
   function askEl(a){ var box = el('div', 'ask'), row = el('div', 'row'), ta = null;
     box.appendChild(el('b', null, (a.channel && CH[a.channel] ? CH[a.channel].name + ': ' : '') + pw(a.question))); if (a.why) box.appendChild(el('p', null, pw(a.why)));
+    if (a.reel || a.preview) { askBoxes.push({ box: box, a: a }); aboutRow(box, a); }
     function answer(v, btn){ if (!v || !v.trim()) { if (ta) ta.focus(); return; } btn.disabled = true;
       fetch('/api/asks/' + encodeURIComponent(a.id) + '/answer', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ answer: v.trim() }) })
         .then(function(r){ if (!r.ok) throw 0; box.remove(); syncNeeds(); }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; }); }
@@ -1581,6 +1612,7 @@
   // owner's Feedback (D1, /api/feedback) as "Preview <name>: Like|Not this", which the daily run reads (owner, 23 Nov 2026).
   var pvPending = 0;
   fetch('/showreels/previews.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
+    PV_ITEMS = (j && j.items) || []; askFill();   // task 12: asks about a preview show its name and player
     // cleanup rule (owner, 23 Nov 2026): a preview leaves the list once answered (Like / Not this, from any device) or 7 days after its "added" date
     // owner, 24 Nov 2026: only previews with needsOwner true are in the list (each shows its one-line "ask"); the rest go to the Studio log (kept 30 days)
     var now0 = Date.now(), all = ((j && j.items) || []).filter(function(p){ var t = Date.parse((p.added || '') + 'T00:00:00+05:30'); return !isNaN(t) && now0 - t <= 30 * 864e5; }),
@@ -1745,7 +1777,7 @@
     useBox.hidden = false; }).catch(function(e){ useMiss((e && e.message) || 'the app could not reach the count.'); });
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
-    DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); } tRender();
+    DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); } tRender(); askFill();
     // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
     Promise.all((r[0].showreels || []).filter(function(s){ return !ticks[s.name] && !(r[1][s.name] || {}).hidden; })   /* every reel still to post (titles are the post's first line, 21 Nov 2026) */.map(function(s){
       return fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(x){ return x.ok ? x.json() : {}; }).then(function(j){ if (j && j.caption) TITLES[s.name] = firstLine(j.caption); }).catch(function(){}); }))
