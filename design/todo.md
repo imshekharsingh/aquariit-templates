@@ -5,6 +5,20 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] **CRITICAL** 27 Nov 2026 (owner: "note it, we fix it all soon"; owner chat plans it with a size and cost first, no fixing before that):
+  **The app does not show the owner what they need.** Four gaps:
+  (1) **"study" folder is invisible.** Test and preview renders (e.g. the tech 2.5D test) go to R2 under reels/study/ and are only reachable by link;
+  the app has no place that lists them, and messages say "study folder" as if the owner knows it. Show them in the app (a "Tests" list with a
+  player), or stop naming the folder in messages.
+  (2) **"Needs you" is hard to find.** The owner is told "answer in Needs you" but cannot tell where it is or what it asks. Each message that
+  asks something should point to one obvious place (badge on the tab, the question at the top of the home screen) with the reel/preview it is about.
+  (3) **Fix button at the exact stage.** When a reel (e.g. Turns Out) fails or stalls at a stage of its journey, the Fix button must sit on that
+  stage's row (build, stills, render, QA, critic, post), not only on a generic red row; a stalled stage (no progress past its expected time)
+  counts as failed.
+  (4) **References: no thumbnails, no traceability, no cleanup.** The Inbox References list shows no thumbnail or GIF, so the owner cannot tell
+  references apart; nothing shows what was taken from which reference (design/references.md R-ref ids -> reels); and there is no clear
+  cleanup (what is done, what can go). Needs: a thumbnail/short loop per reference, its state (new/studied/used in <reel>) with the lesson taken,
+  and a remove/archive action.
 - [ ] **CRITICAL** 26 Nov 2026 (owner: "don't act on it right away, mark it critical"; owner chat picks it up, not the spare night):
   **Handoff account works read-only.** The owner's three questions, to answer with a plan and cost before any change:
   (1) Can the other account's session only READ the repo and never commit? Possible: it works in its own checkout and hands back a patch

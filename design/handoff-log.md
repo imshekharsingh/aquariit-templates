@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/todo-owner-app-gaps · owner chat: four app gaps noted as CRITICAL to-do
+- Owner: study folder invisible, "Needs you" hard to find, Fix button not at the failing stage, references with no thumbnail/trace/cleanup. design/todo.md P1 item (27 Nov); not fixed yet, the owner chat plans it with size and cost.
+
 ## 2026-11-27 · claude/probe-wait-fix · owner chat: probe waits for its status sheet
 - The 06:03 and 07:03 probes (and 15:04 yesterday) read the Studio status run while it was still queued and logged nothing. design/probe.md step 1: dispatch, then send_later 2 min and read on wake-up (one more 1-min wake-up at most). No code change.
 
