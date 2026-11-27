@@ -184,6 +184,15 @@ and stills against points 1-7 before any render. (b) On its OK: one render, Outp
 v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
 if NOT READY the owner decides. Update projects.json at each step.
 
+## GO NOW (owner, 27 Nov 2026 22:30 IST): keep fixing; one more v7 render approved
+Owner: "Let the handoff session continue fixing the issues." In this order, status every 30 min, done = proof (Output QA / App probe PASS):
+1. Task 10, v7 render 4 (owner-approved, the last; about $5-8): make the critic's EXACT FIX from the render 3 verdict in
+   review/tech/showreel-tech-gold3d-v7.md (CRITIC: NOT READY, 27 Nov: the cable cascade 7.7-8.7 s shows four stepped copies; show it from
+   further back so the tips move slowly, and fix the weak spots at 0.8, 3.9, 14.5 s). Glitch check must pass locally first. Then render 4, Output
+   QA (FLICKER must pass), "v7 ready for critic". The main account's critic judges it.
+2. Task 21 (App probe checks what each Today card button really does), then tasks 19, 20 (installed app never stale; tabs in posting order,
+   tab follows the workflow), then 6, 7, 16, 17, 18. Each app change: App probe PASS on the live app, pasted in Progress.
+
 ## Queued task 21 GO, first after task 10 (owner chat, 27 Nov 2026 22:00 IST): App probe, posted cards
 The App probe's "OPEN FROM BOARD" step clicks each Today card's button. For a channel whose reel is already posted, that button is "Open reel"
 (it opens the reel page, not the reels tab), so the probe wrongly reports "Open from board web/c3: shows @techin20sec". Make the probe check
