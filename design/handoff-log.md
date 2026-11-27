@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 15:16 IST · claude/refs-thumbs · other account: task 15, references you can tell apart and clean up
+- Done: templates/index.html References: refView() (thumbnail or 3 s silent loop of the clip, state, one-line lesson, reels that used it via captions "refs": ["app:<id>"], safe-to-remove), a Clean up view with one Remove each. scripts/qa/app-refs-test.mjs in npm run check.
+- Left: task 9 (refs tags, ref-compare, weekly numbers); it defines "app:<id>" in the refs tag.
+- For the main account: tag a reel built from an app reference with "refs": ["app:<id>", ...] so the reference links to it.
+
 ## 2026-11-27 15:13 IST · claude/tests-list · other account: task 14, Tests list in the app
 - Done: src/worker.js GET /api/tests (R2 v/study/*.mp4 with covers c/study/<name>-cover-auto.jpg); templates/index.html Inbox > Tests (replaces Studio log): cover, title, date, what it tests, inline player, "never posted". scripts/qa/app-tests-test.mjs in npm run check. design/runbook-studio.md: say "Inbox > Tests".
 - Left: tasks 15 and 9.
