@@ -1139,3 +1139,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/critic-tech-ai-words-r2 · Critic: showreel-tech-ai-words render 2, NOT READY (one lone word in the hook caption)
 - Done: judged the real render 2 MP4 (119 frames at 270 px, caption crops at 1.0, 3.9, 11.8, 22.5, 26.5 s, 30 fps strips at 3.4, 21.4 and 24.85 s, -14.1 LUFS). Render 1's caption fault is fixed (pause marks kept, one sentence per group, comma splits), panel 6 is clean; the 6-word hook still wraps with "this?" alone at 0-3.4 s. PREMIUM 7.5 / 7.0 / 7.5.
 - Left: the builder applies the one-line break fix (caption(), line 301); a third render needs the owner's yes with its cost. Post 20:30 IST.
+## 2026-11-27 · claude/critic-c3-price-list-27nov · Critic: showreel-c3-price-list render 2, READY
+- Done: judged the real render 2 MP4 (run 45953304430; 19.2 s, -14.0 LUFS): side-by-side vs gold (LOOK matches: 0.367 / 0.212 / 32% / 5% / 0.344), contact sheet, 20 phone-size frames, full-size end crop. Every fix lands on its word (6.2, 8.6, 10.6, 12.6 s), believable before, no text overlap, end holds before and after 14.3-19.2 s. STOP 7, REWATCH 7, PREMIUM 7.5 / 7.5 / 7.5. CRITIC: READY.
+- Left: post at the Turns Out slot. Upgrades for the next Turns Out reel (no re-render): make a subtle fix visible at phone size, thumbnail at 0.45 above y 1570, shorter still tail, full claim on frame 0.
