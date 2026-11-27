@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/2d5-shadow-draw-on · owner chat: 2.5D elements come alive from their shadow
+- Owner on the AI-words reel: elements should draw on from their shadow, coming alive, for all elements through the reel. design/direction.md "2.5D map reels" note 7, design/critic.md question 5, design/owner-feedback.md line. Next tech reel builds it.
+
 ## 2026-11-27 · claude/handoff-continue-27nov · owner chat: v7 render 4 approved; the other account keeps fixing
 - v7 render 3 critic: NOT READY (cable cascade 7.7-8.7 s stutters; 6.5/6.5/7.5; board, hub, type, payoff reusable). Owner: let the other account continue fixing: v7 render 4 with the critic's exact fix (the last), then tasks 21, 19, 20, 6, 7, 16-18, each proven (Output QA / App probe PASS).
 
