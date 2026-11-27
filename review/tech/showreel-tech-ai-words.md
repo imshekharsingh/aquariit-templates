@@ -82,4 +82,4 @@ PREMIUM: animation 7.5/10 (t 3.5-4.0 push-in with the step pill rolling; t 7.0-8
 UPGRADES (next 2.5D reel, not this one):
 - MED, 0-3.5 s: a small question pill above the frame-0 reply bubble so the hook reads as a chat in under 1 s.
 - LOW, 24.9-29.6 s: the payoff map is small (tiles about 60 px wide at 1080); plan wide shots at scale 0.27+.
-PREFLIGHT-ALL: PASS 031929f1 (showreel-tech-ai-words, 44 s)
+PREFLIGHT-ALL: PASS 5f29f7c6 (showreel-tech-ai-words, 42 s)

@@ -194,7 +194,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   function tokTimes(){ var r = [], k = 0, t = T5, s = 0; while (k < ANS.length && t < DUR){ var h = 1 / 240; s += omega(t + h / 2) * h; t += h; if (s >= k + 2 / 3){ r.push(t); k++; } } return r; }
   var TT = tokTimes();
   // ---- panels (one working interface per step); ghost outline shows before the camera goes there
-  var PAN = [null], GH = [null], X = [null];
+  var PAN = [null], GH = [null], X = [null], P1H;
   var PPOS = [null, [745, 690, 470, 300], [1380, 650, 520, 300], [1060, 1150, 430, 260], [1060, 1150, 430, 260], [1060, 1150, 430, 260], [700, 690, 470, 300]];
   for (var j = 1; j <= 6; j++){ var pp = PPOS[j], c2 = COL[j];
     GH.push(E(pans, 'ghost', 'left:' + (pp[0] - pp[2] / 2) + 'px;top:' + (pp[1] - pp[3] / 2) + 'px;width:' + pp[2] + 'px;height:' + pp[3] + 'px;--c:' + rgb(c2, .7) + ';opacity:0'));
@@ -204,7 +204,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var CHC = [[86,152,255],[255,178,64],[176,118,255],[255,96,170],[70,226,146],[255,104,88]];
   // 1: the chat, the question typed, then sent as text
   (function(){ var p = PAN[1], cs = rgb(COL[1]);
-    E(p, 'ph', '', 'YOUR PROMPT');
+    P1H = E(p, 'ph', '', 'YOUR PROMPT');
     var bub = E(p, 'bub', 'right:24px;top:84px;background:' + rgb(COL[1], .9) + ';white-space:nowrap', '');
     var snd = E(p, '', 'right:24px;top:196px;height:56px;border-radius:28px;border:2.5px solid ' + cs + ';padding:0 22px;font:800 26px/51px var(--m);letter-spacing:.08em;color:' + cs + ';white-space:nowrap', 'SENT AS TEXT &rsaquo;');
     var Q = 'Why is the sky blue?', QS = Q.split('').map(function(ch){ var s = document.createElement('span'); s.textContent = ch; s.style.opacity = 0; bub.appendChild(s); return s; });
@@ -254,13 +254,14 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   // the opening (owner, 27 Nov: "show a chatbot window"): an invented, unbranded chat window, filling the frame at 0-2.6 s, the question asked and the
   // reply streaming in word by word; it sits exactly where panel 1 sits, so the pull-back turns it into the map's first card (a match cut)
   var cw = E(pans, 'pan', 'left:' + (PPOS[1][0] - 235) + 'px;top:' + (PPOS[1][1] - 150) + 'px;width:470px;height:300px;--c:' + rgb(COL[1]) + ';--ct:' + rgb(cmix(COL[1], [16, 18, 26], .7)), '');
-  E(cw, '', 'left:22px;top:20px;width:20px;height:20px;border-radius:50%;background:' + rgb(COL[5]), '');
-  E(cw, 'ph', 'left:52px;top:18px;color:#fff;letter-spacing:.06em', 'AI CHAT');
-  E(cw, '', 'left:0;top:58px;width:470px;height:2px;background:rgba(255,255,255,.12)', '');
-  var cq = E(cw, 'bub', 'right:20px;top:72px;background:' + rgb(COL[1], .92) + ';white-space:nowrap;font-size:26px;padding:10px 16px', 'Why is the sky blue?');
-  var ca = E(cw, 'bub', 'left:20px;top:134px;width:430px;height:146px;background:#1d2029;border:2px solid rgba(255,255,255,.16);font-size:29px;line-height:1.24', '');
+  // its header goes out before card 1's header comes in (2.85-3.05 / 3.05-3.25 s), and its question bubble has card 1's exact size and place (no double image)
+  var CWH = [E(cw, '', 'left:22px;top:20px;width:20px;height:20px;border-radius:50%;background:' + rgb(COL[5]), ''), E(cw, 'ph', 'left:52px;top:18px;color:#fff;letter-spacing:.06em', 'AI CHAT'), E(cw, '', 'left:0;top:58px;width:470px;height:2px;background:rgba(255,255,255,.12)', '')];
+  var cq = E(cw, 'bub', 'right:24px;top:84px;background:' + rgb(COL[1], .9) + ';white-space:nowrap', 'Why is the sky blue?');
+  var ca = E(cw, 'bub', 'left:20px;top:150px;width:430px;height:130px;background:#1d2029;border:2px solid rgba(255,255,255,.16);font-size:27px;line-height:1.24', '');
   var HSP = ANS.map(function(w){ var s = document.createElement('span'); s.textContent = w; s.style.opacity = 0; ca.appendChild(s); return s; });
-  var hcur = document.createElement('span'); hcur.textContent = '\u258d'; hcur.style.color = rgb(COL[6]); ca.appendChild(hcur);
+  // the cursor sits right after the last word shown and hops (0.07 s, eased) to the next word's end as it lands
+  var hcur = E(ca, '', 'left:0;top:0;width:12px;height:30px;border-radius:2px;background:' + rgb(COL[6]), '');
+  function wordEnd(i){ var e = HSP[i]; return [e.offsetLeft + e.offsetWidth + 3, e.offsetTop + 4]; }
   // ---- background (canvas, screen space): torch-like light wedges from the lit node, a faint grid with parallax, slow dust. No blur stacks.
   var bg = $('bgc').getContext('2d');
   // how far an element sits inside the safe zone (x 26-470, y 128-690): 1 inside, fading to 0 within 24 px beyond (no text under the side buttons or the caption overlay)
@@ -310,7 +311,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
       if (capEls.length > 1 && capEls[capEls.length - 1].offsetTop > capEls[0].offsetTop + 4) bx.insertBefore(document.createElement('br'), capEls[Math.ceil(capEls.length / 2)]); }
     var first = gi === 0 ? 1 : P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
     capEl.style.opacity = (first * last).toFixed(3);
-    gr.forEach(function(w, n){ var k = P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
+    gr.forEach(function(w, n){ var k = gi === 0 && n === 0 ? 1 : P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
       s.style.opacity = (.28 + .72 * k).toFixed(3); s.style.color = key ? rgb(col) : '#fff'; });
   }
   // ---- sound: a swish on each move, a soft snap on arrival, blips as interface parts land, a tick per streamed token, a lift at the payoff
@@ -364,7 +365,13 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
       if (kp > 0) X[pi](t - pin, t); }
     // the opening chat window: words stream in (each fades over 0.1 s), then it hands over to panel 1 during the pull-back (2.85-3.25 s)
     var cwo = 1 - io(P(t, 2.85, 3.25)); cw.style.opacity = cwo.toFixed(3); cw.style.visibility = cwo > 0 ? 'visible' : 'hidden';
-    if (cwo > 0){ HSP.forEach(function(s, n){ s.style.opacity = (n === 0 ? 1 : cl(P(t, n * .22, .1 + n * .22))).toFixed(3); }); hcur.style.opacity = (.55 + .45 * Math.cos(t * 7)).toFixed(3); cq.style.opacity = '1'; }
+    if (cwo > 0){ HSP.forEach(function(s, n){ s.style.opacity = (n === 0 ? 1 : cl(P(t, n * .22, .1 + n * .22))).toFixed(3); });
+      var wn = Math.min(HSP.length - 1, Math.floor(t / .22)), hk = io(P(t, wn * .22, wn * .22 + .07)), e1 = wordEnd(wn), e0 = wn > 0 ? wordEnd(wn - 1) : e1;
+      var nl = Math.abs(e1[1] - e0[1]) > 4, hk2 = io(P(t, wn * .22, wn * .22 + .12)), blink = .6 + .4 * Math.cos(t * 7);   // to a new line: fade out at the old end, in at the new one (no sweep across the box)
+      if (nl){ var at1 = hk2 >= .5; hcur.style.transform = 'translate(' + (at1 ? e1 : e0)[0].toFixed(1) + 'px,' + (at1 ? e1 : e0)[1].toFixed(1) + 'px)'; hcur.style.opacity = (blink * Math.abs(2 * hk2 - 1)).toFixed(3); }
+      else { hcur.style.transform = 'translate(' + mix(e0[0], e1[0], hk).toFixed(1) + 'px,' + mix(e0[1], e1[1], hk).toFixed(1) + 'px)'; hcur.style.opacity = blink.toFixed(3); }
+      CWH.forEach(function(e){ e.style.opacity = (1 - io(P(t, 2.85, 3.05))).toFixed(3); }); cq.style.opacity = '1'; }
+    P1H.style.opacity = t < 4 ? io(P(t, 3.05, 3.25)).toFixed(3) : '1';
     // tags (screen space) on the wide shots, so every node's name reads at phone size on the whole map
     for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
       var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
