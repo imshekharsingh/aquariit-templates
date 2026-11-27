@@ -23,6 +23,14 @@ nothing glitching, a hint of the next subject before the camera moves, the WHOLE
 This account is a temporary helper for bigger chunks of app, tooling and kit work only. It never builds, renders, schedules or posts the
 daily reels. The main account's owner chat writes the tasks here and reads Progress.
 
+## Owner rule: status every 30 minutes on open tasks (owner, 27 Nov 2026)
+While any task here is started and not "done", write one Progress line at least every 30 minutes, even when nothing moved:
+"<time> IST, other account: task N, <stage>, <what happened since the last line>, next: <next step and when>". Before a session ends for any
+reason (finished, usage limit, error, waiting on something), its last Progress line says why it stopped and what restarts it. The queue check
+writes a line when it finds a started task with no Progress line for 30 minutes ("task N silent since <time>: restarting" or why it cannot).
+**Answer first (owner, 27 Nov 19:20 IST):** task 10 last wrote at 15:34 IST ("7 changes built, last checks before the render") and no render 3
+ran after it. Write what happened (did the session stop, hit a limit, or fail a check?), then continue: render 3, Output QA, "v7 ready for critic".
+
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
 critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 10, then task 9
@@ -33,7 +41,7 @@ Every task here is also a project on the app's board: update its entry in design
 Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
 when the owner asks). The hourly "Handoff queue check" starts a session only for an open GO task that is not already started (a
 "task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
-Current GO list, in this order: task 10 (3D kit v7, FIRST: no other task starts while task 10 has no "v7 ready for critic" line, except during its render wait), then task 6 (notification policy), task 7 (projects show their steps), task 16 (web kit before/after piece), task 17 (web starters use the whole frame), task 18 (render speed). Tasks 9, 11-15 are done. Every other open task waits until it is marked GO.
+Current GO list, in this order: task 10 (3D kit v7, FIRST: no other task starts while task 10 has no "v7 ready for critic" line, except during its render wait), then task 19 (app never stale) and task 20 (tabs in posting order), then task 6 (notification policy), task 7 (projects show their steps), task 16 (web kit before/after piece), task 17 (web starters use the whole frame), task 18 (render speed). Tasks 9, 11-15 are done. Every other open task waits until it is marked GO.
 
 ## Owner rule for task 10: keep going until stable (owner, 26 Nov 2026)
 Task 10 (3D kit v7) continues on its own through the hourly queue check until it is STABLE or capped, without waiting to be told:
@@ -170,6 +178,18 @@ how numbers show) and ONE stills sheet; write "v7 plan ready for critic" in Prog
 and stills against points 1-7 before any render. (b) On its OK: one render, Output QA, then "v7 ready for critic" and stop again.
 v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
 if NOT READY the owner decides. Update projects.json at each step.
+
+## Queued tasks 19-20 GO, FIRST after task 10's render is running (owner, 27 Nov 2026): the installed app goes stale; tabs in posting order
+- **Task 19, the installed app never runs an old copy.** 27 Nov: the installed home-screen app hung on "Loading…" all afternoon while the
+  same page in Safari worked; removing and re-adding the app fixed it. Make the app notice a newer deploy (a version string served by the
+  Worker, checked on open and on resume) and reload itself once; if a list request still has no answer after 20 s, reload once before showing
+  Try again. Add a note to design/runbook-reels.md. Test: an app test that a version mismatch triggers exactly one reload.
+- **Task 20, channel tabs in posting order.** Tabs ordered by today's next unposted reel time (from design/slots.json and captions.json postAt;
+  today: Turns Out 14:00, web 19:00, tech 20:30), posted channels last. The selected tab ALWAYS follows the workflow the owner came from
+  (owner, 27 Nov 2026: "tabs must only be selected based on workflow selection"): a board card's Open to post / Open reel, a reminder, a Needs
+  you question or a reel link opens that reel's channel, and nothing later (list load, a link hash, the last tab saved) switches it. Only
+  opening All reels with no workflow opens the channel due next. App test: each entry point lands on its own channel, before and after the list loads. Keep each tab showing only its own reels (app test from task 12).
+Both: never touch a reel posting today, one push each, Progress line.
 
 ## Queued tasks 16-18 GO, after tasks 10, 6 and 7 (owner, 27 Nov 2026): web kit and render speed
 Rules so this never gets in the way of the daily reels (owner, 27 Nov: "these tasks must not hamper our strategy today"):
@@ -318,6 +338,8 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 27 Nov ~13:00 IST, owner (via the owner chat): HOLD lifted; start task 10 now (7 plan-critic changes, then render 3, Output QA, "v7 ready for critic").
 - 27 Nov ~14:45 IST, owner (via the owner chat): tasks 12-15 queued GO after tasks 10 and 11 (Needs you, Fix at the stage, Tests list, references with thumbnails and cleanup).
 - 27 Nov ~15:50 IST, owner (via the owner chat): tasks 6 and 7 GO, new tasks 16-18 GO (web before/after piece, whole-frame starters, render speed), all after task 10, with the "never in the way of daily reels" rules in their section.
+- 27 Nov ~19:10 IST, owner (via the owner chat): tasks 19 (installed app never runs an old copy) and 20 (tabs in posting order) GO, right after task 10.
+- 27 Nov ~19:20 IST, owner (via the owner chat): status every 30 min on open tasks; first, say what happened to task 10 after 15:34 IST.
 - 27 Nov 14:52 IST, other account: task 11 started and done in one push: task 11 live, owner to try an upload. Inbox > Ideas and references: a bar with the percent and the part count ("62% · part 5 of 8"), a failed part is retried up to 3 times with a short wait, a final stop keeps the upload and "Try again" continues from the last good part (same file chosen), and the finish says Added with a small preview; the list updates at once. Checked at phone width against a local test server (51 parts, part 3 failing 4 times: stopped after part 2, resumed from part 3, finished; a small image: bar, Added, preview). task 11 done.
 - 27 Nov 15:06 IST, other account: task 12 started and done in one push: "Needs you" is now at the top of Today (above the studio board) with its count in the heading and on the Today tab; a question can name the reel or test video it is about (Owner answers add: "reel" or "preview"), and the app shows its cover and name beside the question, a tap plays it there; an answered question leaves at once. New app test (in npm run check): each channel tab shows only its own ready reels, and a question finds its reel. Checked at 390 px against a local test server. Owner-chat messages that ask something say "on Today, top" (design/runbook-studio.md). task 12 done.
 - 27 Nov 15:11 IST, other account: task 13 started and done in one push: on the studio board, the step that failed or got stuck turns red and carries its one-line reason and the Fix button, and the card opens by itself once for each new problem. Steps: Researching, Topic picked, Building, Stills check, Making the video, Machine checks, Second look (new row), Ready to post / posted. Stalled on its own: the video over 60 min, no second look 45 min after the checks, a build step with no news for 2 h. A build that cannot go on reports `stage.mjs <channel> failed --step building --line "why"` (design/runbook-reels.md); today's Turns Out case (no repo access) would show as "Problem at building" with Fix under Building. New app test (npm run check): 12 cases. Checked at 390 px against a local test server. task 13 done.

@@ -6,6 +6,26 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-heartbeat · owner chat: the other account reports every 30 minutes
+- Owner: periodic status on open tasks. design/handoff.md rule: a Progress line at least every 30 min per started task, a last line saying why any session stopped, and the queue check flags a task silent for 30 min. First ask: what happened to task 10 (v7 render 3) after 15:34 IST.
+
+## 2026-11-27 · claude/handoff-task-20-tabs · owner chat: the tab follows the workflow you came from
+- Owner: "tabs must only be selected based on workflow selection". Handoff task 20 now says so: every entry point (board card, reminder, Needs you, reel link) opens its reel's channel and nothing switches it later; All reels on its own opens the next due channel. Today's part (the right channel even before the list loads) went live with the service-worker fix.
+## 2026-11-27 · claude/sw-api-bypass · owner chat: the home-screen app reads live data straight from the network
+- Owner's 19:05 recording: the re-added home-screen app still sat on "Loading…" (Today and the reel list) while Safari worked; "Open to post" showed the last channel. The service worker sent every /api/ request through its network-first cache; now /api/ goes straight to the network (sw.js v34), and going to the reels page paints the chosen channel even before the list loads. The web Fix at 19:06 was correct: its 19:00 time had passed unposted.
+
+## 2026-11-27 · claude/handoff-task-19-20 · owner chat: stale installed app found; two app tasks queued
+- The app hung on "Loading…" all afternoon only in the installed home-screen copy; Safari worked and re-adding the app fixed it (the deploy smoke test listed reels in 1 s). Handoff tasks 19 (app reloads itself on a newer deploy) and 20 (tabs in posting order, open on the next due channel) GO after task 10.
+
+## 2026-11-27 · claude/app-list-timeout · owner chat: the reel list never hangs on "Loading…"
+- Owner's screenshot (16:30): all tabs said "all posted" and the list stayed on "Loading…" (the reel list request never answered on 4G; reproduced with a request that never returns). Tabs now show "…" until the counts load; after 20 s, or on an error, the list says so with a Try again button. Why the list request was slow is not known yet (no signed-in access from here): next step for the other account if it repeats.
+
+## 2026-11-27 · claude/app-fix-only-when-stuck · owner chat: Fix shows only on a reel that is really stuck
+- Owner: Fix showed on all three channels. bProblem() judged old morning stage rows even after the reel was ready or posted. Now: ready or posted = no Fix (except a missed post time), and a stage row older than the reel's newest render or checks is ignored. Three new cases in scripts/qa/app-board-test.mjs.
+
+## 2026-11-27 · claude/schedule-times-27nov · owner chat: owner chat opens 04:43; rule times match the real schedule
+- Owner: open the daily chat around 05:00. "Daily owner chat" now 04:43 IST (before the 04:47 web/tech builds and the 05:11 Turns Out task, so their stage messages land). CLAUDE.md, runbook-studio.md, runbook-daily.md said 06:47 / 08:31 / 09:11; now 04:47 / 04:43 / 05:11.
+
 ## 2026-11-27 · claude/handoff-queue-16-18 · owner chat: more app and kit work handed over; old to-dos dropped
 - design/handoff.md: tasks 6, 7 GO; new 16 (web before/after piece), 17 (whole-frame web starters), 18 (render speed), all after task 10, with rules that keep them off today's and tomorrow's reels (study clips only, after 21:00 or before 06:30, kit changes added behind new calls).
 - design/todo.md: dropped the 17 Nov re-render, the per-channel script routine, the 26 Nov read-only question and the puzzle channel; Instagram API kept here for later; Turns Out task repo fix added for 28 Nov.
@@ -1206,3 +1226,9 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/tech-ai-words-r4 · Tech showreel-tech-ai-words: opening redone for render 4 (owner)
 - Done: owner note ("show a chatbot window"): frame 0-2.6 s is an invented chat window with the reply streaming, a 0.6 s pull-back turns it into card 1 (match cut), ring ghost on card 2; rest as render 3. Rule recorded (owner-feedback, direction.md 2.5D map reels, critic.md 5): open on the real-life moment, never an abstract map. FLICKER 60 fps PASS, preflight-all PASS.
 - Left: outside stills check of the opening, render 4 (the last, cap $12), Output QA, final critic. Post 20:30 IST.
+## 2026-11-27 · claude/tech-ai-words-close-r4 · Tech showreel-tech-ai-words: READY on render 4 (new chat-window opening), posts 20:30 IST (builder close-out)
+- Done: opening redone per the owner's note; outside stills check REDO fixed (cursor follows words, one image at the hand-over, first caption word lit); render 4 (run 45979158248) Output QA PASS incl. FLICKER at 60 fps; final critic READY (STOP 8, REWATCH 7.5, PREMIUM 8.0/8.0/7.5; verdict on claude/tech-ai-words-critic-r4). 4 renders used, the owner approved all past 2.
+- Left: the owner posts at 20:30 IST. Next 2.5D reel: keep a fading box opaque until its contents are gone (critic r4 LOW note); open on the real-life moment from frame 0.
+## 2026-11-27 · claude/tech-ai-words-critic-r4 · Critic: showreel-tech-ai-words render 4, READY
+- Done: judged the real render 4 MP4 (run 45979158248; 29.6 s, -14.1 LUFS): one 0-4 s strip every 0.1 s at phone size, a 20 fps crop of the hand-over 2.85-3.3 s, one contact sheet at 0.25 s. The opening answers the owner's note: an unbranded chat window with the question and the reply streaming word by word from frame 0, cursor at the last word's end, hook on screen with "Why" lit; the pull-back hands over with one header and one bubble at every frame (no double image, pop or jump); ghosts of the next cards from 2.8 s. Nothing regressed from 3.5 s. STOP 8, REWATCH 7.5, PREMIUM 8.0 / 8.0 / 7.5. CRITIC: READY, item 21.
+- Left: post at 20:30 IST. Two LOW upgrades for the next 2.5D reel in the review file (opaque fading box at the hand-over; end frame matches frame 0 for the loop).
