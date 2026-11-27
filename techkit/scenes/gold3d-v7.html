@@ -35,9 +35,9 @@ const A_IN = [-.35, .55, .95];                                        // fix 4: 
 const BOARD = 2.6, T_IN = 4.0;   // render 4 critic fix 2: the board's frame is in view by 3.0 s                                        // fix 1: the board builds 3.0-3.9; fix 2: the tools stack 4.0-5.3 on "eight tools"
 const ORDER = [6, 4, 2, 0, 1, 3, 5, 7], STEP = .15;                   // an S path: down the left column, up the right
 const W1 = Math.max(T_IN + 1.6, C.wires - .1), W1_END = W1 + 1.4;
-const CASC = [W1_END + .6, Math.max(W1_END + 1.8, C.twenty - .35)];   // render 4 critic fix 1: the cascade starts once the camera has reached the still high wide
+const CASC = [W1_END + 1.5, Math.max(W1_END + 2.7, C.twenty - .35)];   // r4 glitch screen: the move to the high wide now runs 1.3 s after the first plug's click; the cascade starts once it is still   // render 4 critic fix 1: the cascade starts once the camera has reached the still high wide
 const WORST = CASC[1] + .2, BREAK = WORST + .6;                       // fix 6: the problem breaks at BREAK
-const PAN = Math.max(C.hub + .1, WORST + 1.95), HUB_IN = PAN, HUB_D = 1.4, LAND = HUB_IN + .7 * HUB_D;   // the camera arrives on the empty spot first, then the hub drops in (a moving camera over a moving hub strobed)   // the drop lasts 0.7 s (slow enough that no part of the frame flashes past in one frame)
+const PAN = Math.max(C.hub + .1, WORST + 1.34), HUB_IN = PAN, HUB_D = 1.4, LAND = HUB_IN + .7 * HUB_D;   // the camera arrives on the empty spot first, then the hub drops in (a moving camera over a moving hub strobed)   // the drop lasts 0.7 s (slow enough that no part of the frame flashes past in one frame)
 const COLLAPSE = [LAND + .2, LAND + .2 + 24 * .04 + .25], HUBW = [COLLAPSE[1] - .05, COLLAPSE[1] + .7];   // fix 10: one wave out, then the 11 fan out
 const NEW_IN = Math.max(C.newt, HUBW[1] + .5), NEW_W = [NEW_IN + .45, NEW_IN + 2.4];   // the New cable grows slowly (its tip swept past the close camera)
 const PAY = C.same + .4;
@@ -148,7 +148,7 @@ const SH = [
   { t: T_IN - .1, pos: [.3, 6.95, 3.9], look: [0, 6.95, -6.5], fov: 50, mv: 'dolly-in', frac: .9 },   // the board a little smaller (about 64 % of the width) so the top row sits below the headline     // 4 push to the board as it finishes; the tools stack, the camera rides them
   { t: W1 + .5, pos: [-5.0, 3.4, -3.8], look: [-1.75, 4.4, -6.45], fov: 46, mv: 'truck-down' },   // the plug in the lower half (the headline above it)      // 5 the first plug clicks in
    // a smaller arc (a wide sideways sweep slid the apps' gaps across the frame in one frame)               // 6 the tangle grows on the floor
-  { t: W1 + 1.95, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back', dur: .62, bend: [0, 1.6, 0] },   // render 4 critic fix 1: one move to the still high wide right after the first plug clicks in; the 23 cables then grow with the camera still (they strobed as tips raced past the lens)   // a longer move that rises over the apps (they swept past the camera)   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
+  { t: W1 + 3.1, pos: [0, 7.4, 17.4], look: [0, 4.7, -3.0], fov: 54, mv: 'pull-back', dur: 1.7, bend: [0, 3.2, 0] },   // the far high wide (the collapse framing): the whole cascade small, its tips slow   // render 4 critic fix 1: one move to the still high wide right after the first plug clicks in; the 23 cables then grow with the camera still (they strobed as tips raced past the lens)   // a longer move that rises over the apps (they swept past the camera)   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
   { t: PAN, pos: [2.6, 4.4, 5.0], look: [0, 2.4, -2.2], fov: 50, mv: 'whip', dur: 1.1 },     // 8 fix 9 (U14): a whip pan to the hub on "hub" (big moment 3)
   { t: COLLAPSE[0] + .8, pos: [0, 7.4, 17.4], look: [0, 3.7, -3.0], fov: 54, mv: 'crane-up', frac: .96, ease: 2 },       // 9 the collapse in one wave, from the high wide (fix 11: Notes whole)
   { t: C.newt, pos: [0, 7.326, 16.992], look: [0, 3.7, -3.0], fov: 54, mv: 'hold', frac: .96 },       // 10 the clean picture, 11: a still hold (a 2 % push) while the green sweep runs (plan critic C)
@@ -181,7 +181,7 @@ const RET = [...RED, ...tangle.map((q) => q.k).filter((k) => !RED.includes(k)).s
 const retT = (k) => COLLAPSE[0] + RET.indexOf(k) * .04;
 const hubT = (k) => HUBW[0] + k * .04;
 // render 3 plan critic A (focus): in three moments everything but the subject comes down to 30-50 % over 0.3 s and back over 0.4 s
-const DIMW = [[T_IN + 1.3, W1_END, .3, (o) => o === apps[0] || o === tools[0] || o === tangle[0].w],                      // the first cable: Notes, Pay and that cable
+const DIMW = [[T_IN + 1.3, W1_END + 1.6, .3,   /* held through the pull-back: Chat and Mail enter the frame edge dim (r4 glitch screen) */ (o) => o === apps[0] || o === tools[0] || o === tangle[0].w],                      // the first cable: Notes, Pay and that cable
   [C.twenty - .05, HUB_IN - .55, .5, (o) => o === tools[0] || o === tangle[0].w || tangle.some((q) => q.w === o && RED.includes(q.k))],   // the problem: the red crossings, the pulled plug, Pay
   [C.newt, C.same, .3, () => false]];                                                                                     // New: New, its cable and the hub (never dimmed)
 const matsOf = (o) => { const out = []; o.traverse((m) => { if (m.isMesh && m.material && m.material.color) out.push(m.material); }); return [...new Set(out)]; };
@@ -212,7 +212,7 @@ function frame(t) {
   // board (fix 1): outline draws, panel rises, slots unfold, the edge light runs round to slot 1
   fMat.opacity = .85 * sm(prog(t, BOARD, BOARD + .12)) * (1 - .7 * sm(prog(t, BOARD + .9, BOARD + 1.4)));
   fLines.forEach((m, n) => { m.scale.x = Math.max(.001, sm(prog(t, BOARD + n * .08, BOARD + n * .08 + .4))); });   // each outline line draws over 0.4 s (0.1 s blinked)
-  const rise = eout(prog(t, BOARD + .1, BOARD + .45)); wall.scale.y = Math.max(.001, rise); wall.visible = rise > .002;   // no overshoot (the back-and-forth read as flicker)
+  const rise = sm(prog(t, BOARD + .05, BOARD + .95));   /* r4 glitch screen: over 0.9 s (0.35 s jumped at 2.8 s) */ wall.scale.y = Math.max(.001, rise); wall.visible = rise > .002;   // no overshoot (the back-and-forth read as flicker)
   slots.forEach((m, j) => { const o = TX(j) < 0 ? Math.floor(j / 2) : 4 + Math.floor(j / 2); m.scale.x = Math.max(.001, sm(prog(t, BOARD + .45 + o * .05, BOARD + .95 + o * .05)));   // each shutter opens over 0.5 s (0.2 s blinked)
     const plug = Math.max(pulse(t, landT(j), .3), pulse(t, landT(8 + j), .3), pulse(t, landT(16 + j), .3), pulse(t, hubT(3 + j) + .45, .3)) * .7; m.material.emissiveIntensity = .55 * plug; });   // a soft, slower glow (a 0.1 s pulse blinked)
   const runs = [[BOARD + .4, .9], [WORST - .5, .9], [LAND, .9], [PAY + 1.4, .9]];   // slower runs (a small fast bead twinkled)   // fix 1 and 3: the edge light runs once round the board (ending at slot 1, top left) at the build, the tangle, the hub, the payoff
@@ -264,14 +264,15 @@ function frame(t) {
   { const k = prog(t, C.eleven + .4, C.eleven + 1.4); if (k > 0 && k < 1) { sw = .8 * Math.sin(Math.PI * k); sweep.color.setRGB(.7, 1, .8); sweep.position.copy(hubW[3].w.curve.getPointAt(k)).add(V(0, .45, 0)); } }
   sweep.intensity = 2.2 * sw;
   // numbers (fix 8): 24 counts up as the problem peaks (red as it lands), ticks down with each retraction to 11, then 12
-  const n24 = prog(t, CASC[1] - .3, C.twenty + .35), retracted = RET.reduce((a, k) => a + sm(prog(t, retT(k) + .1, retT(k) + .3)), 0), toTwelve = prog(t, PAY - .2, PAY + .35);   // the count rolls down with each retraction (continuous)
+  const rollK = (t) => { const x = prog(t, COLLAPSE[0], COLLAPSE[1] + 1.0); return .25 * sm(x) + .75 * x; };   // r4: nearly even speed (the odometer's peak speed made its digits flicker)
+  const n24 = prog(t, CASC[0] + .55, CASC[1]), retracted = RET.reduce((a, k) => a + sm(prog(t, retT(k) + .1, retT(k) + .3)), 0), toTwelve = prog(t, PAY - .2, PAY + .35);   // n24 counts up as the cables land; the count rolls down with each retraction (continuous)
   const win = (a, b) => sm(prog(t, a, a + .35)) * (1 - sm(prog(t, b - .3, b)));
   const show = Math.max(win(CASC[1] - .35, HUB_IN + .1), win(COLLAPSE[0] + .7, NEW_IN - .6), win(PAY - .3, TOTAL - 3.0));
   const sec = t >= PAY - .3 ? 3 : t >= HUB_IN + .1 ? 2 : 1,   // each section's content changes only while the block is hidden
-        s0 = sec === 3 ? PAY - .3 : sec === 2 ? COLLAPSE[0] + .7 : CASC[1] - .35;
+        s0 = sec === 3 ? PAY - .3 : sec === 2 ? COLLAPSE[0] + .7 : CASC[0] + .2;   // r4: the 3 x 8 block types in just before the first cable of the cascade lands
   const typed = prog(t, s0, s0 + .3), labelIn = eout(prog(t, s0 + .35, s0 + .6));
   const q = sec === 3 ? { top: '3 + 9', from: 11, to: 12, k: toTwelve, label: 'cables', bar: 12 / 24, anchor: anchorOf(V(NEW_P[0], NEW_P[1] + 1.25, NEW_P[2])), at: NUM_AT.n12, tick: prog(t, PAY + .3, PAY + .7) }
-    : sec === 2 ? { top: '3 + 8', from: 24, to: 24 - 13 * retracted / 24, k: 1, label: 'cables', bar: (24 - 13 * retracted / 24) / 24, anchor: anchorOf(V(-1.3, HUB_P.y + 1.05, HUB_P.z)), at: NUM_AT.n11 }
+    : sec === 2 ? { top: '3 + 8', from: 24, to: 24 - 13 * rollK(t), k: 1, label: 'cables', bar: (24 - 13 * rollK(t)) / 24,   /* r4: one smooth roll over ~2 s (the wave's 0.5 s roll flashed the digits) */ anchor: anchorOf(V(-1.3, HUB_P.y + 1.05, HUB_P.z)), at: NUM_AT.n11 }
     : { top: '3 × 8', from: 0, to: 24, k: n24, label: 'cables', bar: lerp(0, 1, eout(n24)), color: (() => { const r = pulse(t, C.twenty + .5, .22); return `rgb(255,${Math.round(255 - 165 * r)},${Math.round(255 - 165 * r)})`; })(), anchor: anchorOf(V(-.4, FL, -1.4)), at: NUM_AT.n24, tick: prog(t, C.twenty + .35, C.twenty + .75) };
   LAST_NUM = NUM.set(t, { ...q, show, typed, labelIn });
   dimPass(t);
