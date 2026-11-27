@@ -1212,3 +1212,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/tech-ai-words-r4 · Tech showreel-tech-ai-words: opening redone for render 4 (owner)
 - Done: owner note ("show a chatbot window"): frame 0-2.6 s is an invented chat window with the reply streaming, a 0.6 s pull-back turns it into card 1 (match cut), ring ghost on card 2; rest as render 3. Rule recorded (owner-feedback, direction.md 2.5D map reels, critic.md 5): open on the real-life moment, never an abstract map. FLICKER 60 fps PASS, preflight-all PASS.
 - Left: outside stills check of the opening, render 4 (the last, cap $12), Output QA, final critic. Post 20:30 IST.
+## 2026-11-27 · claude/tech-ai-words-close-r4 · Tech showreel-tech-ai-words: READY on render 4 (new chat-window opening), posts 20:30 IST (builder close-out)
+- Done: opening redone per the owner's note; outside stills check REDO fixed (cursor follows words, one image at the hand-over, first caption word lit); render 4 (run 45979158248) Output QA PASS incl. FLICKER at 60 fps; final critic READY (STOP 8, REWATCH 7.5, PREMIUM 8.0/8.0/7.5; verdict on claude/tech-ai-words-critic-r4). 4 renders used, the owner approved all past 2.
+- Left: the owner posts at 20:30 IST. Next 2.5D reel: keep a fading box opaque until its contents are gone (critic r4 LOW note); open on the real-life moment from frame 0.
