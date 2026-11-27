@@ -27,9 +27,11 @@ It starts the right session or messages the owner chat, nothing more. No subagen
    handled in the last 6 h are left out by the sheet itself, so nothing is raised twice.
 
 ## The probe's exact steps (one fresh haiku session per fire)
-1. Dispatch "Studio status" (GitHub MCP `actions_run_trigger`, workflow `studio-status.yml`, ref `main`, repo imshekharsingh/aquariit-templates). Read its job log once, about
-   45 s later (one `get_job_logs` of the newest run; one retry 30 s later if it is still running; never loop). If it failed, log `found: status sheet failed` and
-   message the owner chat once (key `blind:workflow`) only if the last probe line was not the same.
+1. Dispatch "Studio status" (GitHub MCP `actions_run_trigger`, workflow `studio-status.yml`, ref `main`, repo imshekharsingh/aquariit-templates). The run takes
+   about 30-60 s and a session cannot sleep, so do NOT read it right away (27 Nov 2026: the 06:03 and 07:03 probes read a queued run and logged nothing).
+   Instead call `send_later` with delay_minutes 2 and the message "Probe: read the Studio status run you dispatched and finish design/probe.md steps 2-5",
+   then end the turn. On that wake-up: one `get_job_logs` of the newest run; if it is still running, ONE more `send_later` of 1 minute; if it then is still not done
+   or failed, log `found: status sheet not ready/failed` and message the owner chat once (key `blind:workflow`) only if the last probe line was not the same.
 2. Read only the last line `ACTIONS: ...` (and the sheet if you need a name).
 3. **ACTIONS: none** -> `node scripts/probe-log.mjs add --found "<one line: reels/stages seen>" --acted no` and END. No other call.
 4. Otherwise handle each item, in order, and only these kinds:
