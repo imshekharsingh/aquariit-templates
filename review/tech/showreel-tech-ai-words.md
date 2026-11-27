@@ -84,3 +84,14 @@ UPGRADES (next 2.5D reel, not this one):
 - MED, 0-3.5 s: a small question pill above the frame-0 reply bubble so the hook reads as a chat in under 1 s.
 - LOW, 24.9-29.6 s: the payoff map is small (tiles about 60 px wide at 1080); plan wide shots at scale 0.27+.
 PREFLIGHT-ALL: PASS 5f29f7c6 (showreel-tech-ai-words, 42 s)
+
+## Critic, render 4 (fresh independent session, 27 Nov 2026, final render)
+Judged the real render 4 MP4 (Showreel run 45979158248; 1080x1920, 60 fps, 29.6 s, -14.1 LUFS): one strip of 0-4 s every 0.1 s at 270 px, a 20 fps crop of the hand-over at 2.85-3.30 s, one contact sheet of the whole reel every 0.25 s at 135 px.
+21. CRITIC: READY. Detail: the owner's note is answered on frame 0. 0.0 s shows an unbranded chat window (AI CHAT, green dot, blue "Why is the sky blue?" bubble) with "Sun" and the cursor right after it, under the title, and the hook "Why do chatbots / type like this?" with "Why" lit. The reply streams word by word (Sunlight / scatters / off / air, / and / blue / scatters / most.), the cursor always sits at the end of the last shown word, the line break at 1.3-1.4 s is clean, the reply is readable at phone size. 2.6-3.2 s: one quick pull-back, the window lands on card 1's panel; at 2.85-3.3 s there is one header at a time (AI CHAT out by 3.0 s, YOUR PROMPT in from 3.1 s) and one question bubble of the same size and place: no double image, no pop, no jump. The ghost tiles (TOKENS, THE MODEL, STREAM, ADD IT ON) are in frame from 2.8 s, card 2's dashed ring by 3.0 s. From 3.5 s the contact sheet matches render 3 beat for beat (steps 1-6 in their colour worlds, loop, banner SHORTER = FASTER from 25.1 s, every caption one whole sentence with its pause marks); nothing regressed.
+GOLD: matches (richer than gold tech-ai-memory; the opening is now a real-life moment, as the owner asked)
+STOP: 8/10 (0-1 s: a chat answer typing itself under "Why do chatbots type like this?" is instantly recognisable)
+REWATCH: 7.5/10 (2.6-3.2 s the chat window becomes the map's first card; 17.6-21.4 s the loop runs and each lap adds a word)
+PREMIUM: animation 8.0/10 (t 0.0-2.0 word-by-word stream with the cursor hopping to each word's end; t 2.6-3.2 match-cut pull-back; t 17.6-21.4 the runner accelerates), cleanliness 8.0/10 (t 2.85-3.3 one header and one bubble at every frame; t 0-29.6 whole-sentence captions on balanced lines), premium 7.5/10 (t 0.0 our own chat UI over the dim map and light wedges; t 25.1-29.6 banner and whole loop)
+UPGRADES (next 2.5D reel, not this one):
+- LOW, 3.0-3.05 s: a faint "SERVER" label of the tile behind shows through the fading reply box; keep the fading box opaque until its contents are gone.
+- LOW, 29.6 s -> 0.0 s: the reel no longer loops to its first frame (end is the whole map, start is the chat window); next time end on the chat window with the full reply, or open the map tile row under it.
