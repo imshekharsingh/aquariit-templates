@@ -214,7 +214,7 @@ function frame(t) {
   fLines.forEach((m, n) => { m.scale.x = Math.max(.001, prog(t, BOARD + n * .06, BOARD + n * .06 + .1)); });
   const rise = eout(prog(t, BOARD + .25, BOARD + .6));   // no overshoot (the back-and-forth read as flicker) wall.scale.y = Math.max(.001, rise); wall.visible = rise > .002;
   slots.forEach((m, j) => { const o = TX(j) < 0 ? Math.floor(j / 2) : 4 + Math.floor(j / 2); m.scale.x = Math.max(.001, eout(prog(t, BOARD + .55 + o * .04, BOARD + .75 + o * .04)));
-    const plug = Math.max(pulse(t, landT(j), .3), pulse(t, landT(8 + j), .3), pulse(t, landT(16 + j), .3), pulse(t, hubT(3 + j) + .45, .3)) * .7;   // a soft, slower glow (a 0.1 s pulse blinked) m.material.emissiveIntensity = .55 * plug; });
+    const plug = Math.max(pulse(t, landT(j), .3), pulse(t, landT(8 + j), .3), pulse(t, landT(16 + j), .3), pulse(t, hubT(3 + j) + .45, .3)) * .7; m.material.emissiveIntensity = .55 * plug; });   // a soft, slower glow (a 0.1 s pulse blinked)
   const runs = [[BOARD + .4, .9], [WORST - .5, .9], [LAND, .9], [PAY + 1.4, .9]];   // slower runs (a small fast bead twinkled)   // fix 1 and 3: the edge light runs once round the board (ending at slot 1, top left) at the build, the tangle, the hub, the payoff
   let bu = -1; for (const [s0, d] of runs) { const k = prog(t, s0, s0 + d); if (k > 0 && k < 1) bu = k; }
   if (bu >= 0) { bead.visible = true; bead.position.copy(perim(bu)); bead.scale.setScalar(Math.max(.001, Math.sin(Math.PI * bu))); } else bead.visible = false;   // grows in and out (no pop)
