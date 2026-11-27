@@ -1046,6 +1046,7 @@
     else { ch = gSel; growth(); } }
   Array.prototype.forEach.call(document.querySelectorAll('#g-seg button'), function(b){ b.addEventListener('click', function(){ gPick(b.getAttribute('data-g')); }); });
   function render(){
+    readyRender();   // the Ready to post box always matches the tab being drawn (owner, 27 Nov 2026: the tech tab said "Nothing is ready to post for @webin20sec" after Open to post)
     var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0, c3: 0 };
     all.forEach(function(s){ var k = chOf(s, c); if (!ticks[s.name] && !(c[s.name] && c[s.name].sample)) counts[k]++; });   // sample (6 Nov 2026, temporary): not counted
     paint(counts);
