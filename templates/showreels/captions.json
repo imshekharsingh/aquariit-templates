@@ -3144,5 +3144,47 @@
    "payoff": "fact",
    "source": "mp4"
   }
+ },
+ "showreel-tech-ai-words": {
+  "channel": "tech",
+  "postOn": "2026-11-27",
+  "postAt": "20:30",
+  "format": "xray",
+  "device": "laptop",
+  "aiLabel": false,
+  "concept": "Why AI chat types its answer word by word, as a 2.5D system map: a line out (your prompt, tokens, the model), a loop (reads everything so far, predicts one next token, adds it on, again) and a line back (each token streams to your screen); payoff: a shorter answer means fewer loops, so it arrives faster. Anthropic docs (glossary, streaming), OpenAI latency guide.",
+  "experiment": {
+   "id": "tech-2d5-map",
+   "change": "first real reel in the 2.5D system-map look (owner restart, 27 Nov): one camera over one map shaped like the process, colour world per step, fixed title + step pill, ghost of the next card",
+   "vs": "median"
+  },
+  "caption": "Why does AI type its answer word by word? 💬 It is not an effect: that is how it works.\n\n1. Your question goes in as text.\n2. It is cut into tokens (pieces of words).\n3. The model reads every token so far.\n4. It predicts one next token.\n5. That token is added on, and the loop runs again.\n6. Each new token streams to your screen as it is made.\n\nThe useful bit: generating tokens is the slow step, so asking for a shorter answer means fewer loops and a faster reply.\n\nWould you rather have a short answer fast, or a long one slow?\n\nSources: Anthropic docs (glossary: next-token prediction, tokens; streaming messages), OpenAI latency optimization guide (output tokens drive latency). The token split and the odds in the video are examples.",
+  "keywords": [
+   "why AI types word by word",
+   "how chatbots work",
+   "what are tokens AI",
+   "next token prediction",
+   "AI streaming answer",
+   "how LLMs generate text",
+   "AI explained"
+  ],
+  "hashtags": [
+   "#ai",
+   "#tech",
+   "#chatbot",
+   "#techexplained",
+   "#llm"
+  ],
+  "style": {
+   "lengthS": 29.6,
+   "wordsPerS": 2.6,
+   "shotChanges": 7,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "system map",
+   "firstSecondTension": "yes",
+   "payoff": "fact",
+   "source": "plan"
+  }
  }
 }
