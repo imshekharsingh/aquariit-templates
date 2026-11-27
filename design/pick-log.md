@@ -11,3 +11,4 @@ research moves to Opus (add a line `2026-MM-DD | note | research to Opus` here; 
 2026-11-26 | web | W26-1:keep W26-2:reject W26-3:keep W26-4:reject W26-5:keep (Fable pick session_01AYvWRjPhL9B7jUmc5ESRyB; W26-1 first)
 2026-11-26 | tech | T26N-1:keep T26N-2:keep T26N-3:keep T26N-4:reject T26N-5:reject (fresh news list 26 Nov; Fable: tag first, 1,100 Hz backup)
 2026-11-27 | web | W27-1:keep W27-2:keep W27-3:reject W27-4:reject W27-5:reject (Fable pick session_01AYvWRiwLKGTbPUoWbqUHTV; W27-1 first: the bar tracks a thumb scroll, visible in the first second)
+2026-11-28 | tech | T28-1:keep T28-2:keep T28-3:reject T28-4:reject T28-5:reject (Fable pick session_01AYvWRjoAiQ2nAkzDMXwCQq; T28-1 first: the only real system-map topic, the tag-to-map relay; T28-2 fallback)
