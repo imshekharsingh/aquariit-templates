@@ -1299,3 +1299,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/notify-policy · App: one notification plan (task 6)
 - Done: design/notify-policy.json is the single plan (times and words); src/notify.js reads it: ready 2 min before the slot, nudge 15 min after, last call 20:30, 08:00 summary; slot tests from design/slots.json "tests" (c3 14:00, web 19:00, 26 Nov to 2 Dec) get "Slot test day N of M", nudge at 10, late at 30, logged when posted. Worker cron every 2 min, GET /api/push/plan, Settings shows today's plan. Tests in scripts/qa/notify-test.mjs. Runbooks: the owner chat sends no slot reminders of its own.
 - Left: App probe on the live app after deploy.
+## 2026-11-27 · claude/t6-t20-done · Handoff: tasks 6 and 20 done (APP PROBE: PASS)
+- Done: live App probe passed after both deploys; projects marked done.
+- Left: task 10 render 4 (glitch screen running), then task 7.
