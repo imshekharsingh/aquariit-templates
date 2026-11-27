@@ -20,6 +20,8 @@
 *{box-sizing:border-box;margin:0}
 html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-family:var(--f);-webkit-font-smoothing:antialiased;color:#fff}
 .a{position:absolute}
+[data-ui]{-webkit-text-fill-color:currentColor}
+.tile,.pan,.ghost,#tags .tg,#hook{color:#fff}
 #stage{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #bgc{left:0;top:0;width:540px;height:960px}
 #view{left:0;top:0;width:540px;height:960px;overflow:hidden}
@@ -42,7 +44,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
 #pillw{left:50%;top:216px;width:260px;margin-left:-130px;height:30px;overflow:hidden;border-radius:999px;border:2px solid var(--c);background:#0c0e14}
 #pillw span{left:0;top:0;width:100%;text-align:center;font:800 13px/26px var(--m);letter-spacing:.12em;color:var(--c);white-space:nowrap}
 #hook{left:44px;top:262px;width:430px;height:84px}
-#banner{left:-60px;top:254px;width:660px;height:56px;transform-origin:50% 50%}
+#banner{left:-60px;top:262px;width:660px;height:56px;transform-origin:50% 50%}
 #banner div{left:0;top:0;width:660px;height:56px;background:var(--c);color:#0a0b10;font:900 36px/56px var(--f);letter-spacing:.02em;text-align:center;white-space:nowrap}
 #cap{left:44px;top:708px;width:410px;text-align:center;font:800 27px/1.22 var(--f);letter-spacing:-.01em}
 #cap .bx{display:inline-block;padding:10px 18px 12px;border-radius:16px;background:#12141b;border:1px solid rgba(255,255,255,.08)}
@@ -77,11 +79,16 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var back = function(k){ var c = 1.6; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
   var hh = function(a, b){ var x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return x - Math.floor(x); };
   var rgb = function(c, a){ return 'rgba(' + c.map(Math.round).join(',') + ',' + (a == null ? 1 : a) + ')'; };
+  function toHsl(c){ var r = c[0] / 255, g = c[1] / 255, b = c[2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn, h = 0, s = 0;
+    if (d > 1e-6){ s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; } return [h, s, l]; }
+  function fromHsl(h, s, l){ var c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2, r, g, b, q = Math.floor(h / 60) % 6;
+    r = [c, x, 0, 0, x, c][q]; g = [x, c, c, x, 0, 0][q]; b = [0, 0, x, c, c, x][q]; return [(r + m) * 255, (g + m) * 255, (b + m) * 255]; }
+  function hslMix(a, b, k){ var A = toHsl(a), B = toHsl(b), dh = ((B[0] - A[0] + 540) % 360) - 180; return fromHsl((A[0] + dh * k + 360) % 360, mix(A[1], B[1], k), mix(A[2], B[2], k)); }
   var cmix = function(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k), mix(a[2], b[2], k)]; };
   var DUR = 29.6;
   // ---- the story clock: each step starts on its sentence ("One: ..."); the camera leaves on that word (no dwell), the next card's ghost shows 0.5 s before
   var AT = [0.25, 3.5, 7.0, 10.6, 14.0, 17.3, 21.4, 24.9];
-  var FLY = [0, .6, .5, .5, .45, .45, .65, .75];
+  var FLY = [0, .6, .5, .5, .45, .45, .6, .6];
   // ---- the map (world px): a line out on top, the loop on the right, a line back along the bottom
   var C = [1060, 1220], R = 360;
   var PT = [null, [420, 380], [1060, 380], [1060, 860], [C[0] + R * Math.cos(Math.PI / 6), C[1] + R * Math.sin(Math.PI / 6)], [C[0] + R * Math.cos(5 * Math.PI / 6), C[1] + R * Math.sin(5 * Math.PI / 6)], [420, 1000]];
@@ -103,7 +110,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     return holdPos(0, t);
   }
   // which step is lit: switches mid-flight
-  function stepAt(t){ var s = 0; for (var i = 1; i <= 6; i++) if (t >= AT[i] + FLY[i] * .45) s = i; if (t >= AT[7] + FLY[7] * .45) s = 7; return s; }
+  function stepAt(t){ var s = 0; for (var i = 1; i <= 6; i++) if (t >= AT[i] + FLY[i] * .25) s = i; if (t >= AT[7] + FLY[7] * .25) s = 7; return s; }
   // focus of a node 0..1, eased (never a snap)
   function focus(i, t){
     var f = .85, k;   // the whole map at the start: every node at 85 %
@@ -147,17 +154,18 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     var c = COL[i], ct = rgb(cmix(c, [16, 18, 26], .62));
     var nd = E(nodesEl, 'tile', 'left:' + (PT[i][0] - 105) + 'px;top:' + (PT[i][1] - 116) + 'px;--c:' + rgb(c) + ';--ct:' + ct, '');
     E(nd, 'tn', '', String(i)); E(nd, '', 'left:63px;top:34px', ico(i, rgb(c)));
-    E(nd, 'tl', 'top:136px', LAB[i][0] + '<br>' + LAB[i][1]);
+    nd._tl = E(nd, 'tl', 'top:136px', LAB[i][0] + '<br>' + LAB[i][1]);
+    nd._ring = E(nodesEl, 'ghost', 'left:' + (PT[i][0] - 125) + 'px;top:' + (PT[i][1] - 136) + 'px;width:250px;height:272px;border-radius:40px;--c:' + rgb(c, .8) + ';opacity:0');
     NODE.push(nd);
     var tg = E(tagsEl, 'tg', '--c:' + rgb(c), '<i>' + i + '</i>' + NAME[i]); TAG.push(tg);
   }
   // sub-nodes: 1-2 small real things per node (icon + short label), dim context that fills the map (each bobs gently, continuous)
   var SUBD = [[1, 'chat', 'CHAT', -260, -40], [1, 'text', 'TEXT', -250, 200], [2, 'cut', 'PIECES', 300, -40], [3, 'cloud', 'SERVER', -300, -60], [3, 'eye', 'READS', 290, 20],
     [4, 'odds', 'ODDS', 120, 260], [4, 'again', 'PICK 1', 260, -170], [5, 'plus', '+1', -230, 170], [5, 'again', 'REPEAT', -40, 300], [6, 'arrow', 'LIVE', -250, 120], [6, 'chat', 'SCREEN', -110, 300]];
-  var SUBS = SUBD.map(function(d, n){ var c = COL[d[0]], w = 62 + 18 + d[2].length * 16.2 + 8; var el = E(subsEl, 'sub', 'left:' + (PT[d[0]][0] + d[3] - w / 2) + 'px;top:' + (PT[d[0]][1] + d[4] - 32) + 'px;--c:' + rgb(c, .7), sico(d[1], rgb(c)) + d[2]);
+  var SUBS = SUBD.map(function(d, n){ var c = COL[d[0]], w = 62 + 18 + d[2].length * 16.2 + 8; var el = E(subsEl, 'sub', 'left:' + (PT[d[0]][0] + d[3] - w / 2) + 'px;top:' + (PT[d[0]][1] + d[4] - 32) + 'px;--c:' + rgb(c, .7), sico(d[1], rgb(c)) + '<span class="sl">' + d[2] + '</span>');
     var x1 = PT[d[0]][0] + d[3], y1 = PT[d[0]][1] + d[4], L = S(lines, 'line', { x1: PT[d[0]][0], y1: PT[d[0]][1], x2: x1, y2: y1, stroke: rgb(c, .32), 'stroke-width': 2, 'stroke-dasharray': '4 9' });
     var dt = S(lines, 'circle', { cx: x1, cy: y1, r: 5, fill: rgb(c, .7) });
-    return { el: el, i: d[0], n: n, ln: L, dt: dt }; });
+    return { el: el, sl: el.querySelector('.sl'), i: d[0], n: n, ln: L, dt: dt }; });
   // lines: thin, with small end dots; each link is pre-drawn faint (the map exists from frame 0) and drawn bright ONCE, just before the camera follows it
   function trimLine(a, b, ta, tb){ var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L; return [[a[0] + ux * ta, a[1] + uy * ta], [b[0] - ux * tb, b[1] - uy * tb]]; }
   var LINKS = [];   // {from, to, path d, len, colour, drawAt}
@@ -252,6 +260,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var bg = $('bgc').getContext('2d');
   // how far an element sits inside the safe zone (x 26-470, y 128-690): 1 inside, fading to 0 within 24 px beyond (no text under the side buttons or the caption overlay)
   function safeK(l, r, tp, b){ return cl(1 - Math.max(0, r - 470, 26 - l, 128 - tp, b - 690) / 24); }
+  // labels only (tiles stay, they are background there): fade over 70 px toward the side buttons and the caption overlay, so a fast flight never pops one
+  function labelK(r, b){ return cl(1 - Math.max(0, r - 462, b - 682) / 70); }
   function toScreen(p, cm){ return [X0 + (p[0] - cm[0]) * cm[2], Y0 + (p[1] - cm[1]) * cm[2]]; }
   var WEDGE = [null, -135, -45, 0, 40, 140, 180];   // outward direction (deg) of each node's light wedge
   function drawBg(t, cm, col, fo){
@@ -299,21 +309,26 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     t = cl(t, 0, DUR); var cm = cam(t), W = $('world');
     W.style.transform = 'translate(' + (X0 - cm[0] * cm[2]).toFixed(2) + 'px,' + (Y0 - cm[1] * cm[2]).toFixed(2) + 'px) scale(' + cm[2].toFixed(5) + ')';
     // the colour of the moment: cross-fades during each move (never a jump)
-    var col = COL[0]; for (var j = 1; j <= 7; j++){ var k = io(P(t, AT[j] + FLY[j] * .1, AT[j] + FLY[j] * .9)); col = cmix(col, j === 7 ? COL[0] : COL[j], k); }
+    var wide = cl((.29 - cm[2]) / .04);   // 1 on the whole-map shots: tags show, small in-map text fades (no type under 24 px at 1080)
+    // the colour of the moment turns round the colour wheel (hue, saturation, lightness), never through grey: an RGB mix of blue and amber passes a grey
+    // that reads as a hard hue cut (Output QA COLOUR); one flight = one turn
+    var col = COL[0]; for (var j = 1; j <= 7; j++){ var k = io(P(t, AT[j] + FLY[j] * .05, AT[j] + FLY[j] * .95)); if (k > 0) col = hslMix(j === 1 ? COL[0] : COL[j - 1], j === 7 ? COL[0] : COL[j], k); }
     document.documentElement.style.setProperty('--c', rgb(col));
     var tint = cmix([8, 9, 13], col, .11), tcs = 'rgb(' + tint.map(Math.round).join(',') + ')'; $('stage').style.background = tcs; document.body.style.background = tcs; document.documentElement.style.background = tcs;
     $('top').style.background = 'linear-gradient(' + tcs + ' 0,' + tcs + ' 72%,' + rgb(tint, 0) + ' 100%)';
     // pill: rolls to the new step (both texts move together; continuous)
     var st = stepAt(t), ptxt = st === 0 ? 'HOW AN AI ANSWERS' : st === 7 ? 'THE WHOLE LOOP' : '0' + st + ' / 06 · ' + NAME[st];
-    var prevTxt = st <= 1 ? 'HOW AN AI ANSWERS' : st === 7 ? '06 / 06 · STREAM' : '0' + (st - 1) + ' / 06 · ' + NAME[st - 1], sw = st === 0 ? 0 : AT[st] + FLY[st] * .45, rr = st === 0 ? 1 : out(P(t, sw, sw + .3));
+    var prevTxt = st <= 1 ? 'HOW AN AI ANSWERS' : st === 7 ? '06 / 06 · STREAM' : '0' + (st - 1) + ' / 06 · ' + NAME[st - 1], sw = st === 0 ? 0 : AT[st] + FLY[st] * .25, rr = st === 0 ? 1 : out(P(t, sw, sw + .3));
     var p0 = $('p0'), p1 = $('p1'); if (p0.textContent !== prevTxt) p0.textContent = prevTxt; if (p1.textContent !== ptxt) p1.textContent = ptxt;
     p0.style.transform = 'translateY(' + (-rr * 28).toFixed(2) + 'px)'; p0.style.opacity = (1 - rr).toFixed(3); p1.style.transform = 'translateY(' + ((1 - rr) * 28).toFixed(2) + 'px)'; p1.style.opacity = rr.toFixed(3);
     // nodes: lit one full, the rest 30 % (kept as context); the next one rises a little as its ghost appears
     var fo = [0]; for (var i = 1; i <= 6; i++){ var f3 = focus(i, t), pre = 0; for (var q = 2; q <= 6; q++) if (q === i) pre = io(P(t, AT[q] - .5, AT[q] - .1)) * (1 - io(P(t, AT[q], AT[q] + FLY[q]))); fo.push(f3);
       var ns = toScreen(PT[i], cm), nz = safeK(ns[0] - 105 * cm[2], ns[0] + 105 * cm[2], ns[1] - 116 * cm[2], ns[1] + 116 * cm[2]);
-      var op = (.3 + .7 * Math.max(f3, pre * .55)) * mix(.0, 1, nz); NODE[i].style.opacity = op.toFixed(3); NODE[i].style.transform = 'scale(' + (1 + .04 * f3).toFixed(4) + ')'; }
+      var op = .3 + .7 * Math.max(f3, pre * .55); NODE[i].style.opacity = op.toFixed(3); NODE[i]._tl.style.opacity = ((1 - wide) * labelK(ns[0] + 105 * cm[2], ns[1] + 116 * cm[2])).toFixed(3);
+      var rg = i >= 2 ? P(t, AT[i] - .5, AT[i] - .2) * (1 - P(t, AT[i] + .1, AT[i] + FLY[i])) : 0;   // the next card's ghost: a dashed ring round its tile (with the panel ghost where that is inside the safe zone)
+      NODE[i]._ring.style.opacity = (rg * .9).toFixed(3); NODE[i]._ring.style.transform = 'scale(' + (1.06 - .06 * rg).toFixed(4) + ')'; NODE[i].style.transform = 'scale(' + (1 + .04 * f3).toFixed(4) + ')'; }
     // sub-nodes: dim context, a gentle bob (continuous), brighter next to the lit node
-    SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = (.32 + .4 * f4) * sz; s.el.style.opacity = o.toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
+    SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = .32 + .4 * f4; s.el.style.opacity = o.toFixed(3); s.sl.style.opacity = ((1 - wide) * labelK(sp2[0] + hw, sp2[1] + 32 * cm[2])).toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
     // links: the one short draw (cause -> effect) just before the camera follows it, then it stays lit
     LINKS.forEach(function(l){ var k = io(P(t, l.drawAt, l.drawAt + .4)); l.lit.setAttribute('stroke-dashoffset', (l.len * (1 - k)).toFixed(1)); l.lit.setAttribute('opacity', (k > 0 ? .55 + .45 * Math.max(fo[l.to], fo[l.from] * .6) : 0).toFixed(3)); if (l.head) l.head.setAttribute('opacity', (P(t, l.drawAt + .3, l.drawAt + .45)).toFixed(3)); });
     // loop runner: steps 5-7
@@ -322,7 +337,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     RUN.setAttribute('opacity', ro.toFixed(3));
     // panels: ghost before the move, content builds from 0.15 s after the move starts (before the camera lands), out as the camera leaves
     for (var pi = 1; pi <= 6; pi++){ var pin = AT[pi], pout = pi < 6 ? AT[pi + 1] : AT[7], kin = out(P(t, pin + .05, pin + .45)), kout = io(P(t, pout + .02, pout + .32)), kp = kin * (1 - kout);
-      var gk = P(t, pin - .5, pin - .2) * (1 - P(t, pin + .2, pin + .45)); if (pi === 1) gk = 0;
+      var gk = P(t, pin - .5, pin - .2) * (1 - P(t, pin + .2, pin + .45)); if (pi === 1 || pi === 4 || pi === 5) gk = 0;
+      if (gk > 0){ var gp = PPOS[pi], g0 = toScreen([gp[0] - gp[2] / 2, gp[1] - gp[3] / 2], cm), g1 = toScreen([gp[0] + gp[2] / 2, gp[1] + gp[3] / 2], cm); gk *= safeK(g0[0], g1[0], g0[1], g1[1]); }
       GH[pi].style.opacity = (gk * .8).toFixed(3); GH[pi].style.transform = 'scale(' + (.97 + .03 * gk).toFixed(4) + ')';
       PAN[pi].style.opacity = cl(kp * 1.4).toFixed(3); PAN[pi].style.transform = 'scale(' + (.94 + .06 * kp).toFixed(4) + ')'; PAN[pi].style.visibility = kp > 0 ? 'visible' : 'hidden';
       if (kp > 0) X[pi](t - pin, t); }
@@ -330,7 +346,6 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     var hko = 1 - io(P(t, AT[1] - .1, AT[1] + .18)); hk.style.opacity = hko.toFixed(3); hk.style.transform = 'translateY(' + ((1 - hko) * 40).toFixed(2) + 'px) scale(' + (.8 + .2 * hko).toFixed(4) + ')'; hk.style.visibility = hko > 0 ? 'visible' : 'hidden';
     if (hko > 0){ HSP.forEach(function(s, n){ s.style.opacity = (.3 + .7 * cl(P(t, .3 + n * .3, .42 + n * .3))).toFixed(3); }); hcur.style.opacity = (.55 + .45 * Math.cos(t * 7)).toFixed(3); }
     // tags (screen space) on the wide shots, so every node's name reads at phone size on the whole map
-    var wide = cl((.29 - cm[2]) / .04);
     for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
       var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
     // banner: the payoff sweeps in across the top third and holds
