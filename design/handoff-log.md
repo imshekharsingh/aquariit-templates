@@ -1151,3 +1151,9 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/c3-price-list-27nov · Turns Out: showreel-c3-price-list render 2 READY (critic), posts 17:00 IST
 - Done: render 1 failed PACE and ELEMENTS and was fixed; render 2 (run 45953304430) passed Output QA; the critic (opus) wrote READY on the real MP4 (PREMIUM 7.5 / 7.5 / 7.5). captions.json: c3, postOn 2026-11-27, postAt 17:00, no hold. Review item 13 is PASS.
 - Left: post at 17:00 IST. For the next Turns Out reel (critic's notes): make the changed digit width visible (a bracket under each 1), a larger BEFORE thumbnail (0.45 of the board if it fits above y 1570), end about 1.5 s after the green frame, whole claim and ring on frame 0.
+## 2026-11-27 · claude/critic-tech-ai-words-r3 · Critic: showreel-tech-ai-words render 3, READY
+- Done: judged the real render 3 MP4 (run 45958061268; 29.6 s, -14.1 LUFS): one contact sheet at 0.25 s, 0-3.5 s hook strip, 25.0-26.0 s banner strip at 30 fps, every caption group. Hook now "Why do chatbots / type like this?", every group a whole sentence with pause marks, banner fades in whole; nothing regressed. PREMIUM 7.5 / 8.0 / 7.5, STOP 7.5, REWATCH 7.5.
+- Left: post at 20:30 IST. Next 2.5D reel: a question pill above the frame-0 reply, wide shots at scale 0.27+.
+## 2026-11-27 · claude/tech-ai-words-close-2 · Tech showreel-tech-ai-words: READY on render 3, posts 20:30 IST (builder close-out)
+- Done: render 2 (caption fix) Output QA PASS, critic NOT READY on one lone hook word; render 3 (owner's yes) Output QA PASS, final critic READY. The critic's branch could not merge (it carried an old Turns Out postAt and log lines); its verdict and log entry re-landed here. First real 2.5D map reel; tech restarted.
+- Left: the owner posts at 20:30 IST. Next 2.5D reel: captions from the script text (keep marks), one sentence per group, break wrapped groups at the middle; check every group with the real voice word times before render 1.
