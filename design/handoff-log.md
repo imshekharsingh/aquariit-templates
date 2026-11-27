@@ -6,6 +6,8 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-task-20-tabs · owner chat: the tab follows the workflow you came from
+- Owner: "tabs must only be selected based on workflow selection". Handoff task 20 now says so: every entry point (board card, reminder, Needs you, reel link) opens its reel's channel and nothing switches it later; All reels on its own opens the next due channel. Today's part (the right channel even before the list loads) went live with the service-worker fix.
 ## 2026-11-27 · claude/sw-api-bypass · owner chat: the home-screen app reads live data straight from the network
 - Owner's 19:05 recording: the re-added home-screen app still sat on "Loading…" (Today and the reel list) while Safari worked; "Open to post" showed the last channel. The service worker sent every /api/ request through its network-first cache; now /api/ goes straight to the network (sw.js v34), and going to the reels page paints the chosen channel even before the list loads. The web Fix at 19:06 was correct: its 19:00 time had passed unposted.
 
