@@ -2,7 +2,7 @@
  "name": "showreel-c3-price-list",
  "seek": "scripts/channel3/price-list.html",
  "engine": "design",
- "dur": 16,
+ "dur": 20,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,16 +10,24 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "These prices are hard to compare. They jump around. Turns out, numbers should line up. Fix one: one right edge. Fix two: digits, all one width. Fix three: dots to each name. Spot the cheapest at once.",
+  "text": "These prices are hard to compare. They jump around. Turns out, numbers need one edge. First, line them up on the right. Next, use digits of one width. Then add dots to each name. Now the cheapest stands out.",
   "voice": "af_heart",
-  "speed": 1
+  "speed": 1,
+  "gap": [
+   0.3,
+   0.35,
+   0.3,
+   0.3,
+   0.3,
+   0.4
+  ]
  },
  "experiment": {
   "id": "c3-design-series",
   "change": "design-tutorial format (queue of 10)",
   "vs": "median"
  },
- "caption": "These prices are hard to compare. They jump around. ✂️\n\n1. One right edge. Line every price up on the right, so units sit under units.\n2. Same-width digits. Most fonts have tabular figures (font-variant-numeric: tabular-nums in CSS); every digit takes the same width, so columns stay straight.\n3. Dots to each name. Leaders carry the eye from the service to its price.\n\nSave this for your next price list, menu or invoice. Do you read a price list name first or price first?",
+ "caption": "These prices are hard to compare. They jump around, because every row is centred. ✂️\n\n1. Line every price up on one right edge.\n2. Use digits of one width (tabular figures), so the columns stay straight.\n3. Add dots from each name to its price.\n\nSave this for your next price list, menu or invoice. Do you read the name first or the price first?",
  "keywords": [
   "price list design",
   "tabular numbers",
@@ -49,7 +57,7 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 18,
+    "to": 20,
     "sides": [
      "left",
      "right",
@@ -61,9 +69,15 @@
   ],
   "subject": [
    66,
-   400,
+   424,
    474,
-   764
+   768
   ]
- }
+ },
+ "dt": 2,
+ "before": {
+  "mistake": "a first-draft salon price list: every row centred, so each price sits wherever its name's width puts it, with ordinary proportional digits",
+  "source": "https://practicaltypography.com/tables.html"
+ },
+ "note": "Rebuilt on the improved design kit (27 Nov 2026; rules-c3.md V1-V3, B1-B3, P1-P2) from the gold reel showreel-c3-grey-text."
 }
