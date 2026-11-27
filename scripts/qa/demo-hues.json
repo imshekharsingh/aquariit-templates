@@ -60,6 +60,10 @@
   "showreel-49-scrollbar": {
    "hue": 85,
    "world": "black,limeaccent"
+  },
+  "showreel-50-popover": {
+   "hue": 135,
+   "world": "black,greenaccent"
   }
  }
 }
