@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/app-no-video-preload · owner chat: the app no longer streams videos when it opens
+- App probe (signed in, iPhone size): the list itself loads in 0.5 s, but on open the app also fetched ~40 test videos (Tests list covers) and streamed every reference clip on a loop (refs thumbnails, 28 s each, repeated); /api/journey took 11 s behind them. On a phone that queue starves the reel list: the "Loading…" of 27 Nov. Now: reference thumbnails use a still, clips and test videos load only on a tap (preload none, no autoplay), no video fetch for a missing test cover. The probe prints VIDEO REQUESTS WITHOUT A TAP (want 0) and PASS/FAIL.
+
 ## 2026-11-27 · claude/app-probe-runner · owner chat: App probe runs on ubuntu-24.04
 - First run failed before the probe: Playwright 1.56 has no Chromium for ubuntu-latest (26.04). Same runner as the Showreel workflow now.
 
