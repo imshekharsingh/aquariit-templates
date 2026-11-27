@@ -71,3 +71,12 @@ UPGRADES
 
 Focus: yes (one lit node, tinted world, neighbours dimmed). Structure: yes (title, pill in sync at 14.5, 24.0, 25.8 s, step tracker). Reason for every move: yes (a packet leads each flight).
 Facts: match the sources above (token limited to the device, terminal -> shop's bank -> network -> your bank and back, checks, "usually a few seconds"); counters say EXAMPLE TIME but too small to read (HIGH fix); shop, app, bank names invented; no brand or logo seen.
+
+## Render 2 (27 Nov 2026): Output QA
+Preview R2 path: study/showreel-pv-tech-2d5-test-preview.mp4 (overwrote render 1). Run 45927723694, Capture about 52 min.
+OUTPUT QA: FAIL (1): COLOUR, a hard background colour cut at 3.7 s (hue 96 to 160 deg); saturated fill and cover fine.
+PASS: LOUD -14.0 LUFS / -2.8 dBTP, EDGES, BULK, VIBRANCY 9.2 %, SPREAD 4 % empty, DEMO, HUE 175 deg, VARIETY 10 %, DEAD, CALM 3.0 % median.
+WARN: LOOK (washed-out 0.5-4.0 s, dark background 1 % vs gold 68 %), BLACKBG (median 34, limit 32), FOCUS and MUTE (no qa blocks in the config).
+SKIP on this runner: PACE, NUMBERS (no recogniser), SOUND, SYNC.
+Open builder notes: panel and detail text not 24 px at 1080 everywhere; the band under the caption is the Instagram overlay zone.
+PREMIUM: pending the independent critic (session started 27 Nov 03:27 UTC, branch claude/tech-2d5-test-critic2). A fix for the 3.7 s cut is a 3rd render and needs the owner's yes with a cost estimate (total spend is at the roughly $20 cap).
