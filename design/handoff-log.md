@@ -1305,6 +1305,9 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/project-steps · App: projects show their steps and the next action (task 7)
 - Done: projects.json steps + next (Worker passes them through, tests in scripts/qa/stage-test.mjs); Today step bar, Next line, step list; project-done push type; backfill; rule in runbook-studio and handoff.
 - Left: live App probe after deploy.
+## 2026-11-28 · claude/v7-r4-whip · 3D kit v7 render 4: the cascade restaged after the whole-reel glitch screen (task 10)
+- Done: the move to the high wide is 1.7 s on a higher arc to the far wide (it was 0.62 s, low over the floor); the cascade lands once the camera is still and the 3 x 8 counter counts with it; Chat and Mail enter dim; the board rises over 0.9 s; the counter's ones digit rolls and fades (lib3d numbers). Full-size glitch checks pass at 1.2, 2.8, 7.8-9.4, 9.4-11.0, 14.0-15.6 and 22.3 s; TEXT CLEAR passes.
+- Left: re-check 7.8-9.4 s after the last framing change, colour and glow, stills sheet, then render 4 (not dispatched; paused by the owner).
 ## 2026-11-27 · claude/t7-done · Handoff: task 7 done (APP PROBE: PASS), v7 render 4 cascade fix found
 - Done: task 7 live and probed; v7 r4 glitch screen finished; cascade restaged (far high wide, 1.7 s move, dim edge entry).
 - Left: full-size checks at the other flagged moments, then render 4.

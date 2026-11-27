@@ -229,7 +229,11 @@
     // the odometer: two digit columns (tens, ones), each a strip of 0-9 that slides; the tens roll only when the ones pass 9 -> 0
     const col = () => { const c = document.createElement('div'); c.style.cssText = 'height:154px;overflow:hidden'; const st = document.createElement('div'); st.style.cssText = 'display:flex;flex-direction:column';
       for (let d = 0; d < 11; d++) { const e = document.createElement('div'); e.style.cssText = 'height:154px;line-height:154px'; e.textContent = String(d % 10); st.appendChild(e); } c.appendChild(st); n.appendChild(c); return { c, st }; };
-    const tens = col(), ones = col();
+    // the ones: a short roll and crossfade between the two digits it is between (r4, 27 Nov 2026: a full slide of a sharp digit read as flicker at 30 fps; a fade blends evenly)
+    const fadeCol = () => { const c = document.createElement('div'); c.style.cssText = 'height:154px;position:relative;width:.62em;overflow:hidden';
+      const a = document.createElement('div'), b = document.createElement('div'); for (const e of [a, b]) { e.style.cssText = 'position:absolute;left:0;right:0;top:0;height:154px;line-height:154px;text-align:center'; c.appendChild(e); }
+      n.appendChild(c); return { c, a, b }; };
+    const tens = col(), ones = fadeCol();
     return { el: box, set(t, q) {
       const sh = clamp(q.show ?? 0), kk = 1 - Math.pow(1 - clamp(q.k ?? 1), 3), vf = lerp(q.from ?? q.value, q.to ?? q.value, kk), v = Math.round(vf);
       const at = q.at || [540, y + BH / 2], bx = [at[0] - BW / 2, at[1] - BH / 2, at[0] + BW / 2, at[1] + BH / 2];   // at: the number block's centre (placed beside its object, in empty space)
@@ -239,7 +243,8 @@
       if (top.dataset.t !== tl) { top.dataset.t = tl; top.innerHTML = ''; [...tl].forEach((ch) => { const c = document.createElement('span'); c.textContent = ch; top.appendChild(c); }); }
       [...top.children].forEach((c, i) => { c.style.opacity = clamp(ty_ - i - .5).toFixed(3); });
       const op = ((vf % 10) + 10) % 10, tp = Math.floor(Math.max(0, vf) / 10) + Math.max(0, op - 9);   // continuous: the ones slide every unit, the tens on the 9 -> 0 roll
-      ones.st.style.transform = `translateY(${(-op * 154).toFixed(1)}px)`; tens.st.style.transform = `translateY(${(-(tp % 10) * 154).toFixed(1)}px)`; tens.c.style.opacity = clamp(vf - 9).toFixed(3);   // the tens column always holds its place (no sideways jump of the ones); it fades in from 9 to 10
+      { const d0 = Math.floor(op), f = op - d0, R = 34; ones.a.textContent = String(d0 % 10); ones.b.textContent = String((d0 + 1) % 10);   // f 0 -> 1: d0 rolls up and out, d0 + 1 rolls in from below (the same direction as the old strip)
+        ones.a.style.opacity = (1 - f).toFixed(3); ones.a.style.transform = `translateY(${(-f * R).toFixed(1)}px)`; ones.b.style.opacity = f.toFixed(3); ones.b.style.transform = `translateY(${((1 - f) * R).toFixed(1)}px)`; } tens.st.style.transform = `translateY(${(-(tp % 10) * 154).toFixed(1)}px)`; tens.c.style.opacity = clamp(vf - 9).toFixed(3);   // the tens column always holds its place (no sideways jump of the ones); it fades in from 9 to 10
       n.style.color = q.color || '#fff'; barI.style.width = (clamp(q.bar ?? (v / 24)) * 100).toFixed(1) + '%'; barI.style.background = q.color || '#fff';
       lab.textContent = q.label || ''; const li = clamp(q.labelIn ?? 1); lab.style.opacity = li.toFixed(3); lab.style.transform = `translateY(${((1 - li) * 22).toFixed(1)}px)`;
       const ax = q.anchor, ok = ax && sh > .02 && ax[0] > 30 && ax[0] < 1050 && ax[1] > 430 && ax[1] < 1890 && !(ax[0] > bx[0] && ax[0] < bx[2] && ax[1] > bx[1] && ax[1] < bx[3]);
