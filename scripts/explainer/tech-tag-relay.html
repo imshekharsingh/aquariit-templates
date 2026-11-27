@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>How a lost tag is found</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* @techin20sec, 28 Nov 2026: the second 2.5D map reel (kit and engine from showreel-tech-ai-words; design/references.md "R-ref 27 Nov 2026" + the owner's 2.5D notes).
+   Topic: how a lost tag is found far from your phone (Samsung Galaxy SmartTag3 and the Galaxy Find Network). The map follows the process: a LINE out (the tag pings ->
+   a nearby device hears it -> the place is locked), a curve through the servers to your map, and the network that makes it work (900 million+ devices) closing back on the tag.
+   One camera over one canvas; moves of 0.45-0.7 s, no dwell; the next card shows as a ghost before the camera goes; light wedges and dim sub-nodes, grid and dust fill the frame;
+   every value is continuous in t (no modulo wraps, no per-frame random, no instant swaps); the camera path starts every flight from the real hold position.
+   The reel opens on the real-life moment (a find-my-tag window, the keys' last-seen pin) and ends on the same framing (the loop).
+   Facts: Samsung Newsroom, "The Technology Behind More Precise Finding With Galaxy SmartTag3 and SmartThings", 23 Nov 2026 (offline finding: nearby Galaxy devices detect the tag's BLE
+   signals and relay them to SmartThings servers; more than 900 million participating Galaxy devices form the Galaxy Find Network; location is encrypted with a unique private key,
+   only the owner can read it, the servers and relaying devices cannot; location history up to seven days). See review/tech/showreel-tech-tag-relay.md. */
+:root{--f:'Inter Tight',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-family:var(--f);-webkit-font-smoothing:antialiased;color:#fff}
+.a{position:absolute}
+[data-ui]{-webkit-text-fill-color:currentColor}
+.tile,.pan,.ghost,#tags .tg{color:#fff}
+#stage{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#bgc{left:0;top:0;width:540px;height:960px}
+#view{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:10px;height:10px;transform-origin:0 0}
+.tile{width:210px;height:232px;border-radius:30px;border:3px solid var(--c);background:linear-gradient(165deg,var(--ct),#10121a 86%)}
+.tn{left:16px;top:14px;width:46px;height:46px;border-radius:50%;border:3px solid var(--c);color:var(--c);font:800 25px/40px var(--m);text-align:center}
+.tl{left:0;width:100%;text-align:center;font:800 29px/1.08 var(--f);letter-spacing:.01em;white-space:nowrap}
+.sub{height:64px;border-radius:18px;border:2px solid var(--c);background:#10131b;padding:0 18px 0 62px;font:700 26px/60px var(--m);letter-spacing:.04em;white-space:nowrap;color:rgba(255,255,255,.86)}
+.sub svg{position:absolute;left:16px;top:14px}
+.pan{border-radius:30px;border:3px solid var(--c);background:linear-gradient(170deg,var(--ct),#0d0f16 80%)}
+.ph{left:24px;top:20px;font:800 27px/1 var(--m);letter-spacing:.1em;color:var(--c);white-space:nowrap}
+.ghost{border-radius:30px;border:3px dashed var(--c);background:rgba(255,255,255,.03)}
+.chip{height:54px;border-radius:14px;border:2px solid var(--c);background:rgba(255,255,255,.04);font:700 30px/50px var(--m);padding:0 12px;white-space:pre;color:#fff}
+.bub{border-radius:24px;padding:14px 20px;font:700 32px/1.25 var(--f);color:#fff}
+#tags .tg{height:30px;border-radius:15px;background:#0c0e14;border:1.5px solid var(--c);padding:0 11px 0 4px;font:800 13px/27px var(--f);letter-spacing:.06em;white-space:nowrap;color:#fff}
+#tags .tg i{display:inline-block;width:21px;height:21px;margin:0 6px 0 0;border-radius:50%;background:var(--c);color:#0b0c10;font:800 12px/21px var(--m);font-style:normal;text-align:center;vertical-align:1px}
+#top{left:0;top:0;width:540px;height:262px;background:linear-gradient(#08090d 0,#08090d 70%,rgba(8,9,13,0) 100%)}
+#logo{left:50%;top:100px;margin-left:-64px;width:128px;height:26px;border-radius:13px;background:#14161e;border:1.5px solid rgba(255,255,255,.22);font:800 12px/23px var(--m);letter-spacing:.08em;text-align:center;color:rgba(255,255,255,.9)}
+#title{left:0;top:132px;width:540px;text-align:center;font:900 38px/1.02 var(--f);letter-spacing:-.01em;white-space:nowrap;text-transform:uppercase}
+#pillw{left:50%;top:216px;width:260px;margin-left:-130px;height:30px;overflow:hidden;border-radius:999px;border:2px solid var(--c);background:#0c0e14}
+#pillw span{left:0;top:0;width:100%;text-align:center;font:800 13px/26px var(--m);letter-spacing:.12em;color:var(--c);white-space:nowrap}
+#banner{left:-60px;top:262px;width:660px;height:56px;transform-origin:50% 50%}
+#banner div{left:0;top:0;width:660px;height:56px;background:var(--c);color:#0a0b10;font:900 31px/56px var(--f);letter-spacing:.02em;text-align:center;white-space:nowrap}
+#cap{left:44px;top:708px;width:410px;text-align:center;font:800 27px/1.22 var(--f);letter-spacing:-.01em}
+#cap .bx{display:inline-block;padding:10px 18px 12px;border-radius:16px;background:#12141b;border:1px solid rgba(255,255,255,.08)}
+#cap .w{display:inline-block;margin:0 .12em;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="stage" class="a">
+  <canvas id="bgc" class="a" width="1080" height="1920"></canvas>
+  <div id="view" class="a" data-fit="free"><div id="world" class="a">
+    <svg id="lines" class="a" width="2600" height="1800" viewBox="0 0 2600 1800" style="left:0;top:0;overflow:visible"></svg>
+    <div id="subs" class="a"></div>
+    <div id="nodes" class="a"></div>
+    <div id="pans" class="a"></div>
+  </div></div>
+  <div id="tags" class="a" style="left:0;top:0"></div>
+</div>
+<div id="top" class="a" data-ui></div>
+<div id="logo" class="a" data-ui>TECH IN 20 SEC</div>
+<div id="title" class="a" data-hook><div>FIND A TAG FAR</div><div>FROM YOUR PHONE</div></div>
+<div id="pillw" class="a" data-ui><span id="p0" class="a"></span><span id="p1" class="a"></span></div>
+<div id="banner" class="a" data-ui><div class="a">ONLY YOU CAN READ IT</div></div>
+<div id="subj" class="a" data-subject style="left:24px;top:268px;width:444px;height:428px;pointer-events:none"></div>
+<div id="bandm" class="a" data-band style="left:0;top:700px;width:540px;height:100px;pointer-events:none"></div>
+<div id="cap" class="a" data-subs></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k * k * k * (k * (k * 6 - 15) + 10); };
+  var back = function(k){ var c = 1.6; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+  var hh = function(a, b){ var x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return x - Math.floor(x); };
+  var rgb = function(c, a){ return 'rgba(' + c.map(Math.round).join(',') + ',' + (a == null ? 1 : a) + ')'; };
+  function toHsl(c){ var r = c[0] / 255, g = c[1] / 255, b = c[2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn, h = 0, s = 0;
+    if (d > 1e-6){ s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; } return [h, s, l]; }
+  function fromHsl(h, s, l){ var c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2, r, g, b, q = Math.floor(h / 60) % 6;
+    r = [c, x, 0, 0, x, c][q]; g = [x, c, c, x, 0, 0][q]; b = [0, 0, x, c, c, x][q]; return [(r + m) * 255, (g + m) * 255, (b + m) * 255]; }
+  function hslMix(a, b, k){ var A = toHsl(a), B = toHsl(b), dh = ((B[0] - A[0] + 540) % 360) - 180; return fromHsl((A[0] + dh * k + 360) % 360, mix(A[1], B[1], k), mix(A[2], B[2], k)); }
+  var cmix = function(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k), mix(a[2], b[2], k)]; };
+  var DUR = 29.6;
+  // ---- the story clock: each step starts on its sentence ("One: ..."); the camera leaves on that word (no dwell), the next card's ghost shows 0.5 s before
+  var AT = [0.25, 3.5, 7.0, 10.6, 14.0, 17.3, 21.0, 24.9, 29.0];
+  var FLY = [0, .6, .5, .5, .45, .45, .6, .6, .6];
+  // ---- the map (world px): a line out on top, the loop on the right, a line back along the bottom
+  var C = [1060, 1220], R = 360;
+  var PT = [null, [420, 380], [1060, 380], [1060, 860], [C[0] + R * Math.cos(Math.PI / 6), C[1] + R * Math.sin(Math.PI / 6)], [C[0] + R * Math.cos(5 * Math.PI / 6), C[1] + R * Math.sin(5 * Math.PI / 6)], [420, 1000]];
+  var COL = [[236,228,214],[86,152,255],[255,178,64],[176,118,255],[255,96,170],[70,226,146],[255,104,88]];
+  var NAME = ['', 'YOUR TAG', 'NEARBY DEVICE', 'LOCKED', 'THE SERVERS', 'YOUR MAP', 'THE NETWORK'];
+  var LAB = ['', ['YOUR', 'TAG'], ['NEARBY', 'DEVICE'], ['LOCKED', 'PLACE'], ['THE', 'SERVERS'], ['YOUR', 'MAP'], ['THE', 'NETWORK']];
+  // camera stops: [x, y, scale] (screen centre of the map area is x 256, y 452); 0 = the whole map, 7 = the whole map again (payoff)
+  var WIDE0 = [885, 724, .24], WIDE1 = [885, 744, .24];
+  var STOP = [[745, 690, .94], [740, 600, .5], [1250, 610, .5], [1060, 1080, .51], [1120, 1150, .51], [1000, 1180, .51], [650, 740, .5], WIDE1];
+  var DRIFT = [[0, 0, .01], [15, -8, .007], [-15, 9, .007], [12, 10, .006], [-14, 8, .006], [14, 2, .005], [-15, -9, .007], [8, 12, .002], [0, 0, 0]];
+  STOP.push(STOP[0]);   // the last move goes home: the same framing as frame 0 (the loop)
+  var X0 = 252, Y0 = 470;
+  // the camera's own clock: the same as the voice, except the opening pull-back from the chat window leaves at 2.6 s (owner, 27 Nov: open on the chat itself)
+  var CAT = AT.slice(); CAT[1] = 2.6;
+  function holdPos(i, t){ var a = STOP[i], d = DRIFT[i], h = Math.max(0, t - (CAT[i] + FLY[i])); return [a[0] + d[0] * h, a[1] + d[1] * h, a[2] + d[2] * h]; }
+  function cam(t){
+    for (var i = 8; i >= 1; i--) if (t >= CAT[i]){
+      var e = CAT[i] + FLY[i]; if (t >= e) return holdPos(i, t);
+      var k = io(P(t, CAT[i], e)), a = holdPos(i - 1, CAT[i]), b = STOP[i], s = Math.exp(mix(Math.log(a[2]), Math.log(b[2]), k));
+      return [mix(a[0], b[0], k), mix(a[1], b[1], k), s];
+    }
+    return holdPos(0, t);
+  }
+  // which step is lit: switches mid-flight
+  function stepAt(t){ var s = 0; for (var i = 1; i <= 6; i++) if (t >= AT[i] + FLY[i] * .25) s = i; if (t >= AT[7] + FLY[7] * .25) s = 7; if (t >= AT[8] + FLY[8] * .25) s = 8; return s; }
+  // focus of a node 0..1, eased (never a snap)
+  function focus(i, t){
+    var f = .85, k;   // the whole map at the start: every node at 85 %
+    for (var j = 1; j <= 7; j++){ var on = j === i ? 1 : (j === 7 ? .85 : 0), a = AT[j] + FLY[j] * .2, b = AT[j] + FLY[j] * .8; k = io(P(t, a, b)); if (t >= a) f = mix(f, on, k); }
+    return f;
+  }
+  // ---- build
+  var SVGNS = 'http://www.w3.org/2000/svg', lines = $('lines'), nodesEl = $('nodes'), subsEl = $('subs'), pans = $('pans'), tagsEl = $('tags');
+  function E(par, cls, css, html){ var d = document.createElement('div'); d.className = 'a ' + (cls || ''); d.setAttribute('data-ui', ''); if (css) d.style.cssText = css; if (html != null) d.innerHTML = html; par.appendChild(d); return d; }
+  function S(par, tag, at){ var e = document.createElementNS(SVGNS, tag); for (var k in at) e.setAttribute(k, at[k]); par.appendChild(e); return e; }
+  function ent(el, lt, delay, kind, dur){   // an element's own entrance (each its own way), continuous in t
+    var k = cl((lt - delay) / (dur || .4)), b = back(k), tr = '';
+    if (kind === 'up') tr = 'translateY(' + ((1 - b) * 24).toFixed(2) + 'px)'; else if (kind === 'dn') tr = 'translateY(' + (-(1 - b) * 24).toFixed(2) + 'px)';
+    else if (kind === 'l') tr = 'translateX(' + (-(1 - b) * 36).toFixed(2) + 'px)'; else if (kind === 'r') tr = 'translateX(' + ((1 - b) * 36).toFixed(2) + 'px)';
+    else if (kind === 'pop') tr = 'scale(' + (.6 + .4 * b).toFixed(4) + ')';
+    el.style.opacity = cl(k * 2.5).toFixed(3); el.style.transform = tr; return k;
+  }
+  function ico(i, col){
+    var a = 'fill="none" stroke="' + col + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"', o = '<svg width="84" height="84" viewBox="0 0 84 84" ' + a + '>';
+    if (i === 1) return o + '<rect x="26" y="16" width="32" height="48" rx="11"/><circle cx="42" cy="28" r="4"/><path d="M12 30q-6 12 0 24M72 30q6 12 0 24"/></svg>';
+    if (i === 2) return o + '<rect x="24" y="6" width="36" height="66" rx="9"/><path d="M36 14h12M10 28q-5 12 0 24M74 28q5 12 0 24"/></svg>';
+    if (i === 3) return o + '<rect x="18" y="36" width="48" height="36" rx="8"/><path d="M28 36V26a14 14 0 0 1 28 0v10"/><circle cx="42" cy="54" r="4"/></svg>';
+    if (i === 4) return o + '<rect x="12" y="8" width="60" height="20" rx="6"/><rect x="12" y="32" width="60" height="20" rx="6"/><rect x="12" y="56" width="60" height="20" rx="6"/><path d="M22 18h2M22 42h2M22 66h2"/></svg>';
+    if (i === 5) return o + '<path d="M42 76C26 56 18 46 18 34a24 24 0 0 1 48 0c0 12-8 22-24 42z"/><circle cx="42" cy="34" r="8"/></svg>';
+    return o + '<circle cx="42" cy="42" r="8"/><circle cx="14" cy="22" r="6"/><circle cx="70" cy="22" r="6"/><circle cx="14" cy="64" r="6"/><circle cx="70" cy="64" r="6"/><path d="M20 26l16 10M64 26L48 36M20 60l16-12M64 60L48 48"/></svg>';
+  }
+  function sico(kind, col){
+    var a = 'fill="none" stroke="' + col + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"', o = '<svg width="34" height="34" viewBox="0 0 34 34" ' + a + '>';
+    if (kind === 'wave') return o + '<path d="M9 9q-6 8 0 16M16 6q-9 11 0 22M23 3q-12 14 0 28"/></svg>';
+    if (kind === 'tag') return o + '<rect x="9" y="5" width="16" height="24" rx="6"/><circle cx="17" cy="11" r="2"/></svg>';
+    if (kind === 'phone') return o + '<rect x="9" y="3" width="16" height="28" rx="4"/><path d="M14 7h6"/></svg>';
+    if (kind === 'key') return o + '<circle cx="11" cy="17" r="6"/><path d="M17 17h13M26 17v6M30 17v4"/></svg>';
+    if (kind === 'shield') return o + '<path d="M17 3l11 4v9c0 8-5 12-11 15C11 28 6 24 6 16V7z"/></svg>';
+    if (kind === 'pin') return o + '<path d="M17 31C10 22 7 18 7 13a10 10 0 0 1 20 0c0 5-3 9-10 18z"/><circle cx="17" cy="13" r="3"/></svg>';
+    if (kind === 'cloud') return o + '<path d="M9 26h17a6 6 0 0 0 0-12 9 9 0 0 0-17 2 5 5 0 0 0 0 10z"/></svg>';
+    if (kind === 'eye') return o + '<path d="M3 17s5-9 14-9 14 9 14 9-5 9-14 9S3 17 3 17z"/><circle cx="17" cy="17" r="4"/></svg>';
+    if (kind === 'again') return o + '<path d="M27 17a10 10 0 1 1-3-7"/><path d="M25 3v7h-7"/></svg>';
+    return o + '<path d="M6 17h18M18 9l8 8-8 8"/></svg>';
+  }
+  var NODE = [null], TAG = [null];
+  for (var i = 1; i <= 6; i++){
+    var c = COL[i], ct = rgb(cmix(c, [16, 18, 26], .62));
+    var nd = E(nodesEl, 'tile', 'left:' + (PT[i][0] - 105) + 'px;top:' + (PT[i][1] - 116) + 'px;--c:' + rgb(c) + ';--ct:' + ct, '');
+    nd._tn = E(nd, 'tn', '', String(i)); E(nd, '', 'left:63px;top:34px', ico(i, rgb(c)));
+    nd._tl = E(nd, 'tl', 'top:136px', LAB[i][0] + '<br>' + LAB[i][1]);
+    nd._ring = E(nodesEl, 'ghost', 'left:' + (PT[i][0] - 125) + 'px;top:' + (PT[i][1] - 136) + 'px;width:250px;height:272px;border-radius:40px;--c:' + rgb(c, .8) + ';opacity:0');
+    NODE.push(nd);
+    var tg = E(tagsEl, 'tg', '--c:' + rgb(c), '<i>' + i + '</i>' + NAME[i]); TAG.push(tg);
+  }
+  // sub-nodes: 1-2 small real things per node (icon + short label), dim context that fills the map (each bobs gently, continuous)
+  var SUBD = [[1, 'wave', 'BLE', -260, -40], [1, 'key', 'KEYS', -250, 200], [2, 'phone', 'GALAXY', 300, -40], [3, 'key', 'YOUR KEY', -300, -60], [3, 'shield', 'PRIVATE', 290, 20],
+    [4, 'cloud', 'SERVER', 120, 260], [4, 'eye', 'NO PEEK', 260, -170], [5, 'pin', 'LAST SEEN', -230, 170], [5, 'again', 'A WEEK', -40, 300], [6, 'phone', 'ANYONE', -250, 120], [6, 'shield', 'ANON', -110, 300]];
+  var SUBS = SUBD.map(function(d, n){ var c = COL[d[0]], w = 62 + 18 + d[2].length * 16.2 + 8; var el = E(subsEl, 'sub', 'left:' + (PT[d[0]][0] + d[3] - w / 2) + 'px;top:' + (PT[d[0]][1] + d[4] - 32) + 'px;--c:' + rgb(c, .7), sico(d[1], rgb(c)) + '<span class="sl">' + d[2] + '</span>');
+    var x1 = PT[d[0]][0] + d[3], y1 = PT[d[0]][1] + d[4], L = S(lines, 'line', { x1: PT[d[0]][0], y1: PT[d[0]][1], x2: x1, y2: y1, stroke: rgb(c, .32), 'stroke-width': 2, 'stroke-dasharray': '4 9' });
+    var dt = S(lines, 'circle', { cx: x1, cy: y1, r: 5, fill: rgb(c, .7) });
+    return { el: el, sl: el.querySelector('.sl'), i: d[0], n: n, ln: L, dt: dt }; });
+  // lines: thin, with small end dots; each link is pre-drawn faint (the map exists from frame 0) and drawn bright ONCE, just before the camera follows it
+  function trimLine(a, b, ta, tb){ var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L; return [[a[0] + ux * ta, a[1] + uy * ta], [b[0] - ux * tb, b[1] - uy * tb]]; }
+  var LINKS = [];   // {from, to, path d, len, colour, drawAt}
+  function addLink(fi, ti, d, len, col, drawAt){
+    var base = S(lines, 'path', { d: d, fill: 'none', stroke: 'rgba(255,255,255,.16)', 'stroke-width': 3, 'stroke-dasharray': '10 10' });
+    var lit = S(lines, 'path', { d: d, fill: 'none', stroke: rgb(col), 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-dasharray': len + ' ' + len, 'stroke-dashoffset': len });
+    LINKS.push({ base: base, lit: lit, len: len, col: col, drawAt: drawAt, from: fi, to: ti });
+  }
+  function straight(fi, ti, drawAt){ var q = trimLine(PT[fi], PT[ti], 130, 130); addLink(fi, ti, 'M' + q[0][0] + ' ' + q[0][1] + 'L' + q[1][0] + ' ' + q[1][1], Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]), COL[ti], drawAt);
+    S(lines, 'circle', { cx: q[0][0], cy: q[0][1], r: 7, fill: rgb(COL[fi], .9) }); S(lines, 'circle', { cx: q[1][0], cy: q[1][1], r: 7, fill: rgb(COL[ti], .9) }); }
+  function arc(fi, ti, a0, a1, drawAt){ var g = 21 * Math.PI / 180, s0 = a0 + g, s1 = a1 - g, x0 = C[0] + R * Math.cos(s0), y0 = C[1] + R * Math.sin(s0), x1 = C[0] + R * Math.cos(s1), y1 = C[1] + R * Math.sin(s1);
+    addLink(fi, ti, 'M' + x0 + ' ' + y0 + 'A' + R + ' ' + R + ' 0 0 1 ' + x1 + ' ' + y1, R * (s1 - s0), COL[ti], drawAt);
+    S(lines, 'circle', { cx: x0, cy: y0, r: 7, fill: rgb(COL[fi], .9) }); S(lines, 'circle', { cx: x1, cy: y1, r: 7, fill: rgb(COL[ti], .9) });
+    var ah = S(lines, 'path', { d: 'M-12 -11L4 0L-12 11', fill: 'none', stroke: rgb(COL[ti]), 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0, transform: 'translate(' + x1 + ',' + y1 + ') rotate(' + ((s1 * 180 / Math.PI) + 90) + ')' }); LINKS[LINKS.length - 1].head = ah; }
+  straight(1, 2, AT[2] - .5); straight(2, 3, AT[3] - .5);
+  arc(3, 4, -Math.PI / 2, Math.PI / 6, AT[4] - .5); arc(4, 5, Math.PI / 6, 5 * Math.PI / 6, AT[5] - .5);
+  straight(5, 6, AT[6] - .5); straight(6, 1, AT[6] + 1.6);
+  LINKS.forEach(function(l){ if (l.head) lines.appendChild(l.head); });
+  // ---- panels (one working interface per step); ghost outline shows before the camera goes there
+  var PAN = [null], GH = [null], X = [null], P1H;
+  var PPOS = [null, [745, 690, 470, 300], [1380, 650, 520, 300], [1060, 1150, 430, 260], [1060, 1150, 430, 260], [1060, 1150, 430, 260], [700, 690, 470, 300]];
+  for (var j = 1; j <= 6; j++){ var pp = PPOS[j], c2 = COL[j];
+    GH.push(E(pans, 'ghost', 'left:' + (pp[0] - pp[2] / 2) + 'px;top:' + (pp[1] - pp[3] / 2) + 'px;width:' + pp[2] + 'px;height:' + pp[3] + 'px;--c:' + rgb(c2, .7) + ';opacity:0'));
+    var pn = E(pans, 'pan', 'left:' + (pp[0] - pp[2] / 2) + 'px;top:' + (pp[1] - pp[3] / 2) + 'px;width:' + pp[2] + 'px;height:' + pp[3] + 'px;--c:' + rgb(c2) + ';--ct:' + rgb(cmix(c2, [16, 18, 26], .7)) + ';opacity:0');
+    PAN.push(pn); }
+  var Q = 'Where are my keys?', SVN = 'http://www.w3.org/2000/svg';
+  var bubble = function(p){ return E(p, 'bub', 'right:24px;top:84px;background:' + rgb(COL[1], .9) + ';white-space:nowrap', Q); };
+  // pulse rings round a tag or a pin: radius and opacity are sines of t (continuous, no wraps)
+  function ringsOf(par, cx, cy, col, n){ var out2 = []; for (var k = 0; k < n; k++) out2.push(S(par, 'circle', { cx: cx, cy: cy, r: 10, fill: 'none', stroke: col, 'stroke-width': 3, opacity: 0 })); return out2; }
+  function pulse(rs, t, r0, r1, gain){ rs.forEach(function(c, k){ var u = .5 + .5 * Math.sin(t * 2.1 - k * 2.0); c.setAttribute('r', (r0 + (r1 - r0) * u).toFixed(2)); c.setAttribute('opacity', ((.12 + .6 * (1 - u)) * gain).toFixed(3)); }); }
+  function svgBox(par, css, w, h){ var d = E(par, '', css + ';width:' + w + 'px;height:' + h + 'px', ''); var s = document.createElementNS(SVGNS, 'svg'); s.setAttribute('width', w); s.setAttribute('height', h); s.setAttribute('viewBox', '0 0 ' + w + ' ' + h); s.style.overflow = 'visible'; d.appendChild(s); d._s = s; return d; }
+  function tagShape(s, cx, cy, col){ S(s, 'rect', { x: cx - 22, y: cy - 28, width: 44, height: 56, rx: 14, fill: '#10131b', stroke: col, 'stroke-width': 4 }); S(s, 'circle', { cx: cx, cy: cy - 14, r: 5, fill: 'none', stroke: col, 'stroke-width': 3 }); S(s, 'circle', { cx: cx, cy: cy + 10, r: 3.5, fill: col }); }
+  function streets(s, w, h){ [[0, h * .28, w, h * .28], [0, h * .72, w, h * .72], [w * .2, 0, w * .2, h], [w * .52, 0, w * .52, h], [w * .84, 0, w * .84, h], [0, h * .1, w * .52, h * .9]].forEach(function(q){ S(s, 'line', { x1: q[0], y1: q[1], x2: q[2], y2: q[3], stroke: 'rgba(255,255,255,.13)', 'stroke-width': 3 }); }); }
+  var LK = function(s, x, y, col, k){ // a padlock; k 0 = open, 1 = closed (the shackle lifts and drops, continuous)
+    S(s, 'rect', { x: x - 26, y: y, width: 52, height: 42, rx: 9, fill: '#10131b', stroke: col, 'stroke-width': 4 }); S(s, 'circle', { cx: x, cy: y + 21, r: 5, fill: col });
+    return S(s, 'path', { d: 'M' + (x - 14) + ' ' + y + 'v-12a14 14 0 0 1 28 0v12', fill: 'none', stroke: col, 'stroke-width': 4, 'stroke-linecap': 'round' }); };
+  // 1: YOUR TAG: the question, the tag, its rings, a short Bluetooth ping
+  var WIN_R = [], CARD_R = [];
+  (function(){ var p = PAN[1], cs = rgb(COL[1]);
+    P1H = E(p, 'ph', '', 'YOUR TAG'); bubble(p);
+    var g = svgBox(p, 'left:24px;top:150px', 130, 130); CARD_R = ringsOf(g._s, 65, 66, cs, 3); tagShape(g._s, 65, 66, cs);
+    var lab = E(p, '', 'left:164px;top:178px;font:800 25px/1.3 var(--m);letter-spacing:.05em;color:' + cs + ';white-space:nowrap', 'SHORT BLUETOOTH<br>PING, REPEATED');
+    X[1] = function(lt, t){ pulse(CARD_R, t, 26, 62, cl(P(lt, .2, .6))); ent(lab, lt, 1.2, 'r', .4); };
+  })();
+  // 2: A NEARBY DEVICE: a phone with offline finding switched on hears the tag
+  (function(){ var p = PAN[2], cs = rgb(COL[2]); E(p, 'ph', '', 'A NEARBY DEVICE');
+    var ph = svgBox(p, 'left:46px;top:86px', 84, 160); S(ph._s, 'rect', { x: 2, y: 2, width: 80, height: 152, rx: 16, fill: '#10131b', stroke: cs, 'stroke-width': 4 }); S(ph._s, 'rect', { x: 28, y: 10, width: 28, height: 5, rx: 2.5, fill: cs });
+    var waves = svgBox(p, 'left:6px;top:116px', 36, 100), wv = [0, 1, 2].map(function(k){ return S(waves._s, 'path', { d: 'M' + (30 - k * 9) + ' ' + (20 + k * 4) + 'q-' + (8 + k * 3) + ' 30 0 ' + (60 - k * 8), fill: 'none', stroke: cs, 'stroke-width': 4, 'stroke-linecap': 'round', opacity: 0 }); });
+    var tg = E(p, '', 'left:150px;top:88px;width:84px;height:44px;border-radius:22px;border:3px solid ' + cs + ';background:rgba(255,255,255,.06)', ''), kn = E(tg, '', 'left:5px;top:5px;width:28px;height:28px;border-radius:50%;background:#fff', '');
+    var tl = E(p, '', 'left:150px;top:144px;font:800 24px/1 var(--m);letter-spacing:.04em;color:#fff;white-space:nowrap', 'OFFLINE FINDING: ON');
+    var chip = E(p, 'chip', 'left:150px;top:196px;--c:' + cs + ';width:236px', 'HEARS THE TAG');
+    X[2] = function(lt, t){ ent(tg, lt, .15, 'l', .35); var k = io(P(lt, .7, 1.05)); kn.style.transform = 'translateX(' + (40 * k).toFixed(2) + 'px)'; tg.style.background = rgb(cmix([40, 44, 56], COL[2], k), .55);
+      ent(tl, lt, .6, 'up', .35); ent(chip, lt, 1.3, 'pop', .4); wv.forEach(function(w, n){ var u = cl(P(lt, 1.3 + n * .12, 1.5 + n * .12)) * (.55 + .45 * Math.sin(t * 5 - n * 1.3)); w.setAttribute('opacity', u.toFixed(3)); }); };
+  })();
+  // 3: LOCKED: the place goes into a lock that only the owner can open
+  (function(){ var p = PAN[3], cs = rgb(COL[3]); E(p, 'ph', '', 'LOCKED');
+    var hole = E(p, '', 'left:24px;top:96px;width:150px;height:54px;border-radius:14px;border:2px dashed ' + rgb(COL[3], .8) + ';opacity:0'), chip = E(p, 'chip', 'left:24px;top:96px;--c:' + rgb(COL[3], .85) + ';width:150px', 'WHERE'), lk = svgBox(p, 'left:270px;top:60px', 100, 100), sh;
+    (function(){ var g = document.createElementNS(SVGNS, 'g'); lk._s.appendChild(g); sh = LK(g, 50, 44, cs, 0); lk._g = g; })();
+    var tx = E(p, '', 'left:24px;top:190px;font:800 24px/1.25 var(--m);letter-spacing:.04em;color:#fff;white-space:nowrap', 'ONLY YOU CAN OPEN IT');
+    X[3] = function(lt, t){ ent(lk, lt, .1, 'pop', .4); var m = io(P(lt, .6, 1.2)), c2 = io(P(lt, 1.15, 1.45));
+      chip.style.opacity = (cl(P(lt, .15, .45)) * (1 - cl(P(lt, 1.0, 1.25)))).toFixed(3); chip.style.transform = 'translateX(' + (m * 168).toFixed(2) + 'px) scale(' + (1 - .3 * m).toFixed(3) + ')';
+      sh.setAttribute('transform', 'translate(0,' + (-14 * (1 - c2)).toFixed(2) + ')'); lk.style.filter = 'none'; ent(tx, lt, 1.25, 'up', .4); hole.style.opacity = (.25 * cl(P(lt, 1.0, 1.25))).toFixed(3); };
+  })();
+  // 4: THE SERVERS: they get the sealed place and cannot read it
+  (function(){ var p = PAN[4], cs = rgb(COL[4]); E(p, 'ph', '', 'THE SERVERS');
+    var rk = svgBox(p, 'left:236px;top:66px', 170, 130), leds = [];
+    for (var r = 0; r < 3; r++){ S(rk._s, 'rect', { x: 2, y: 2 + r * 44, width: 166, height: 36, rx: 10, fill: '#10131b', stroke: cs, 'stroke-width': 3 }); leds.push(S(rk._s, 'circle', { cx: 24, cy: 20 + r * 44, r: 6, fill: cs })); leds.push(S(rk._s, 'circle', { cx: 46, cy: 20 + r * 44, r: 6, fill: cs })); S(rk._s, 'path', { d: 'M82 ' + (20 + r * 44) + 'h66', stroke: 'rgba(255,255,255,.25)', 'stroke-width': 4, 'stroke-linecap': 'round' }); }
+    var ls = svgBox(p, 'left:40px;top:96px', 80, 70), sg = document.createElementNS(SVGNS, 'g'); ls._s.appendChild(sg); LK(sg, 40, 22, cs, 1);
+    var eye = svgBox(p, 'left:24px;top:210px', 44, 34); S(eye._s, 'path', { d: 'M2 17s7-13 20-13 20 13 20 13-7 13-20 13S2 17 2 17z', fill: 'none', stroke: cs, 'stroke-width': 3.5, 'stroke-linejoin': 'round' }); S(eye._s, 'circle', { cx: 22, cy: 17, r: 5, fill: cs }); var slash = S(eye._s, 'line', { x1: 4, y1: 32, x2: 40, y2: 2, stroke: '#fff', 'stroke-width': 4, 'stroke-linecap': 'round' });
+    var tx = E(p, '', 'left:78px;top:212px;font:800 25px/1.2 var(--m);letter-spacing:.04em;color:#fff;white-space:nowrap', 'CANNOT READ IT');
+    X[4] = function(lt, t){ var k = io(P(lt, .25, 1.1)); ls.style.transform = 'translateX(' + (k * 180).toFixed(2) + 'px) translateY(' + (-2 + 50 * k * 0).toFixed(2) + 'px)'; ls.style.opacity = (cl(P(lt, .1, .35)) * (1 - cl(P(lt, 1.0, 1.25)))).toFixed(3);
+      leds.forEach(function(c, n){ var u = .35 + .65 * (.5 + .5 * Math.sin(t * 4 + n * 1.7)) * cl(P(lt, .3, .7)); c.setAttribute('opacity', u.toFixed(3)); });
+      ent(eye, lt, 1.3, 'l', .35); ent(tx, lt, 1.45, 'r', .35); slash.setAttribute('opacity', cl(P(lt, 1.7, 1.95)).toFixed(3)); };
+  })();
+  // 5: YOUR MAP: you open the map and see where it was (a pin drops, the trail of the week behind it)
+  (function(){ var p = PAN[5], cs = rgb(COL[5]); E(p, 'ph', '', 'YOUR MAP');
+    var mp = svgBox(p, 'left:24px;top:62px;overflow:hidden;border-radius:18px;background:#111620;border:2px solid rgba(255,255,255,.16)', 382, 128); streets(mp._s, 382, 128);
+    var trail = [[70, 92], [128, 58], [186, 84], [244, 52]].map(function(q){ return S(mp._s, 'circle', { cx: q[0], cy: q[1], r: 7, fill: cs, opacity: 0 }); });
+    var pin = document.createElementNS(SVGNS, 'g'); mp._s.appendChild(pin); S(pin, 'path', { d: 'M0 0c-16-22-24-30-24-44a24 24 0 0 1 48 0c0 14-8 22-24 44z', fill: cs, stroke: '#fff', 'stroke-width': 3 }); S(pin, 'circle', { cx: 0, cy: -44, r: 8, fill: '#0c0e14' }); var pr = ringsOf(mp._s, 300, 112, cs, 2);
+    var chip = E(p, '', 'left:24px;top:206px;height:48px;border-radius:24px;border:2.5px solid ' + cs + ';padding:0 20px;font:800 24px/44px var(--m);letter-spacing:.06em;color:' + cs + ';white-space:nowrap', 'UP TO SEVEN DAYS BACK');
+    X[5] = function(lt, t){ ent(mp, lt, .1, 'up', .35); trail.forEach(function(c, n){ c.setAttribute('opacity', (.2 + .5 * cl(P(lt, .6 + n * .22, .8 + n * .22))).toFixed(3)); });
+      var k = back(P(lt, 1.3, 1.75)); pin.setAttribute('transform', 'translate(300,' + (112 - (1 - k) * 70).toFixed(2) + ')'); pin.setAttribute('opacity', cl(P(lt, 1.3, 1.45)).toFixed(3)); pulse(pr, t, 14, 44, cl(P(lt, 1.75, 2.1))); ent(chip, lt, 2.1, 'up', .4); };
+  })();
+  // 6: THE NETWORK: many devices, each a small dot, all helping each other anonymously
+  var NETD = [];
+  (function(){ var p = PAN[6], cs = rgb(COL[6]); E(p, 'ph', '', 'THE NETWORK');
+    var nw = svgBox(p, 'left:24px;top:64px', 422, 130), s = nw._s;
+    for (var n = 0; n < 22; n++){ var gx = 24 + hh(n, 11) * 374, gy = 14 + hh(n, 12) * 102; NETD.push([gx, gy]); }
+    var ln = [], dots = [];
+    NETD.forEach(function(d, n){ var m = NETD[(n * 7 + 3) % NETD.length]; ln.push(S(s, 'line', { x1: d[0], y1: d[1], x2: m[0], y2: m[1], stroke: cs, 'stroke-width': 1.8, opacity: 0 })); });
+    NETD.forEach(function(d, n){ dots.push(S(s, 'circle', { cx: d[0], cy: d[1], r: n === 0 ? 11 : 6.5, fill: n === 0 ? '#fff' : cs, opacity: 0 })); });
+    var big = E(p, '', 'left:24px;top:204px;font:800 44px/1 var(--m);color:' + cs + ';white-space:nowrap;letter-spacing:.01em', '900 MILLION+'), sm = E(p, '', 'left:24px;top:256px;font:800 24px/1 var(--m);letter-spacing:.05em;color:#fff;white-space:nowrap', 'GALAXY DEVICES');
+    X[6] = function(lt, t){ dots.forEach(function(c, n){ var k = out(P(lt, .1 + n * .035, .35 + n * .035)); c.setAttribute('opacity', (k * (.55 + .45 * Math.sin(t * 1.6 + n * 1.9) * .5 + .22)).toFixed(3)); });
+      ln.forEach(function(c, n){ c.setAttribute('opacity', (.34 * cl(P(lt, .9 + n * .03, 1.3 + n * .03))).toFixed(3)); });
+      ent(big, lt, 1.3, 'up', .45); ent(sm, lt, 1.6, 'up', .4); };
+  })();
+  // the opening (owner, 27 Nov: open on the real-life moment): an invented, unbranded find-my-tag window filling the frame at 0-2.6 s, the question asked and the
+  // last-seen map under it; it sits exactly where panel 1 sits, so the pull-back turns it into the map's first card (a match cut)
+  var cw = E(pans, 'pan', 'left:' + (PPOS[1][0] - 235) + 'px;top:' + (PPOS[1][1] - 150) + 'px;width:470px;height:300px;--c:' + rgb(COL[1]) + ';--ct:' + rgb(cmix(COL[1], [16, 18, 26], .7)), '');
+  // its header goes out before card 1's header comes in (2.85-3.05 / 3.05-3.25 s), and its question bubble has card 1's exact size and place (no double image)
+  var CWH = [E(cw, '', 'left:22px;top:20px;width:20px;height:20px;border-radius:50%;background:' + rgb(COL[5]), ''), E(cw, 'ph', 'left:52px;top:18px;color:#fff;letter-spacing:.06em', 'FIND MY TAG'), E(cw, '', 'left:0;top:58px;width:470px;height:2px;background:rgba(255,255,255,.12)', '')];
+  var cq = bubble(cw);
+  var wm = svgBox(cw, 'left:20px;top:152px;overflow:hidden;border-radius:18px;background:#111620;border:2px solid rgba(255,255,255,.16)', 430, 130); streets(wm._s, 430, 130);
+  WIN_R = ringsOf(wm._s, 316, 78, rgb(COL[1]), 3); S(wm._s, 'circle', { cx: 316, cy: 78, r: 11, fill: rgb(COL[1]), stroke: '#fff', 'stroke-width': 3 });
+  var wl = E(cw, '', 'left:34px;top:164px;height:42px;border-radius:21px;background:#0c0e14;border:2px solid ' + rgb(COL[1]) + ';padding:0 16px;font:800 24px/38px var(--m);letter-spacing:.05em;color:#fff;white-space:nowrap', 'LAST SEEN 4 MIN AGO');
+  // ---- background (canvas, screen space): torch-like light wedges from the lit node, a faint grid with parallax, slow dust. No blur stacks.
+  var bg = $('bgc').getContext('2d');
+  // how far an element sits inside the safe zone (x 26-470, y 128-690): 1 inside, fading to 0 within 24 px beyond (no text under the side buttons or the caption overlay)
+  function safeK(l, r, tp, b){ return cl(1 - Math.max(0, r - 470, 26 - l, 128 - tp, b - 690) / 24); }
+  // labels only (tiles stay, they are background there): fade over 70 px toward the side buttons and the caption overlay, so a fast flight never pops one
+  function labelK(l, r, b){ return cl(1 - Math.max(0, r - 462, b - 640, 26 - l) / 70); }
+  function toScreen(p, cm){ return [X0 + (p[0] - cm[0]) * cm[2], Y0 + (p[1] - cm[1]) * cm[2]]; }
+  var WEDGE = [null, -135, -45, 0, 40, 140, 180];   // outward direction (deg) of each node's light wedge
+  function drawBg(t, cm, col, fo){
+    bg.setTransform(2, 0, 0, 2, 0, 0); bg.clearRect(0, 0, 540, 960);
+    // wedges: each node casts a soft coloured beam outward; the lit one strongest; dim and low contrast
+    for (var i = 1; i <= 6; i++){ var sp = toScreen(PT[i], cm), a = (.05 + .17 * fo[i]) * (1 + .06 * Math.sin(t * .9 + i)), L = 520, ang = WEDGE[i] * Math.PI / 180, wd = 26 * Math.PI / 180;
+      var g = bg.createRadialGradient(sp[0], sp[1], 10, sp[0], sp[1], L); g.addColorStop(0, rgb(COL[i], a)); g.addColorStop(.55, rgb(COL[i], a * .35)); g.addColorStop(1, rgb(COL[i], 0));
+      bg.fillStyle = g; bg.beginPath(); bg.moveTo(sp[0], sp[1]); bg.arc(sp[0], sp[1], L, ang - wd, ang + wd); bg.closePath(); bg.fill();
+      var g2 = bg.createRadialGradient(sp[0], sp[1], 0, sp[0], sp[1], 240 * Math.max(cm[2] * 2, .6)); g2.addColorStop(0, rgb(COL[i], a * .7)); g2.addColorStop(1, rgb(COL[i], 0)); bg.fillStyle = g2; bg.fillRect(0, 0, 540, 960); }
+    // grid: faint dots at the world's own spacing (moves with the map, a far layer at 0.6x)
+    var sp0 = 120 * cm[2] * .6, ox = (X0 - cm[0] * cm[2] * .6) % sp0, oy = (Y0 - cm[1] * cm[2] * .6) % sp0; if (ox < 0) ox += sp0; if (oy < 0) oy += sp0;
+    bg.fillStyle = 'rgba(255,255,255,.075)'; for (var gx = ox - sp0; gx < 560; gx += sp0) for (var gy = oy - sp0; gy < 980; gy += sp0){ if (gy < 268) continue; bg.fillRect(gx - 1, gy - 1, 2, 2); }
+    // dust: slow, continuous (sine drift, no wrap), tinted by the lit step
+    for (var n = 0; n < 72; n++){ var px = hh(n, 1) * 540, py = 270 + hh(n, 2) * 690, sx = px + Math.sin(t * (.25 + hh(n, 3) * .3) + n) * 26 - (cm[0] - 1140) * cm[2] * .15, sy = py + Math.cos(t * (.2 + hh(n, 4) * .3) + n * 2) * 22 - (cm[1] - 700) * cm[2] * .15;
+      sx = ((sx % 600) + 600) % 600 - 30; if (sy < 270 || sx < -10 || sx > 550) continue; var r = .7 + hh(n, 5) * 1.6; bg.fillStyle = rgb(cmix(col, [255, 255, 255], .4), .1 + .18 * hh(n, 6)); bg.beginPath(); bg.arc(sx, sy, r, 0, 6.283); bg.fill(); }
+  }
+  // ---- captions: word by word from the real voice (window.setVoice); the box comes with its first word; groups cross-fade (no instant swap)
+  var WORDS = [], GR = [], KEY = { tag: 1, bluetooth: 1, signal: 1, device: 1, devices: 1, locked: 1, servers: 1, map: 1, network: 1, million: 1, yes: 1, only: 1 }, capEls = [], capG = -1;
+  // the script itself (the config's voice.text): captions show its words WITH their marks ("One:", "in,", "text."), so every step number keeps its pause
+  var SCRIPT = 'Can a tag be found far from your phone? One: the tag sends a short Bluetooth signal. Two: any nearby Galaxy device with offline finding hears it. Three: it is locked, so only you can read it. Four: the servers get it, but cannot read it. Five: you open the map, and see where it was. Six: more than nine hundred million Galaxy devices form this network. So yes: other people\'s devices find it, and only you can read where.'.split(/\s+/);
+  var letters = function(x){ return String(x).toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  // a group is one sentence (critic, render 1: no lone words left in the box); a sentence of 10+ words splits once at its comma
+  function groups(){ GR = []; var cur = [];
+    WORDS.forEach(function(w, n){ cur.push(w); var endS = /[.?!]$/.test(w.w), last = n === WORDS.length - 1;
+      if (endS || last){ var ci = -1; if (cur.length >= 10) for (var q = 2; q < cur.length - 3; q++) if (/,$/.test(cur[q].w)) { ci = q; break; }
+        if (ci < 0 && cur.length >= 10 && cur[0] !== WORDS[0]) ci = Math.ceil(cur.length / 2) - 1;   // no comma: split at the middle (two lines of at most 6 words; the hook stays whole)
+        if (ci >= 0){ GR.push(cur.slice(0, ci + 1)); GR.push(cur.slice(ci + 1)); } else GR.push(cur); cur = []; } }); }
+  window.setVoice = function(v){ if (v && v.words && v.words.length){
+    var k = 0; WORDS = v.words.map(function(w){ var t = String(w.w).replace(/[‘’]/g, "'"), L = letters(t), shown = t;
+      for (var q = k; q < Math.min(SCRIPT.length, k + 3); q++) if (letters(SCRIPT[q]) === L){ shown = SCRIPT[q]; k = q + 1; break; }
+      return { w: shown, s: +w.s, e: +w.e }; });
+    groups(); capG = -1; } };
+  var capEl = $('cap');
+  function caption(t, col){
+    var gi = -1; for (var g = 0; g < GR.length; g++) if (GR[g][0].s - .05 <= t) gi = g;
+    if (gi < 0 && GR.length) gi = 0;
+    var lateHook = t >= 29.3; if (lateHook && GR.length) gi = 0;   // the last 0.3 s fades the hook plate back in (frame 0), the loop   // the hook line shows (dim) from frame 0
+    if (gi < 0){ capEl.style.opacity = 0; return; }
+    var gr = GR[gi], gEnd = gr[gr.length - 1].e, next = GR[gi + 1], fadeOut = next && !lateHook ? P(t, next[0].s - .12, next[0].s - .05) : 0;
+    if (gi !== capG){ capG = gi; capEl.innerHTML = '<span class="bx"></span>'; var bx = capEl.firstChild;
+      capEls = gr.map(function(w){ var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w.w; bx.appendChild(sp); return sp; });
+      // a group that needs two lines breaks at its middle (critic, render 2: never "Why do chatbots type like" / "this?"); one line stays one line
+      if (capEls.length > 1 && capEls[capEls.length - 1].offsetTop > capEls[0].offsetTop + 4) bx.insertBefore(document.createElement('br'), capEls[Math.ceil(capEls.length / 2)]); }
+    var first = gi === 0 ? 1 : P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
+    capEl.style.opacity = (first * last * (t < 29.3 ? 1 - io(P(t, 29.0, 29.3)) : io(P(t, 29.3, 29.6)))).toFixed(3);
+    gr.forEach(function(w, n){ var k = gi === 0 && n === 0 ? 1 : lateHook ? 0 : P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
+      s.style.opacity = (.28 + .72 * k).toFixed(3); s.style.color = key ? rgb(col) : '#fff'; });
+  }
+  // ---- sound: a swish on each move, a soft snap on arrival, blips as interface parts land, a tick per streamed token, a lift at the payoff
+  var cues = [], cue = function(o){ cues.push(o); };
+  for (var f = 1; f <= 8; f++){ cue({ t: AT[f] - .05, k: 'move', d: FLY[f] + .1, g: .28, dir: 1, x: 270, r: .25 }); cue({ t: AT[f] + FLY[f], k: 'snap', g: .26, p: 4 + f, x: 270, r: .2 }); }
+  for (var f2 = 2; f2 <= 6; f2++) cue({ t: AT[f2] - .5, k: 'blip', g: .12, p: 9 + f2, x: 300, r: .1 });
+  [[1, .7], [1, 1.7], [2, .5], [2, 1.0], [2, 1.3], [3, .9], [3, 1.6], [4, .8], [4, 1.7]].forEach(function(a, n){ cue({ t: AT[a[0]] + a[1], k: 'blip', g: .15, p: 3 + n, x: 160 + n * 30, r: .15 }); });
+  [0, .5, 1.0, 1.45, 1.9, 2.3, 2.7].forEach(function(tt, n){ cue({ t: .3 + tt, k: 'tick', g: .1, p: n + 2 }); });
+  cue({ t: 0, k: 'swell', d: 1.2, g: .26 }); cue({ t: AT[7] + .35, k: 'thud', g: .42, x: 270, r: .2 }); cue({ t: AT[7] + .4, k: 'resolve', notes: [50, 62, 66, 69, 74], g: .28 });
+  [[2, 1.3], [3, 1.15], [3, 1.6], [4, 1.0], [5, 1.3], [5, 2.1], [6, 1.3]].forEach(function(a, n){ cue({ t: AT[a[0]] + a[1], k: 'tick', g: .12, p: n }); });
+  window.CUES = { dur: DUR, cues: cues.sort(function(a, b){ return a.t - b.t; }), mix: { duck: 8 }, bed: { bpm: 100, origin: 0, gain: .2, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [45, 57, 64, 67, 71]] } };
+  window.COVER = .6; window.HOLDS = [[26.6, 29.0]];   // the payoff: the whole map held (the loop still turns, the camera drifts)
+  window.TRANSITIONS = [1, 2, 3, 4, 5, 6, 7, 8].map(function(f){ return [CAT[f], CAT[f] + FLY[f], f === 7 ? 'pullback' : 'fly']; });
+  // ---- one frame (a pure function of t)
+  function seek(t){
+    t = cl(t, 0, DUR); var cm = cam(t), W = $('world');
+    W.style.transform = 'translate(' + (X0 - cm[0] * cm[2]).toFixed(2) + 'px,' + (Y0 - cm[1] * cm[2]).toFixed(2) + 'px) scale(' + cm[2].toFixed(5) + ')';
+    // the colour of the moment: cross-fades during each move (never a jump)
+    var wide = cl((.29 - cm[2]) / .04);   // 1 on the whole-map shots: tags show, small in-map text fades (no type under 24 px at 1080)
+    // the colour of the moment turns round the colour wheel (hue, saturation, lightness), never through grey: an RGB mix of blue and amber passes a grey
+    // that reads as a hard hue cut (Output QA COLOUR); one flight = one turn
+    var col = COL[0]; for (var j = 1; j <= 7; j++){ var k = io(P(t, AT[j] + FLY[j] * .05, AT[j] + FLY[j] * .95)); if (k > 0) col = hslMix(j === 1 ? COL[0] : COL[j - 1], j === 7 ? COL[0] : COL[j], k); }
+    document.documentElement.style.setProperty('--c', rgb(col));
+    var tint = cmix([8, 9, 13], col, .11), tcs = 'rgb(' + tint.map(Math.round).join(',') + ')'; $('stage').style.background = tcs; document.body.style.background = tcs; document.documentElement.style.background = tcs;
+    $('top').style.background = 'linear-gradient(' + tcs + ' 0,' + tcs + ' 72%,' + rgb(tint, 0) + ' 100%)';
+    // pill: rolls to the new step (both texts move together; continuous)
+    var st = stepAt(t), ptxt = st === 0 || st === 8 ? 'HOW A TAG GETS FOUND' : st === 7 ? 'THE WHOLE RELAY' : '0' + st + ' / 06 · ' + NAME[st];
+    var prevTxt = st <= 1 ? 'HOW A TAG GETS FOUND' : st === 8 ? 'THE WHOLE RELAY' : st === 7 ? '06 / 06 · THE NETWORK' : '0' + (st - 1) + ' / 06 · ' + NAME[st - 1], sw = st === 0 ? 0 : AT[st] + FLY[st] * .25, rr = st === 0 ? 1 : out(P(t, sw, sw + .3));
+    var p0 = $('p0'), p1 = $('p1'); if (p0.textContent !== prevTxt) p0.textContent = prevTxt; if (p1.textContent !== ptxt) p1.textContent = ptxt;
+    p0.style.transform = 'translateY(' + (-rr * 28).toFixed(2) + 'px)'; p0.style.opacity = (1 - rr).toFixed(3); p1.style.transform = 'translateY(' + ((1 - rr) * 28).toFixed(2) + 'px)'; p1.style.opacity = rr.toFixed(3);
+    // nodes: lit one full, the rest 30 % (kept as context); the next one rises a little as its ghost appears
+    var fo = [0]; for (var i = 1; i <= 6; i++){ var f3 = focus(i, t), pre = 0; for (var q = 2; q <= 6; q++) if (q === i) pre = io(P(t, AT[q] - .5, AT[q] - .1)) * (1 - io(P(t, AT[q], AT[q] + FLY[q]))); fo.push(f3);
+      var ns = toScreen(PT[i], cm), nz = safeK(ns[0] - 105 * cm[2], ns[0] + 105 * cm[2], ns[1] - 116 * cm[2], ns[1] + 116 * cm[2]);
+      var op = .3 + .7 * Math.max(f3, pre * .55); NODE[i].style.opacity = op.toFixed(3); var lk = labelK(ns[0] - 105 * cm[2], ns[0] + 105 * cm[2], ns[1] + 116 * cm[2]); NODE[i]._tl.style.opacity = ((1 - wide) * lk).toFixed(3); NODE[i]._tn.style.opacity = lk.toFixed(3);
+      var rg = i >= 2 ? P(t, AT[i] - .5, AT[i] - .2) * (1 - P(t, AT[i] + .1, AT[i] + FLY[i])) : 0; if (i === 2) rg = Math.max(rg, P(t, 2.9, 3.2) * (1 - P(t, 3.7, 4.1)));   // the next card's ghost: a dashed ring round its tile (with the panel ghost where that is inside the safe zone)
+      NODE[i]._ring.style.opacity = (rg * .9).toFixed(3); NODE[i]._ring.style.transform = 'scale(' + (1.06 - .06 * rg).toFixed(4) + ')'; NODE[i].style.transform = 'scale(' + (1 + .04 * f3).toFixed(4) + ')'; }
+    // sub-nodes: dim context, a gentle bob (continuous), brighter next to the lit node
+    SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = .32 + .4 * f4; s.el.style.opacity = o.toFixed(3); s.sl.style.opacity = ((1 - wide) * labelK(sp2[0] - hw, sp2[0] + hw, sp2[1] + 32 * cm[2])).toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
+    // links: the one short draw (cause -> effect) just before the camera follows it, then it stays lit
+    LINKS.forEach(function(l){ var k = io(P(t, l.drawAt, l.drawAt + .4)); l.lit.setAttribute('stroke-dashoffset', (l.len * (1 - k)).toFixed(1)); l.lit.setAttribute('opacity', (k > 0 ? .55 + .45 * Math.max(fo[l.to], fo[l.from] * .6) : 0).toFixed(3)); if (l.head) l.head.setAttribute('opacity', (P(t, l.drawAt + .3, l.drawAt + .45)).toFixed(3)); });
+    // panels: ghost before the move, content builds from 0.15 s after the move starts (before the camera lands), out as the camera leaves
+    for (var pi = 1; pi <= 6; pi++){ var pin = AT[pi], pout = pi < 6 ? AT[pi + 1] : AT[7], kin = pi === 1 ? io(P(t, 2.85, 3.25)) : out(P(t, pin + (pi === 6 ? FLY[6] * .6 : .05), pin + (pi === 6 ? FLY[6] * .6 + .4 : .45))), kout = io(P(t, pout + .02, pout + .32)), kp = kin * (1 - kout);
+      var gk = P(t, pin - .5, pin - .2) * (1 - P(t, pin + .2, pin + .45)); if (pi === 1 || pi === 4 || pi === 5) gk = 0;
+      if (gk > 0){ var gp = PPOS[pi], g0 = toScreen([gp[0] - gp[2] / 2, gp[1] - gp[3] / 2], cm), g1 = toScreen([gp[0] + gp[2] / 2, gp[1] + gp[3] / 2], cm); gk *= safeK(g0[0], g1[0], g0[1], g1[1]); }
+      GH[pi].style.opacity = (gk * .8).toFixed(3); GH[pi].style.transform = 'scale(' + (.97 + .03 * gk).toFixed(4) + ')';
+      PAN[pi].style.opacity = cl(kp * 1.4).toFixed(3); PAN[pi].style.transform = pi === 1 && t < 4 ? 'none' : 'scale(' + (.94 + .06 * kp).toFixed(4) + ')'; PAN[pi].style.visibility = kp > 0 ? 'visible' : 'hidden';
+      if (kp > 0) X[pi](t - pin, t); }
+    // the opening window: the pin pulses, then it hands over to panel 1 during the pull-back (2.85-3.25 s); the last move (28.9-29.6 s) brings it back (the loop)
+    var cwo = t < 10 ? 1 - io(P(t, 2.85, 3.25)) : io(P(t, 29.05, 29.5)); cw.style.opacity = cwo.toFixed(3); cw.style.visibility = cwo > 0 ? 'visible' : 'hidden';
+    if (cwo > 0){ pulse(WIN_R, t, 16, 56, 1); wl.style.opacity = '1'; wm.style.opacity = '1';
+      var hk0 = t < 10 ? 1 - io(P(t, 2.85, 3.05)) : cwo; CWH.forEach(function(e){ e.style.opacity = hk0.toFixed(3); }); cq.style.opacity = '1'; }
+    P1H.style.opacity = t < 4 ? io(P(t, 3.05, 3.25)).toFixed(3) : '1';
+    // tags (screen space) on the wide shots, so every node's name reads at phone size on the whole map
+    for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
+      var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
+    // banner: the payoff sweeps in across the top third and holds
+    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = (cl(bk * 1.6) * (1 - io(P(t, 29.0, 29.3)))).toFixed(3); $('banner').style.transform = 'translateX(' + ((1 - bk) * -40).toFixed(1) + 'px) rotate(-3deg) scale(' + (.96 + .04 * bk).toFixed(4) + ')';   // fades and settles in whole (critic, render 2: no bare band edge at the left)
+    drawBg(t, cm, col, fo); caption(t, col);
+  }
+  window.seek = seek;
+  document.fonts.load("900 41px 'Inter Tight'").then(function(){ return document.fonts.load("700 26px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

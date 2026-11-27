@@ -185,6 +185,42 @@ research pulls fresh news (last 7 days, primary sources, each option names its d
 
 Every tech fact below is read on the maker's own page tonight. Brands may be named as text (rules-tech.md).
 
+### Sat 28 Nov (tech)
+Researched 28 Nov 2026 (Sonnet builder). The last-7-days pool is thin: only Samsung's and Google's own feeds (news.samsung.com/global/feed, blog.google/rss) opened from this container, so every option below is read in the maker's feed text (title, date, body). Apple's feed stopped at 19 Nov; Bluetooth SIG's newest post is 5 Nov; other maker hosts are blocked here. Yesterday (27 Nov) was AI / chatbots, laptop, xray: so no AI option leads, and format must not be xray today. One phone option in the list: none.
+**T28-1 PICK: a lost tag can be found with no phone near it: the relay chain (Galaxy SmartTag3, Galaxy Find Network)**
+- Date and note: (Samsung Newsroom, 23 Nov 2026) KEEP-candidate, process topic: a signal that hops through steps nobody sees
+- Hook: "Can a tag with no internet be found?" Tension: the tag has no SIM and no GPS, yet the owner sees it on a map.
+- Learn: the tag only sends short Bluetooth signals; any nearby Galaxy device that has offline finding on picks one up and passes it on; the owner opens the map. The location is encrypted so only the owner can read it.
+- Fact 1: "Nearby Galaxy devices that have enabled offline finding detect BLE signals periodically transmitted by the tag and relay them to SmartThings servers. More than 900 million participating Galaxy devices worldwide form the Galaxy Find Network." https://news.samsung.com/global/the-technology-behind-more-precise-finding-with-galaxy-smarttag3-and-smartthings (23 Nov 2026)
+- Fact 2: "Location information is encrypted using a unique private key for each device. Only the tag's owner can access its location — Samsung account servers and the devices that relay the signals cannot view this information." Location History keeps up to seven days (same page).
+- Fit: 2.5D map: tag (hub) -> a passing device -> servers -> owner's map; panels 1-3 words; the opening is real life (a map app showing a tag dot "Last seen"). Not a phone topic. Not a repeat of the held tag-sounding reel (that was Channel Sounding distance; this is the relay). Say "Samsung's Galaxy SmartTag3"; no comparison with other trackers.
+**T28-2: how a screen draws 1,100 pictures a second (Samsung Odyssey G6)**
+- Date and note: (23 Nov 2026) T26N-2, re-read 28 Nov: same
+- Hook: "How many pictures can a screen draw in one second?"
+- Learn: a 1,100 Hz screen redraws every 0.9 ms; Dual Mode trades resolution for speed.
+- Weakness: close to the screen-120hz reel, a gaming niche.
+- Fact 1: 27-inch G60H, "world's first gaming monitor to support a refresh rate of up to 1,100Hz in HD"; Dual Mode HD up to 1,100Hz or QHD (2,560 x 1,440) up to 600Hz; 1ms GtG. https://news.samsung.com/global/samsung-launches-odyssey-g6-the-worlds-first-1100hz-gaming-monitor
+- Fact 2: Odyssey Clear Motion reduces motion blur; DisplayPort 2.1 and two HDMI 2.1; availability and price vary by market; macOS does not support Dual Mode or 600Hz. Maths (ours): 1,100 Hz is one picture every 0.91 ms.
+- Fit: GPU -> cable -> panel steps; weak: close to the screen-120hz reel (17 Nov), a gaming niche.
+**T28-3: Search can now read your Wallet and Drive when you opt in (Google Search Personal Intelligence)**
+- Date and note: (Google blog, 23 Nov 2026) AI-adjacent: weak after yesterday
+- Hook: "Your Google Search can now read your own files, if you let it."
+- Learn: opt-in links of Wallet, Drive and the Gemini app to Search's AI Mode.
+- Weakness: AI-adjacent after yesterday's AI reel; page body blocked here.
+- Fact 1: users can "securely opt in" to connect Google Wallet, Drive and the Gemini app to Personal Intelligence in AI Mode. https://blog.google/products-and-platforms/products/search/google-search-personal-intelligence-apps/ Only the feed summary was read; the page body is blocked here, so re-read before use.
+**T28-4: a hard test for AI answers (Humanity's First Exam, Google DeepMind and Kaggle)**
+- Date and note: (24 Nov 2026) AI, weak after yesterday
+- Hook: "Google built an exam AI answers can fail."
+- Learn: a benchmark and hackathon to test how reliable chatbots are.
+- Weakness: nothing a viewer can picture; AI again.
+- Fact 1: "a Kaggle hackathon to test LLM reliability across 544 prompts" (feed summary only). https://blog.google/innovation-and-ai/models-and-research/google-deepmind/humanitys-first-exam/ Nothing a viewer can picture; lowest rank.
+**T28-5: Google Photos holiday updates (five new tools)**
+- Date and note: (23 Nov 2026) software, no gadget
+- Hook: "Five new tricks for your holiday photos."
+- Learn: Gemini for video tasks, people filters on shared albums.
+- Weakness: software menu changes, no gadget, no mechanism to draw.
+- Fact 1: five updates: Gemini for video tasks and filtering shared albums by people (feed summary only). https://blog.google/products-and-platforms/products/photos/google-photo-tools-holiday-season-2026/ No mechanism to draw; lowest rank.
+
 ### FRESH, researched 26 Nov 2026 (news from 19-25 Nov, primary pages read 26 Nov; all global; N1-N4)
 Only one phone-category option (T26N-5) and battery cycles (25 Nov, a phone) was yesterday, so it is the weakest.
 **T26N-1 PICK your tag can now tell which way your keys are, from 60 m (Galaxy SmartTag3, Bluetooth 6.0 Channel Sounding)** (news 23 Nov 2026)

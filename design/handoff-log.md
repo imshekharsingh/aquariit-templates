@@ -1326,3 +1326,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-28nov-popover · Web 28 Nov: showreel-50-popover (a menu cut off by its card, fixed with popover)
 - Done: wrote the 28 Nov web options in the bank (W28-1 to W28-5) and re-read W27-2; Fable kept W28-1 first (pick-log); built the reel from the gold start with the KM.split pair (BEFORE sliced menu, AFTER popover), direction card, review file, captions entry (postOn 2026-11-28, 19:00); all local stills lines pass (subject fill 50%, safe zone ok, continuity 43%, element sound 100%).
 - Left: stills check, preflight-all, render 1, Output QA, critic.
+## 2026-11-28 · claude/daily-28nov-launch · Daily studio run 28 Nov: feedback, audit card, builders started
+- Done: Owner answers read (0 answers, 0 new feedback); audit card sent (web below usual and in ALARM, tech fine, Turns Out low); no options for 28 Nov in the topic bank, so each builder researches fresh options and runs the Fable pick. Web builder (session_01AYvWRjJfUMBr1p7gctqGLW, post 19:00 IST) and tech builder (session_01AYvWRhzdyLvkLqFNWEBAnK, post 20:30 IST, from showreel-tech-ai-words) started with the full brief.
+- Left: both builders own their reel to READY (stills check, max 2 renders, Output QA, critic). Turns Out has its own task.

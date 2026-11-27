@@ -3256,5 +3256,50 @@
    "payoff": "fact",
    "source": "plan"
   }
+ },
+ "showreel-tech-tag-relay": {
+  "channel": "tech",
+  "postOn": "2026-11-28",
+  "postAt": "20:30",
+  "format": "quickmyth",
+  "device": "home",
+  "aiLabel": false,
+  "concept": "How a Bluetooth tag is found far from the owner's phone, as a 2.5D system map: the tag pings, a nearby Galaxy device with offline finding hears it, the place is locked so only the owner can read it, the servers pass it on but cannot read it, the owner opens the map, and the 900 million+ device network behind it. Payoff: only you can read it. Samsung Newsroom 23 Nov 2026 (Galaxy SmartTag3, Galaxy Find Network).",
+  "experiment": {
+   "id": "tech-2d5-map",
+   "change": "second real 2.5D map reel: the loop-home ending (the last move returns to frame 0's framing) and a find-my-tag window as the real-life opening",
+   "vs": "median"
+  },
+  "caption": "Can a tag be found far from your phone? 📍 Yes. Here is how, step by step.\n\n1. The tag sends a short Bluetooth signal, every so often.\n2. A nearby Galaxy device with offline finding on hears it.\n3. The place is locked with a key only you hold.\n4. The servers get it but cannot read it.\n5. You open the map and see where it was (up to 7 days back).\n6. More than 900 million Galaxy devices make up the network that does this.\n\nThe useful bit: your tag does not need your phone nearby, and the devices that help cannot see where it is.\n\nWho would you tag in a lost-keys story? 👇\n\nSource: Samsung Newsroom, \"The Technology Behind More Precise Finding With Galaxy SmartTag3 and SmartThings\" (23 Nov 2026). Offline finding needs the feature switched on. The map, the 4-minute label and the dots are examples.",
+  "keywords": [
+   "how tracker tags work",
+   "how to find lost keys",
+   "bluetooth tag explained",
+   "Galaxy SmartTag3",
+   "offline finding",
+   "find my tag without phone",
+   "how item trackers work"
+  ],
+  "hashtags": [
+   "#tech",
+   "#smarttag",
+   "#bluetooth",
+   "#techexplained",
+   "#gadgets"
+  ],
+  "style": {
+   "lengthS": 29.6,
+   "wordsPerS": 2.6,
+   "shotChanges": 8,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "system map",
+   "firstSecondTension": "yes",
+   "payoff": "fact",
+   "source": "plan"
+  },
+  "refs": [
+   "R-ref 27 Nov 2026: 2.5D system map"
+  ]
  }
 }
