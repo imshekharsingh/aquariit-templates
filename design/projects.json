@@ -918,6 +918,45 @@
         }
       ],
       "next": null
+    },
+    {
+      "id": "web-split",
+      "name": "Web kit: before/after side by side",
+      "account": "other",
+      "stage": "done",
+      "line": "Live in the kit: a before/after piece that runs the broken and the fixed copy side by side, in step; the next web builder can use it.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T21:25:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T21:25:00Z",
+          "stage": "done",
+          "line": "Live in the kit: a before/after piece that runs the broken and the fixed copy side by side, in step; the next web builder can use it."
+        }
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Study clip",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     }
   ]
 }
