@@ -3214,5 +3214,47 @@
    "payoff": "fact",
    "source": "plan"
   }
+ },
+ "showreel-50-popover": {
+  "postOn": "2026-11-28",
+  "postAt": "19:00",
+  "caption": "Why is your dropdown menu cut off? 👆 The menu sits inside a card with overflow: hidden, and that card slices anything that sticks out past its edge. Half the items are gone, and no z-index can bring them back.\n\nThe fix: make the menu a popover. Put the popover attribute on the menu and a popovertarget on the button that opens it:\n\n<button popovertarget=\"menu\">Share</button>\n<div id=\"menu\" popover>…</div>\n\nA popover opens in the top layer, above everything on the page, so no parent's overflow can clip it. Chrome 114, Firefox 125, Safari 17.\n\n💾 Save this for your next dropdown, and send it to the friend who is still fighting z-index.",
+  "keywords": [
+   "css popover attribute",
+   "dropdown menu cut off",
+   "overflow hidden clipping",
+   "popovertarget html",
+   "top layer css",
+   "html popover tutorial",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#html",
+   "#webdevelopment",
+   "#uidesign",
+   "#frontenddev"
+  ],
+  "channel": "web",
+  "concept": "a Share dropdown clipped by its card's overflow: hidden (2 of 4 items) against the same menu as a popover in the top layer (all 4), BEFORE and AFTER side by side in step with KM.split",
+  "about": "28 Nov: web a NEW topic type, a bug visible in the first second (W28-1, Fable pick): the menu is sliced by its own card in frame 0, and the working one sits next to it (rules-web.md 14, 15, 20, 21); all engines (popover: Chrome 114, Firefox 125, Safari 17)",
+  "aiLabel": false,
+  "experiment": {
+   "id": "web-clipped-layer",
+   "change": "a new topic type, a clipped layer: the broken menu and the fixed one run side by side from frame 0 (KM.split), counted 2 of 4 against 4 of 4; black look with the mint accent",
+   "vs": "median"
+  },
+  "palette": "black",
+  "style": {
+   "lengthS": 15,
+   "wordsPerS": 2.7,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "two cards side by side, the same Share menu",
+   "firstSecondTension": "yes",
+   "payoff": "fact",
+   "source": "plan"
+  }
  }
 }

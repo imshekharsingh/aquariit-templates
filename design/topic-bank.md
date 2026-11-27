@@ -57,6 +57,49 @@ number that changes when the voice says it, amber for the problem and cyan for t
 - Fact 2: support: Chrome 75, Firefox 103, Safari 15 (same page).
 - Fit: black look, one phone, a PHOTOS SEEN meter. Weakness: close to showreel-33 (a carousel), so use last.
 
+### Sat 28 Nov
+(researched 28 Nov by the web builder; facts read in MDN content source on raw.githubusercontent.com and browser support in browser-compat-data, 28 Nov. Bug type: visible in the first second, not a rule explained in words; E23, rules-web.md 14-15.)
+
+**W28-1 PICK: this menu is cut off by its own card (popover)**
+- Hook: "Why does your dropdown get cut off?" Tension: a menu inside a card with `overflow: hidden` is sliced at the card edge; no z-index fixes it.
+- Learn: `<div popover>` plus `<button popovertarget>`: the open menu goes to the top layer and ignores the parent's `overflow`.
+- Fact 1: open popovers "appear above all other elements in the top layer, and won't be influenced by parent elements' position or overflow styling". https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/popover
+- Fact 2: support (browser-compat-data, api.HTMLElement.popover): Chrome 114, Firefox 125, Safari 17 (same page, "Browser compatibility").
+- Fit: black look, KM.split: BROKEN card slices the menu at its edge (items 3-4 missing, a hard line through the text), FIXED card shows all 4 items. A number counts ITEMS SHOWN 2 of 4 -> 4 of 4. Prop: a sliced menu like a bread loaf cut at the card edge.
+- Why pick: the bug is a cut-off menu, visible on mute in frame 0, no explanation needed; all engines; new topic type (a clipped layer) after six tap/scroll/form fixes.
+
+**W28-2 PICK: the toast snaps in and vanishes (@starting-style)**
+- Hook: "Why does your popup just appear?" Tension: a CSS transition does nothing on an element's first style, or when `display` changes from none, so the popup blinks in with no motion.
+- Learn: `@starting-style { opacity: 0; transform: translateY(12px) }` gives the transition a start; the popup eases in.
+- Fact 1: transitions "are by default not triggered on an element's initial style update, or when its display type changes from none"; `@starting-style` provides the starting values. https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style
+- Fact 2: support: Chrome 117, Firefox 129, Safari 17.5 (css.at-rules.starting-style).
+- Fit: BEFORE pane pops in at full strength in one frame (a hard flash), AFTER pane rises and fades over 0.4 s. Motion is the point (rule 11), like the wiggle family. Weakness: a pop-in is only a few frames; the demo repeats the popup 3 times to count POP-INS 3.
+
+**W28-3: the image loads and shoves the text down (aspect-ratio)**
+- Hook: "Why does the button jump when the photo loads?" Tension: an image with no reserved space is 0 px tall until it arrives, then pushes everything down.
+- Learn: `img { aspect-ratio: 16 / 9; width: 100%; }` reserves the space before the photo loads.
+- Fact 1: `aspect-ratio` "allows you to define the desired width-to-height ratio of an element's box". https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/aspect-ratio
+- Fact 2: support: Chrome 88, Firefox 89, Safari 15 (same page).
+- Fit: KM.split is built for exactly this (study clip scripts/explainer/demo/split.html), so the risk is a copy of the study clip's look; use a feed card, not the study clip's photo. Weakness: close to fontswap / form shift reels (layout shift again).
+
+**W28-4: back to top teleports (scroll-behavior: smooth)**
+- Hook: "Why does Back to top teleport?" Tension: an anchor or Back-to-top link jumps in one frame, the eye loses where it is.
+- Learn: `html { scroll-behavior: smooth; }` glides to the target.
+- Fact 1: `smooth` scrolls "in a smooth fashion using a user-agent-defined easing function over a user-agent-defined period of time"; the default `auto` scrolls instantly. https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-behavior
+- Fact 2: support: Chrome 61, Firefox 36, Safari 15.4 (same page).
+- Fit: a long list on the one phone, a POSITION meter that jumps 0 to 100 in one frame vs a glide. Weakness: anchor-link reel (showreel-25-anchor) is close; and the user's own prefers-reduced-motion should be named in the caption.
+
+**W28-5: four accordion rows open and push the page away (details name)**
+- Hook: "Why does your FAQ push everything off screen?" Tension: every open `<details>` stays open and the page grows under the thumb.
+- Learn: give the rows the same `name`: `<details name="faq">`; opening one closes the others, no JavaScript.
+- Fact 1: "give multiple `<details>` elements the same `name` value to group them. Only one of the grouped `<details>` elements can be open at a time". https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details
+- Fact 2: support: Chrome 120, Firefox 130, Safari 17.2 (html.elements.details.name).
+- Fit: KM.split with an OPEN ROWS counter 4 -> 1. Weakness: showreel-31-menus already did an accordion row (grid-template-rows), so the topic is an accordion again.
+
+**KEEP W27-2 (leftover, re-read 28 Nov): the hidden page behind the popup still takes taps (inert)**
+- Facts as in the Thu 27 Nov entry. Support row re-read 28 Nov: `inert` is Chrome 102, Firefox 112, Safari 15.5 (browser-compat-data, api.HTMLElement.inert; the attribute row follows it). MDN text unchanged: inert content cannot be clicked or focused, a modal `<dialog>` from `showModal()` escapes inertness.
+- Same weakness as before: the keyboard focus dot is faint on a phone; backup only.
+
 ### Wed 26 Nov
 **W26-1 PICK: CSS can select a parent (:has)**
 - Hook: "CSS can't select a parent. It can." Tension: a 20-year-old rule that stopped being true.
