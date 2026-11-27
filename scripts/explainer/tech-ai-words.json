@@ -26,7 +26,19 @@
    24.9
   ]
  },
- "qa": {},
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 25.0,
+    "to": 29.6,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the payoff banner SHORTER = FASTER is a tilted band that runs edge to edge across the top third on purpose (the reference's kinetic banner)"
+   }
+  ]
+ },
  "caption": "Why does AI type its answer word by word? 💬 It is not an effect: that is how it works.\n\n1. Your question goes in as text.\n2. It is cut into tokens (pieces of words).\n3. The model reads every token so far.\n4. It predicts one next token.\n5. That token is added on, and the loop runs again.\n6. Each new token streams to your screen as it is made.\n\nThe useful bit: generating tokens is the slow step, so asking for a shorter answer means fewer loops and a faster reply.\n\nWould you rather have a short answer fast, or a long one slow?\n\nSources: Anthropic docs (glossary: next-token prediction, tokens; streaming messages), OpenAI latency optimization guide (output tokens drive latency). The token split and the odds in the video are examples.",
  "keywords": [
   "why AI types word by word",

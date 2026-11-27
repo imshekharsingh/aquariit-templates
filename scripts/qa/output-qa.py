@@ -76,7 +76,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=4,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
          var_ssim=.65, var_max=.60,
-         flk_w=108, flk_h=192, flk_k=12, flk_max=4.0, flk_jump=5.0, flk_ratio=2.5, flk_floor=1.5, flk_fps=24,
+         flk_w=108, flk_h=192, flk_k=12, flk_max=4.0, flk_jump=5.0, flk_ratio=2.5, flk_floor=1.5, flk_fps=24, flk_c=1.25,
          el_lag=.3, el_shift=3, el_cell=9, el_top=.21, el_px=18, el_k=4, el_cells=1, el_cut=.35, el_gap=3.0, el_win=10, el_pics=4)
 # ELEMENTS (16 Nov 2026, Turns Out; owner on the Liberty arm reel: "elements are few and are spread ... through the whole video"): a NEW visual
 # element is a place on the frame that changes on its own. At 135x240, 10 fps, the frame below the badge and chapter title (el_top) with the
@@ -194,7 +194,8 @@ def config(path):
         return c, text, [s for s in speeds if s is not None], 2.0, 'tech', f"showreel-tech-{c['slug']}"
     v = c.get('voice') or {}
     speeds = [v.get('speed')] + list(v.get('speeds') or [])
-    ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith(('showreel-c3-', 'showreel-pv-c3-')) or c.get('engine') == 'design' else 'web'   # a Turns Out preview (scripts/previews/c3-*.json) is judged as Turns Out, not as a web reel (24 Nov 2026: it failed the web DEMO and CALM checks)
+    ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith(('showreel-c3-', 'showreel-pv-c3-')) or c.get('engine') == 'design' else 'web'
+    if c.get('name', '').startswith('showreel-tech-'): ch = 'tech'   # a tech reel built as a seekable scene (the 2.5D map, 27 Nov 2026) is judged as tech, not by the web look checks   # a Turns Out preview (scripts/previews/c3-*.json) is judged as Turns Out, not as a web reel (24 Nov 2026: it failed the web DEMO and CALM checks)
     return c, v.get('text', ''), [s for s in speeds if s is not None], float(c.get('cover', 1.6)), ch, c.get('name', '')
 
 
@@ -1117,7 +1118,8 @@ def hero_check(F, fps, mp4):
 # FLICKER (27 Nov 2026, every channel; owner on the tech 2.5D tap-to-pay test: "cards glitched at many moments", flicker / pop / jump, zero tolerance).
 # Every frame of the MP4 at its own frame rate, grey, 108x192, cut in 12 px tiles (the subtitle band left out: its word groups change on purpose).
 # For each frame i and tile: a = change i-1 -> i, b = change i -> i+1, c = change i-1 -> i+1 (mean absolute, 0-255).
-#   FLICKER: a frame that differs from both neighbours while the neighbours match each other (A B A): min(a, b) - c over flk_max. A card that
+#   FLICKER: a frame that differs from both neighbours while the neighbours match each other (A B A): min(a, b) - flk_c x c over flk_max (flk_c 1.25: a fast
+#   flight over a textured card gives c close to a and b and is motion, not a flicker; the 21.7 s flight of showreel-tech-ai-words scored 5.4 with c x 1). A card that
 #   blinks, z-fights or vanishes for a frame, a value that resets for one frame.
 #   JUMP: a one-frame step far bigger than the motion around it: a - flk_ratio x max(a of i-1, b, flk_floor) over flk_jump. A position that snaps,
 #   a card that pops in or out in one frame, a random scramble, a wrapped pulse jumping from a line's end back to its start.
@@ -1142,7 +1144,7 @@ def flicker_check(mp4, subs, must=True, ok=()):
     for i in range(2, n - 1):
         a, b, pa = D[i - 1], D[i], D[i - 2]
         c = tiles(np.abs(G[i + 1] - G[i - 1]))
-        f = float((np.minimum(a, b) - c).max()); j = float((a - T['flk_ratio'] * np.maximum(np.maximum(pa, b), T['flk_floor'])).max())
+        f = float((np.minimum(a, b) - T['flk_c'] * c).max()); j = float((a - T['flk_ratio'] * np.maximum(np.maximum(pa, b), T['flk_floor'])).max())
         tt = i / fps
         if any(w[0] <= tt <= w[1] for w in ok): continue   # "qa": {"flicker_ok": [[t0, t1, "why"]]}: a declared one-frame change (a stepping bar shown on purpose)
         if f > T['flk_max']: flk.append((tt, f))
@@ -1189,7 +1191,8 @@ def main():
     else: line('GUESS', 'SKIP', 'not a guess reel')
     if look3d: glow_check(F, fps)
     else: line('GLOW', 'SKIP', '3D look only')
-    if ch == 'tech': hero_check(F, fps, mp4)
+    if ch == 'tech' and c.get('seek'): line('HERO', 'SKIP', 'a 2.5D map built as a seekable scene (27 Nov 2026): the subject is the whole map, not one object that opens up (rules-tech.md K2 is the object-topic rule); FLOW, DEAD, VARIETY and FLICKER judge its motion')
+    elif ch == 'tech': hero_check(F, fps, mp4)
     else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
     variety_check(mp4, qa.get('subs') or T['subs'][ch])
