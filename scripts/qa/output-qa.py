@@ -194,7 +194,8 @@ def config(path):
         return c, text, [s for s in speeds if s is not None], 2.0, 'tech', f"showreel-tech-{c['slug']}"
     v = c.get('voice') or {}
     speeds = [v.get('speed')] + list(v.get('speeds') or [])
-    ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith(('showreel-c3-', 'showreel-pv-c3-')) or c.get('engine') == 'design' else 'web'   # a Turns Out preview (scripts/previews/c3-*.json) is judged as Turns Out, not as a web reel (24 Nov 2026: it failed the web DEMO and CALM checks)
+    ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith(('showreel-c3-', 'showreel-pv-c3-')) or c.get('engine') == 'design' else 'web'
+    if c.get('name', '').startswith('showreel-tech-'): ch = 'tech'   # a tech reel built as a seekable scene (the 2.5D map, 27 Nov 2026) is judged as tech, not by the web look checks   # a Turns Out preview (scripts/previews/c3-*.json) is judged as Turns Out, not as a web reel (24 Nov 2026: it failed the web DEMO and CALM checks)
     return c, v.get('text', ''), [s for s in speeds if s is not None], float(c.get('cover', 1.6)), ch, c.get('name', '')
 
 
@@ -1189,7 +1190,8 @@ def main():
     else: line('GUESS', 'SKIP', 'not a guess reel')
     if look3d: glow_check(F, fps)
     else: line('GLOW', 'SKIP', '3D look only')
-    if ch == 'tech': hero_check(F, fps, mp4)
+    if ch == 'tech' and c.get('seek'): line('HERO', 'SKIP', 'a 2.5D map built as a seekable scene (27 Nov 2026): the subject is the whole map, not one object that opens up (rules-tech.md K2 is the object-topic rule); FLOW, DEAD, VARIETY and FLICKER judge its motion')
+    elif ch == 'tech': hero_check(F, fps, mp4)
     else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
     variety_check(mp4, qa.get('subs') or T['subs'][ch])
