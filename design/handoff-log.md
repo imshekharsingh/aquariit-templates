@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-probe-posted-cards · owner chat: Ready box fix proven for tech; probe task 21 queued
+- App probe after the fix: the tech card opens the tech tab with the tech reel under Ready to post (PASS for the owner's case). Two probe "errors" are the probe's own mistake (posted cards open the reel page); handoff task 21 fixes the probe.
+
 ## 2026-11-27 · claude/option1-app-to-handoff · owner chat: all app work moves to the other account
 - Owner chose option 1: every app change goes to the other account; this account keeps daily reels, critics and reminders. Done = App probe PASS on the live app. CLAUDE.md Sessions line and a rule in design/handoff.md.
 
