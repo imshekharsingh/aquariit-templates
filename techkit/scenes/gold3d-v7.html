@@ -71,10 +71,10 @@ const fLines = [[0, WALL_Z - .65, BW_ + .2, .03], [BW_ / 2 + .1, WALL_Z - .35, .
 // pillars: the hub and the New tile stand on them
 const pillar = (h, w) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(w, w * 1.15, h, 24), frameMat); m.position.y = -h / 2; return m; };
 const hub = L.productBlock(THREE, { w: 2.6, d: 1.5, h: 1.05, color: 0x4a14c8, name: 'HUB', led: true }); hub.add(pillar(HUB_P.y, .32)); hub.position.copy(HUB_P); S.scene.add(hub);
-hub.traverse((m) => { if (m.isMesh && m.material && m.material.roughness != null) { m.material.roughness = Math.max(m.material.roughness, .5); if (m.material.clearcoat) { m.material.clearcoat *= .4; m.material.clearcoatRoughness = Math.max(m.material.clearcoatRoughness || 0, .6); } } });   // a satin hub: its bevels no longer glint for one frame as it falls
 // fix 12 (U11): 11 port LEDs on the hub's face light as the green cables plug in
 const leds = Array.from({ length: 11 }, (_, k) => { const m = new THREE.Mesh(new THREE.BoxGeometry(.11, .05, .02), new THREE.MeshBasicMaterial({ color: new THREE.Color(.05, .12, .08), toneMapped: false })); m.position.set(-1.0 + k * .2, .33, .76); hub.add(m); return m; });
 const newTool = L.appTile(THREE, { size: 1.2, color: 0x00c2a8, glyph: L.appGlyphs.spark, name: 'New', label: 'inside' }); newTool.add(pillar(NEW_P[1], .14)); newTool.position.set(...NEW_P); S.scene.add(newTool);
+[hub, newTool, ...apps, ...tools].forEach((g) => g.traverse((m) => { if (m.isMesh && m.material && m.material.roughness != null) { m.material.roughness = Math.max(m.material.roughness, .5); if (m.material.clearcoat) { m.material.clearcoat *= .4; m.material.clearcoatRoughness = Math.max(m.material.clearcoatRoughness || 0, .6); } } }));   // satin finishes: bevels no longer glint for one frame as things move
 
 // ---------- fix 5 / 9 (U5): the floor grid draws outward from Notes; at the hub's landing a ring runs across it ----------
 const FU = { uR: { value: 0 }, uC: { value: V(AX(0), 0, 2) }, uW: { value: 0 }, uHC: { value: V(HUB_P.x, 0, HUB_P.z) } };
@@ -220,7 +220,7 @@ function frame(t) {
   // tools (fix 2): one flow along the S path, each landing against the one before with a squash, a contact flash and a nudge
   flash.visible = false; let flashK = 0;
   tools.forEach((m, j) => { const o = ORDER.indexOf(j), t0 = T_IN + o * STEP, u = prog(t, t0, t0 + .32), home = V(TX(j), TY(j), WALL_Z);
-    const pj = o > 0 ? ORDER[o - 1] : -1, from = pj >= 0 ? V(TX(pj), TY(pj) + .5, WALL_Z - .55) : V(TX(j), TY(j) + 1.2, WALL_Z - .4);
+    const pj = o > 0 ? ORDER[o - 1] : -1, from = pj >= 0 ? V(TX(pj), TY(pj) + .5, WALL_Z + .7) : V(TX(j), TY(j) + 1.2, WALL_Z + .7);   // from just in front of the tile before (it came from behind the panel and popped into view)
     m.visible = u > .001; m.position.copy(from).lerp(home, eback(u, 1.3)); m.rotation.set(0, 0, 0);
     const sq = pulse(t, t0 + .32, .05) * .05; let sc = (.06 + .94 * eout(u));   // grows from a speck behind the tile before it (no half-size pop) m.scale.set(sc * (1 + sq), sc * (1 - sq), sc);
     if (u >= 1) { const nx = ORDER[o + 1], nudge = nx !== undefined ? pulse(t, T_IN + (o + 1) * STEP + .32, .08) * .03 : 0;
@@ -247,7 +247,7 @@ function frame(t) {
   const sp = t > BREAK && t < BREAK + .25 ? 1 - (t - BREAK) / .25 : 0; spark.intensity = 6 * sp; sparkDot.visible = sp > .02; sparkDot.scale.setScalar(.3 + .7 * sp);   // fades with the spark (no 40 Hz blink)
   if (pB) { spark.position.copy(pB.userData.at).add(V(0, .05, .1)); sparkDot.position.copy(spark.position); }
   // the hub: big moment 3, opaque from its first frame
-  W3D.enter(hub, 'slam', prog(t, HUB_IN, HUB_IN + .85), { amp: .5 }); if (prog(t, HUB_IN, HUB_IN + .85) >= 1) hub.position.y = HUB_P.y + Math.sin(t * 1.1) * .02 * sm(prog(t, HUB_IN + .85, HUB_IN + 1.4));
+  W3D.enter(hub, 'slam', prog(t, HUB_IN, HUB_IN + .85), { amp: .5, grow: .25 }); if (prog(t, HUB_IN, HUB_IN + .85) >= 1) hub.position.y = HUB_P.y + Math.sin(t * 1.1) * .02 * sm(prog(t, HUB_IN + .85, HUB_IN + 1.4));
   hubW.forEach((q) => { const s0 = hubT(q.k); q.w.reveal(ease(prog(t, s0, s0 + .45)));
     const gs = prog(t, C.eleven + .4 + q.k * .03, C.eleven + 1.4 + q.k * .03);   // fix 12 (U8): the green sweep along the 11, the before/after rhyme
     q.w.pulse(Math.max(prog(t, s0 + .45, s0 + .8), gs * .9, prog(t, PAY + 1.6 + q.k * .03, PAY + 2.0 + q.k * .03)), t, (gs > 0 && gs < 1) || prog(t, PAY + 1.6, PAY + 2.4) > 0 ? .45 : 1); });
