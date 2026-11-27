@@ -248,7 +248,12 @@
     ],
     "why": "a sample in one full-bleed world"
    }
-  ]
+  ],
+  "subs": [
+   0.09,
+   0.22
+  ],
+  "subs_why": "v7 has its subtitles at the top (y 190-400 of 1920), not in the tech default band; the checks leave this band out (its words change on purpose)"
  },
  "say": {},
  "look": "3d"

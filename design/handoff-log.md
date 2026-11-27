@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 15:34 IST · claude/3d-kit-v7-r3 · other account: task 10, v7 render 3 build (no render yet)
+- Done: techkit/scenes/gold3d-v7.html: the plan critic's 7 changes and the no-glitch fixes; techkit/lib3d.js headline (fades, pill), numbers (letter fades, rolling tens), slam tilt/grow; techkit/world3d.js captions scrimRGB/scrimA/handles, sky colours; techreel/topics/gold3d-v7.json qa.subs (subtitles at the top).
+- Left: the last glitch check, then ONE render 3, Output QA, "v7 ready for critic".
+- For the main account: nothing to do until "v7 ready for critic".
+
 ## 2026-11-27 15:20 IST · claude/refs-measured · other account: task 9, references measured
 - Done: scripts/ref-compare.mjs + .github/workflows/ref-compare.yml (Ref compare: reel, ref); captions "refs" tag with a check warning; scripts/audit-numbers.mjs AUDIT_REFS lines (with vs without a reference pattern, per pattern 3+ reels); design/runbook-daily.md "References, measured"; scripts/qa/ref-compare-test.mjs.
 - Left: none of tasks 9-15; task 10 render 3 follows.

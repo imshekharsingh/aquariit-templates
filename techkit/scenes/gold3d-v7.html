@@ -25,13 +25,13 @@ const pulse = (t, at, w = .25) => Math.exp(-Math.pow((t - at) / w, 2));
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const S = W3D.stage(THREE, { W, H, ink: 0x0a0a0b, haze: 0x19191c })   // neutral blacks: the empty background reads dark, not blue (no colour cut when the near apps leave the frame edge);
 S.dof.aperture = 2.4; S.dof.focusRange = 7; S.dof.maxR = 20; S.bloom = .12;
-const world = W3D.world(S, { seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, floor: 0x4e4e50, poolPower: .1, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
+const world = W3D.world(S, { sky: ['#0e0e10', '#151517'], seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, floor: 0x4e4e50, poolPower: .1, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
 world.floor.material.envMapIntensity = .1; world.floor.material.roughness = .93; world.floor.material.metalness = 0; if (world.glow) world.glow.visible = false;   // a matte floor (a glossy one read as a pale wash at low angles)
 world.props.visible = false;   // fix 5 (U5): no background props (they read as clutter, not world)
 const L = W3D.lib;
 
 // ---------- the beats, from the voice cues ----------
-const A_IN = [-.25, .55, .95];                                        // fix 4: a chain: Notes is already slamming in at frame 0 (lands at .45), Chat launches off it, Mail is pushed by Chat
+const A_IN = [-.35, .55, .95];                                        // fix 4: a chain: Notes is already slamming in at frame 0 (lands at .35; started a little earlier so frame 0's label sits below the subtitle fade and reads), Chat launches off it, Mail is pushed by Chat
 const BOARD = 3.0, T_IN = 4.0;                                        // fix 1: the board builds 3.0-3.9; fix 2: the tools stack 4.0-5.3 on "eight tools"
 const ORDER = [6, 4, 2, 0, 1, 3, 5, 7], STEP = .15;                   // an S path: down the left column, up the right
 const W1 = Math.max(T_IN + 1.6, C.wires - .1), W1_END = W1 + 1.4;
@@ -43,7 +43,8 @@ const NEW_IN = Math.max(C.newt, HUBW[1] + 1.0), NEW_W = [NEW_IN + .45, NEW_IN + 
 const PAY = C.same + .4;
 
 // ---------- the cast ----------
-const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slam', s: -1, amp: .4, d: 1.0 }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'rise', s: 1, amp: .5, d: .5 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'slideTurn', s: 1, amp: .45, d: .5 }];
+const TILT = +(window.__TILT ?? .15);   // plan critic item 4: Notes leans back less while it slams in, so frame 0 reads "Notes" (the label faced the key light)
+const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slam', s: -1, amp: .4, d: 1.0, tilt: TILT }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'rise', s: 1, amp: .5, d: .5 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'slideTurn', s: 1, amp: .45, d: .5 }];
 const TOOLS = [['Pay', 0x6b3cff, 'pay'], ['Photos', 0xe0449a, 'photos'], ['Files', 0x2f7bff, 'files'], ['Maps', 0x1fb86a, 'maps'], ['Calendar', 0xff6a3c, 'calendar'], ['Docs', 0x7a4cff, 'files'], ['Tasks', 0x1294d6, 'tasks'], ['Music', 0xd9a21b, 'music']];
 const WALL_Y = 2.3, WALL_Z = -6.5, HUB_P = V(0, 1.25, -2.2), NEW_P = [2.85, HUB_P.y - .05, -1.7], R = .04, FL = R + .006;
 const AX = (i) => (i - 1) * 1.88, TX = (j) => (j % 2 - .5) * 2.2, TY = (j) => WALL_Y + Math.floor(j / 2) * 1.45, SIDE = (j) => (j % 2 ? 1 : -1);
@@ -73,6 +74,7 @@ const hub = L.productBlock(THREE, { w: 2.6, d: 1.5, h: 1.05, color: 0x4a14c8, na
 // fix 12 (U11): 11 port LEDs on the hub's face light as the green cables plug in
 const leds = Array.from({ length: 11 }, (_, k) => { const m = new THREE.Mesh(new THREE.BoxGeometry(.11, .05, .02), new THREE.MeshBasicMaterial({ color: new THREE.Color(.05, .12, .08), toneMapped: false })); m.position.set(-1.0 + k * .2, .33, .76); hub.add(m); return m; });
 const newTool = L.appTile(THREE, { size: 1.2, color: 0x00c2a8, glyph: L.appGlyphs.spark, name: 'New', label: 'inside' }); newTool.add(pillar(NEW_P[1], .14)); newTool.position.set(...NEW_P); S.scene.add(newTool);
+[hub, newTool, ...apps, ...tools].forEach((g) => g.traverse((m) => { if (m.isMesh && m.material && m.material.roughness != null) { m.material.roughness = Math.max(m.material.roughness, .5); if (m.material.clearcoat) { m.material.clearcoat *= .4; m.material.clearcoatRoughness = Math.max(m.material.clearcoatRoughness || 0, .6); } } }));   // satin finishes: bevels no longer glint for one frame as things move
 
 // ---------- fix 5 / 9 (U5): the floor grid draws outward from Notes; at the hub's landing a ring runs across it ----------
 const FU = { uR: { value: 0 }, uC: { value: V(AX(0), 0, 2) }, uW: { value: 0 }, uHC: { value: V(HUB_P.x, 0, HUB_P.z) } };
@@ -118,19 +120,25 @@ const warmAt = (t) => sm(prog(t, LAND, LAND + .5)) * (1 - sm(prog(t, TOTAL - .3,
 
 // ---------- numbers (fix 8): one style, a fixed spot per section, typed top line, odometer, bar, leader; fix 13: the headline words ----------
 const NUM = W3D.numbers({ y: 1540, w: 300 }); let LAST_NUM = null;
-const NUM_AT = { n24: [210, 760], n11: [190, 880], n12: [890, 860] };
+const NUM_AT = { n24: [210, 800], n11: [190, 880], n12: [890, 860] };
 const anchorOf = (v3) => { const p = v3.clone().project(S.cam); return p.z < 1 ? [(p.x * .5 + .5) * W, (-p.y * .5 + .5) * H] : null; };
-const HEAD_ = W3D.headline({ y: 372, words: [{ t: .5, text: 'ONE TOOL' }, { t: 1.4, text: '3 APPS' }, { t: T_IN - .1, text: '8 TOOLS' }, { t: W1 + .1, text: 'EVERY' }, { t: WORST - .2, text: '24 CABLES', color: '#ff5a5a' },
-  { t: LAND - .3, text: 'ONE HUB', color: '#5be29a' }, { t: NEW_IN, text: '+1' }, { t: C.same - .1, text: 'LESS WIRING', color: '#5be29a' }] });
+// render 3 plan critic (item 13): big words on the wide and clean shots only, none on the close shots; "TANGLED" (the number spot already shows 24); no grey older word
+const END_T = TOTAL - 1.86;                                           // the dolly home starts 0.7 s before this; the headline and the pill leave as it starts
+const HEAD_ = W3D.headline({ y: 486, words: [{ t: .5, text: 'ONE TOOL' }, { t: 1.4, t1: BOARD, text: '3 APPS' }, { t: T_IN - .1, t1: T_IN + 1.3, text: '8 TOOLS' },
+  { t: C.twenty - .05, t1: HUB_IN - .55, text: 'TANGLED', color: '#ff5a5a' }, { t: C.same, t1: END_T - .45, text: 'LESS WIRING', color: '#5be29a' }] });
+// render 3 plan critic (B, structure): one step pill, one fixed place, 24 px under the subtitles' lowest line and above the headline
+const PILL_ = W3D.headline({ y: 406, pill: true, words: [{ t: .5, text: '01 / 04 · THE SETUP' }, { t: T_IN + 1.3, text: '02 / 04 · THE WIRING' }, { t: C.twenty - .05, text: '03 / 04 · THE PROBLEM' }, { t: C.hub, t1: END_T - .45, text: '04 / 04 · THE FIX' }] });
 
 const shadows = [...apps.map((m) => W3D.contactShadow(S, m, { w: 2.4, d: .6, strength: .9 })), W3D.contactShadow(S, hub, { w: 1.4, d: 1.4, rest: 0, strength: .7 }), W3D.contactShadow(S, newTool, { w: .8, d: .8, rest: 0, strength: .6 })];
 
 // ---------- captions ----------
-const KEYS = [[4, 4], [3, 4], [4, 5], [2, 3], [8, 8], [4, 6], [5, 6]];
-const cap = W3D.captions({ y: 190, size: 60, scrimRGB: '10,10,11', lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: i === TL.scenes.length - 1 ? TOTAL + 1 : s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
+const KEYS = [[4, 4], [3, 4], [4, 5], [2, 3], [8, 8], [4, 6], null];   // the last line has no box: "LESS WIRING" carries it, and the box's top came within 6 px of "apps," (TEXT CLEAR)
+const cap = W3D.captions({ y: 190, size: 60, lh: 1.6, handles: false, scrimRGB: '10,10,11', scrimA: [.985, .965], scrimMid: 175, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: i === TL.scenes.length - 1 ? TOTAL + 1 : s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
 
 // ---------- camera: one shot per beat, each with a reason; never the same move type twice in a row ----------
 const START = { pos: [-5.5, 2.1, 9.6], look: [-1.88, .95, 2], fov: 42 };
+const ENDCAM = { pos: [-4.919, 1.277, 8.127], look: [-2.0, .35, 2], fov: 42 };   // solved so the resting Notes has frame 0's size and place (box within 0.5 %; Chat's edge stays at the right: it sits 1.88 beside Notes)
+const NEWCAM = { pos: [4.3, 3.3, 1.4], look: [2.75, 2.0, -1.7], fov: 46 };
 const SH = [
   { t: 0, ...START, mv: 'hold' },                                                                   // 1 Notes slams in (big moment 1), in frame from frame 0
   { t: A_IN[2] + .65, pos: [0, 3.4, 15.2], look: [0, .95, 2], fov: 44, mv: 'pull-back' },             // 2 the chain of three: all whole
@@ -138,14 +146,14 @@ const SH = [
   { t: T_IN - .1, pos: [.3, 6.95, 3.9], look: [0, 6.95, -6.5], fov: 50, mv: 'dolly-in', frac: .9 },   // the board a little smaller (about 64 % of the width) so the top row sits below the headline     // 4 push to the board as it finishes; the tools stack, the camera rides them
   { t: W1 + .5, pos: [-5.0, 3.4, -3.8], look: [-1.75, 4.4, -6.45], fov: 46, mv: 'truck-down' },   // the plug in the lower half (the headline above it)      // 5 the first plug clicks in
   { t: CASC[0] + .9, pos: [-6.2, 4.6, 6.6], look: [0, 2.5, -3.4], fov: 52, mv: 'arc' },               // 6 the tangle grows on the floor
-  { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -3.2], fov: 56, mv: 'pull-back' },                   // 7 the tangle at its worst (big moment 2), the problem breaks
+  { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back' },   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
   { t: HUB_IN + .45, pos: [2.6, 4.4, 5.0], look: [0, 2.4, -2.2], fov: 50, mv: 'whip', dur: .75 },     // 8 fix 9 (U14): a whip pan to the hub on "hub" (big moment 3)
   { t: COLLAPSE[0] + .8, pos: [0, 7.4, 17.4], look: [0, 3.7, -3.0], fov: 54, mv: 'crane-up', frac: .96, ease: 2 },       // 9 the collapse in one wave, from the high wide (fix 11: Notes whole)
-  { t: C.eleven + .7, pos: [-1.4, 6.2, 17.6], look: [0, 3.8, -3.1], fov: 54, mv: 'orbit' },           // 10 the clean picture, 11
-  { t: NEW_IN + .05, pos: [3.9, 3.5, 6.4], look: [2.75, 2.2, -1.7], fov: 44, mv: 'truck' },          // 11 the new tool and its one cable
-  { t: PAY, pos: [0, 6.5, 17.4], look: [0, 3.9, -3.2], fov: 54, mv: 'pull-back' },                   // 12 the payoff wide: 12
-  { t: TOTAL - 1.9, pos: [-8.7, 6.0, 15.8], look: [0, 3.9, -3.2], fov: 54, mv: 'arc' },              // 13 a 25 degree arc
-  { t: TOTAL, ...START, mv: 'dolly-in' },                                                            // 14 home to frame 0's framing and light (fix 15)
+  { t: C.newt, pos: [0, 7.326, 16.992], look: [0, 3.7, -3.0], fov: 54, mv: 'hold', frac: .96 },       // 10 the clean picture, 11: a still hold (a 2 % push) while the green sweep runs (plan critic C)
+  { t: NEW_IN + .35, pos: NEWCAM.pos, look: NEWCAM.look, fov: NEWCAM.fov, mv: 'truck', frac: .96, bend: [.8, 4.0, 0] },   // curved over the apps (not skimming past Chat at the frame edge)   // 11 the new tool and its one cable, from beside Mail (Mail outside the frame: plan critic D)
+  { t: PAY, pos: [0, 6.7, 18.3], look: [0, 4.3, -3.2], fov: 54, mv: 'pull-back', bend: [1.0, 3.0, 0] },   // the board's top row below the headline                   // 12 the payoff wide: 12
+  { t: END_T - .7, pos: [-3.4, 6.1, 16.4], look: [-.4, 4.2, -3.2], fov: 54, mv: 'push-in', frac: .96 },   // a slow push in on the result while "LESS WIRING" lands (the last 4 s keep moving)
+  { t: TOTAL, ...ENDCAM, mv: 'dolly-in', dur: TOTAL - END_T + .7, bend: [-3.2, .8, 0] },   // starts 0.7 s before the words leave, so the last 4 s keep moving                // 13 one curved dolly home to Notes: the last frame matches frame 0 (plan critic C, item 15)
 ];
 for (let k = 1; k < SH.length - 1; k++) SH[k].t = Math.min(Math.max(SH[k].t, SH[k - 1].t + .5), SH[SH.length - 1].t - (SH.length - 1 - k) * .5);
 const VA = (a) => new THREE.Vector3(...a);
@@ -153,12 +161,14 @@ const newest = (t) => { let n = -1; ORDER.forEach((j, o) => { if (t >= T_IN + o 
 function camAt(t) {
   let i = 0; while (i < SH.length - 2 && t >= SH[i + 1].t) i++;
   const a = SH[i], b = SH[i + 1], gap = b.t - a.t, dur = b.dur ?? Math.min(2.0, gap * (b.frac ?? .72)), ms = b.t - dur;
-  const u = Math.pow(sm(prog(t, ms, b.t)), b.ease ?? 1), hold = prog(t, a.t, ms);   // ease 2: a slow start (the near apps leave the frame edge gently)
+  const u = Math.pow(sm(prog(t, ms, b.t)), b.ease ?? 1), hold = ms > a.t + 1e-6 ? prog(t, a.t, ms) : 1;   // a move that starts the moment the last one ends has no hold (no 0/0)   // ease 2: a slow start (the near apps leave the frame edge gently)
   const drift = (k) => VA(k.pos).lerp(VA(k.look), .025 * hold);
   const pos = drift(a).lerp(VA(b.pos), u), look = VA(a.look).lerp(VA(b.look), u), fov = lerp(a.fov, b.fov, u);
+  if (b.bend) pos.addScaledVector(VA(b.bend), Math.sin(Math.PI * u));   // a curved move (one move, not two)
   // fix 2 (N1): the camera rides the stack: it follows the newest tile up and down the board, the newest in the upper part of the frame
-  const ride = sm(prog(t, T_IN - .05, T_IN + .3)) * (1 - sm(prog(t, T_IN + ORDER.length * STEP + .3, T_IN + ORDER.length * STEP + .9))), nj = newest(t);
-  if (ride > 0 && nj >= 0) { const dy = (TY(nj) + .65 - 5.0) * .12 * ride; pos.y += dy; look.y += dy; }
+  const ride = sm(prog(t, T_IN - .05, T_IN + .3)) * (1 - sm(prog(t, T_IN + ORDER.length * STEP + .3, T_IN + ORDER.length * STEP + .9)));
+  if (ride > 0) { let ty = TY(ORDER[0]); for (let o = 1; o < ORDER.length; o++) ty += (TY(ORDER[o]) - TY(ORDER[o - 1])) * sm(prog(t, T_IN + o * STEP, T_IN + o * STEP + .3));   // glides to each new tile (it stepped in one frame)
+    const dy = (ty + .65 - 5.0) * .12 * ride; pos.y += dy; look.y += dy; }
   S.cam.position.copy(pos); if (S.cam.fov !== fov) { S.cam.fov = fov; S.cam.updateProjectionMatrix(); } S.cam.lookAt(look); S.cam.updateMatrixWorld(); return { pos, look, fov };
 }
 
@@ -168,8 +178,23 @@ const landT = (k) => (k === 0 ? W1 + 1.0 : lerp(CASC[0], CASC[1] - .55, (k - 1) 
 const RET = [...RED, ...tangle.map((q) => q.k).filter((k) => !RED.includes(k)).sort((a, b) => Math.floor(b % 8 / 2) - Math.floor(a % 8 / 2) || a - b)];
 const retT = (k) => COLLAPSE[0] + RET.indexOf(k) * .04;
 const hubT = (k) => HUBW[0] + k * .04;
+// render 3 plan critic A (focus): in three moments everything but the subject comes down to 30-50 % over 0.3 s and back over 0.4 s
+const DIMW = [[T_IN + 1.3, W1_END, .3, (o) => o === apps[0] || o === tools[0] || o === tangle[0].w],                      // the first cable: Notes, Pay and that cable
+  [C.twenty - .05, HUB_IN - .55, .5, (o) => o === tools[0] || o === tangle[0].w || tangle.some((q) => q.w === o && RED.includes(q.k))],   // the problem: the red crossings, the pulled plug, Pay
+  [C.newt, C.same, .3, () => false]];                                                                                     // New: New, its cable and the hub (never dimmed)
+const matsOf = (o) => { const out = []; o.traverse((m) => { if (m.isMesh && m.material && m.material.color) out.push(m.material); }); return [...new Set(out)]; };
+[...apps, ...tools].forEach((o) => o.traverse((m) => { if (m.isMesh && m.material) m.material = m.material.clone(); }));   // each tile its own materials (dimmed one by one)
+const base = (m) => ({ m, c: m.color.clone(), e: m.emissive ? m.emissive.clone() : null, env: m.envMapIntensity, cc: m.clearcoat, spi: m.specularIntensity });   // reflections dim too (they do not follow the colour)
+const DIM = [...apps, ...tools].map((o) => ({ o, mats: matsOf(o).map(base) }))
+  .concat([...tangle.map((q) => q.w), ...hubW.map((q) => q.w)].map((w) => ({ o: w, wire: true, mats: [...w.plugs.filter(Boolean).flatMap(matsOf), w.tube.material].filter((m, i, A) => A.indexOf(m) === i).map(base) })));
+const dimAt = (t, o) => DIMW.reduce((f, [a, b, lv, keep]) => keep(o) ? f : f * (1 - (1 - Math.pow(lv, 2.2)) * sm(prog(t, a, a + .3)) * (1 - sm(prog(t, b - .4, b)))), 1);   // lv is the brightness seen on screen (colours here are linear light)
+function dimPass(t) { for (const d of DIM) { const f = dimAt(t, d.o); for (const q of d.mats) {
+  const live = d.wire && q.m === d.o.tube.material && tangle.some((r) => r.w === d.o), body = q.m === toolBody[0].material;   // tangle tubes and Pay's body are recoloured every frame (red, the grey dip): scale what is there
+  if (live || body) { q.m.color.multiplyScalar(f); if (q.m.emissive) q.m.emissive.multiplyScalar(f); }
+  else { q.m.color.copy(q.c).multiplyScalar(f); if (q.e) q.m.emissive.copy(q.e).multiplyScalar(f); }
+  if (q.env != null) q.m.envMapIntensity = q.env * f; if (q.cc != null) q.m.clearcoat = q.cc * f; if (q.spi != null) q.m.specularIntensity = q.spi * f; } } }
 const focus = V(0, 1.6, -3); S.focus = focus;
-const flash = new THREE.Mesh(new THREE.BoxGeometry(1, 1, .02), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.4, 2.8), toneMapped: false })); flash.visible = false; S.scene.add(flash);
+const flash = new THREE.Mesh(new THREE.BoxGeometry(1, 1, .02), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.4, 2.8), toneMapped: false, transparent: true, depthWrite: false })); flash.visible = false; S.scene.add(flash);
 function frame(t) {
   const p = camAt(t); focus.copy(p.look);
   const lean = pulse(t, LAND + .15, .35) * .07, warm = warmAt(t);
@@ -177,9 +202,9 @@ function frame(t) {
   // floor (fix 5, 9): the grid draws outward from Notes in the first second; the ring from the hub's pillar at the landing
   FU.uR.value = lerp(1.0, 34, eout(prog(t, 0, 1.0))); FU.uW.value = t > LAND ? (t - LAND) * 16 : 0;
   // apps (fix 4): a chain, shadow first
-  apps.forEach((m, i) => { const A = APPS[i], u = prog(t, A_IN[i], A_IN[i] + A.d), inn = A.e === 'slam' ? u : ease(u); W3D.enter(m, A.e, inn, { side: A.s, amp: A.amp });
-    if (u >= 1) { const bump = Math.max(...TOOLS.map((_, j) => pulse(t, landT(i * 8 + j), .12))) * .05, push = i === 1 ? pulse(t, A_IN[2] + .05, .12) * .06 : 0;
-      m.position.y += Math.sin(t * 1.3 + i * 2) * .05; m.position.x += push; m.rotation.z = Math.sin(t * .9 + i) * .03; m.rotation.y = Math.sin(t * .6 + i * 1.7) * .05; m.rotation.x = -lean; m.scale.setScalar(1 + bump); } });
+  apps.forEach((m, i) => { const A = APPS[i], u = prog(t, A_IN[i], A_IN[i] + A.d), inn = A.e === 'slam' ? u : ease(u); W3D.enter(m, A.e, inn, { side: A.s, amp: A.amp, tilt: A.tilt });
+    if (u >= 1) { const bump = Math.max(...TOOLS.map((_, j) => pulse(t, landT(i * 8 + j), .12))) * .05, push = i === 1 ? pulse(t, A_IN[2] + .05, .12) * .06 : 0, idle = sm(prog(t, A_IN[i] + A.d, A_IN[i] + A.d + .6));   // the idle sway fades in after the landing (owner 27 Nov: no snaps)
+      m.position.y += Math.sin(t * 1.3 + i * 2) * .05 * idle; m.position.x += push; m.rotation.z = Math.sin(t * .9 + i) * .03 * idle; m.rotation.y = Math.sin(t * .6 + i * 1.7) * .05 * idle; m.rotation.x = -lean; m.scale.setScalar(1 + bump); } });
   shadows.forEach((s, i) => s.update());
   apps.forEach((m, i) => { const f = sm(prog(t, A_IN[i] - .2, A_IN[i] + .15)); shadows[i].soft.material.opacity *= f; shadows[i].tight.material.opacity *= f; });   // the shadow grows in before the tile lands
   // board (fix 1): outline draws, panel rises, slots unfold, the edge light runs round to slot 1
@@ -193,19 +218,22 @@ function frame(t) {
   if (bu >= 0) { bead.visible = true; bead.position.copy(perim(bu)); } else bead.visible = false;
   edgeMat.opacity = rise > .5 ? (.22 + .03 * Math.sin(t * 2.1)) + .5 * Math.max(...runs.map(([s0, d]) => pulse(t, s0 + d / 2, d / 2))) : 0;
   // tools (fix 2): one flow along the S path, each landing against the one before with a squash, a contact flash and a nudge
-  flash.visible = false;
+  flash.visible = false; let flashK = 0;
   tools.forEach((m, j) => { const o = ORDER.indexOf(j), t0 = T_IN + o * STEP, u = prog(t, t0, t0 + .32), home = V(TX(j), TY(j), WALL_Z);
-    const pj = o > 0 ? ORDER[o - 1] : -1, from = pj >= 0 ? V(TX(pj), TY(pj) + .5, WALL_Z - .55) : V(TX(j), TY(j) + 1.2, WALL_Z - .4);
+    const pj = o > 0 ? ORDER[o - 1] : -1, from = pj >= 0 ? V(TX(pj), TY(pj) + .5, WALL_Z + .7) : V(TX(j), TY(j) + 1.2, WALL_Z + .7);   // from just in front of the tile before (it came from behind the panel and popped into view)
     m.visible = u > .001; m.position.copy(from).lerp(home, eback(u, 1.3)); m.rotation.set(0, 0, 0);
-    const sq = pulse(t, t0 + .32, .05) * .05; let sc = (.5 + .5 * eout(u)) ; m.scale.set(sc * (1 + sq), sc * (1 - sq), sc);
+    const sq = pulse(t, t0 + .32, .05) * .05; let sc = (.06 + .94 * eout(u));   // grows from a speck behind the tile before it (no half-size pop) m.scale.set(sc * (1 + sq), sc * (1 - sq), sc);
     if (u >= 1) { const nx = ORDER[o + 1], nudge = nx !== undefined ? pulse(t, T_IN + (o + 1) * STEP + .32, .08) * .03 : 0;
       const dir = nx !== undefined ? V(TX(j) - TX(nx), TY(j) - TY(nx), 0).normalize() : V(0, 0, 0); m.position.addScaledVector(dir, nudge);
       const bump = Math.max(pulse(t, landT(j), .12), pulse(t, landT(8 + j), .12), pulse(t, landT(16 + j), .12), pulse(t, hubT(3 + j) + .45, .12)) * .06;
-      m.scale.setScalar(1 + bump + .012 * Math.sin(t * 1.7 + j)); m.rotation.y = Math.sin(t * .7 + j * 1.3) * .06; m.rotation.x = lean * .8; }
-    if (pj >= 0 && Math.abs(t - (t0 + .32)) < .025) { flash.visible = true; flash.position.set((TX(j) + TX(pj)) / 2, (TY(j) + TY(pj)) / 2 + .65, WALL_Z + .18);   // the 1-frame contact flash on the shared edge
-      const vert = TX(j) === TX(pj); flash.scale.set(vert ? 1.1 : .04, vert ? .04 : 1.1, 1); } });
+      const idle = sm(prog(t, t0 + .32, t0 + .9));   // the idle sway fades in after the landing (it snapped on in one frame)
+      m.scale.setScalar(1 + bump + .012 * Math.sin(t * 1.7 + j) * idle); m.rotation.y = Math.sin(t * .7 + j * 1.3) * .06 * idle; m.rotation.x = lean * .8; }
+    const fk = pj >= 0 ? pulse(t, t0 + .32, .05) : 0;   // the contact flash on the shared edge: a short soft pulse (owner 27 Nov: no one-frame blinks)
+    if (fk > flashK) { flashK = fk; flash.position.set((TX(j) + TX(pj)) / 2, (TY(j) + TY(pj)) / 2 + .65, WALL_Z + .18); const vert = TX(j) === TX(pj); flash.scale.set(vert ? 1.1 : .04, vert ? .04 : 1.1, 1); } });
+  flash.visible = flashK > .02; flash.material.opacity = flashK;
   // fix 6: Pay flickers grey when its plug is pulled half out
-  const fl = t > BREAK && t < BREAK + .32 ? (Math.floor((t - BREAK) * 22) % 2) : 0; toolBody[0].material.color.copy(toolCol[0]).lerp(new THREE.Color(0x5a5c66), fl);
+  const fl = Math.min(1, pulse(t, BREAK + .07, .055) + pulse(t, BREAK + .23, .055));   // two soft grey dips (each about 4 frames), not a strobe
+  toolBody[0].material.color.copy(toolCol[0]).lerp(new THREE.Color(0x5a5c66), fl);
   // the 24 cables
   tangle.forEach((q) => { const u = q.k === 0 ? ease(prog(t, W1, W1 + 1.0)) : ease(prog(t, landT(q.k) - .55, landT(q.k)));
     const ret = ease(prog(t, retT(q.k), retT(q.k) + .22)); q.w.reveal(u * (1 - ret));   // fix 10: pulled back into its socket, one after another
@@ -216,39 +244,41 @@ function frame(t) {
   // fix 6: the half-pulled plug (Notes -> Pay) and its spark
   const pB = tangle[0].w.plugs[1], out = sm(prog(t, BREAK, BREAK + .08)) * (1 - sm(prog(t, retT(0) - .1, retT(0))));
   if (pB && pB.visible) pB.position.copy(pB.userData.at).addScaledVector(pB.userData.dir, -.13 * out);
-  const sp = t > BREAK && t < BREAK + .25 ? 1 - (t - BREAK) / .25 : 0; spark.intensity = 6 * sp; sparkDot.visible = sp > 0 && (Math.floor(t * 40) % 2 === 0);
+  const sp = t > BREAK && t < BREAK + .25 ? 1 - (t - BREAK) / .25 : 0; spark.intensity = 6 * sp; sparkDot.visible = sp > .02; sparkDot.scale.setScalar(.3 + .7 * sp);   // fades with the spark (no 40 Hz blink)
   if (pB) { spark.position.copy(pB.userData.at).add(V(0, .05, .1)); sparkDot.position.copy(spark.position); }
   // the hub: big moment 3, opaque from its first frame
-  W3D.enter(hub, 'slam', prog(t, HUB_IN, HUB_IN + .85), { amp: .5 }); if (prog(t, HUB_IN, HUB_IN + .85) >= 1) hub.position.y = HUB_P.y + Math.sin(t * 1.1) * .02;
+  W3D.enter(hub, 'slam', prog(t, HUB_IN, HUB_IN + .85), { amp: .5, grow: .25 }); if (prog(t, HUB_IN, HUB_IN + .85) >= 1) hub.position.y = HUB_P.y + Math.sin(t * 1.1) * .02 * sm(prog(t, HUB_IN + .85, HUB_IN + 1.4));
   hubW.forEach((q) => { const s0 = hubT(q.k); q.w.reveal(ease(prog(t, s0, s0 + .45)));
     const gs = prog(t, C.eleven + .4 + q.k * .03, C.eleven + 1.4 + q.k * .03);   // fix 12 (U8): the green sweep along the 11, the before/after rhyme
     q.w.pulse(Math.max(prog(t, s0 + .45, s0 + .8), gs * .9, prog(t, PAY + 1.6 + q.k * .03, PAY + 2.0 + q.k * .03)), t, (gs > 0 && gs < 1) || prog(t, PAY + 1.6, PAY + 2.4) > 0 ? .45 : 1); });
   leds.forEach((m, k) => { const on = sm(prog(t, hubT(k) + .4, hubT(k) + .5)); m.material.color.setRGB(lerp(.05, .4, on), lerp(.12, 2.4, on), lerp(.08, 1.1, on)); });
-  W3D.enter(newTool, 'pop', ease(prog(t, NEW_IN, NEW_IN + .45)), { side: 1 }); if (newTool.visible && t > NEW_IN + .45) newTool.rotation.y = Math.sin(t * .8) * .04;
+  W3D.enter(newTool, 'pop', eout(prog(t, NEW_IN, NEW_IN + .6)), { side: 1 }); if (newTool.visible && t > NEW_IN + .6) newTool.rotation.y = Math.sin(t * .8) * .04 * sm(prog(t, NEW_IN + .6, NEW_IN + 1.1));   // a steady grow (no fast middle), the sway fades in
   newW.reveal(ease(prog(t, NEW_W[0], NEW_W[1]))); newW.pulse(Math.max(prog(t, NEW_W[1], NEW_W[1] + .6), prog(t, PAY + 1.6, PAY + 2.1), prog(t, TOTAL - 1.3, TOTAL - .7)));
   // light sweeps: Notes (big moment 1), along one tangle cable plug to plug for 1 s (big moment 2), the hub (big moment 3), green along the 11
   let sw = 0; sweep.color.setRGB(1, .95, .86);
-  { const k = prog(t, .25, 1.15); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(V(-3.4, 1.8, 3.4).lerp(V(-.4, 1.4, 3.4), k)); } }
+  { const k = prog(t, .5, 1.4); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(V(-3.4, 1.8, 3.4).lerp(V(-.4, 1.4, 3.4), k)); } }   // plan critic item 4: after the landing, so frame 0 reads "Notes"
   { const k = prog(t, WORST - .2, WORST + .8); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(tangle[1].w.curve.getPointAt(k)).add(V(0, .45, 0)); } }
   { const k = prog(t, LAND - .3, LAND + .5); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(V(-2.4, 2.6, -.6).lerp(V(2.4, 2.4, -.6), k)); } }
   { const k = prog(t, C.eleven + .4, C.eleven + 1.4); if (k > 0 && k < 1) { sw = .8 * Math.sin(Math.PI * k); sweep.color.setRGB(.7, 1, .8); sweep.position.copy(hubW[3].w.curve.getPointAt(k)).add(V(0, .45, 0)); } }
   sweep.intensity = 2.2 * sw;
   // numbers (fix 8): 24 counts up as the problem peaks (red as it lands), ticks down with each retraction to 11, then 12
-  const n24 = prog(t, CASC[1] - .3, C.twenty + .35), retracted = RET.filter((k) => t > retT(k) + .2).length, toTwelve = prog(t, PAY - .2, PAY + .35);
+  const n24 = prog(t, CASC[1] - .3, C.twenty + .35), retracted = RET.reduce((a, k) => a + sm(prog(t, retT(k) + .1, retT(k) + .3)), 0), toTwelve = prog(t, PAY - .2, PAY + .35);   // the count rolls down with each retraction (continuous)
   const win = (a, b) => sm(prog(t, a, a + .35)) * (1 - sm(prog(t, b - .3, b)));
   const show = Math.max(win(CASC[1] - .35, HUB_IN + .1), win(COLLAPSE[0] + .7, NEW_IN - .6), win(PAY - .3, TOTAL - 3.0));
-  const sec = toTwelve > 0 ? 3 : t > HUB_IN ? 2 : 1, s0 = sec === 3 ? PAY - .3 : sec === 2 ? COLLAPSE[0] + .7 : CASC[1] - .35;
+  const sec = t >= PAY - .3 ? 3 : t >= HUB_IN + .1 ? 2 : 1,   // each section's content changes only while the block is hidden
+        s0 = sec === 3 ? PAY - .3 : sec === 2 ? COLLAPSE[0] + .7 : CASC[1] - .35;
   const typed = prog(t, s0, s0 + .3), labelIn = eout(prog(t, s0 + .35, s0 + .6));
   const q = sec === 3 ? { top: '3 + 9', from: 11, to: 12, k: toTwelve, label: 'cables', bar: 12 / 24, anchor: anchorOf(V(NEW_P[0], NEW_P[1] + 1.25, NEW_P[2])), at: NUM_AT.n12, tick: prog(t, PAY + .3, PAY + .7) }
     : sec === 2 ? { top: '3 + 8', from: 24, to: 24 - 13 * retracted / 24, k: 1, label: 'cables', bar: (24 - 13 * retracted / 24) / 24, anchor: anchorOf(V(-1.3, HUB_P.y + 1.05, HUB_P.z)), at: NUM_AT.n11 }
-    : { top: '3 × 8', from: 0, to: 24, k: n24, label: 'cables', bar: lerp(0, 1, eout(n24)), color: pulse(t, C.twenty + .5, .22) > .1 ? '#ff5a5a' : '#ffffff', anchor: anchorOf(V(-.4, FL, -1.4)), at: NUM_AT.n24, tick: prog(t, C.twenty + .35, C.twenty + .75) };
+    : { top: '3 × 8', from: 0, to: 24, k: n24, label: 'cables', bar: lerp(0, 1, eout(n24)), color: (() => { const r = pulse(t, C.twenty + .5, .22); return `rgb(255,${Math.round(255 - 165 * r)},${Math.round(255 - 165 * r)})`; })(), anchor: anchorOf(V(-.4, FL, -1.4)), at: NUM_AT.n24, tick: prog(t, C.twenty + .35, C.twenty + .75) };
   LAST_NUM = NUM.set(t, { ...q, show, typed, labelIn });
+  dimPass(t);
   if (t < 1.3) { const np = new THREE.Box3().setFromObject(apps[0]).getCenter(new THREE.Vector3()); focus.copy(p.look).lerp(np, 1 - prog(t, 1.0, 1.3)); }   // Notes sharp while it slams in
 }
-let LAST_HEAD = null; const HEAD = (t) => { LAST_HEAD = HEAD_(t); const f = 1 - sm(prog(t, TOTAL - 1.0, TOTAL - .45)); const el = document.querySelector('[data-now]').parentElement.parentElement; el.style.opacity = (+el.style.opacity * f).toFixed(3); if (f < .5) LAST_HEAD = { box: null }; return LAST_HEAD; };   // the headline leaves before the loop joins frame 0
+let LAST_HEAD = null; const HEAD = (t) => { const a = HEAD_(t), b = PILL_(t); LAST_HEAD = { box: a.box, pill: b.box }; return LAST_HEAD; };   // both leave at END_T, before the loop joins frame 0
 window.render = (t) => { t = clamp(t, 0, TOTAL); frame(t); S.draw(t); cap(t); HEAD(t); };
 // the headline never sits on an object: which tiles (or the hub, the New tile) its words touch at t
-window.__headCheck = (t) => { frame(clamp(t, 0, TOTAL)); HEAD(clamp(t, 0, TOTAL)); const b = LAST_HEAD && LAST_HEAD.box; if (!b) return []; return [...apps, ...tools, hub, newTool].filter((m) => { if (!m.visible) return false; const c = new THREE.Box3().setFromObject(m).getCenter(new THREE.Vector3()).project(S.cam); return c.z < 1 && W3D.overlaps(W3D.screenBox(S, m, -10), b); }).map(nameOf); };
+window.__headCheck = (t) => { frame(clamp(t, 0, TOTAL)); HEAD(clamp(t, 0, TOTAL)); const bs = [LAST_HEAD && LAST_HEAD.box, LAST_HEAD && LAST_HEAD.pill].filter(Boolean); if (!bs.length) return []; return [...apps, ...tools, hub, newTool].filter((m) => { if (!m.visible) return false; const c = new THREE.Box3().setFromObject(m).getCenter(new THREE.Vector3()).project(S.cam); return c.z < 1 && bs.some((b) => W3D.overlaps(W3D.screenBox(S, m, -10), b)); }).map(nameOf); };
 window.__layoutCheck = (t) => { frame(clamp(t, 0, TOTAL)); return { band: 0, wall: false }; };
 window.__boxes = () => [];
 const nameOf = (m) => (m === hub ? 'hub' : m === newTool ? 'new' : apps.includes(m) ? 'app' + apps.indexOf(m) : 'tool' + tools.indexOf(m));

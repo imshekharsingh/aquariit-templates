@@ -6,7 +6,7 @@
 //   W3D.enter(obj, kind, u, { side, amp })                            v6 (26 Nov 2026, rules-tech.md D10): a motion-design entrance at progress u 0..1 (u <= 0 hidden, 1 home):
 //                                                                  'slideTurn' | 'drop' | 'rise' | 'swing' | 'flip' | 'pop' | 'slam' (v7, for the 2-3 big moments); run u from 1 to 0 for an exit or a rewind
 //   W3D.numbers({ y, w }).set(t, { show, from, to, k, top, typed, label, labelIn, bar, color, anchor, at, tick })   v7: flat odometer numbers with a bar and a leader line (one style)
-//   W3D.headline({ y, words: [{ t, text, color }] })(t)   v7 render 3: one big headline word per beat, the one before it grey
+//   W3D.headline({ y, words: [{ t, t1, text, color }], size, pill })(t)   v7 render 3: one big headline word per beat (fades in and out), or the step pill
 //   W3D.wire(S, pts, { color, radius, plugs, shadow, curve })             v6 (D12): a matte cable through pts (let it lie on the floor to sag), plugs at both ends, a floor shadow;
 //                                                                  .reveal(u) unrolls it (the end plug clicks in at the end), .pulse(k) the only glow (a bead along it), .curve / .tube
 // Real product logos: appTile takes { logo: THREE.Texture } (a licensed file fetched by the Media workflow, design/safety.md item 7) in its logo slot; without one it draws the generic glyph.
@@ -174,7 +174,7 @@
     else if (kind === 'flip') { obj.rotation.y += side * Math.PI * 2 * (1 - ease3(u)); sc *= .3 + .7 * e; }
     else if (kind === 'slam') {   // v7 big moment: falls from above and close, lands with an overshoot and a short squash
       const f = clamp(u / .7), land = clamp((u - .7) / .3), dn = ease3(f);
-      obj.position.y += 2.4 * A * (1 - dn); obj.position.z += 1.6 * A * (1 - dn); obj.rotation.x -= .55 * (1 - dn); sc *= 1.45 - .45 * dn;
+      obj.position.y += 2.4 * A * (1 - dn); obj.position.z += 1.6 * A * (1 - dn); obj.rotation.x -= (o.tilt ?? .55) * (1 - dn); sc *= (1.45 - .45 * dn) * (o.grow ? ease3(clamp(u / o.grow)) : 1);   // grow: it grows in over the first part of the fall (no pop when it starts inside the frame)   // tilt: how far it leans back while falling (a small tilt keeps a label facing the camera)
       if (u > .7) { const sq = Math.sin(Math.PI * land) * .09 * (1 - land); obj.scale.set(h.s * (1 + sq), h.s * (1 - sq), h.s * (1 + sq)); return; } }
     else { sc *= Math.max(.001, e); }
     obj.scale.setScalar(Math.max(.001, sc));
@@ -212,11 +212,11 @@
   //   bar 0..1 (a thin bar under the number, its length = the value's share), color, anchor: [x,y] px | null, at: [x,y] block centre px, tick 0..1 })
   //   -> { box, leader, value }. One style for every number: flat, crisp white, an odometer count (the digits roll, never pop), a hairline to its object.
   function numbers(o = {}) {
-    const box = document.createElement('div'), y = o.y ?? 1530, BW = o.w ?? 300, BH = 270;
-    box.style.cssText = `position:absolute;left:0;top:${y}px;width:${BW}px;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7);padding:14px 0 12px;border-radius:28px;background:${o.back === false ? 'none' : 'rgba(9,10,14,.8)'}`;   // a dark backing: the number never sits on a busy picture
+    const box = document.createElement('div'), y = o.y ?? 1530, BW = o.w ?? 300, BH = o.back === false ? 270 : 296;
+    box.style.cssText = `position:absolute;left:0;top:${y}px;width:${BW}px;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7);padding:14px 0 12px;border-radius:28px;background:${o.back === false ? 'none' : 'rgba(10,10,11,.97)'}`;   // a dark backing (nearly opaque: no cable shows through under the digits): the number never sits on a busy picture
     box.innerHTML = '<div data-top style="font-weight:600;font-size:40px;line-height:1;height:42px;color:#c9cfdb;letter-spacing:.01em;white-space:pre"></div>'
       + '<div data-n style="font-weight:800;font-size:148px;line-height:1.04;height:154px;letter-spacing:-.03em;display:flex;justify-content:center;overflow:hidden"></div>'
-      + '<div data-bar style="height:8px;margin:6px auto 10px;width:260px;border-radius:4px;background:rgba(255,255,255,.16);overflow:hidden"><i style="display:block;height:100%;width:0;background:#fff;border-radius:4px"></i></div>'
+      + '<div data-bar style="height:8px;margin:' + (o.back === false ? '6px auto 10px' : '16px auto 20px') + ';width:260px;border-radius:4px;background:rgba(255,255,255,.16);overflow:hidden"><i style="display:block;height:100%;width:0;background:#fff;border-radius:4px"></i></div>'
       + '<div data-lab style="font-weight:600;font-size:38px;line-height:1;color:#c9cfdb"></div>';
     const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('width', '1080'); svg.setAttribute('height', '1920');
     svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;z-index:6';
@@ -234,9 +234,11 @@
       const at = q.at || [540, y + BH / 2], bx = [at[0] - BW / 2, at[1] - BH / 2, at[0] + BW / 2, at[1] + BH / 2];   // at: the number block's centre (placed beside its object, in empty space)
       box.style.left = bx[0] + 'px'; box.style.top = bx[1] + 'px';
       box.style.opacity = sh.toFixed(3); box.style.transform = `translateY(${(1 - sh) * 46}px) scale(${(1 + .1 * Math.sin(Math.PI * clamp(q.tick ?? 0))).toFixed(3)})`;
-      const tl = q.top || ''; top.textContent = tl.slice(0, Math.round(tl.length * clamp(q.typed ?? 1)));
+      const tl = q.top || '', ty_ = clamp(q.typed ?? 1) * (tl.length + 1);   // typed letter by letter, each fading in over a letter's time (owner 27 Nov: letters fade, never pop)
+      if (top.dataset.t !== tl) { top.dataset.t = tl; top.innerHTML = ''; [...tl].forEach((ch) => { const c = document.createElement('span'); c.textContent = ch; top.appendChild(c); }); }
+      [...top.children].forEach((c, i) => { c.style.opacity = clamp(ty_ - i - .5).toFixed(3); });
       const op = ((vf % 10) + 10) % 10, tp = Math.floor(Math.max(0, vf) / 10) + Math.max(0, op - 9);   // continuous: the ones slide every unit, the tens on the 9 -> 0 roll
-      ones.st.style.transform = `translateY(${(-op * 154).toFixed(1)}px)`; tens.st.style.transform = `translateY(${(-(tp % 10) * 154).toFixed(1)}px)`; tens.c.style.display = vf >= 9.5 ? '' : 'none';
+      ones.st.style.transform = `translateY(${(-op * 154).toFixed(1)}px)`; tens.st.style.transform = `translateY(${(-(tp % 10) * 154).toFixed(1)}px)`; tens.c.style.opacity = clamp(vf - 9).toFixed(3);   // the tens column always holds its place (no sideways jump of the ones); it fades in from 9 to 10
       n.style.color = q.color || '#fff'; barI.style.width = (clamp(q.bar ?? (v / 24)) * 100).toFixed(1) + '%'; barI.style.background = q.color || '#fff';
       lab.textContent = q.label || ''; const li = clamp(q.labelIn ?? 1); lab.style.opacity = li.toFixed(3); lab.style.transform = `translateY(${((1 - li) * 22).toFixed(1)}px)`;
       const ax = q.anchor, ok = ax && sh > .02 && ax[0] > 30 && ax[0] < 1050 && ax[1] > 430 && ax[1] < 1890 && !(ax[0] > bx[0] && ax[0] < bx[2] && ax[1] > bx[1] && ax[1] < bx[3]);
@@ -249,19 +251,25 @@
       return { box: bx, leader: seg, value: v }; } };
   }
 
-  // ---------- v7 render 3: a kinetic headline (references' shared grammar): one big word per beat in the upper third, the newest in the accent, the one before it grey ----------
-  // headline({ y, words: [{ t, text, color }] }) -> fn(t) -> { box }
+  // ---------- v7 render 3: a kinetic headline (references' shared grammar): one big word per beat in the upper third, only where the picture has room ----------
+  // headline({ y, words: [{ t, t1, text, color }], size, pill }) -> fn(t) -> { box }. Every word fades and slides in over 0.28 s and fades out over 0.25 s
+  //   (owner 27 Nov: no instant text swaps); t1 = when it leaves (default: the next word's t, a short crossfade). pill: true draws small caps on a dark capsule
+  //   (the step pill "01 / 04 · THE SETUP", one fixed place for the whole reel).
   function headline(o = {}) {
-    const el = document.createElement('div'), y = o.y ?? 360, words = o.words || [];
-    el.style.cssText = `position:absolute;left:40px;top:${y}px;width:1000px;text-align:center;pointer-events:none;z-index:5;font-family:"Inter Display",Inter,system-ui,sans-serif;text-shadow:0 3px 22px rgba(5,4,12,.85)`;
-    el.innerHTML = '<div style="height:58px"><span data-prev style="font-weight:800;font-size:54px;line-height:1.05;color:#7f8694;letter-spacing:.02em"></span></div><div style="height:132px"><span data-now style="display:inline-block;font-weight:900;font-size:128px;line-height:1;letter-spacing:-.02em"></span></div>';
-    document.body.appendChild(el); const pv = el.querySelector('[data-prev]'), nw = el.querySelector('[data-now]');
-    return (t) => { let i = -1; for (let k = 0; k < words.length; k++) if (t >= words[k].t) i = k;
-      if (i < 0) { el.style.opacity = '0'; return { box: null }; }
-      const w = words[i], u = clamp((t - w.t) / .28), e = 1 - Math.pow(1 - u, 3);
-      el.style.opacity = '1'; nw.textContent = w.text; nw.style.color = w.color || '#ffffff'; nw.style.transform = `translateY(${((1 - e) * 40).toFixed(1)}px)`; nw.style.opacity = e.toFixed(3);
-      pv.textContent = i > 0 ? words[i - 1].text : ''; pv.style.opacity = (i > 0 ? .9 : 0).toFixed(2);
-      const r1 = nw.getBoundingClientRect(), r0 = pv.getBoundingClientRect(); return { box: [Math.min(r1.left, i > 0 ? r0.left : 1e9), y, Math.max(r1.right, i > 0 ? r0.right : 0), y + 190] }; };
+    const el = document.createElement('div'), y = o.y ?? 360, words = o.words || [], pill = !!o.pill, size = o.size ?? (pill ? 30 : 128), hgt = pill ? size + 26 : size + 4;
+    el.style.cssText = `position:absolute;left:40px;top:${y}px;width:1000px;height:${hgt}px;pointer-events:none;z-index:5;font-family:"Inter Display",Inter,system-ui,sans-serif`;
+    const spans = words.map((w) => { const d = document.createElement('div'); d.style.cssText = 'position:absolute;left:0;top:0;width:100%;text-align:center';
+      const s = document.createElement('span'); s.textContent = w.text;
+      s.style.cssText = pill ? `display:inline-block;font-weight:700;font-size:${size}px;line-height:1;letter-spacing:.12em;color:${w.color || '#dfe3ec'};padding:13px 26px;border-radius:999px;background:rgba(10,10,11,.82);box-shadow:0 0 0 2px rgba(255,255,255,.08) inset`
+        : `display:inline-block;font-weight:900;font-size:${size}px;line-height:1;letter-spacing:-.02em;color:${w.color || '#ffffff'};text-shadow:0 3px 22px rgba(5,4,12,.85)`;
+      d.appendChild(s); el.appendChild(d); return { d, s }; });
+    document.body.appendChild(el);
+    const ou = (u) => 1 - Math.pow(1 - clamp(u), 3), sm2 = (u) => (u = clamp(u), u * u * (3 - 2 * u));
+    return (t) => { let box = null;
+      words.forEach((w, k) => { const t1 = w.t1 ?? (k + 1 < words.length ? words[k + 1].t + .12 : 1e9), e = ou((t - w.t) / .28), out = sm2((t - (t1 - .25)) / .25), a = e * (1 - out);
+        const sp = spans[k]; sp.d.style.opacity = a.toFixed(3); sp.d.style.transform = `translateY(${((1 - e) * (pill ? 18 : 40) - out * (pill ? 12 : 24)).toFixed(1)}px)`;
+        if (a > .3) { const r = sp.s.getBoundingClientRect(); box = box ? [Math.min(box[0], r.left), y, Math.max(box[2], r.right), y + hgt] : [r.left, y, r.right, y + hgt]; } });
+      return { box, el }; };
   }
 
   W3.lib = { appTile, phone, laptop, chip, rack, productBlock, codeCard, dialog, figure, appGlyphs, rr, standingSlab };
