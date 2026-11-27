@@ -37,9 +37,9 @@ const ORDER = [6, 4, 2, 0, 1, 3, 5, 7], STEP = .15;                   // an S pa
 const W1 = Math.max(T_IN + 1.6, C.wires - .1), W1_END = W1 + 1.4;
 const CASC = [W1_END + .1, Math.max(W1_END + 1.3, C.twenty - .35)];
 const WORST = CASC[1] + .2, BREAK = WORST + .6;                       // fix 6: the problem breaks at BREAK
-const PAN = Math.max(C.hub + .1, WORST + 1.95), HUB_IN = PAN, HUB_D = 1.0, LAND = HUB_IN + .7 * HUB_D;   // the camera arrives on the empty spot first, then the hub drops in (a moving camera over a moving hub strobed)   // the drop lasts 0.7 s (slow enough that no part of the frame flashes past in one frame)
-const COLLAPSE = [HUB_IN + .9, HUB_IN + .9 + 24 * .04 + .25], HUBW = [COLLAPSE[1] - .05, COLLAPSE[1] + .7];   // fix 10: one wave out, then the 11 fan out
-const NEW_IN = Math.max(C.newt, HUBW[1] + .5), NEW_W = [NEW_IN + .45, NEW_IN + 1.2];
+const PAN = Math.max(C.hub + .1, WORST + 1.95), HUB_IN = PAN, HUB_D = 1.4, LAND = HUB_IN + .7 * HUB_D;   // the camera arrives on the empty spot first, then the hub drops in (a moving camera over a moving hub strobed)   // the drop lasts 0.7 s (slow enough that no part of the frame flashes past in one frame)
+const COLLAPSE = [LAND + .2, LAND + .2 + 24 * .04 + .25], HUBW = [COLLAPSE[1] - .05, COLLAPSE[1] + .7];   // fix 10: one wave out, then the 11 fan out
+const NEW_IN = Math.max(C.newt, HUBW[1] + .5), NEW_W = [NEW_IN + .45, NEW_IN + 1.9];   // the New cable grows slowly (its tip swept past the close camera)
 const PAY = C.same + .4;
 
 // ---------- the cast ----------
@@ -111,7 +111,7 @@ APPS.forEach((a, i) => { const p0 = appPlug(i, 3.5), x1 = AX(i) * .3;
   hubW.push({ w: W3D.wire(S, [[x1, HUB_P.y + .22, HUB_P.z + .76], [x1, HUB_P.y - .2, HUB_P.z + .8], [x1, FL, HUB_P.z + 1.0], [lerp(p0[0], x1, .6), FL, .2], [p0[0] * .95, FL, 1.4], p0], { color: 0x2fd27a, radius: .05, curve: 'centripetal', floorY: 0, segments: 140 }), k: i }); });
 TOOLS.forEach((t, j) => { const e = EDGE(j), sx = SIDE(j) * (2.3 + .05 * j), x0 = SIDE(j) * (.25 + .12 * Math.floor(j / 2));
   hubW.push({ w: W3D.wire(S, [[x0, HUB_P.y + .25, HUB_P.z - .76], [x0, HUB_P.y - .3, HUB_P.z - .85], [x0 * 1.4, FL, HUB_P.z - 1.15], [lerp(x0, sx, .6), FL, -4.6], [sx, FL + .02, -6.42], [sx, e[1] * .5, -6.5], [sx, e[1] - .08, -6.5], [e[0] + SIDE(j) * .16, e[1], WALL_Z], e], { color: 0x2fd27a, radius: .05, curve: 'centripetal', floorY: 0, segments: 160 }), k: 3 + j }); });
-const newW = W3D.wire(S, [[1.3, HUB_P.y + .35, HUB_P.z + .3], [1.5, HUB_P.y - .15, HUB_P.z + .3], [2.0, FL, -1.95], [NEW_P[0] - .3, FL, NEW_P[2] + .3], [NEW_P[0] - .62, NEW_P[1] - .4, NEW_P[2] + .05], [NEW_P[0] - .62, NEW_P[1] + .45, NEW_P[2]]], { color: 0x2fd27a, radius: .05, curve: 'centripetal', floorY: 0, segments: 120 });
+const newW = W3D.wire(S, [[1.3, HUB_P.y + .35, HUB_P.z + .3], [1.5, HUB_P.y - .15, HUB_P.z + .3], [2.0, FL, -1.95], [NEW_P[0] - .3, FL, NEW_P[2] + .3], [NEW_P[0] - .62, NEW_P[1] - .4, NEW_P[2] + .05], [NEW_P[0] - .62, NEW_P[1] + .45, NEW_P[2]]], { color: 0x2fd27a, radius: .05, curve: 'centripetal', floorY: 0, segments: 480 });
 
 // ---------- light: sweeps for the big moments; fix 9 (U10): the key light is cold until the hub lands, then warm (and cold again in the last 0.3 s, frame 0's light) ----------
 const sweep = new THREE.PointLight(0xfff1dc, 0, 4.2, 2); S.scene.add(sweep);
@@ -249,7 +249,7 @@ function frame(t) {
   const sp = t > BREAK && t < BREAK + .25 ? 1 - (t - BREAK) / .25 : 0; spark.intensity = 6 * sp; sparkDot.visible = sp > .02; sparkDot.scale.setScalar(.3 + .7 * sp);   // fades with the spark (no 40 Hz blink)
   if (pB) { spark.position.copy(pB.userData.at).add(V(0, .05, .1)); sparkDot.position.copy(spark.position); }
   // the hub: big moment 3, opaque from its first frame
-  W3D.enter(hub, 'slam', prog(t, HUB_IN, HUB_IN + HUB_D), { amp: .6, toward: 0 }); const hf = sm(prog(t, HUB_IN, HUB_IN + .3)); HUBMATS.forEach((m) => { m.opacity = hf; });   // see-through only while it fades in (sorting flipped the label frame to frame)   // a short, slow drop that fades in over 0.3 s (no pop, nothing flashes past)   // falls straight down from above the frame (it appeared mid-frame, then swept past the camera) if (prog(t, HUB_IN, HUB_IN + HUB_D) >= 1) hub.position.y = HUB_P.y + Math.sin(t * 1.1) * .02 * sm(prog(t, HUB_IN + HUB_D, HUB_IN + HUB_D + .55));
+  W3D.enter(hub, 'slam', prog(t, HUB_IN, HUB_IN + HUB_D), { amp: .45, toward: 0 }); const hf = sm(prog(t, HUB_IN, HUB_IN + .3)); HUBMATS.forEach((m) => { m.opacity = hf; });   // see-through only while it fades in (sorting flipped the label frame to frame)   // a short, slow drop that fades in over 0.3 s (no pop, nothing flashes past)   // falls straight down from above the frame (it appeared mid-frame, then swept past the camera) if (prog(t, HUB_IN, HUB_IN + HUB_D) >= 1) hub.position.y = HUB_P.y + Math.sin(t * 1.1) * .02 * sm(prog(t, HUB_IN + HUB_D, HUB_IN + HUB_D + .55));
   hubW.forEach((q) => { const s0 = hubT(q.k); q.w.reveal(ease(prog(t, s0, s0 + .45)));
     const gs = prog(t, C.eleven + .4 + q.k * .03, C.eleven + 1.4 + q.k * .03);   // fix 12 (U8): the green sweep along the 11, the before/after rhyme
     q.w.pulse(Math.max(prog(t, s0 + .45, s0 + .8), gs * .9, prog(t, PAY + 1.6 + q.k * .03, PAY + 2.0 + q.k * .03)), t, (gs > 0 && gs < 1) || prog(t, PAY + 1.6, PAY + 2.4) > 0 ? .45 : 1); });
