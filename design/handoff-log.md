@@ -1314,3 +1314,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/t10-r4-running · Handoff: v7 render 4 dispatched (the last)
 - Done: local glitch checks all pass; render 4 started on GitHub; owner: v7 closes after this render.
 - Left: Output QA, v7 ready for critic; then tasks 16, 17, 18.
+## 2026-11-28 · claude/web-split · Web kit: before/after split piece (task 16)
+- Done: scripts/explainer/kitsplit.js (KM.split), its kit-inline entry, study clip scripts/explainer/demo/split.html, rules-web.md rule 21.
+- Left: none; the next web builder can use it.
