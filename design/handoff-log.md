@@ -1095,3 +1095,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/critic-web-49-scrollbar · Critic: showreel-49-scrollbar, NOT READY (render 1)
 - Done: judged the real MP4 (frames every 0.25 s at 390 px, -14.0 LUFS, 1.39 s cover clean, side-by-side vs gold tabwiggle). CRITIC: NOT READY, item 20 in review/web/showreel-49-scrollbar.md: frame 0 shows only "Why" (question 42; the direction card promised the whole hook), the glide ghost doubles over the subtitle at 7.8-8.0 s, and the 10 px bar is smaller than its counter. STOP 6.5, REWATCH 7, PREMIUM 7/7/7.
 - Left: the builder applies the three-point EXACT FIX (dim full hook at frame 0, drop the flying ghost, bar 14 -> 22 px), reruns preflight-all, and uses render 2 (no owner yes needed); then a fresh critic. Post at 19:00 IST.
+## 2026-11-27 · claude/critic-web-49-scrollbar-r2 · Critic: showreel-49-scrollbar, READY (render 2)
+- Done: judged the render 2 MP4 (frames every 0.25 s at 390 px, a 20 fps strip of 7.6-8.2 s, -14.0 LUFS, side-by-side vs gold tabwiggle). All three fixes show: whole dim hook at frame 0, no ghost pill (the lit lines sweep in place, bar lime at 8.25 s), 22 px bar. CRITIC: READY, item 22 in review/web/showreel-49-scrollbar.md; STOP 7.5, REWATCH 7.5, PREMIUM 7.5 / 7.5 / 7.5. Stage set to ready.
+- Left: post at 19:00 IST (design/slots.json).
