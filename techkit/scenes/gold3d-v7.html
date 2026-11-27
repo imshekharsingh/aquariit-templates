@@ -237,7 +237,7 @@ function frame(t) {
   const fl = Math.min(1, pulse(t, BREAK + .07, .055) + pulse(t, BREAK + .23, .055));   // two soft grey dips (each about 4 frames), not a strobe
   toolBody[0].material.color.copy(toolCol[0]).lerp(new THREE.Color(0x5a5c66), fl);
   // the 24 cables
-  tangle.forEach((q) => { const lin = (x) => sm(x) * .3 + clamp(x) * .7, u = q.k === 0 ? lin(prog(t, W1, W1 + 1.3)) : lin(prog(t, landT(q.k) - .7, landT(q.k)));   // near-even growth (fast middles swept tips past the camera)
+  tangle.forEach((q) => { const lin = (x) => sm(x) * .3 + clamp(x) * .7, u = q.k === 0 ? lin(prog(t, W1, W1 + 1.3)) : lin(prog(t, landT(q.k) - 1.3, landT(q.k)));   // each cascade cable grows over 1.3 s (tips raced past the near camera)   // near-even growth (fast middles swept tips past the camera)
     const ret = ease(prog(t, retT(q.k), retT(q.k) + .22)); q.w.reveal(u * (1 - ret));   // fix 10: pulled back into its socket, one after another
     const pk = prog(t, landT(q.k), landT(q.k) + (q.k === 0 ? .6 : .35)), pw = prog(t, WORST - .2 + q.k * .03, WORST + .8 + q.k * .03);   // fix 7: the sweep along the tangle lasts about 1 s
     q.w.pulse(Math.max(pk, pw * .9), t, q.k === 0 && pk > 0 && pk < 1 ? .45 : .25);   // a glow along the cable, no bead (a small fast bead twinkled)
