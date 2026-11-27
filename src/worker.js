@@ -4,8 +4,9 @@
 // HTTP Basic headers are still accepted so scripts/CI can authenticate with curl --user.
 import { sendPush, PUSH_HOST } from './push.js';
 import { journeyApi } from './journey.js';
-import { plan, NOTIFY_TYPES, istParts } from './notify.js';
+import { plan, NOTIFY_TYPES, istParts, fill, planToday } from './notify.js';
 import SLOT_CONFIG from '../design/slots.json' with { type: 'json' };
+import NOTIFY_POLICY from '../design/notify-policy.json' with { type: 'json' };   // the one notification plan (task 6)
 
 const COOKIE = 'aq_session', TTL = 60 * 60 * 24 * 30; // 30 days
 // /tips/ (owner, 27 Oct 2026) is the one public page: the reels' fixes with live demos, static only (no data, no API calls)
@@ -770,6 +771,10 @@ async function spareApi(request, env, p, url) {
     const last = await db.prepare('SELECT at, devices, sent, failed, note FROM spare_push_log ORDER BY at DESC LIMIT 1').first();
     return jres({ ...w, week, on: !row, skipped: !!row, at: row ? row.at : null, lastPush: last || null });
   }
+  if (p === '/api/push/plan' && request.method === 'GET') {   // today's plan in plain words (Settings > Notifications, task 6)
+    const day = istParts(Date.now()).day;
+    return jres({ day, lines: planToday(day, SLOT_CONFIG.slots || {}, SLOT_CONFIG.tests || {}, NOTIFY_POLICY) });
+  }
   if (p === '/api/push/prefs') {   // one switch per notification type (all on until switched off)
     const d = await notifyDb(env);
     if (request.method === 'PUT') {
@@ -877,7 +882,7 @@ async function postDb(env) {
 // ---- Notifications (owner, 25 Nov 2026): at a reel's slot "<Channel> reel is ready to post"; 45 min later one gentle nudge; 20:30 IST one last call; "Posted ✓" with
 // the link and the plain reason on a failure (both sent when Post now reports them); 08:00 IST one morning summary. One switch per type (D1 push_prefs; all on
 // until switched off). Every send has a key in D1 notif_log, written first, so a type is never sent twice for the same reel (1 nudge and 1 last call at most).
-// The cron "*/10 * * * *" runs the plan in src/notify.js; a reel the second look has not cleared gets no "ready" push (it shows in the morning summary instead).
+// The cron "*/2 * * * *" runs the plan in src/notify.js (design/notify-policy.json); a reel the second look has not cleared gets no "ready" push (it shows in the morning summary instead).
 async function notifyDb(env) {
   const db = await postDb(env);
   if (!db) return null;
@@ -927,17 +932,23 @@ async function notifyTick(env, now = Date.now()) {
   const db = await notifyDb(env);
   if (!db) return { sent: 0 };
   const caps = await captionsOf(env), up = new Set(((await db.prepare('SELECT id FROM reel_uploaded').all().catch(() => ({}))).results || []).map((r) => r.id));
-  const ready = await readyMap(env), day = istParts(now).day;
-  const reels = Object.entries(caps).filter(([, m]) => m && !m.hidden && !m.sample && m.postOn === day)
-    .map(([n, m]) => ({ name: n, m, day: m.postOn, due: Date.parse(`${m.postOn}T${postSlot(n, m)}:00+05:30`), ready: ready[n] === undefined ? true : ready[n] === true, posted: up.has(n) }));
+  const day = istParts(now).day, tests = SLOT_CONFIG.tests || {}, upAt = {};
+  for (const r of ((await db.prepare('SELECT id, at FROM reel_uploaded').all().catch(() => ({}))).results || [])) upAt[r.id] = Date.parse(r.at);
+  const base = Object.entries(caps).filter(([, m]) => m && !m.hidden && !m.sample && m.postOn === day)
+    .map(([n, m]) => ({ name: n, m, ch: chOfReel(n, m), day: m.postOn, due: Date.parse(`${m.postOn}T${postSlot(n, m)}:00+05:30`), posted: up.has(n), postedAt: upAt[n] || null }));
+  // the timer runs every 2 minutes: the journey (who the second look cleared) is read only when a reel push is actually due
+  const pre = plan(now, base.map((r) => ({ ...r, ready: true })), tests), ready = pre.some((x) => x.reel && x.type !== 'logged') ? await readyMap(env) : {};
+  const reels = base.map((r) => ({ ...r, ready: ready[r.name] === undefined ? true : ready[r.name] === true }));
   const out = [];
-  for (const x of plan(now, reels)) {
+  for (const x of plan(now, reels, tests)) {
     let payload;
     if (x.type === 'digest') payload = await digestPayload(env, db, caps, day, ready);
     else { const r = reels.find((q) => q.name === x.reel), title = await reelTitle(env, r.name, r.m), ch = CH_SHORT[chOfReel(r.name, r.m)], url = '/#reel=' + r.name;
-      payload = x.type === 'ready' ? postPayload(r.name, r.m, title)
-        : x.type === 'nudge' ? { title: `${ch} reel is still waiting`, body: `${title}. Tap to post it when you are ready.`, url, tag: 'nudge-' + r.name }
-        : { title: `Last call: ${ch} reel`, body: `${title} is not posted yet today. Tap to open it.`, url, tag: 'last-' + r.name }; }
+      // words from design/notify-policy.json (the regular plan, or the slot-test plan on a test day)
+      const P = x.test ? NOTIFY_POLICY.test : NOTIFY_POLICY.regular, line = P[x.type] || NOTIFY_POLICY.regular[x.type] || {};
+      const v = { ch, title, slot: postSlot(r.name, r.m), n: x.test && x.test.n, days: x.test && x.test.days,
+        time: r.postedAt ? new Date(r.postedAt + IST_MS).toISOString().slice(11, 16) : '', ontime: x.onTime ? 'on time, it counts' : 'late, the test day is weakened' };
+      payload = x.type === 'ready' && !x.test ? postPayload(r.name, r.m, title) : { title: fill(line.title, v), body: fill(line.body, v), url, tag: x.type + '-' + r.name }; }
     out.push({ type: x.type, reel: x.reel, ...(await sendType(env, db, x.type, x.key, payload)) });
   }
   await db.prepare('DELETE FROM notif_log WHERE at < ?1').bind(new Date(now - 14 * DAY_MS).toISOString()).run().catch(() => {});

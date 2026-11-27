@@ -1808,7 +1808,8 @@
     var left = Date.parse(sp.until) - Date.now(); if (left > 0) setTimeout(function(){ box.remove(); inboxCount(); }, Math.min(left, 2e9));   // gone at the reset
   }).catch(function(){});
   // one switch per notification type (25 Nov 2026): GET/PUT /api/push/prefs; every type is on until switched off
-  var NP = [['ready', 'A reel is ready to post (at its time)'], ['nudge', 'A gentle nudge, 45 minutes later'], ['last', 'A last call at 8:30 PM'], ['posted', 'Posted, with the link'], ['failed', 'Posting failed, and why'], ['digest', 'A morning summary at 8:00 AM']];
+  // the one plan (task 6, 27 Nov 2026): design/notify-policy.json; today's times in words come from GET /api/push/plan
+  var NP = [['ready', 'A reel is ready to post (2 min before its time)'], ['nudge', 'A gentle nudge if it is not posted (15 min after; 10 min on a slot test day)'], ['late', 'Slot test: a warning 30 min after the time'], ['logged', 'Slot test: the posting time is logged'], ['last', 'A last call at 8:30 PM'], ['posted', 'Posted, with the link'], ['failed', 'Posting failed, and why'], ['digest', 'A morning summary at 8:00 AM']];
   function npLoad(){ var box = document.getElementById('np-box');
     fetch('/api/push/prefs', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
       box.textContent = ''; var on = 0;
@@ -1819,6 +1820,12 @@
         row.appendChild(cb); row.appendChild(el('span', null, t[1])); box.appendChild(row); });
       document.getElementById('np-n').textContent = on + ' of ' + NP.length + ' on'; })
       .catch(function(){ box.textContent = ''; box.appendChild(el('p', 'mute', 'The switches could not load. Try again in a moment.')); }); }
+  function npPlan(){ var box = document.getElementById('np-box');
+    fetch('/api/push/plan', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
+      var w = el('div', 'np-plan'); w.id = 'np-plan'; w.appendChild(el('p', 'mute', "Today's plan"));
+      (j.lines || []).forEach(function(l){ w.appendChild(el('p', 'mute', l)); });
+      var o = document.getElementById('np-plan'); if (o) o.remove(); box.parentNode.insertBefore(w, box.nextSibling); }).catch(function(){}); }
+  npPlan();
   npLoad();
   // notifications: the service worker (offline copies + push) and one line that always says where this device stands (owner, 1 Nov 2026:
   // "turn on notifications doesn't do anything"): never silent. iPhone: iOS 16.4+ and the app added to the Home Screen (Safari in a tab has no push)
