@@ -174,7 +174,7 @@
     else if (kind === 'flip') { obj.rotation.y += side * Math.PI * 2 * (1 - ease3(u)); sc *= .3 + .7 * e; }
     else if (kind === 'slam') {   // v7 big moment: falls from above and close, lands with an overshoot and a short squash
       const f = clamp(u / .7), land = clamp((u - .7) / .3), dn = ease3(f);
-      obj.position.y += 2.4 * A * (1 - dn); obj.position.z += 1.6 * A * (1 - dn); obj.rotation.x -= (o.tilt ?? .55) * (1 - dn); sc *= (1.45 - .45 * dn) * (o.grow ? ease3(clamp(u / o.grow)) : 1);   // grow: it grows in over the first part of the fall (no pop when it starts inside the frame)   // tilt: how far it leans back while falling (a small tilt keeps a label facing the camera)
+      obj.position.y += 2.4 * A * (1 - dn); obj.position.z += (o.toward ?? 1.6 * A) * (1 - dn);   // toward: how far it starts toward the camera (0: straight down) obj.rotation.x -= (o.tilt ?? .55) * (1 - dn); sc *= (1.45 - .45 * dn) * (o.grow ? ease3(clamp(u / o.grow)) : 1);   // grow: it grows in over the first part of the fall (no pop when it starts inside the frame)   // tilt: how far it leans back while falling (a small tilt keeps a label facing the camera)
       if (u > .7) { const sq = Math.sin(Math.PI * land) * .09 * (1 - land); obj.scale.set(h.s * (1 + sq), h.s * (1 - sq), h.s * (1 + sq)); return; } }
     else { sc *= Math.max(.001, e); }
     obj.scale.setScalar(Math.max(.001, sc));
