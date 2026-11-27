@@ -1,5 +1,6 @@
 // Tell the app's live studio board which stage today's reel is in (owner, 24 Nov 2026). Sessions and workflows call it.
 //   node scripts/stage.mjs <reel|web|tech|c3> <stage> [--model fable] [--line "Rendering 62%"] [--pct 40] [--thumb frame.jpg]
+//   node scripts/stage.mjs <reel|web|tech|c3> failed --step building --line "no access to the repo"   the board shows Fix on that step (task 13, 27 Nov 2026)
 //   node scripts/stage.mjs project:<id> <planned|building|stills|render|checking|critic|done|waiting|failed> [--line "..."] [--pct n]   a project row
 //   (owner, 26 Nov 2026; the project's entry in design/projects.json is the main record: the newer of the two shows on the board)
 // stage: researching | topic | building | stills | video | checking | ready | skipped | posted
@@ -14,13 +15,14 @@ const a = process.argv.slice(2), strict = a.includes('--strict');
 const pos = a.filter((x, i) => !x.startsWith('--') && !(i > 0 && a[i - 1].startsWith('--') && a[i - 1] !== '--strict'));
 const opt = (n) => { const i = a.indexOf('--' + n); return i >= 0 ? a[i + 1] : undefined; };
 const [reel, stage] = pos;
-const STAGES = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted'];
+const STAGES = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted', 'failed'];   // failed: give --step (the stage it failed at) and --line (why, plain words)
 const PSTAGES = ['planned', 'building', 'stills', 'render', 'checking', 'critic', 'done', 'waiting', 'failed'], isProject = /^project:[a-z0-9-]{1,40}$/.test(reel || '');
 if (isProject && !PSTAGES.includes(stage)) { console.error('Usage: node scripts/stage.mjs project:<id> <' + PSTAGES.join('|') + '> [--line text] [--pct n]'); process.exit(2); }
 if (!isProject && (!reel || !STAGES.includes(stage))) { console.error('Usage: node scripts/stage.mjs <reel|web|tech|c3> <' + STAGES.join('|') + '> [--model m] [--line text] [--pct n] [--thumb file.jpg]'); process.exit(2); }
 const body = { reel, stage };
 if (opt('model')) body.model = opt('model');
 if (opt('line')) body.line = opt('line');
+if (stage === 'failed') { const st = opt('step') || 'building'; if (!STAGES.slice(0, 6).includes(st)) { console.error('--step must be one of ' + STAGES.slice(0, 6).join(', ')); process.exit(2); } body.line = st + ': ' + (opt('line') || 'stopped'); }   // the board reads the step from the line
 if (opt('pct') !== undefined) body.pct = Number(opt('pct'));
 if (opt('thumb')) { try { body.thumb = readFileSync(opt('thumb')).toString('base64'); } catch { console.error('stage: thumb file not readable, sending without it'); } }
 const host = process.env.STAGE_HOST || 'templates.aquariit.com';

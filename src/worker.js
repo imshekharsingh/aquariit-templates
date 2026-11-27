@@ -632,7 +632,8 @@ async function probeApi(request, env, url) {
 // (sessions: one network secret per host; 26 Nov 2026); unset or empty secret = off). `reel` is a reel name or a channel (web / tech / c3), as early as the
 // research, before the reel has a name. The app reads GET /api/stage (signed in): today's rows, newest first. Render % still comes from /api/journey.
 // thumb = a small JPEG as base64 (at most 200 KB), kept in R2 under stage/ and shown on the card.
-const STAGE_IDS = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted'], STAGE_THUMB_MAX = 200 * 1024;
+const STAGE_IDS = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted', 'failed'],   // failed (task 13, 27 Nov 2026): the line starts with the step that failed ("building: no access to the repo")
+      STAGE_THUMB_MAX = 200 * 1024;
 let stageReady = null;
 async function stageDb(env) {
   if (!env.DB) return null;
@@ -1111,6 +1112,18 @@ async function listAll(bucket, prefix) {
   do { const r = await bucket.list({ prefix, delimiter: '/', cursor, limit: 1000 }); out.push(...r.objects); cursor = r.truncated ? r.cursor : undefined; } while (cursor);
   return out;
 }
+// Tests (task 14, owner 27 Nov 2026: test renders were invisible): every video under study/ (previews, tests, kit samples) for the app's Tests list,
+// newest first, with its date and cover (study/<name>-cover-auto.jpg when the R2 workflow made one). Never posted, never counted as a reel.
+async function testsList(env) {
+  if (!env.REELS) return jres({ error: 'no-store' }, 503);
+  const [v, c] = await Promise.all([listAll(env.REELS, 'v/study/'), listAll(env.REELS, 'c/study/')]);
+  const covers = new Map(c.map((o) => [o.key.slice(8), o]));
+  const url = (o) => `/reels/${o.key.slice(2)}?v=${o.uploaded.getTime()}`;
+  const tests = v.filter((o) => /^v\/study\/showreel-[a-z0-9-]{1,60}\.mp4$/.test(o.key)).map((o) => { const base = o.key.slice(8, -4), cv = covers.get(base + '-cover-auto.jpg') || covers.get(base + '-cover.jpg');
+    return { name: base, video: url(o), cover: cv ? url(cv) : null, at: o.uploaded.toISOString(), mb: Math.round(o.size / 1048576 * 10) / 10 }; })
+    .sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 60);
+  return jres({ tests });
+}
 async function showreelList(env) {
   if (!env.REELS) return jres({ error: 'no-store' }, 503);
   const [v, c] = await Promise.all([listAll(env.REELS, 'v/'), listAll(env.REELS, 'c/')]);
@@ -1284,7 +1297,7 @@ export default {
     if (p === '/api/probe-log') return (await stageKeyOk(request, env)) ? probeApi(request, env, url) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/stage' && request.method === 'POST') return (await stageKeyOk(request, env)) ? stageApi(request, env, p, ctx) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/slots' && request.method === 'GET') return signedIn ? jres({ slots: SLOT_CONFIG.slots, reviewOn: SLOT_CONFIG.reviewOn }) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
-    if (p.startsWith('/api/')) return signedIn ? (p === '/api/projects' ? projectsApi(request, env) : p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p === '/api/projects' ? projectsApi(request, env) : p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/tests' ? testsList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     // Read-only reel key (owner, 23 Nov 2026): critic and review sessions fetch the final reel files with Authorization: Bearer <REELS_READ_KEY>.
     // It opens ONLY GET/HEAD of /reels/<file> from R2: no API, no app pages, no writes, no site-copy fallback. Unset or empty secret = off.
     if (!signedIn && (await readKeyOk(request, env))) {
