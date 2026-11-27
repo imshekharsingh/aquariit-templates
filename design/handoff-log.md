@@ -1305,3 +1305,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/project-steps · App: projects show their steps and the next action (task 7)
 - Done: projects.json steps + next (Worker passes them through, tests in scripts/qa/stage-test.mjs); Today step bar, Next line, step list; project-done push type; backfill; rule in runbook-studio and handoff.
 - Left: live App probe after deploy.
+## 2026-11-27 · claude/t7-done · Handoff: task 7 done (APP PROBE: PASS), v7 render 4 cascade fix found
+- Done: task 7 live and probed; v7 r4 glitch screen finished; cascade restaged (far high wide, 1.7 s move, dim edge entry).
+- Left: full-size checks at the other flagged moments, then render 4.
