@@ -29,7 +29,7 @@ Every task here is also a project on the app's board: update its entry in design
 Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
 when the owner asks). The hourly "Handoff queue check" starts a session only for an open GO task that is not already started (a
 "task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
-Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3; task 11 may be done while a v7 render runs), then task 11 (upload progress bar) if not done yet, then task 9 (references). Every other open task waits until it is marked GO.
+Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3; task 11 may be done while a v7 render runs), then task 11 (upload progress bar) if not done yet, then task 12, 13, 14, 15 (the owner's app gaps of 27 Nov), then task 9 (references, measured; do it together with task 15). Every other open task waits until it is marked GO.
 
 ## Owner rule for task 10: keep going until stable (owner, 26 Nov 2026)
 Task 10 (3D kit v7) continues on its own through the hourly queue check until it is STABLE or capped, without waiting to be told:
@@ -167,6 +167,28 @@ and stills against points 1-7 before any render. (b) On its OK: one render, Outp
 v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
 if NOT READY the owner decides. Update projects.json at each step.
 
+## Queued tasks 12-15 GO, after tasks 10 and 11 (owner, 27 Nov 2026): the app does not show the owner what they need
+Owner (27 Nov): "If there's a Needs you in app, how do I know where it is or what it is?" and three more. Also design/todo.md P1 (27 Nov).
+Each task: plain words in the app, phone first (390 px), no tool names or codes on screen, npm run check, one push each, a Progress line,
+projects.json stage updates. Size each M. Ask the owner chat (main account) before anything costs more than about $5.
+- **Task 12, "Needs you" you can find.** One obvious place: a badge on the Today tab AND the open question(s) at the top of Today, each with
+  the reel or preview it is about (cover + name, tap to play) and its yes/no or text answer right there. Every owner-chat message that asks
+  something can then say "on Today, top". Remove answered questions at once.
+- **Task 13, Fix at the exact stage.** On the studio board, the reel's journey row that failed or stalled (build, stills, render, machine
+  checks, critic, post) carries the Fix button and its one-line reason; a stage past its expected time (render > 60 min, critic > 45 min,
+  build stage with no update for 2 h) counts as stalled. Today's case: the Turns Out build failed at the build stage (no repo access) and the
+  board showed nothing there for hours.
+- **Task 14, Tests and previews are visible.** Renders under reels/study/ (tests, previews, kit samples) get a "Tests" list in the app
+  (Inbox or Growth): cover, name, date, a plain "what it tests" line, player. Never posted, never counted as a reel. Messages stop saying
+  "study folder".
+- **Task 15, References you can tell apart and clean up.** Each reference in Inbox > References shows a thumbnail (image) or a short silent
+  loop (first 3 s of a clip, made once on upload or by Owner answers `refs`), its state (new / studied / used in <reel>), the lesson taken in
+  one line, and links to the reels that used it (from captions.json "refs", task 9). A "Clean up" view lists the ones safe to remove
+  (studied 2+ days ago and used, or skipped) with one Remove button each.
+- Done on the main account (27 Nov, today's posts): the channel tabs' "Ready to post" box showed every channel's ready reels (the web tab
+  showed the tech reel); now each tab shows only its own, a critic verdict on any item number is read (a READY web reel showed as not ready),
+  and tech shows its 20:30 time instead of "posts paused". Add an app test for "each tab shows only its channel" in task 12.
+
 ## Queued task 11 GO, during v7's render waits or right after task 10 (owner, 26 Nov 2026): progress bar for reference uploads
 Owner: "reference upload should have progress bar". Agreed after discussion. Size S. templates/index.html (References upload, ~line 1541;
 it uploads large files in parts) and the Worker's refs upload route if needed:
@@ -273,6 +295,7 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 27 Nov 01:38 IST, other account: the owner paused the hourly "Handoff queue check" scheduled task until they say so. Nothing on this account starts work by itself now: render 3 of v7 starts only when the owner tells this account (after "PLAN: OK TO RENDER").
 - 27 Nov 01:30 IST, main account plan critic: PLAN: CHANGE FIRST + seven small changes (fewer headline words and a step pill instead of the grey words, dim everything but the subject in three moments, a still hold and one move home, a last frame that matches frame 0, a clean New shot, a readable first frame), then render 3 with no further plan check (review/tech/showreel-tech-gold3d-v7.md "Render 3 plan critic").
 - 27 Nov ~13:00 IST, owner (via the owner chat): HOLD lifted; start task 10 now (7 plan-critic changes, then render 3, Output QA, "v7 ready for critic").
+- 27 Nov ~14:45 IST, owner (via the owner chat): tasks 12-15 queued GO after tasks 10 and 11 (Needs you, Fix at the stage, Tests list, references with thumbnails and cleanup).
 ---
 
 # History: CLOSED (owner, 22 Nov 2026)
