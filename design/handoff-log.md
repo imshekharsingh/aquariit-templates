@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/tech-27nov-stills-check · outside stills check: showreel-tech-ai-words APPROVED
+- Verdict appended to review/tech/showreel-tech-ai-words.direction.md (owner notes 1-6, faults, UPGRADES). Two HIGH fixes before the one render: no type under 24 px on the wide shots (tile names and sub-node labels fade with the tags), ghosts kept out of the caption, bottom band and right edge. The builder's branch was already merged, so this went on its own branch. No render, no scene edit.
+
 ## 2026-11-27 · claude/todo-owner-app-gaps · owner chat: four app gaps noted as CRITICAL to-do
 - Owner: study folder invisible, "Needs you" hard to find, Fix button not at the failing stage, references with no thumbnail/trace/cleanup. design/todo.md P1 item (27 Nov); not fixed yet, the owner chat plans it with size and cost.
 
