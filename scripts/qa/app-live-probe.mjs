@@ -30,18 +30,33 @@ for (const ch of ['web', 'tech', 'c3']) {
   for (const [k, n] of Object.entries(other)) if (k !== ch && rt.includes(n)) log.push(`PAGE ERROR  tab ${ch}: Ready to post names ${n}`);
   console.log(`REELS ${ch}: tabs=`, await txt('.tabs'), '| ready=', await txt('#t-ready'), '| list=', await txt('#list'));
 }
-const heavy = log.filter((l) => /\.mp4|\/api\/refs\/\d+\/file/.test(l)).length;
-console.log(`VIDEO REQUESTS WITHOUT A TAP: ${heavy} (want 0)`); const perr = log.filter((l) => l.startsWith('PAGE ERROR')).length;
-console.log(heavy ? 'APP PROBE: FAIL (videos load on open)' : perr ? `APP PROBE: FAIL (${perr} page error)` : 'APP PROBE: PASS');
-for (const ch of ['tech', 'web', 'c3']) {   // the Today board's Open to post / Open reel: the reels page must show that card's channel in every part
+// the Today board (task 21, owner chat 27 Nov 2026): each card's button is judged by what it says it does.
+//   "Open to post" -> that channel's reels tab, its Ready box naming only that channel; "Open reel" -> that reel's own page, of that channel.
+const NAMES = { web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' };
+for (const ch of ['tech', 'web', 'c3']) {
   await page.evaluate(() => { const b = [...document.querySelectorAll('.bnav button, nav button')].find((x) => /today/i.test(x.textContent || '')); if (b) b.click(); });
   await page.waitForTimeout(800);
-  const went = await page.evaluate((c) => { const cards = [...document.querySelectorAll('.bcard')]; const card = cards.find((x) => x.querySelector('.dot.d-' + c)) ; const b = card && card.querySelector('.bopen'); if (b && !b.hidden) { b.click(); return true; } return false; }, ch);
-  await page.waitForTimeout(1500);
-  if (went) { const title = await txt('#title'), rt = await txt('#t-ready'); console.log(`OPEN FROM BOARD ${ch}: title=${title} | ready=${rt.slice(0, 80)}`);
-    for (const [k, n] of Object.entries({ web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' })) if (k !== ch && (rt.includes(n) || title.includes(n))) log.push(`PAGE ERROR  Open from board ${ch}: shows ${n}`); }
+  const btn = await page.evaluate((c) => { const card = [...document.querySelectorAll('.bcard')].find((x) => x.querySelector('.dot.d-' + c)); const b = card && card.querySelector('.bopen'); if (!b || b.hidden) return null; const t = b.textContent.trim(); b.click(); return t; }, ch);
+  await page.waitForTimeout(1500); await shot(`3-board-${ch}`);
+  if (!btn) { console.log(`OPEN FROM BOARD ${ch}: no button (nothing to open yet)`); continue; }
+  const vis = async (sel) => page.evaluate((q) => { const e = document.querySelector(q); return !!e && !e.hidden && e.offsetParent !== null; }, sel);
+  if (/open to post/i.test(btn)) {
+    const onTab = await vis('#s-chan'), sel = await page.evaluate(() => { const t = document.querySelector('.tab[aria-selected="true"], .tab.on'); return t ? t.getAttribute('data-ch') : null; }), rt = await txt('#t-ready');
+    const wrong = Object.entries(NAMES).filter(([k, n]) => k !== ch && rt.includes(n)).map(([, n]) => n);
+    console.log(`OPEN FROM BOARD ${ch}: "${btn}" -> reels tab ${onTab ? 'open' : 'NOT open'}, selected ${sel || '?'}, ready=${rt.slice(0, 80)}`);
+    if (!onTab) log.push(`PAGE ERROR  Open to post ${ch}: the reels tab did not open`);
+    if (sel && sel !== ch) log.push(`PAGE ERROR  Open to post ${ch}: the ${sel} tab is selected`);
+    if (wrong.length) log.push(`PAGE ERROR  Open to post ${ch}: Ready to post names ${wrong.join(', ')}`);
+  } else if (/open reel/i.test(btn)) {
+    const onReel = await vis('#s-reel'), head = await txt('#reel-page .rhead');
+    console.log(`OPEN FROM BOARD ${ch}: "${btn}" -> reel page ${onReel ? 'open' : 'NOT open'}, ${head}`);
+    if (!onReel) log.push(`PAGE ERROR  Open reel ${ch}: the reel page did not open`);
+    else if (!head.includes(NAMES[ch])) log.push(`PAGE ERROR  Open reel ${ch}: the page is for ${head}`);
+  } else console.log(`OPEN FROM BOARD ${ch}: button "${btn}" (not judged)`);
 }
-const perr2 = log.filter((l) => l.startsWith('PAGE ERROR')).length; if (perr2) console.log(`APP PROBE: FAIL (${perr2} page error)`);
+const heavy = log.filter((l) => /\.mp4|\/api\/refs\/\d+\/file/.test(l)).length, perr = log.filter((l) => l.startsWith('PAGE ERROR')).length;
+console.log(`VIDEO REQUESTS WITHOUT A TAP: ${heavy} (want 0)`);
+console.log(heavy ? 'APP PROBE: FAIL (videos load on open)' : perr ? `APP PROBE: FAIL (${perr} page error)` : 'APP PROBE: PASS');   // one verdict, after every step
 console.log('STILL OPEN after the run:'); for (const [r, s] of open) console.log(`  ${Date.now() - s} ms  ${r.method()} ${new URL(r.url()).pathname}`);
 console.log('REQUESTS AND ERRORS:'); for (const l of log) console.log('  ' + l);
 await b.close();

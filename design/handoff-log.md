@@ -6,6 +6,10 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 22:40 IST · claude/app-probe-cards · other account: task 21, App probe judges each Today button by what it says
+- Done: scripts/qa/app-live-probe.mjs: "Open to post" must open that channel's reels tab (selected, Ready box names only that channel); "Open reel" must open that channel's reel page; one verdict line after every step (it printed PASS before the board step).
+- Left: the App probe run on the live app (PASS line in Progress).
+- For the main account: nothing.
 ## 2026-11-27 · claude/2d5-two-tiers · owner chat: shadow-first builds in two tiers
 - Owner chose two tiers: main elements get the full shadow-first draw-on (0.3-0.5 s, cascaded), small lines and labels a quiet 0.2 s trace or fade with their shadow; everything breathes after. direction.md note 7, critic.md, owner-feedback.md updated.
 
