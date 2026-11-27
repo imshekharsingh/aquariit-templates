@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 21:26 IST · claude/v7-r3-ready · other account: task 10, v7 render 3 done, ready for critic
+- Done: render 3 (120 fps); Output QA passes every check but FLICKER (cable cascade 7.7-8.7 s, three weak moments); review file, projects.json, previews.json (the Tests list plays render 3).
+- Left: the main account critic, then the owner decides. Fix idea for a later kit pass: show the cascade from further back.
+- For the main account: start the v7 critic on render 3 (R2 study/showreel-tech-gold3d-v7-r3-preview.mp4).
+
 ## 2026-11-27 · claude/owner-chat-27nov · owner chat: day summary
 - Decisions: tech restarted in the 2.5D map look (4 renders incl. a chat-window opening, owner's six 2.5D notes + "open on the real-life moment" now rules); the other account does app/kit work only (tasks 19-20, 6-7, 16-18 queued after v7), status every 30 min; owner chat opens 04:43; Turns Out back on 14:00.
 - Posted: Turns Out price list (14:00), web scroll bar (19:00, app shows posted); tech AI-words due 20:30. App: stuck "Loading…" was videos streaming on open (fixed, App probe PASS: 0 videos, list 0.24 s); false Fix, tab mix-up, stale home-screen copy fixed.
