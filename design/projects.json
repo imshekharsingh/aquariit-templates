@@ -5,10 +5,10 @@
       "id": "3d-kit-v7",
       "name": "3D kit v7: the last sample",
       "account": "other",
-      "stage": "building",
-      "line": "The plan critic's 7 changes are built; last checks before render 3 (the last).",
+      "stage": "checking",
+      "line": "Fixing the last one-frame glitches the new check found before the last render; then render 3.",
       "pct": 93,
-      "updatedAt": "2026-11-27T10:04:00Z",
+      "updatedAt": "2026-11-27T14:09:00Z",
       "history": [
         {
           "at": "2026-11-26T13:12:00Z",
@@ -54,6 +54,11 @@
           "at": "2026-11-27T10:04:00Z",
           "stage": "building",
           "line": "The plan critic's 7 changes are built; last checks before render 3 (the last)."
+        },
+        {
+          "at": "2026-11-27T14:09:00Z",
+          "stage": "checking",
+          "line": "Fixing the last one-frame glitches the new check found before the last render; then render 3."
         }
       ]
     },

@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 19:40 IST · claude/3d-kit-v7-r3-render · other account: task 10, why no render yet, glitch fixes
+- Done: the scene passes every check but the new glitch check in a few moments; fixes to entrances, pulses, camera routes; techkit/make.py blends FPS/30 frames (v7 topic "fps": 120); stills sheet refreshed.
+- Left: three moments, one whole-reel check, render 3, Output QA, "v7 ready for critic".
+- For the main account: render 3 runs at 120 fps (about 40 min).
+
 ## 2026-11-27 · claude/handoff-heartbeat · owner chat: the other account reports every 30 minutes
 - Owner: periodic status on open tasks. design/handoff.md rule: a Progress line at least every 30 min per started task, a last line saying why any session stopped, and the queue check flags a task silent for 30 min. First ask: what happened to task 10 (v7 render 3) after 15:34 IST.
 
