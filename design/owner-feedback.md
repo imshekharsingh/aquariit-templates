@@ -6,7 +6,7 @@ owner catches something new, the same day.
 Each line also becomes an automated Output QA check the same day (scripts/qa/output-qa.py, run on GitHub on the final MP4 after every render;
 owner, 12 Nov 2026): a reel whose Output QA fails is NOT READY. A line no script can measure says so and stays a critic question.
 
-- 27 Nov: 2.5D elements just appeared. Every element (cards, nodes, panels, icons, lines, labels) must come alive from its shadow: shadow lands, the element draws on above it, settles, then breathes; all through the reel (design/direction.md "2.5D map reels" note 7). Critic question; Output QA FLICKER catches the full-size pop-ins.
+- 27 Nov: 2.5D elements just appeared. Elements come alive from their shadow in two tiers (owner chose): main elements shadow first, then draw on and settle; small lines and labels a quiet trace or fade with their shadow; everything breathes after; all through the reel (design/direction.md "2.5D map reels" note 7). Critic question; Output QA FLICKER catches the full-size pop-ins.
 - 5 Nov: a tech term said wrong ("Wi-Fi" read as two words). Listen for every technical word.
 - 7 Nov: a reel barely moved (one small phone still for 18 s). Does something change every 1.5-2 s?
 - 7 Nov: a developer-only topic. Would a non-developer feel it within 1 s?
