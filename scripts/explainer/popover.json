@@ -1,0 +1,76 @@
+{
+ "name": "showreel-50-popover",
+ "seek": "scripts/explainer/popover.html",
+ "style": "Black look, KM.split pair (BEFORE / AFTER side by side, in step): one Share menu clipped by its card (2 of 4 items) vs the same menu as a popover (all 4); OPENS / CUT OFF meter; mint accent, coral for the cut; no phone, one slow push on the bug",
+ "dur": 15,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.39,
+ "palette": "black",
+ "voice": {
+  "text": "Why is your menu cut off? The card says overflow hidden, so it slices the menu in half. The fix: make the menu a popover. It jumps to the top layer, so no card can clip it. Now every item shows.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "qa": {
+  "focus": {
+   "demo": [
+    22,
+    392,
+    518,
+    714
+   ],
+   "subject": [
+    277,
+    442,
+    518,
+    714
+   ],
+   "from": 0.3,
+   "to": 2.3
+  },
+  "mute": {
+   "before": {
+    "say": "slices"
+   },
+   "after": {
+    "say": "every"
+   },
+   "span": 1.5
+  }
+ },
+ "caption": "Why is your dropdown menu cut off? 👆 The menu sits inside a card with overflow: hidden, and that card slices anything that sticks out past its edge. Half the items are gone, and no z-index can bring them back.\n\nThe fix: make the menu a popover. Put the popover attribute on the menu and a popovertarget on the button that opens it:\n\n<button popovertarget=\"menu\">Share</button>\n<div id=\"menu\" popover>…</div>\n\nA popover opens in the top layer, above everything on the page, so no parent's overflow can clip it. Chrome 114, Firefox 125, Safari 17.\n\n💾 Save this for your next dropdown, and send it to the friend who is still fighting z-index.",
+ "keywords": [
+  "css popover attribute",
+  "dropdown menu cut off",
+  "overflow hidden clipping",
+  "popovertarget html",
+  "top layer css",
+  "html popover tutorial",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#html",
+  "#webdevelopment",
+  "#uidesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/popover",
+   "note": "MDN popover (page source mdn/content, read 28 Nov 2026): open popovers appear above all other elements in the top layer and won't be influenced by parent elements' position or overflow styling; a button with popovertarget opens it"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/api/HTMLElement.json",
+   "note": "MDN BCD api.HTMLElement.popover (read 28 Nov 2026): Chrome 114, Firefox 125, Safari 17"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow",
+   "note": "MDN overflow (read 28 Nov 2026): overflow: hidden clips content that overflows the element's box; no scrollbars"
+  }
+ ]
+}

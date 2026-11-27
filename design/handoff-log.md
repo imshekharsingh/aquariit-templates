@@ -1323,3 +1323,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/v7-closed · 3D kit v7 closed after render 4
 - Done: render 4 Output QA recorded (all pass but FLICKER at 0.8 s); v7 closed per the owner; project marked done.
 - Left: none for v7.
+## 2026-11-28 · claude/web-28nov-popover · Web 28 Nov: showreel-50-popover (a menu cut off by its card, fixed with popover)
+- Done: wrote the 28 Nov web options in the bank (W28-1 to W28-5) and re-read W27-2; Fable kept W28-1 first (pick-log); built the reel from the gold start with the KM.split pair (BEFORE sliced menu, AFTER popover), direction card, review file, captions entry (postOn 2026-11-28, 19:00); all local stills lines pass (subject fill 50%, safe zone ok, continuity 43%, element sound 100%).
+- Left: stills check, preflight-all, render 1, Output QA, critic.

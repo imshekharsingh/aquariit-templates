@@ -1,0 +1,31 @@
+# Review: showreel-50-popover (web, postOn 2026-11-28 postAt 19:00 IST)
+
+Rulebook (rules-web.md), scored on the local stills (review/web/showreel-50-popover.stills.jpg, 11 frames; the voice there is the simulated one, 12.4 s): rule 1 pass (anyone who has opened a dropdown in a card has seen it cut), rule 2 pass (the whole hook and the sliced menu are on screen at frame 0; the first flinch is at 0.2 s), rule 3 pass (the code card types from the spoken "fix", about 5.4 s, then the same picture fixed), rule 4 pass (a new thing lands about every 1.5 s: rule picture, "2 OF 4 CUT", dashed ghosts, code, popover tag, repeated opens), rule 5 pass (a cut menu vs a full menu is visible on mute), rule 6 pass (6-word question over the broken thing), rule 7 pass (slot 19:00 from design/slots.json), rule 8 pass (popovertarget + popover on screen from 5.4 s to the end; the caption invites a save), rule 9 pass (no unchecked words), rule 10 pass (FLOW below), rule 14 pass (eye path below), rule 15 pass (BEFORE and AFTER read at a glance), rule 16 pass (the pair fills y 392-812), rule 18 pass (base hue dark glass + coral for broken + mint for fixed; 3 hues), rule 19 pass (plain near-black, no glow), rule 20 pass (the cut at 0.2 s and again at 1.75 s, named "sliced!" / "again?!", then counted "2 of 4" vs "4 of 4"), rule 21 pass (KM.split, panes fill the hero zone, faults flinch BEFORE).
+Pick: W28-1 kept first by Fable (session_01AYvWRhogQmPKXPWv7WEkac, 28 Nov, design/pick-log.md); the 5 options and the leftover W27-2 were written by the builder on 28 Nov (the bank had none). MDN popover page and browser-compat-data api.HTMLElement.popover read 28 Nov (Chrome 114, Firefox 125, Safari 17). Hook changed from "Why does your dropdown get cut off?" (7 words) to the 6-word "Why is your menu cut off?" so it fits two lines.
+Yesterday's critic notes applied: the whole hook is on screen at frame 0; no flying ghost pill (the fix is shown by the lit code lines and the popover tag popping onto AFTER); the bug is already mid-open at frame 0 (opens at -0.1 s).
+Eye path (rule 14), one line per beat: 0-1.9 s hook top-left, then down to the two menus (both open together; the left flinches, "sliced!" beside it); 1.9-5.2 s the card's rule "overflow: hidden;" in the top zone, "2 OF 4 CUT" on "half", the dashed ghosts of the two hidden items under the left card on "slices"; 5.3-7 s "fix" and the code card types in the same place; about 7.2 s the popover tag pops onto the right card, the left card steps back; 7.5-15 s the right menu opens and closes, the last open holds.
+
+1. Topic: PASS: a dropdown cut off by its card (popover top layer); every phone user has met a clipped menu; not done before (13-popup and 23-sideways are scroll lock and overflow; this is a clipped layer, a new topic type)
+2. Frame 0: PASS: SUBJECT FILL: 50% at frame 0; HOOK: clear of the subject; at frame 0 the whole hook and both menus are on screen, the menu is already mid-open and cut
+3. Safe zone: PASS: SAFE ZONE: ok (the first sheets had the panes past the 60 px side line and the meter past the 1570 line; the pair is now inside #hero, the counts sit in the pane headers)
+4. No overlap: PASS: OVERLAP: none; BAND: clear (the reaction words sit under the BEFORE card, the counts in the pane headers, nothing over the menus)
+5. Motion: PASS: STATIC STRETCH: none (least change 0.0 at 13 s, median 2.5)
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line
+7. Voice: PASS: PREFLIGHT voice: 146 letters, 5 sentences, about 11.4 s at speed 1 in one take (reel 15 s, voice must end by 14.4 s): fits; PRONUNCIATION: 0 overrides used; no unchecked words; HOOK PACE: 6 words ok; CONTRAST: 6.9:1
+8. Sound: PASS (by design; measured on the render at item 13): a hit and a whoosh at 0.0 s, a hit at each flinch, a tap and a pop on each open, typing ticks, a resolve chord on the first open after the fix, a land on the tag, a swish at the end
+9. Payoff: PASS: the last 1.5 s keep the AFTER menu open with all four items, "4 of 4" in mint, the popover tag and the code card on screen
+10. Facts: PASS: MDN popover (read 28 Nov 2026): open popovers appear in the top layer and are not influenced by parent position or overflow styling; browser-compat-data api.HTMLElement.popover: Chrome 114, Firefox 125, Safari 17; MDN overflow: hidden clips content that overflows the box; the "2 of 4" is the count of items in OUR demo card
+11. Post data: PASS: captions.json entry (web, postOn 2026-11-28, postAt 19:00 from design/slots.json, concept, experiment web-clipped-layer, palette black, style record, aiLabel false); 7 keywords, 5 hashtags
+12. Review file: PASS: this file; items 1 to 11 read PASS
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (2 declared transitions: the panes' split and the morph of the rule picture into the code card)
+15. Dead runs: PASS: FLOW: dead runs none
+16. Continuity: PASS: FLOW: continuity 43% (web: 35% or more)
+17. Strobes: PASS: FLOW: strobes 0
+18. Element sound (web): PASS: ELEMENT SOUND: 58 of 58 animated elements have a cue (100%): ok
+
+PREMIUM: animation 7/10 (t 0.2 and 1.75 the flinch and the cut, t 5.4-7 the card types, t 7.2 the tag pops), cleanliness 7.5/10 (nothing cut at the edges, no text over text), premium 7/10 (t 14 the payoff frame: the mint menu, "4 of 4", the code card; builder, on the stills, design/critic.md "Premium check")
+Researched improvement (design/improvements.md web, no unused item left): the side-by-side pair with live counts in the pane headers (a number per pane, "2 of 4" vs "4 of 4"), the comparison read in one glance; thin evidence, to be read on the retention curve.
+Craft improvement (design/craft-log.md): see the 28 Nov web line.
+References used: none (rules 19, 20, 21; the tabwiggle gold).
+Deliberate differences from gold, for the critic: (a) the hero is the KM.split pair, not one phone (rule 21), so the demo is two 238 px cards instead of one 504 px phone; (b) the meter strip is replaced by a count in each pane's header (the panes need the height); (c) no camera drift, one 4% push.
