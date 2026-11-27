@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 22:40 IST · claude/app-probe-cards · other account: task 21, App probe judges each Today button by what it says
+- Done: scripts/qa/app-live-probe.mjs: "Open to post" must open that channel's reels tab (selected, Ready box names only that channel); "Open reel" must open that channel's reel page; one verdict line after every step (it printed PASS before the board step).
+- Left: the App probe run on the live app (PASS line in Progress).
+- For the main account: nothing.
+
 ## 2026-11-27 · claude/2d5-shadow-draw-on · owner chat: 2.5D elements come alive from their shadow
 - Owner on the AI-words reel: elements should draw on from their shadow, coming alive, for all elements through the reel. design/direction.md "2.5D map reels" note 7, design/critic.md question 5, design/owner-feedback.md line. Next tech reel builds it.
 
