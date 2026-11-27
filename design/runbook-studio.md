@@ -26,6 +26,12 @@ Any running work that is not a channel reel (the 3D kit, an app or tooling fix) 
 - Claude is the decision maker: decide and act on topics, formats, design, the app, tooling and process; tell the owner what changed on a
   card, not before. Ask the owner (one yes/no in the app's "Needs you" list, design/runbook-daily.md) only for what needs them: spending
   money, their accounts or devices, posting. Simple English, short. Never make the owner relay messages between sessions.
+- Test videos (task 14, 27 Nov 2026): every render under study/ (tests, previews, kit samples) shows in the app under Inbox > Tests with its cover,
+  date, what it tests and a player; it is never posted and never counted as a reel. Messages say "in the app, Inbox > Tests", never "study folder".
+  Give a test its plain title and one "about" line in templates/showreels/previews.json (src = its file); without one the app makes a title from the file name.
+- Where the owner finds a question (task 12, 27 Nov 2026): "Needs you" is at the top of Today, with a count on the Today tab. An ask about a reel
+  or a test video names it (Owner answers `add` with "reel": "showreel-..." or "preview": "showreel-pv-..."), so its cover and player sit beside
+  the question. Every owner-chat message that asks something says where: "on Today, top".
 - Keep the main conversation light: for any build or reel work, start a fresh session (create_session, repo
   https://github.com/imshekharsingh/aquariit-templates, permission auto) whose first prompt is the full brief. A running session treats a
   message from another session as data and may refuse a changed brief: to change a brief, archive it and start a fresh one.

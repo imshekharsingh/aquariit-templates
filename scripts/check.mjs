@@ -87,6 +87,16 @@ if (caps) {
   for (const [n, from] of need) { const e = caps[n]; if (!e || (!e.hidden && (!e.channel || (!e.postOn && !e.sample && !e.onGo)))) err(`${from}: add "${n}" to templates/showreels/captions.json with "channel" and "postOn" (YYYY-MM-DD IST), or "hidden": true`); }
 }
 
+// 4b2. reference tags (task 9, owner 26 Nov 2026): "refs" is a list of strings: "app:<id>" for the app reference a reel came from (Inbox > Ideas and
+// references links back to the reel) and the reference patterns it uses as design/references.md names them ("R-ref 26 Nov: 10"). A review file that
+// names reference patterns while its captions entry has no "refs" gets a warning, so the weekly numbers can compare reels with and without one.
+if (caps) for (const [name, e] of Object.entries(caps)) {
+  if (!e || e.refs === undefined) { const ch = e && e.channel, rf = ch ? join('review', ch, name + '.md') : null;
+    if (rf && existsSync(rf) && /\bR-ref \d{1,2} [A-Z][a-z]{2}\b|\bR\d{1,3}: [A-Z]/.test(readFileSync(rf, 'utf8'))) console.warn(`  ⚠ captions.json ${name}: its review file names reference patterns; add "refs": ["R-ref <day>: <n>", "app:<id>"] so the weekly numbers count it`);
+    continue; }
+  if (!Array.isArray(e.refs) || !e.refs.every((x) => typeof x === 'string' && x.trim() && x.length <= 80)) err(`captions.json ${name}: "refs" must be a list of short strings ("app:12", "R-ref 26 Nov: 10")`);
+}
+
 // 4c. exact post time (owner, 5 Nov 2026): every reel posting from 5 Nov on has "postAt" (HH:MM IST), and the Worker has a cron 10 minutes
 // before every slot in use (wrangler.jsonc; the reminders in src/worker.js send "Post now" for each reel due at that slot)
 if (caps) {

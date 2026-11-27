@@ -6,6 +6,46 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 15:20 IST · claude/refs-measured · other account: task 9, references measured
+- Done: scripts/ref-compare.mjs + .github/workflows/ref-compare.yml (Ref compare: reel, ref); captions "refs" tag with a check warning; scripts/audit-numbers.mjs AUDIT_REFS lines (with vs without a reference pattern, per pattern 3+ reels); design/runbook-daily.md "References, measured"; scripts/qa/ref-compare-test.mjs.
+- Left: none of tasks 9-15; task 10 render 3 follows.
+- For the main account: tag reels with "refs" (the 5 warned reels), dispatch Ref compare after each reel built from a reference, read AUDIT_REFS in the weekly review.
+
+## 2026-11-27 15:16 IST · claude/refs-thumbs · other account: task 15, references you can tell apart and clean up
+- Done: templates/index.html References: refView() (thumbnail or 3 s silent loop of the clip, state, one-line lesson, reels that used it via captions "refs": ["app:<id>"], safe-to-remove), a Clean up view with one Remove each. scripts/qa/app-refs-test.mjs in npm run check.
+- Left: task 9 (refs tags, ref-compare, weekly numbers); it defines "app:<id>" in the refs tag.
+- For the main account: tag a reel built from an app reference with "refs": ["app:<id>", ...] so the reference links to it.
+
+## 2026-11-27 15:13 IST · claude/tests-list · other account: task 14, Tests list in the app
+- Done: src/worker.js GET /api/tests (R2 v/study/*.mp4 with covers c/study/<name>-cover-auto.jpg); templates/index.html Inbox > Tests (replaces Studio log): cover, title, date, what it tests, inline player, "never posted". scripts/qa/app-tests-test.mjs in npm run check. design/runbook-studio.md: say "Inbox > Tests".
+- Left: tasks 15 and 9.
+- For the main account: give each test an entry in previews.json (title, about, src) so its line reads well; say "Inbox > Tests", never "study folder".
+
+## 2026-11-27 15:11 IST · claude/fix-at-stage · other account: task 13, Fix at the exact stage
+- Done: templates/index.html board: bProblem() finds the failed or stalled step (failed stage line, render/checks/critic fail, slot passed; render > 60 min, critic > 45 min after checks, build step quiet 2 h); that row turns red with its reason and the Fix button, the card opens once. New "Second look" row. stage.mjs + Worker: stage "failed" with --step. scripts/qa/app-board-test.mjs in npm run check.
+- Left: tasks 14, 15 and 9.
+- For the main account: a build or stills step that cannot go on sends `node scripts/stage.mjs <channel> failed --step <step> --line "why"` at once (design/runbook-reels.md).
+
+## 2026-11-27 15:06 IST · claude/needs-you-today · other account: task 12, Needs you at the top of Today
+- Done: templates/index.html: Needs you moved to the top of Today (count in the heading, badge on the Today tab), an ask can name "reel" or "preview" (src/worker.js stores it; scripts/asks.mjs add passes it) and the app shows its cover, name and an inline player. scripts/qa/app-today-test.mjs (npm run check): channel tabs show only their own ready reels; a question finds its reel or preview.
+- Left: tasks 13, 14, 15 and 9.
+- For the main account: when an ask is about a reel or a preview, add "reel" or "preview" to it; messages say "on Today, top".
+
+## 2026-11-27 14:52 IST · claude/ref-upload-progress · other account: task 11, reference upload progress bar
+- Done: templates/index.html References upload: progress bar (percent, part n of N, XHR progress within a part), 3 retries per part with back-off, a stop keeps the multipart upload and Try again resumes from the last good part, Added with a small preview. Worker unchanged (it already accepts a part again).
+- Left: the owner tries one upload. Next GO: tasks 12-15, then 9 (after v7 render 3).
+- For the main account: nothing to change; messages can say "the bar shows how far it is".
+
+## 2026-11-27 · claude/handoff-scope-27nov · owner chat: the other account does app and kit work only
+- Owner: the other account is a temporary helper for bigger app, tooling and kit chunks, never daily reels. CLAUDE.md Sessions line and a scope rule at the top of design/handoff.md.
+
+## 2026-11-27 · claude/app-tab-mixup · owner chat: each channel tab shows only its own ready reels; app gaps queued
+- Owner's screen recording: the web tab's "Ready to post" showed the tech reel, web's own READY reel sat under Up next, tech said "posts paused". Fixed: Ready box filtered by tab (re-drawn on tab switch), journey.js reads "CRITIC:" on any item number (web 49's READY was item 22), tech slot 20:30 in design/slots.json, help text slots updated.
+- design/handoff.md tasks 12-15 GO (Needs you on Today, Fix at the failing stage, a Tests list for study renders, references with thumbnails and cleanup).
+
+## 2026-11-27 · claude/c3-price-list-1400 · owner chat: Turns Out back on its 14:00 slot
+- The price-list rebuild was set to 17:00 when 14:00 looked out of reach; it was READY at 13:30, so postAt is 14:00 again (slot test day 2 kept).
+
 ## 2026-11-27 · claude/handoff-lift-hold-27nov · owner chat: other account HOLD lifted, v7 render 3 is GO
 - Owner: the other account starts the 3D kit v7 now. design/handoff.md: HOLD replaced by "HOLD LIFTED": 7 plan-critic changes, render 3 (last), QA, "v7 ready for critic"; apply the owner's 27 Nov 2.5D notes where they fit. Its queue check stays paused, so the owner starts it there.
 
@@ -1148,3 +1188,12 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/c3-price-list-27nov · Turns Out: showreel-c3-price-list render 2 READY (critic), posts 17:00 IST
 - Done: render 1 failed PACE and ELEMENTS and was fixed; render 2 (run 45953304430) passed Output QA; the critic (opus) wrote READY on the real MP4 (PREMIUM 7.5 / 7.5 / 7.5). captions.json: c3, postOn 2026-11-27, postAt 17:00, no hold. Review item 13 is PASS.
 - Left: post at 17:00 IST. For the next Turns Out reel (critic's notes): make the changed digit width visible (a bracket under each 1), a larger BEFORE thumbnail (0.45 of the board if it fits above y 1570), end about 1.5 s after the green frame, whole claim and ring on frame 0.
+## 2026-11-27 · claude/critic-tech-ai-words-r3 · Critic: showreel-tech-ai-words render 3, READY
+- Done: judged the real render 3 MP4 (run 45958061268; 29.6 s, -14.1 LUFS): one contact sheet at 0.25 s, 0-3.5 s hook strip, 25.0-26.0 s banner strip at 30 fps, every caption group. Hook now "Why do chatbots / type like this?", every group a whole sentence with pause marks, banner fades in whole; nothing regressed. PREMIUM 7.5 / 8.0 / 7.5, STOP 7.5, REWATCH 7.5.
+- Left: post at 20:30 IST. Next 2.5D reel: a question pill above the frame-0 reply, wide shots at scale 0.27+.
+## 2026-11-27 · claude/tech-ai-words-close-2 · Tech showreel-tech-ai-words: READY on render 3, posts 20:30 IST (builder close-out)
+- Done: render 2 (caption fix) Output QA PASS, critic NOT READY on one lone hook word; render 3 (owner's yes) Output QA PASS, final critic READY. The critic's branch could not merge (it carried an old Turns Out postAt and log lines); its verdict and log entry re-landed here. First real 2.5D map reel; tech restarted.
+- Left: the owner posts at 20:30 IST. Next 2.5D reel: captions from the script text (keep marks), one sentence per group, break wrapped groups at the middle; check every group with the real voice word times before render 1.
+## 2026-11-27 · claude/tech-ai-words-r4 · Tech showreel-tech-ai-words: opening redone for render 4 (owner)
+- Done: owner note ("show a chatbot window"): frame 0-2.6 s is an invented chat window with the reply streaming, a 0.6 s pull-back turns it into card 1 (match cut), ring ghost on card 2; rest as render 3. Rule recorded (owner-feedback, direction.md 2.5D map reels, critic.md 5): open on the real-life moment, never an abstract map. FLICKER 60 fps PASS, preflight-all PASS.
+- Left: outside stills check of the opening, render 4 (the last, cap $12), Output QA, final critic. Post 20:30 IST.

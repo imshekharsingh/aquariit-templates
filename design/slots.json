@@ -1,10 +1,10 @@
 {
   "slots": {
-    "tech": "15:00",
+    "tech": "20:30",
     "c3": "14:00",
     "web": "19:00"
   },
   "setOn": "2026-11-26",
   "reviewOn": "2026-12-02",
-  "note": "Posting slots (IST). TESTS until the review on 2026-12-02 (owner, 26 Nov 2026: 'growth validation is primary'): web 19:00 (one-week test against the 12-13h median), Turns Out 14:00 (moved from 17:00, against its 17:00 posts). Tech paused until the 3D kit v6. The owner is reminded at each slot and held to it; complete both tests before changing a slot. Builders take postAt for every new captions.json entry from here."
+  "note": "Posting slots (IST). TESTS until the review on 2026-12-02 (owner, 26 Nov 2026: 'growth validation is primary'): web 19:00 (one-week test against the 12-13h median), Turns Out 14:00 (moved from 17:00, against its 17:00 posts). Tech restarted 27 Nov 2026 in the 2.5D look at 20:30 (not part of the slot test). The owner is reminded at each slot and held to it; complete both tests before changing a slot. Builders take postAt for every new captions.json entry from here."
 }

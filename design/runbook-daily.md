@@ -129,6 +129,16 @@ research are all Claude's to improve every day without waiting to be asked. The 
 - Learn from every reference (owner, 11 Nov 2026): each reel the owner shares as a reference gets an entry in design/references.md the same
   day (what it showed, its techniques as a checklist, the kit piece that covers each or MISSING). Each MISSING technique becomes a kit piece
   or a dated line in design/todo.md. A reel's review file names the reference techniques it uses (e.g. "R5: KM.curveGraph").
+- References, measured (task 9, owner 26 Nov 2026: reference work must show in the reels and in the numbers):
+  1. Tag: a reel built from a reference gets "refs" in its captions.json entry: the patterns it uses as design/references.md names them and the
+     app reference it came from, e.g. "refs": ["R-ref 26 Nov: 10", "app:12"] (npm run check warns when the review file names patterns and the entry has none;
+     the app's reference then links to the reel).
+  2. Side by side: after the reel's final render, dispatch the "Ref compare" workflow (inputs reel, ref = the app reference number). It prints both rows
+     (changes per 10 s, time between changes, longest still, words per beat, number moves, colours) and the gap in plain words; paste its "REF COMPARE:"
+     line into the review file. The critic checks the named pattern is visible (design/critic.md question 52) and reads that line.
+  3. Numbers: the nightly "Audit numbers" prints AUDIT_REFS: per channel, reels with a reference pattern against reels without (median reach, watch,
+     saves per 1,000; per pattern once it has 3+ reels). The weekly review (Sunday's daily run and the spare night) puts one plain line per channel on
+     the audit card and keeps a pattern only while its reels do at least as well.
 
 ## Audit card, post check and owner questions
 - Daily audit (owner, 1 Nov 2026): the full audit is a CARD in the app: dispatch the "Audit card" workflow on main with input `card` = JSON

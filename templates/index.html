@@ -119,6 +119,22 @@
   .use[open] .bar{margin-bottom:6px}
   .use summary::-webkit-details-marker{display:none}
   .bar{height:8px;margin:9px 0 6px;border-radius:99px;background:var(--soft);overflow:hidden}
+  /* task 12 (owner, 27 Nov 2026: "If there's a Needs you in app, how do I know where it is or what it is?"): at the top of Today, each with its reel */
+  .needs{margin-top:4px}
+  .ask .about{display:flex;align-items:center;gap:12px;width:100%;margin:10px 0 2px;padding:0;border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+  .ask .about .th{flex:none;width:54px;aspect-ratio:9/16;border-radius:10px;background:#000 center/cover no-repeat}
+  .ask .about span{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .ask .about b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ask .about i{font-style:normal;font-size:13px;color:var(--mute)}
+  .ask video{display:block;width:min(100%,320px);aspect-ratio:9/16;margin:8px 0 4px;border-radius:14px;background:#000;object-fit:cover}
+  .tst{padding:12px 0;border-top:1px solid var(--line)}.tst:first-child{border-top:0}
+  .tst .about{display:flex;align-items:center;gap:12px;width:100%;padding:0;border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+  .tst .th{flex:none;width:54px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:#000 center/cover no-repeat}.tst .th video{width:100%;height:100%;object-fit:cover;display:block}
+  .tst .about span{display:flex;flex-direction:column;gap:2px;min-width:0}.tst b{font-size:15px}.tst i{font-style:normal;font-size:13px;color:var(--mute)}
+  .tst p{margin:8px 0 0;font-size:14px;color:var(--mute)}.tst video.play{display:block;width:min(100%,320px);aspect-ratio:9/16;margin:10px 0 0;border-radius:14px;background:#000;object-fit:cover}
+  .refprev{display:flex;align-items:center;gap:10px;margin:8px 0 4px}
+  .refprev img,.refprev video{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--soft)}
+  .refprev span{font-size:14px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .bar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
   .bar.warn i{background:#f2c14e}
   .bar.over i{background:#ff6b6b}
@@ -156,6 +172,11 @@
   .fflow span{font:600 .68rem system-ui,sans-serif;padding:3px 8px;border-radius:99px;background:var(--soft);color:var(--mute);transition:background .25s ease,color .25s ease}
   .fflow span.y{background:var(--okbg);color:var(--ok)}.fflow span.n{background:var(--ink);color:var(--bg)}
   .refi .stills{display:flex;gap:6px;overflow-x:auto;margin-top:8px}
+  /* task 15 (owner, 27 Nov 2026): each reference recognisable at a glance: a thumbnail or a 3 s silent loop, its state, the lesson in one line, the reels that used it */
+  .refi .rhead{display:flex;gap:12px;align-items:flex-start;margin-top:6px}.rthumb{flex:none;width:64px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:var(--well) center/cover no-repeat;border:1px solid var(--line)}
+  .rthumb video,.rthumb img{width:100%;height:100%;object-fit:cover;display:block}.refclean .rthumb{width:40px}.refi .rhead div{min-width:0}.refi .lesson{margin:0;font-weight:600}
+  .refi .used{margin:4px 0 0;font-size:.8rem;color:var(--mute)}.refi .used a{margin-right:8px}
+  .refclean{margin-top:12px}.refclean .crow{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}.refclean .crow > span:not(.rthumb){flex:1;min-width:0;font-size:.86rem}
   .refi .stills img{flex:none;height:96px;border-radius:8px;border:1px solid var(--line)}
   .rcheck{margin-top:10px}.rcheck small{color:var(--mute);font-weight:700}
   .rc{padding:8px 0;border-top:1px solid var(--line)}.rc p{margin:0}
@@ -462,6 +483,8 @@
   .bstages .on i{background:var(--ok)}.bstages .now i{background:var(--act)}
   .bstages em{font-style:normal}
   .bstages li span{margin-left:auto;color:var(--mute);font-size:.76rem;text-align:right}
+  .bstages .bad i{background:var(--bad)}.bstages li.bad{align-items:flex-start}.bstages li.bad em{font-weight:700;color:var(--bad)}.bstages li.bad span{color:var(--ink);max-width:62%}
+  .bstages .bfix{list-style:none;padding:0 0 10px}
   .bstages .now span{color:var(--ink)}
   .bopen{display:block;margin:4px 14px 14px;min-height:40px}
   .bedge{position:absolute;left:0;right:0;bottom:0;height:3px;opacity:0;transition:opacity .25s ease}
@@ -596,13 +619,13 @@
     <h1 id="t-title">Today</h1>
     <p class="lede" id="t-sub">Loading…</p>
     <button type="button" class="chk on" id="t-chk" hidden></button>
+    <section class="tsec needs" id="needs" hidden><h2 class="lbl" id="needs-h">Needs you</h2><div id="needs-list"></div></section>
     <section class="board" id="board" aria-label="Studio board">
       <div class="bhead"><div class="ring" id="b-ring" role="img" aria-label="0 of 3 reels ready"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="rt" cx="22" cy="22" r="18"/><circle class="rf" id="b-arc" cx="22" cy="22" r="18" pathLength="100" stroke-dasharray="0 100"/></svg><b id="b-n">0</b></div>
         <div class="bt"><b id="b-t">0 of 3 ready</b><span id="b-s">Waiting for the studio</span></div></div>
       <div id="b-cards"></div>
       <div class="pbox" id="p-box" hidden><h2 class="lbl">Projects</h2><div id="p-cards"></div></div>
     </section>
-    <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div></section>
     <div class="tlist tlinks"><button type="button" class="trow" id="t-all"><span class="m"><span class="n">All reels and posted</span><span class="s">Every reel by channel, post text, channel profiles</span></span><span class="chev" aria-hidden="true">›</span></button></div>
     <button type="button" class="astat" id="astat" aria-label="Today's audit, open the daily report"><b>Daily report:</b> <span id="astat-t">checking…</span></button>
     <p class="foot" id="j-note"></p>
@@ -616,7 +639,7 @@
     </div>
     <details class="prof" id="prof" hidden><summary>Profile</summary></details>
     <h1 id="title">Showreels</h1>
-    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (tech 15:00, Turns Out 17:00, web 19:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes at each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
+    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (Turns Out 14:00, web 19:00, tech 20:30 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes at each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
     <section class="tsec" id="r-ready"><h2 class="lbl">Ready to post</h2><div id="t-ready"></div></section>
     <div id="list"><p class="empty">Loading…</p></div>
   </section>
@@ -647,11 +670,12 @@
       <div class="row"><button class="btn" id="ref-send" type="button">Add reference</button></div>
       <p class="msg" id="ref-msg" aria-live="polite"></p>
       <div id="ref-list"></div>
+      <details class="refclean" id="ref-clean" hidden><summary>Clean up <span id="ref-clean-n"></span></summary><p class="mute">Safe to remove: studied more than 2 days ago and used in a reel, or every point marked Skip. Remove deletes the file and its card; what was learned stays in the studio's notes and in the reels.</p><div id="ref-clean-list"></div></details>
     </details>
     <h2 class="lbl" id="cards-h" hidden>Daily reports</h2>
     <div id="cards"></div>
     <p class="empty" id="inbox-empty" hidden>Nothing new.</p>
-    <details class="fb" id="slog" hidden><summary>Studio log <span id="slog-n"></span></summary><p class="mute" style="margin-top:8px">Records only. Nothing here needs you.</p><div id="slog-list"></div></details>
+    <details class="fb" id="slog" hidden><summary>Tests <span id="slog-n"></span></summary><p class="mute" style="margin-top:8px">Test videos and kit samples. Never posted, not counted as reels. Nothing here needs you.</p><div id="slog-list"></div></details>
   </section>
 </main>
 <nav class="bnav" aria-label="Sections"><button type="button" data-sec="today"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg><span>Today</span><i class="badge" id="today-n" hidden></i></button><button type="button" data-sec="growth"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 19.6h16.6"/><path d="M5 15.6l4.4-4.3 3.4 2.8 6.4-6.6"/><path d="M15.2 7.3l4-.1.1 3.9"/></svg><span>Growth</span></button><button type="button" data-sec="inbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13.4l2.4-7.6c.2-.6.7-.9 1.3-.9h8.6c.6 0 1.1.3 1.3.9l2.4 7.6v4.8c0 .8-.6 1.4-1.4 1.4H5.4c-.8 0-1.4-.6-1.4-1.4z"/><path d="M4.2 13.4h4.5l1.2 2.3h4.2l1.2-2.3h4.5"/></svg><span>Inbox</span><i class="badge" id="inbox-n" hidden></i></button></nav>
@@ -740,7 +764,10 @@
   // the channel's name), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
   var CH = { web: { name: '@webin20sec', slot: '13:00–21:00 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '13:00–21:00 IST', sub: 'Tech explained' },
     c3: { name: '@itturns.out', slot: '13:00–21:00 IST', sub: 'Design fixes' } };
+  // TAB-ONLY-START (scripts/qa/app-today-test.mjs runs these two)
   function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web'; }
+  function tabOnly(list, c, ch){ return list.filter(function(x){ return chOf(x, c) === ch; }); }   // a channel tab shows only its own reels (owner, 27 Nov 2026)
+  // TAB-ONLY-END
   // a reel's title, the same way on every tab: its concept, else the first line of its caption (once loaded), else its name made readable
   var TITLES = {};
   function label(s){ if (TITLES[s.name]) return TITLES[s.name]; var t = s.name.replace(/^showreel-(tech-|c3-|t\d+-)?(\d+-)?/, '').replace(/-/g, ' '); return t.charAt(0).toUpperCase() + t.slice(1); }
@@ -755,7 +782,7 @@
   // channel defaults come from design/slots.json (25 Nov 2026; GET /api/slots): tech 15:00, Turns Out 17:00, web 19:00
   var SLOTS = { tech: '15:00', c3: '14:00', web: '19:00' }, REVIEW = '2026-12-02';
   // the channel's slot line from design/slots.json (owner, 26 Nov 2026): tech is paused until the 3D kit v6; the others are tests until the review day
-  function slotLine(k, p){ if (k === 'tech') return 'paused'; var t = SLOTS[k]; if (!t) return p.slot; var d = new Date(REVIEW + 'T12:00:00+05:30'); return 'at ' + t + ' IST' + (isFinite(d) && Date.now() < d.getTime() + DAY ? ', slot test until ' + d.getDate() + ' ' + d.toLocaleString('en-GB', { month: 'short', timeZone: 'Asia/Kolkata' }) : ''); }
+  function slotLine(k, p){ if (k === 'tech') return SLOTS[k] ? 'at ' + SLOTS[k] + ' IST' : p.slot;   /* tech restarted 27 Nov 2026 (2.5D look), not part of the slot test */ var t = SLOTS[k]; if (!t) return p.slot; var d = new Date(REVIEW + 'T12:00:00+05:30'); return 'at ' + t + ' IST' + (isFinite(d) && Date.now() < d.getTime() + DAY ? ', slot test until ' + d.getDate() + ' ' + d.toLocaleString('en-GB', { month: 'short', timeZone: 'Asia/Kolkata' }) : ''); }
   fetch('/api/slots', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.slots) { SLOTS = j.slots; if (j.reviewOn) REVIEW = j.reviewOn; Object.keys(SLOTS).forEach(function(k){ if (CH[k]) CH[k].slot = SLOTS[k] + ' IST'; }); if (typeof profile === 'function' && prof) profile(); if (DATA) render(); } }).catch(function(){});
   function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; return SLOTS[chOf(s, DATA ? DATA.c : {})] || '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
@@ -768,7 +795,7 @@
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
   var DATA = null, openName = { web: null, tech: null, c3: null }, tabs = document.querySelectorAll('.tab');
-  Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) render(); else paint(); if (sec === 'growth') growth(); }); });
+  Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) { render(); readyRender(); } else paint(); if (sec === 'growth') growth(); }); });
   // the profile card: one entry per channel in /channels/channels.json (logo, name, username, bio, posting window); a channel without one shows no card
   var PROF = {}, prof = document.getElementById('prof');
   function copyBtn(text){ var b = el('button', 'btn g', 'Copy'); b.type = 'button';
@@ -1030,7 +1057,7 @@
     var todo = items.filter(function(s){ return !ticks[s.name] && s.video && rdy.indexOf(s.name) < 0; }), done = items.filter(function(s){ return ticks[s.name]; });
     todo.sort(function(x, y){ var mx = c[x.name] || {}, my = c[y.name] || {}, dx = dueOf(x, mx), dy = dueOf(y, my); if (dx !== dy) return dx < dy ? -1 : 1; var cx = mx.concept || '', cy = my.concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
     done.sort(function(x, y){ return ticks[x.name] < ticks[y.name] ? 1 : -1; });
-    if (!todo.length) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));
+    if (!todo.length && !rdy.some(function(n){ return items.some(function(s){ return s.name === n; }); })) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));   // not when this channel has one under Ready to post
     var horizon = Date.parse(istToday() + 'T00:00:00+05:30') + 2 * DAY;   // end of tomorrow, IST
     var next = todo.filter(function(s){ return !(c[s.name] || {}).sample && dueOf(s, c[s.name] || {}) < horizon; });   // sample (6 Nov 2026, temporary): never Up next
     if (!next.length && todo.length && isFinite(dueOf(todo[0], c[todo[0].name] || {}))) next = [todo[0]];
@@ -1194,7 +1221,7 @@
     top.textContent = say; top.className = 'chk' + (n ? ' on' : ''); tc.hidden = !n; tc.textContent = say + ' in Inbox'; tc.className = 'chk on'; }
   document.getElementById('t-chk').addEventListener('click', function(){ go('inbox'); });
   function syncNeeds(){ var q = needsList.children.length, rd = (typeof readyReels === 'function' ? readyReels().length : 0), n = q + rd, b = document.getElementById('today-n');   // questions + reels that are ready
-    needs.hidden = !q; b.textContent = n; b.hidden = !n; tSub(n); }
+    needs.hidden = !q; document.getElementById('needs-h').textContent = q > 1 ? 'Needs you · ' + q : 'Needs you'; b.textContent = n; b.hidden = !n; tSub(n); }
   // ---- the reel journey (owner, 15 Nov 2026: "cover the whole flow of reel making in the app"): GET /api/journey, one card per reel, its seven
   // stages in order. The Worker caches GitHub for a minute; this page asks again every minute only while a reel is rendering and Journey is open.
   var STAGES = [['planned', 'Planned'], ['built', 'Built'], ['render', 'Rendering'], ['checks', 'Checks'], ['critic', 'Critic'], ['ready', 'Ready to post'], ['posted', 'Posted']];
@@ -1264,9 +1291,9 @@
       var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !!r && status(r).k === 'ready'; })
       .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); }).forEach(function(x){ out.push(x); });
     return out; }
-  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = readyReels(); rBox.textContent = '';
+  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = tabOnly(readyReels(), DATA.c, ch); rBox.textContent = '';   // this tab's channel only (owner, 27 Nov 2026: the web tab showed the tech reel)
     if (!j || jOld(j)) rBox.appendChild(el('p', 'empty', j ? 'Status not up to date' + ', so nothing is shown here. It rebuilds on its own.' : 'Status not loaded yet, so nothing is shown here.'));
-    else if (!list.length) rBox.appendChild(el('p', 'empty', 'Nothing is ready to post yet.'));
+    else if (!list.length) rBox.appendChild(el('p', 'empty', 'Nothing is ready to post for ' + CH[ch].name + ' yet.'));
     list.forEach(function(x){ var card = reelCard(x, DATA.c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); });
     syncNeeds(); }
   function tRender(){ var j = jLast;
@@ -1276,11 +1303,27 @@
     readyRender(); }
   // ---- the live studio board (owner, 24 Nov 2026): one card per channel's reel today. Stages come from GET /api/stage (sessions and workflows call
   // scripts/stage.mjs); the render % and the final Ready / Posted come from the journey data above. Cards are built once and updated in place.
-  var BST = [['researching', 'Researching'], ['topic', 'Topic picked'], ['building', 'Building'], ['stills', 'Stills check'], ['video', 'Making the video'], ['checking', 'Checking']],
+  var BST = [['researching', 'Researching'], ['topic', 'Topic picked'], ['building', 'Building'], ['stills', 'Stills check'], ['video', 'Making the video'], ['checking', 'Machine checks'], ['critic', 'Second look']],
       BFIN = { ready: 'Ready to post', skipped: 'Skipped today', posted: 'Posted' }, SROWS = [], sTimer = null, bCards = {}, bOpen = null;
   var MODEL = [[/fable/i, 'Fable'], [/opus/i, 'Opus'], [/sonnet/i, 'Sonnet'], [/haiku/i, 'Haiku']];
   function modelName(m){ for (var i = 0; i < MODEL.length; i++) if (MODEL[i][0].test(m || '')) return MODEL[i][1]; return m || ''; }
   function bIndex(id){ for (var i = 0; i < BST.length; i++) if (BST[i][0] === id) return i; return -1; }
+  // Fix at the exact stage (task 13, owner 27 Nov 2026): which step failed or stalled, and why in one line. A step past its expected time counts as
+  // stalled: the video over 60 min, the second look over 45 min after the checks, a build step with no update for 2 h. idx = BST.length is the post row.
+  // B-PROBLEM-START (scripts/qa/app-board-test.mjs runs this function)
+  function bProblem(row, r, now, bst){ var at = function(id){ for (var i = 0; i < bst.length; i++) if (bst[i][0] === id) return i; return -1; },
+      mins = function(t){ var x = Date.parse(t || ''); return isNaN(x) ? 0 : Math.round((now - x) / 60000); }, sg = (r && r.stages) || {}, g = function(k){ return sg[k] || { s: 'wait' }; };
+    if (row && row.stage === 'failed') { var m = /^([a-z]+):\s*(.*)$/.exec(row.line || ''), st = m && at(m[1]) >= 0 ? m[1] : 'building'; return { idx: at(st), why: (m ? m[2] : row.line) || 'It stopped here.', stalled: false }; }
+    if (r) {
+      if (g('render').s === 'fail') return { idx: at('video'), why: 'The video did not finish: ' + (g('render').why || g('render').t || ''), stalled: false };
+      if (g('checks').s === 'fail') return { idx: at('checking'), why: 'A check found a problem: ' + String(g('checks').t || '').replace(/^Failed:\s*/, ''), stalled: false };
+      if (g('critic').s === 'fail') return { idx: at('critic'), why: 'Not ready yet: ' + (g('critic').why || 'see its notes'), stalled: false };
+      if (g('ready').s === 'done' && g('posted').s === 'fail') return { idx: bst.length, why: 'The posting time passed and it is not marked posted.', stalled: false };
+      if (g('render').s === 'now' && mins(g('render').at) > 60) return { idx: at('video'), why: 'Making the video for ' + mins(g('render').at) + ' min (it takes under 60).', stalled: true };
+      if (g('checks').s === 'done' && g('critic').s === 'wait' && g('ready').s !== 'done' && mins(g('checks').at) > 45) return { idx: at('critic'), why: 'Waiting ' + mins(g('checks').at) + ' min for the second look (it takes under 45).', stalled: true }; }
+    if (row && at(row.stage) >= 0 && at(row.stage) < at('video') && mins(row.at) > 120) return { idx: at(row.stage), why: 'No news for ' + Math.floor(mins(row.at) / 60) + ' h at this step.', stalled: true };
+    return null; }
+  // B-PROBLEM-END
   // what a channel's card says now: { fin, idx, pct (inside the stage), line, model, thumb, name, making }
   function bState(k){
     var row = SROWS.filter(function(x){ return x.ch === k; })[0] || null, j = jLast && jLast.today, r = jLast ? (jLast.reels || []).filter(function(x){ return x.ch === k && x.day === j; })[0] : null,
@@ -1295,8 +1338,10 @@
           if (stt.k === 'checking') { o.idx = 5; o.line = 'Checking the video'; }
           else if (stt.k === 'fixing') { o.idx = 5; o.line = 'Found a problem: ' + (stt.why || '').slice(0, 90); }
           else if (stt.k === 'building') { o.idx = 2; o.line = stt.t; } } } }
-    if (stt && stt.k === 'fixing') { var sg = r.stages || {}, stp = sg.render && sg.render.s === 'fail' ? 'making the video' : sg.checks && sg.checks.s === 'fail' ? 'machine checks' : 'second look';
-      o.fail = 'Reel ' + r.name + ', step: ' + stp + ', why: ' + String(stt.why || '').slice(0, 400); }
+    if (r && !o.fin && !o.making) { var sg2 = r.stages || {}; if (sg2.checks && sg2.checks.s === 'done' && (!sg2.critic || sg2.critic.s !== 'done')) { o.idx = bIndex('critic'); o.line = 'Waiting for the second look'; } }
+    var pb = o.fin === 'posted' ? null : bProblem(row, r, Date.now(), BST);
+    if (pb) { o.prob = pb; if (pb.idx < BST.length) o.idx = pb.idx; o.line = (pb.stalled ? 'Stuck at ' : 'Problem at ') + (pb.idx < BST.length ? BST[pb.idx][1].toLowerCase() : 'posting') + ': ' + pw(pb.why).slice(0, 110);
+      o.fail = 'Reel ' + (o.name || k) + ', step: ' + (pb.idx < BST.length ? BST[pb.idx][1] : 'Post') + (pb.stalled ? ' (stalled)' : '') + ', why: ' + String(pb.why).slice(0, 400); }
     if (!o.line) o.line = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Not started yet';
     if (jOld(jLast)) o.line += ' (old status)';
     return o; }
@@ -1312,8 +1357,8 @@
     body.appendChild(top); body.appendChild(line); body.appendChild(dots); body.appendChild(bar); body.appendChild(meta);
     main.appendChild(th); main.appendChild(body); inner.appendChild(ol); inner.appendChild(open); more.appendChild(inner);
     card.appendChild(main); card.appendChild(more); card.appendChild(edge);
-    var fix = el('div', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix'), c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, fix: fix, fixb: fixb, prev: null, img: null };
-    fixb.type = 'button'; fix.hidden = true; fix.appendChild(fixb); card.insertBefore(fix, more);
+    var fix = el('li', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix'), c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, fix: fix, fixb: fixb, prev: null, img: null };
+    fixb.type = 'button'; fix.hidden = true; fix.appendChild(fixb); ol.appendChild(fix);   // moved under the step that failed or stalled (task 13)
     fixb.addEventListener('click', function(){ if (!c.fail) return; fixb.disabled = true; fixb.textContent = 'Sending';
       fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ channel: k, priority: true, text: 'FIX (from the board, top priority) ' + c.fail }) })
         .then(function(r){ if (!r.ok) throw 0; c.sent = c.fail; fixb.textContent = 'Sent to the studio'; }).catch(function(){ fixb.disabled = false; fixb.textContent = 'Try again'; }); });
@@ -1327,12 +1372,13 @@
     if (o.fin === 'ready' && prev && prev.fin !== 'ready' && prev.fin !== 'posted') { c.card.classList.add('lift'); setTimeout(function(){ c.card.classList.remove('lift'); }, 420); }
     c.st.textContent = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Waiting';
     if (!prev || prev.line !== o.line) { c.line.textContent = o.line; if (prev) { c.line.classList.remove('draw'); void c.line.offsetWidth; c.line.classList.add('draw'); } }
-    var kids = c.dots.children, rows = c.ol.children, built = rows.length === BST.length + 1;
-    if (!built) { c.ol.textContent = ''; BST.concat([['fin', '']]).forEach(function(s2){ var li = el('li'); li.appendChild(el('i')); li.appendChild(el('em', null, s2[1])); li.appendChild(el('span')); c.ol.appendChild(li); }); rows = c.ol.children; }
+    var stRows = function(){ return Array.prototype.filter.call(c.ol.children, function(x){ return x !== c.fix; }); };   // the step rows (the Fix row is not one)
+    var kids = c.dots.children, rows = stRows(), built = rows.length === BST.length + 1;
+    if (!built) { rows.forEach(function(x){ x.remove(); }); BST.concat([['fin', '']]).forEach(function(s2){ var li = el('li'); li.appendChild(el('i')); li.appendChild(el('em', null, s2[1])); li.appendChild(el('span')); c.ol.insertBefore(li, c.fix); }); rows = stRows(); }
     for (var i = 0; i < BST.length; i++) { var done = i < cur, now = !o.fin && i === o.idx, was = prev ? (prev.fin ? (prev.fin === 'skipped' ? i < Math.max(prev.idx, 0) : true) : i < prev.idx) : false;
       kids[i].className = done ? 'on' : now ? 'now' : ''; if (done && !was && prev) { kids[i].classList.add('pop'); rows[i].querySelector('i').classList.add('pop'); }
-      rows[i].className = done ? 'on' : now ? 'now' : ''; rows[i].lastChild.textContent = done ? 'done' : now ? (i === 4 && o.pct != null ? o.pct + '%' : o.line) : ''; }
-    var fr = rows[BST.length]; fr.className = o.fin === 'skipped' ? '' : o.fin ? 'on' : ''; fr.querySelector('em').textContent = o.fin === 'skipped' ? 'Skipped today' : o.fin === 'posted' ? 'Posted' : 'Ready to post'; fr.lastChild.textContent = o.fin ? (o.fin === 'skipped' ? 'not today' : 'done') : '';
+      var badRow = o.prob && o.prob.idx === i; rows[i].className = badRow ? 'bad' : done ? 'on' : now ? 'now' : ''; rows[i].lastChild.textContent = badRow ? pw(o.prob.why) : done ? 'done' : now ? (i === 4 && o.pct != null ? o.pct + '%' : o.line) : ''; }
+    var fr = rows[BST.length]; fr.className = o.prob && o.prob.idx === BST.length ? 'bad' : o.fin === 'skipped' ? '' : o.fin ? 'on' : ''; fr.querySelector('em').textContent = o.fin === 'skipped' ? 'Skipped today' : o.fin === 'posted' ? 'Posted' : 'Ready to post'; fr.lastChild.textContent = o.fin ? (o.fin === 'skipped' ? 'not today' : 'done') : '';
     c.bi.style.width = p + '%'; c.bp.textContent = p + '%';
     c.ei.style.width = (o.making && o.pct != null ? Math.max(3, o.pct) : 0) + '%';
     var sm = o.name && DATA && DATA.c ? DATA.c[o.name] : null, slot = sm && /^\d{2}:\d{2}$/.test(sm.postAt || '') ? sm.postAt : SLOTS[c.k],
@@ -1341,7 +1387,9 @@
     var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
     if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
     // Fix (owner, 26 Nov 2026): a red step sends its failure line (reel, step, why) as a top-priority Feedback item
-    var bad = o.fail && !o.fin; c.fix.hidden = !bad;
+    var bad = !!(o.fail && o.prob); c.fix.hidden = !bad;
+    if (bad) { var at2 = rows[o.prob.idx]; if (c.fix.parentNode !== at2) at2.after(c.fix); if (o.prob.idx === BST.length) fr.lastChild.textContent = pw(o.prob.why);   // the Fix button sits under the row that failed or stalled
+      if (c.openFor !== o.fail) { c.openFor = o.fail; c.card.classList.add('open'); c.main.setAttribute('aria-expanded', 'true'); } }   // opened once for each new problem, so the row shows
     if (bad) { if (c.fail !== o.fail) { c.fail = o.fail; c.sent = null; } c.fixb.disabled = c.sent === c.fail; c.fixb.textContent = c.sent === c.fail ? 'Sent to the studio' : 'Fix'; } else c.fail = null;
     c.prev = o; }
   function bRender(){
@@ -1423,9 +1471,29 @@
       .then(jSchedule); }
   document.addEventListener('visibilitychange', function(){ if (document.hidden) { clearTimeout(jTimer); clearTimeout(sTimer); } else if (sec === 'today' || sec === 'reel') { if (sec === 'today') sLoad(); if (Date.now() - jAt > 60000) jLoad(); else jSchedule(); } });
   go(sec);
-  // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list
+  // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list.
+  // Task 12 (owner, 27 Nov 2026): the list sits at the top of Today, and an ask about a reel or a preview shows its cover and name; a tap plays it right there.
+  // ASK-ABOUT-START (scripts/qa/app-today-test.mjs runs this function)
+  function askAbout(a, shows, caps, previews){ if (!a) return null;
+    if (a.reel) { var s = (shows || []).filter(function(x){ return x.name === a.reel; })[0], m = (caps || {})[a.reel] || {};
+      return { name: a.reel, title: m.concept || m.title || a.reel.replace(/^showreel-/, '').replace(/-/g, ' '), kind: 'Reel', cover: s && s.cover || null, video: s && (s.video || s.play) || null }; }
+    if (a.preview) { var p = (previews || []).filter(function(x){ return x.name === a.preview; })[0] || {};
+      return { name: a.preview, title: p.title || a.preview.replace(/^showreel-(pv-)?/, '').replace(/-/g, ' '), kind: 'Test video', cover: p.cover || null, video: p.src || '/reels/study/' + a.preview + '-preview.mp4' }; }
+    return null; }
+  // ASK-ABOUT-END
+  var PV_ITEMS = null, askBoxes = [];
+  function aboutRow(box, a){ var old = box.querySelector('.about'); if (old) old.remove(); var v0 = box.querySelector('video'); if (v0) v0.remove();
+    var ab = askAbout(a, DATA && DATA.d && DATA.d.showreels, DATA && DATA.c, PV_ITEMS); if (!ab) return;
+    var bt = el('button', 'about'); bt.type = 'button'; var th = el('span', 'th'); if (ab.cover) th.style.backgroundImage = 'url("' + ab.cover + '")';
+    var tx = el('span'); tx.appendChild(el('b', null, ab.title)); tx.appendChild(el('i', null, ab.kind + (ab.video ? ' · tap to play' : ' · not uploaded yet'))); bt.appendChild(th); bt.appendChild(tx);
+    bt.addEventListener('click', function(){ if (!ab.video) return; var v = box.querySelector('video'); if (v) { v.remove(); return; }
+      v = document.createElement('video'); v.src = ab.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (ab.cover) v.poster = ab.cover; v.setAttribute('aria-label', ab.title);
+      bt.after(v); v.play().catch(function(){}); });
+    (box.querySelector(':scope > p') || box.querySelector(':scope > b')).after(bt); }   // question, why, then the reel
+  function askFill(){ askBoxes.forEach(function(x){ if (x.box.isConnected) aboutRow(x.box, x.a); }); }
   function askEl(a){ var box = el('div', 'ask'), row = el('div', 'row'), ta = null;
     box.appendChild(el('b', null, (a.channel && CH[a.channel] ? CH[a.channel].name + ': ' : '') + pw(a.question))); if (a.why) box.appendChild(el('p', null, pw(a.why)));
+    if (a.reel || a.preview) { askBoxes.push({ box: box, a: a }); aboutRow(box, a); }
     function answer(v, btn){ if (!v || !v.trim()) { if (ta) ta.focus(); return; } btn.disabled = true;
       fetch('/api/asks/' + encodeURIComponent(a.id) + '/answer', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ answer: v.trim() }) })
         .then(function(r){ if (!r.ok) throw 0; box.remove(); syncNeeds(); }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; }); }
@@ -1477,12 +1545,31 @@
   Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(b){ b.addEventListener('click', function(){ refCh = b.getAttribute('data-ch');
     Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(x){ x.setAttribute('aria-pressed', String(x === b)); }); }); });
   refFile.addEventListener('change', function(){ var f = refFile.files && refFile.files[0]; refFname.textContent = f ? f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB' : 'Up to 1 GB'; });
-  function refItem(r){ var box = el('div', 'fbi refi'), h = el('div', 'h');
-    h.appendChild(el('span', null, fbWhen(r.created) + (r.channel && FBN[r.channel] ? ' · ' + FBN[r.channel] : ''))); h.appendChild(el('span', 'st' + (r.state !== 'new' ? ' done' : ''), REFST[r.state] || r.state));
+  // REF-VIEW-START (scripts/qa/app-refs-test.mjs runs this function): what a reference shows at a glance and whether it is safe to remove
+  function refView(r, caps, now){ caps = caps || {};
+    var f = r.file || null, img = f && /^image\//.test(f.type) && f.type !== 'image/heic', vid = f && /^video\//.test(f.type) && !f.deleted,
+      thumb = img ? { kind: 'img', src: '/api/refs/' + r.id + '/file' } : vid ? { kind: 'loop', src: '/api/refs/' + r.id + '/file' } : (r.stills || []).length ? { kind: 'img', src: r.stills[0] } : null,
+      reels = Object.keys(caps).filter(function(n){ var rf = (caps[n] || {}).refs; return Array.isArray(rf) && rf.some(function(x){ return String(x).replace(/\s+/g, '').toLowerCase() === 'app:' + r.id; }); }),
+      lesson = r.reply ? String(r.reply).split(/\.\s/)[0].replace(/\.?$/, '.') : r.state === 'new' ? 'Not studied yet.' : '',
+      ck = r.checklist || [], skipped = ck.length > 0 && ck.every(function(c){ return c.c === 'skip'; }), old = r.done_at && now - Date.parse(r.done_at) > 2 * 864e5,
+      safe = !r.uploading && (skipped || (r.state === 'used' && old) || (r.state === 'studied' && old && reels.length > 0)),
+      state = reels.length ? 'Used in ' + reels.length + ' reel' + (reels.length > 1 ? 's' : '') : r.state === 'used' ? 'Used' : r.state === 'studied' ? 'Studied' : r.state === 'uploading' ? 'Uploading' : 'New';
+    return { thumb: thumb, reels: reels, lesson: lesson, state: state, safe: safe, why: skipped ? 'every point skipped' : safe ? 'studied and used' : '' }; }
+  // REF-VIEW-END
+  function refLoop(v){ v.muted = true; v.playsInline = true; v.autoplay = true; v.preload = 'metadata'; v.setAttribute('aria-hidden', 'true');
+    v.addEventListener('timeupdate', function(){ if (v.currentTime > 3) v.currentTime = 0; }); }   // the first 3 s, silent, again and again (only those seconds load)
+  function refItem(r){ var box = el('div', 'fbi refi'), h = el('div', 'h'), vw = refView(r, REFCAPS, Date.now());
+    h.appendChild(el('span', null, fbWhen(r.created) + (r.channel && FBN[r.channel] ? ' · ' + FBN[r.channel] : ''))); h.appendChild(el('span', 'st' + (r.state !== 'new' ? ' done' : ''), vw.state));
     box.appendChild(h);
+    var hd = el('div', 'rhead'), tb = el('span', 'rthumb'), hx = el('div');
+    if (vw.thumb && vw.thumb.kind === 'img') { var ti = el('img'); ti.loading = 'lazy'; ti.alt = ''; ti.src = vw.thumb.src; tb.appendChild(ti); }
+    else if (vw.thumb) { var tv = el('video'); refLoop(tv); tv.src = vw.thumb.src + '#t=0,3'; tb.appendChild(tv); }
+    if (vw.thumb) hd.appendChild(tb); if (vw.lesson) hx.appendChild(el('p', 'lesson', vw.lesson));
+    if (vw.reels.length) { var ul = el('p', 'used'); vw.reels.forEach(function(n){ var a = el('a', null, ((REFCAPS[n] || {}).concept || n.replace(/^showreel-/, '').replace(/-/g, ' ')).slice(0, 48)); a.href = '#reel/' + n; ul.appendChild(a); }); hx.appendChild(ul); }
+    hd.appendChild(hx); if (hd.children.length > 1 || vw.lesson || vw.reels.length) box.appendChild(hd);
     if (r.url) { var a = el('a', null, r.url); a.href = r.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; var p0 = el('p'); p0.appendChild(a); box.appendChild(p0); }
-    if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); }
-      else if (/^video\//.test(r.file.type)) { var v = el('video', 'th'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
+    if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { if (!vw.thumb) { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); } }
+      else if (/^video\//.test(r.file.type) && !r.file.deleted) { var v = el('video', 'th'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
       else box.appendChild(el('p', null, r.file.name || 'File')); }
     if (r.file && r.file.deleted) box.appendChild(el('p', 'note', 'The video was deleted when you closed this. The report, stills and checklist are kept.'));
     if (r.note) box.appendChild(el('p', null, r.note));
@@ -1514,55 +1601,109 @@
     act.appendChild(d); box.appendChild(act); return box; }
   function refLoad(){ fetch('/api/refs', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
     .then(function(j){ var a = (j.refs || []).filter(function(r){ var undecided = (r.checklist || []).some(function(c){ return !c.c; }); if (r.closed) return Date.now() - Date.parse(r.closed) <= 2 * 864e5; return r.state === 'new' || r.state === 'uploading' || !r.done_at || undecided || Date.now() - Date.parse(r.done_at) <= 2 * 864e5; }), n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });  // studied or used more than 2 days ago leaves the list (owner, 23 Nov 2026)
-      refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; }).catch(function(){}); }
-  function refDone(ok, m){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; if (ok) { refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Up to 1 GB'; refLoad(); } }
+      refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; refClean(j.refs || []); }).catch(function(){}); }
+  // Clean up (task 15): the references that are safe to remove, from the whole list (old ones too), one Remove button each
+  function refClean(all){ var box = document.getElementById('ref-clean'), lst = document.getElementById('ref-clean-list'), now = Date.now(), safe = all.filter(function(r){ return refView(r, REFCAPS, now).safe; });
+    lst.textContent = ''; box.hidden = !safe.length; document.getElementById('ref-clean-n').textContent = safe.length ? '(' + safe.length + ')' : '';
+    safe.forEach(function(r){ var vw = refView(r, REFCAPS, now), row = el('div', 'crow'), tb = el('span', 'rthumb');
+      if (vw.thumb && vw.thumb.kind === 'img') { var ti = el('img'); ti.loading = 'lazy'; ti.alt = ''; ti.src = vw.thumb.src; tb.appendChild(ti); }
+      row.appendChild(tb); row.appendChild(el('span', null, (r.file && r.file.name || r.url || 'Reference').slice(0, 60) + ' · ' + vw.why + (vw.lesson ? ' · ' + vw.lesson : '')));
+      var b = el('button', 'btn g', 'Remove'); b.type = 'button'; b.addEventListener('click', function(){ b.disabled = true;
+        fetch('/api/refs/' + r.id + '/delete', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: '{}' })
+          .then(function(x){ if (!x.ok) throw 0; row.remove(); refLoad(); }).catch(function(){ b.disabled = false; b.textContent = 'Try again'; }); });
+      row.appendChild(b); lst.appendChild(row); }); }
+  // upload progress (owner, 26 Nov 2026: "reference upload should have progress bar"): a bar with the percent and the part count, a failed part
+  // retried up to 3 times with a short back-off, a final failure keeps the upload so "Try again" continues from the last good part, and a clear
+  // "Added" finish with a small preview of the file
+  var refBar = el('div', 'bar'), refBarI = el('i'), refPrev = el('div', 'refprev'), refJob = null; refBar.appendChild(refBarI); refBar.hidden = true; refPrev.hidden = true;
+  refMsg.parentNode.insertBefore(refBar, refMsg); refMsg.parentNode.insertBefore(refPrev, refMsg.nextSibling);
+  function refProg(done, total, k, n){ var pc = total ? Math.min(100, Math.floor(done / total * 100)) : 0; refBar.hidden = false; refBarI.style.width = pc + '%';
+    refMsg.textContent = pc + '%' + (n > 1 ? ' · part ' + k + ' of ' + n : '') + ' · keep this page open'; }
+  function refShow(f){ refPrev.textContent = ''; if (!f) { refPrev.hidden = true; return; } var u = URL.createObjectURL(f), m;
+    if (/^video\//.test(f.type)) { m = document.createElement('video'); m.muted = true; m.playsInline = true; m.preload = 'metadata'; m.src = u + '#t=0.1'; }
+    else { m = document.createElement('img'); m.alt = ''; m.src = u; }
+    refPrev.appendChild(m); refPrev.appendChild(el('span', null, f.name)); refPrev.hidden = false; }
+  function refDone(ok, m, f){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; refBar.hidden = !ok || !f; if (ok && f) refBarI.style.width = '100%';
+    if (ok) { refJob = null; refShow(f || null); refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Up to 1 GB'; refLoad(); } }
+  // one request with upload progress (fetch has none): resolves with the parsed reply, rejects with { status, body }
+  function refXhr(url, body, type, onp){ return new Promise(function(ok, no){ var x = new XMLHttpRequest(); x.open('POST', url); x.withCredentials = true;
+    x.setRequestHeader('X-Requested-With', 'reel'); x.setRequestHeader('Content-Type', type); x.upload.onprogress = function(e){ if (onp) onp(e.loaded); };
+    x.onload = function(){ var j = {}; try { j = JSON.parse(x.responseText || '{}'); } catch (e) { /* not json */ } if (x.status >= 200 && x.status < 300) ok(j); else no({ status: x.status, body: j }); };
+    x.onerror = x.ontimeout = function(){ no({ status: 0, body: {} }); }; x.send(body); }); }
+  var REF_TYPE = 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).';
   // a file over 50 MB goes up in parts (R2 multipart through the Worker, each part 64 MB; owner, 24 Nov 2026: up to 1 GB)
-  function bigUpload(f, note){ var H = { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, id = null, parts = [], sent = 0; refSend.disabled = true;
-    function say(t){ refMsg.textContent = t; }
-    function fail(m){ if (id) fetch('/api/refs/' + id + '/abort', { method: 'POST', credentials: 'same-origin', headers: H, body: '{}' }).catch(function(){}); refDone(false, m || 'The upload stopped. Try again.'); }
-    say('Starting…');
-    fetch('/api/refs/mp/start', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ name: f.name, type: f.type, size: f.size, channel: refCh || null, note: note || null }) })
-      .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw j; return j; }); })
-      .then(function(j){ id = j.id; var size = j.partSize, n = Math.ceil(f.size / size);
-        function next(k){ if (k > n) return Promise.resolve();
-          function once(left){ say('Uploading part ' + k + ' of ' + n + ' · ' + Math.round(sent / f.size * 100) + '%');
-            return fetch('/api/refs/' + id + '/part?n=' + k, { method: 'POST', credentials: 'same-origin', headers: { 'X-Requested-With': 'reel', 'Content-Type': 'application/octet-stream' }, body: f.slice((k - 1) * size, Math.min(f.size, k * size)) })
-              .then(function(r){ if (!r.ok) throw 0; return r.json(); }, function(e){ throw 0; })
-              .catch(function(){ if (left > 0) return new Promise(function(ok){ setTimeout(ok, 1500); }).then(function(){ return once(left - 1); }); throw 0; }); }
-          return once(2).then(function(pt){ parts.push({ partNumber: pt.partNumber, etag: pt.etag }); sent += Math.min(size, f.size - (k - 1) * size); return next(k + 1); }); }
-        return next(1); })
-      .then(function(){ say('Finishing…'); return fetch('/api/refs/' + id + '/complete', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ parts: parts }) }); })
-      .then(function(r){ if (!r.ok) throw 0; refDone(true, 'Added. Claude reads it on the next run.'); })
-      .catch(function(e){ fail(e && e.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : e && e.error === 'too-big' ? 'That file is over 1 GB.' : null); }); }
+  function bigUpload(f, note){ var H = { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }; refSend.disabled = true; refPrev.hidden = true;
+    var job = refJob && refJob.name === f.name && refJob.fsize === f.size && refJob.mod === f.lastModified ? refJob : null;   // the same file again: continue where it stopped
+    if (refJob && !job) fetch('/api/refs/' + refJob.id + '/abort', { method: 'POST', credentials: 'same-origin', headers: H, body: '{}' }).catch(function(){});   // another file: drop the old half upload
+    refJob = null;
+    var start = job ? Promise.resolve(job) : (refMsg.textContent = 'Starting…', fetch('/api/refs/mp/start', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ name: f.name, type: f.type, size: f.size, channel: refCh || null, note: note || null }) })
+      .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw j; return { id: j.id, part: j.partSize, n: Math.ceil(f.size / j.partSize), parts: [], name: f.name, fsize: f.size, mod: f.lastModified }; }); }));
+    start.then(function(jb){ job = jb;
+      function sentBefore(k){ return Math.min(f.size, (k - 1) * job.part); }
+      function next(k){ if (k > job.n) return Promise.resolve();
+        if (job.parts.some(function(p){ return p.partNumber === k; })) return next(k + 1);   // already up (a resumed upload)
+        function once(tries){ refProg(sentBefore(k), f.size, k, job.n);
+          return refXhr('/api/refs/' + job.id + '/part?n=' + k, f.slice((k - 1) * job.part, Math.min(f.size, k * job.part)), 'application/octet-stream', function(l){ refProg(sentBefore(k) + l, f.size, k, job.n); })
+            .catch(function(e){ if (tries < 3) { refMsg.textContent = 'Part ' + k + ' of ' + job.n + ' did not go through. Trying again…'; return new Promise(function(ok){ setTimeout(ok, 1500 * Math.pow(2, tries)); }).then(function(){ return once(tries + 1); }); } throw e; }); }
+        return once(0).then(function(pt){ job.parts.push({ partNumber: pt.partNumber, etag: pt.etag }); return next(k + 1); }); }
+      return next(1); })
+      .then(function(){ refMsg.textContent = 'Finishing…'; job.parts.sort(function(a, b){ return a.partNumber - b.partNumber; });
+        return fetch('/api/refs/' + job.id + '/complete', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ parts: job.parts }) }); })
+      .then(function(r){ if (!r.ok) throw { status: r.status, body: {} }; refDone(true, 'Added. Claude reads it on the next run.', f); })
+      .catch(function(e){ var b = (e && e.body) || e || {};
+        if (b.error === 'type') return refDone(false, REF_TYPE);
+        if (b.error === 'too-big') return refDone(false, 'That file is over 1 GB.');
+        if (job && job.id) { refJob = job; var got = job.parts.length; refDone(false, 'The upload stopped' + (got ? ' after part ' + got + ' of ' + job.n : '') + '. Tap Try again to continue from there (keep the same file chosen).'); refBar.hidden = false; return; }
+        refDone(false, 'The upload could not start. Try again.'); }); }
   refSend.addEventListener('click', function(){ var u = refUrl.value.trim(), f = refFile.files && refFile.files[0], note = refNote.value.trim();
     if (!u && !f) { refMsg.textContent = 'Paste a link or choose a file.'; refUrl.focus(); return; }
     if (u && !/^https:\/\/\S+$/i.test(u)) { refMsg.textContent = 'The link must start with https://'; refUrl.focus(); return; }
     if (f && f.size > REF_MAX) { refMsg.textContent = 'That file is ' + (f.size / 1073741824).toFixed(1) + ' GB. The limit is 1 GB, so choose a shorter clip.'; return; }
     if (f && f.size > REF_WARN && !confirm('This file is ' + Math.round(f.size / 1048576) + ' MB. It uploads in parts and can take a few minutes. Keep this page open until it says Added. Start now?')) return;
     if (f && f.size > REF_SINGLE) return bigUpload(f, note + (u ? (note ? '\n' : '') + u : ''));
-    refSend.disabled = true; refMsg.textContent = f ? 'Uploading…' : 'Saving…';
+    refSend.disabled = true; refMsg.textContent = f ? 'Uploading…' : 'Saving…'; refPrev.hidden = true;
     var H = { 'X-Requested-With': 'reel' }, jobs = [];
-    if (f) jobs.push(fetch('/api/refs/upload?' + new URLSearchParams({ channel: refCh, note: note + (u ? (note ? '\n' : '') + u : ''), name: f.name }), { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': f.type || 'application/octet-stream' }, H), body: f }));
-    else jobs.push(fetch('/api/refs', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify({ url: u, note: note || null, channel: refCh || null }) }));
+    if (f) { refProg(0, f.size, 1, 1); return refXhr('/api/refs/upload?' + new URLSearchParams({ channel: refCh, note: note + (u ? (note ? '\n' : '') + u : ''), name: f.name }), f, f.type || 'application/octet-stream', function(l){ refProg(l, f.size, 1, 1); })
+      .then(function(){ refDone(true, 'Added. Claude reads it on the next run.', f); }, function(e){ var j = (e && e.body) || {}; refDone(false, j.error === 'type' ? REF_TYPE : j.error === 'too-big' ? 'That file is over 1 GB.' : 'Could not save it. Try again.'); }); }
+    jobs.push(fetch('/api/refs', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify({ url: u, note: note || null, channel: refCh || null }) }));
     Promise.all(jobs).then(function(rs){ var bad = rs.filter(function(r){ return !r.ok; })[0]; if (!bad) return refDone(true, 'Added. Claude reads it on the next run.');
       return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 1 GB.' : 'Could not save it. Try again.'); }); })
       .catch(function(){ refDone(false, 'Could not save it. Try again.'); }); });
+  var REFCAPS = {}; caps.then(function(c){ REFCAPS = c || {}; refLoad(); });   // captions "refs": ["app:<id>"] links a reference to the reels that used it
   refLoad();
   // Previews: concept videos to review (not posts); the list lives in templates/showreels/previews.json, the files in R2 at
   // /reels/study/<name>-preview.mp4 and <name>-preview-stills.png (the Showreel workflow's "seconds" mode). "Like" / "Not this" go to the
   // owner's Feedback (D1, /api/feedback) as "Preview <name>: Like|Not this", which the daily run reads (owner, 23 Nov 2026).
   var pvPending = 0;
+  // Tests (task 14, owner 27 Nov 2026: "tests and previews are invisible"): every video under study/ from GET /api/tests, newest first, with its cover,
+  // name, date, a plain "what it tests" line (from previews.json when it has an entry) and a player. Never posted, never counted as a reel.
+  // TESTS-START (scripts/qa/app-tests-test.mjs runs this function)
+  function testsMerge(tests, items){ items = items || [];
+    return (tests || []).map(function(t){ var file = '/reels/study/' + t.name + '.mp4', e = items.filter(function(p){ return (p.src || '/reels/study/' + p.name + '-preview.mp4') === file; })[0] || null,
+        bare = t.name.replace(/^showreel-(pv-)?/, '').replace(/-preview$/, ''), m = /^(tech|web|c3)-(.*)$/.exec(bare), ch = e && e.channel || (m ? m[1] : null), rest = m ? m[2] : bare,
+        rn = /-r(\d+)$/.exec(rest), title = e ? e.title : rest.replace(/-r\d+$/, '').replace(/-/g, ' ') + (rn ? ', render ' + rn[1] : ''),
+        what = e && e.about ? String(e.about).split(/\.\s/)[0].replace(/\.?$/, '.') : 'A test render, never posted.';   // the first sentence
+      return { name: t.name, title: title.charAt(0).toUpperCase() + title.slice(1), what: what, channel: ch, at: t.at, video: t.video, cover: t.cover || (e && e.cover) || null }; }); }
+  // TESTS-END
+  var TESTS = null;
+  function testsPaint(){ var box = document.getElementById('slog-list'), slog = document.getElementById('slog'); if (!TESTS) return;
+    var list = testsMerge(TESTS, PV_ITEMS); box.textContent = ''; document.getElementById('slog-n').textContent = list.length ? '(' + list.length + ')' : ''; slog.hidden = !list.length;
+    list.forEach(function(x){ var d = el('div', 'tst'), bt = el('button', 'about'), th = el('span', 'th'), tx = el('span'); bt.type = 'button';
+      if (x.cover) th.style.backgroundImage = 'url("' + x.cover + '")'; else { var pv = document.createElement('video'); pv.muted = true; pv.preload = 'metadata'; pv.src = x.video + '#t=0.6'; pv.setAttribute('aria-hidden', 'true'); th.appendChild(pv); }
+      tx.appendChild(el('b', null, x.title)); tx.appendChild(el('i', null, (x.channel && CH[x.channel] ? CH[x.channel].name + ' · ' : '') + new Date(x.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' }) + ' · tap to play'));
+      bt.appendChild(th); bt.appendChild(tx); d.appendChild(bt); d.appendChild(el('p', null, x.what));
+      bt.addEventListener('click', function(){ var v = d.querySelector('video.play'); if (v) { v.remove(); return; } v = document.createElement('video'); v.className = 'play'; v.src = x.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (x.cover) v.poster = x.cover;
+        v.setAttribute('aria-label', x.title); d.appendChild(v); v.play().catch(function(){}); });
+      box.appendChild(d); }); }
+  fetch('/api/tests', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ TESTS = j.tests || []; testsPaint(); }).catch(function(){});
   fetch('/showreels/previews.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
+    PV_ITEMS = (j && j.items) || []; askFill();   // task 12: asks about a preview show its name and player
     // cleanup rule (owner, 23 Nov 2026): a preview leaves the list once answered (Like / Not this, from any device) or 7 days after its "added" date
     // owner, 24 Nov 2026: only previews with needsOwner true are in the list (each shows its one-line "ask"); the rest go to the Studio log (kept 30 days)
     var now0 = Date.now(), all = ((j && j.items) || []).filter(function(p){ var t = Date.parse((p.added || '') + 'T00:00:00+05:30'); return !isNaN(t) && now0 - t <= 30 * 864e5; }),
       it = all.filter(function(p){ var t = Date.parse((p.added || '') + 'T00:00:00+05:30'); return p.needsOwner === true && p.ask && now0 - t <= 7 * 864e5; }),
       lg = all.filter(function(p){ return it.indexOf(p) < 0; }), slog = document.getElementById('slog');
-    if (lg.length) { lg.forEach(function(p){ var d = el('div', 'pvi lg'), c = el('span', 'ch', (CH[p.channel] && CH[p.channel].name) || p.channel || ''); d.appendChild(c);
-        d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about));
-        var a = el('a', null, 'Watch'); a.href = (p.src || '/reels/study/' + p.name + '-preview.mp4') + '?v=' + (j.v || 1); a.target = '_blank'; a.rel = 'noopener'; d.appendChild(a);
-        document.getElementById('slog-list').appendChild(d); });
-      document.getElementById('slog-n').textContent = '(' + lg.length + ')'; slog.hidden = false; }
+    testsPaint();   // the Tests list (task 14) uses these entries for its titles
     var box = document.getElementById('pv-list'), n = document.getElementById('pv-n'); if (!it.length) return;
     document.getElementById('pv-note').textContent = j.note || '';
     var CCV = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' }, rows = {};
@@ -1717,7 +1858,7 @@
     useBox.hidden = false; }).catch(function(e){ useMiss((e && e.message) || 'the app could not reach the count.'); });
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
-    DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); } tRender();
+    DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); } tRender(); askFill();
     // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
     Promise.all((r[0].showreels || []).filter(function(s){ return !ticks[s.name] && !(r[1][s.name] || {}).hidden; })   /* every reel still to post (titles are the post's first line, 21 Nov 2026) */.map(function(s){
       return fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(x){ return x.ok ? x.json() : {}; }).then(function(j){ if (j && j.caption) TITLES[s.name] = firstLine(j.caption); }).catch(function(){}); }))

@@ -19,6 +19,10 @@ Where they fit the 3D look, also apply the owner's 27 Nov 2.5D notes in design/o
 nothing glitching, a hint of the next subject before the camera moves, the WHOLE frame planned with nothing empty). Tech now posts in the
 2.5D look (owner, 27 Nov); v7 continues as a kit. Render 3 is the last v7 render; after it the owner decides.
 
+## Owner rule: scope of this account (owner, 27 Nov 2026)
+This account is a temporary helper for bigger chunks of app, tooling and kit work only. It never builds, renders, schedules or posts the
+daily reels. The main account's owner chat writes the tasks here and reads Progress.
+
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
 critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 10, then task 9
@@ -29,7 +33,7 @@ Every task here is also a project on the app's board: update its entry in design
 Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
 when the owner asks). The hourly "Handoff queue check" starts a session only for an open GO task that is not already started (a
 "task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
-Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3; task 11 may be done while a v7 render runs), then task 11 (upload progress bar) if not done yet, then task 9 (references). Every other open task waits until it is marked GO.
+Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3; task 11 may be done while a v7 render runs), then task 11 (upload progress bar) if not done yet, then task 12, 13, 14, 15 (the owner's app gaps of 27 Nov), then task 9 (references, measured; do it together with task 15). Every other open task waits until it is marked GO.
 
 ## Owner rule for task 10: keep going until stable (owner, 26 Nov 2026)
 Task 10 (3D kit v7) continues on its own through the hourly queue check until it is STABLE or capped, without waiting to be told:
@@ -167,6 +171,28 @@ and stills against points 1-7 before any render. (b) On its OK: one render, Outp
 v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
 if NOT READY the owner decides. Update projects.json at each step.
 
+## Queued tasks 12-15 GO, after tasks 10 and 11 (owner, 27 Nov 2026): the app does not show the owner what they need
+Owner (27 Nov): "If there's a Needs you in app, how do I know where it is or what it is?" and three more. Also design/todo.md P1 (27 Nov).
+Each task: plain words in the app, phone first (390 px), no tool names or codes on screen, npm run check, one push each, a Progress line,
+projects.json stage updates. Size each M. Ask the owner chat (main account) before anything costs more than about $5.
+- **Task 12, "Needs you" you can find.** One obvious place: a badge on the Today tab AND the open question(s) at the top of Today, each with
+  the reel or preview it is about (cover + name, tap to play) and its yes/no or text answer right there. Every owner-chat message that asks
+  something can then say "on Today, top". Remove answered questions at once.
+- **Task 13, Fix at the exact stage.** On the studio board, the reel's journey row that failed or stalled (build, stills, render, machine
+  checks, critic, post) carries the Fix button and its one-line reason; a stage past its expected time (render > 60 min, critic > 45 min,
+  build stage with no update for 2 h) counts as stalled. Today's case: the Turns Out build failed at the build stage (no repo access) and the
+  board showed nothing there for hours.
+- **Task 14, Tests and previews are visible.** Renders under reels/study/ (tests, previews, kit samples) get a "Tests" list in the app
+  (Inbox or Growth): cover, name, date, a plain "what it tests" line, player. Never posted, never counted as a reel. Messages stop saying
+  "study folder".
+- **Task 15, References you can tell apart and clean up.** Each reference in Inbox > References shows a thumbnail (image) or a short silent
+  loop (first 3 s of a clip, made once on upload or by Owner answers `refs`), its state (new / studied / used in <reel>), the lesson taken in
+  one line, and links to the reels that used it (from captions.json "refs", task 9). A "Clean up" view lists the ones safe to remove
+  (studied 2+ days ago and used, or skipped) with one Remove button each.
+- Done on the main account (27 Nov, today's posts): the channel tabs' "Ready to post" box showed every channel's ready reels (the web tab
+  showed the tech reel); now each tab shows only its own, a critic verdict on any item number is read (a READY web reel showed as not ready),
+  and tech shows its 20:30 time instead of "posts paused". Add an app test for "each tab shows only its channel" in task 12.
+
 ## Queued task 11 GO, during v7's render waits or right after task 10 (owner, 26 Nov 2026): progress bar for reference uploads
 Owner: "reference upload should have progress bar". Agreed after discussion. Size S. templates/index.html (References upload, ~line 1541;
 it uploads large files in parts) and the Worker's refs upload route if needed:
@@ -273,6 +299,14 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 27 Nov 01:38 IST, other account: the owner paused the hourly "Handoff queue check" scheduled task until they say so. Nothing on this account starts work by itself now: render 3 of v7 starts only when the owner tells this account (after "PLAN: OK TO RENDER").
 - 27 Nov 01:30 IST, main account plan critic: PLAN: CHANGE FIRST + seven small changes (fewer headline words and a step pill instead of the grey words, dim everything but the subject in three moments, a still hold and one move home, a last frame that matches frame 0, a clean New shot, a readable first frame), then render 3 with no further plan check (review/tech/showreel-tech-gold3d-v7.md "Render 3 plan critic").
 - 27 Nov ~13:00 IST, owner (via the owner chat): HOLD lifted; start task 10 now (7 plan-critic changes, then render 3, Output QA, "v7 ready for critic").
+- 27 Nov ~14:45 IST, owner (via the owner chat): tasks 12-15 queued GO after tasks 10 and 11 (Needs you, Fix at the stage, Tests list, references with thumbnails and cleanup).
+- 27 Nov 14:52 IST, other account: task 11 started and done in one push: task 11 live, owner to try an upload. Inbox > Ideas and references: a bar with the percent and the part count ("62% · part 5 of 8"), a failed part is retried up to 3 times with a short wait, a final stop keeps the upload and "Try again" continues from the last good part (same file chosen), and the finish says Added with a small preview; the list updates at once. Checked at phone width against a local test server (51 parts, part 3 failing 4 times: stopped after part 2, resumed from part 3, finished; a small image: bar, Added, preview). task 11 done.
+- 27 Nov 15:06 IST, other account: task 12 started and done in one push: "Needs you" is now at the top of Today (above the studio board) with its count in the heading and on the Today tab; a question can name the reel or test video it is about (Owner answers add: "reel" or "preview"), and the app shows its cover and name beside the question, a tap plays it there; an answered question leaves at once. New app test (in npm run check): each channel tab shows only its own ready reels, and a question finds its reel. Checked at 390 px against a local test server. Owner-chat messages that ask something say "on Today, top" (design/runbook-studio.md). task 12 done.
+- 27 Nov 15:11 IST, other account: task 13 started and done in one push: on the studio board, the step that failed or got stuck turns red and carries its one-line reason and the Fix button, and the card opens by itself once for each new problem. Steps: Researching, Topic picked, Building, Stills check, Making the video, Machine checks, Second look (new row), Ready to post / posted. Stalled on its own: the video over 60 min, no second look 45 min after the checks, a build step with no news for 2 h. A build that cannot go on reports `stage.mjs <channel> failed --step building --line "why"` (design/runbook-reels.md); today's Turns Out case (no repo access) would show as "Problem at building" with Fix under Building. New app test (npm run check): 12 cases. Checked at 390 px against a local test server. task 13 done.
+- 27 Nov 15:13 IST, other account: task 14 started and done in one push: Inbox > Tests (it replaces the Studio log) lists every video under study/ (tests, previews, kit samples), newest first, from the new GET /api/tests: cover (the automatic cover, or the video's first frame), a plain title, the date, one "what it tests" line (from previews.json when the test has an entry, else "A test render, never posted.") and a player; it says never posted and not counted as reels. New app test (npm run check). Messages say "in the app, Inbox > Tests", never "study folder" (design/runbook-studio.md). Checked at 390 px on a local test server. task 14 done.
+- 27 Nov 15:16 IST, other account: task 15 started and done in one push: each reference in Inbox > Ideas and references shows a thumbnail (the image; a clip's first 3 s as a silent loop, read straight from the clip so nothing extra is made or stored; a closed clip's first report still), its state (New, Studied, Used, or "Used in N reels"), the lesson in one line (Claude's study note) and links to the reels that used it (captions.json "refs": ["app:<id>"], with task 9). A "Clean up" view lists the safe ones (studied 2+ days ago and used, or every point skipped), one Remove each. New app test (npm run check). Checked at 390 px on a local test server. task 15 done.
+- 27 Nov 15:20 IST, other account: task 9 started and done in one push: (1) scripts/ref-compare.mjs and the "Ref compare" workflow (inputs: reel, app reference number) measure our final MP4 against the reference clip: changes per 10 s and the time between them, longest still stretch, words on screen per beat and how often a number changes (tesseract), colours; both rows and the gap in plain words, one "REF COMPARE:" line for the review file. (2) captions.json "refs": ["R-ref 26 Nov: 10", "app:12"]; npm run check warns when a review file names patterns and the entry has none (5 reels warn today). (3) scripts/audit-numbers.mjs prints AUDIT_REFS per channel: reels with a reference pattern vs without (median reach, watch, saves per 1,000), per pattern once it has 3+ reels. (4) design/runbook-daily.md references step has the three items; the main account dispatches Ref compare after each reel built from a reference. New test (npm run check). task 9 done.
+
 ---
 
 # History: CLOSED (owner, 22 Nov 2026)
