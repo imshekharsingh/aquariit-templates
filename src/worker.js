@@ -697,8 +697,10 @@ async function stageApi(request, env, p, ctx) {
 // ---- Projects (owner, 26 Nov 2026): work that is not a channel reel (the 3D kit, an app fix) gets a row on the Today board. Its session keeps
 // design/projects.json up to date in the same push as the work; this reads that file from main (no site access needed, so the second account can
 // report too) and merges any newer `node scripts/stage.mjs project:<id> <stage>` row (D1 studio_stage, ch 'project'). The newer of the two wins.
-// A done project leaves the board 2 days after its last update. GET /api/projects (signed in): { projects: [{ id, name, account, stage, line, pct, updatedAt, history }] }
+// A done project leaves the board 2 days after its last update. GET /api/projects (signed in): { projects: [{ id, name, account, stage, line, pct, updatedAt, history, steps, next }] }
+// Task 7 (27 Nov 2026): steps = its own ordered steps [{ name, state: done | now | next | failed }]; next = { who: other | main | owner | github, action, eta }.
 const PROJECT_STAGES = ['planned', 'building', 'stills', 'render', 'checking', 'critic', 'done', 'waiting', 'failed'];
+const STEP_STATES = ['done', 'now', 'next', 'failed'], NEXT_WHO = ['other', 'main', 'owner', 'github'];
 const PROJECTS_RAW = 'https://raw.githubusercontent.com/imshekharsingh/aquariit-templates/main/design/projects.json', PROJECTS_TTL = 120;
 async function projectsApi(request, env, fetchFile = fetch) {
   if (request.method !== 'GET') return jres({ error: 'bad-request' }, 400);
@@ -711,11 +713,13 @@ async function projectsApi(request, env, fetchFile = fetch) {
     if (!x || typeof x.id !== 'string' || !/^[a-z0-9-]{1,40}$/.test(x.id) || !ok(x.stage)) continue;
     by.set(x.id, { id: x.id, name: nStr(x.name, 80) || x.id, account: x.account === 'main' ? 'main' : 'other', stage: x.stage, line: nStr(x.line, 160) || '',
       pct: Number.isFinite(x.pct) ? Math.max(0, Math.min(100, Math.round(x.pct))) : null, updatedAt: typeof x.updatedAt === 'string' ? x.updatedAt : null,
-      history: (Array.isArray(x.history) ? x.history : []).filter((h) => h && ok(h.stage)).slice(-20).map((h) => ({ at: typeof h.at === 'string' ? h.at : null, stage: h.stage, line: nStr(h.line, 160) || '' })) });
+      history: (Array.isArray(x.history) ? x.history : []).filter((h) => h && ok(h.stage)).slice(-20).map((h) => ({ at: typeof h.at === 'string' ? h.at : null, stage: h.stage, line: nStr(h.line, 160) || '' })),
+      steps: (Array.isArray(x.steps) ? x.steps : []).filter((q) => q && nStr(q.name, 40) && STEP_STATES.includes(q.state)).slice(0, 12).map((q) => ({ name: nStr(q.name, 40), state: q.state })),
+      next: x.next && nStr(x.next.action, 160) ? { who: NEXT_WHO.includes(x.next.who) ? x.next.who : 'other', action: nStr(x.next.action, 160), eta: nStr(x.next.eta, 40) || null } : null });
   }
   for (const r of rows) {
     const id = String(r.reel).replace(/^project-/, ''); if (!ok(r.stage)) continue;
-    const p = by.get(id) || { id, name: id, account: 'main', stage: r.stage, line: '', pct: null, updatedAt: null, history: [] };
+    const p = by.get(id) || { id, name: id, account: 'main', stage: r.stage, line: '', pct: null, updatedAt: null, history: [], steps: [], next: null };
     if (!p.updatedAt || Date.parse(r.at) > Date.parse(p.updatedAt)) {
       p.stage = r.stage; p.line = r.line || p.line; p.pct = r.pct ?? null; p.updatedAt = r.at;
       p.history = p.history.concat([{ at: r.at, stage: r.stage, line: r.line || '' }]).slice(-20);
@@ -951,6 +955,12 @@ async function notifyTick(env, now = Date.now()) {
       payload = x.type === 'ready' && !x.test ? postPayload(r.name, r.m, title) : { title: fill(line.title, v), body: fill(line.body, v), url, tag: x.type + '-' + r.name }; }
     out.push({ type: x.type, reel: x.reel, ...(await sendType(env, db, x.type, x.key, payload)) });
   }
+  // a project that reached Done in the last hour: one push "<name> is done: <line>" (task 7; type project-done, switchable in Settings)
+  try {
+    const pj = await (await projectsApi(new Request('https://x/api/projects'), env)).json();
+    for (const p of pj.projects || []) if (p.stage === 'done' && p.updatedAt && now - Date.parse(p.updatedAt) < 3600e3 && now >= Date.parse(p.updatedAt))
+      out.push({ type: 'project-done', reel: null, ...(await sendType(env, db, 'project-done', 'project-done:' + p.id, { title: `${p.name} is done`, body: p.line || 'Tap to see its steps.', url: '/#today', tag: 'project-' + p.id })) });
+  } catch { /* a missing project push never breaks the reel pushes */ }
   await db.prepare('DELETE FROM notif_log WHERE at < ?1').bind(new Date(now - 14 * DAY_MS).toISOString()).run().catch(() => {});
   return out;
 }

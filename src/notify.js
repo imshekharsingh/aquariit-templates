@@ -6,8 +6,8 @@
 import POLICY from '../design/notify-policy.json' with { type: 'json' };
 export { POLICY };
 export const IST = 5.5 * 3600e3;
-export const NOTIFY_TYPES = ['ready', 'nudge', 'late', 'logged', 'last', 'posted', 'failed', 'digest'];
-export const NOTIFY_LABEL = { ready: 'A reel is ready to post (2 min before its time)', nudge: 'A gentle nudge if it is not posted (15 min after; 10 min on a slot test day)', late: 'Slot test: a warning 30 min after the time', logged: 'Slot test: the posting time is logged', last: 'A last call at 8:30 PM', posted: 'Posted, with the link', failed: 'Posting failed, and why', digest: 'The morning summary at 8:00 AM' };
+export const NOTIFY_TYPES = ['ready', 'nudge', 'late', 'logged', 'last', 'posted', 'failed', 'digest', 'project-done'];
+export const NOTIFY_LABEL = { ready: 'A reel is ready to post (2 min before its time)', nudge: 'A gentle nudge if it is not posted (15 min after; 10 min on a slot test day)', late: 'Slot test: a warning 30 min after the time', logged: 'Slot test: the posting time is logged', last: 'A last call at 8:30 PM', posted: 'Posted, with the link', failed: 'Posting failed, and why', digest: 'The morning summary at 8:00 AM', 'project-done': 'A project is done' };
 const hm = (s) => (/^\d{2}:\d{2}$/.test(s || '') ? +s.slice(0, 2) * 60 + +s.slice(3, 5) : null);
 export const istParts = (now) => { const d = new Date(now + IST); return { day: d.toISOString().slice(0, 10), min: d.getUTCHours() * 60 + d.getUTCMinutes() }; };
 // a channel's slot test on a day: { n, days, slot, until } or null (no test, or the day is outside it)

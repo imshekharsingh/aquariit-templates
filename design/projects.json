@@ -1,5 +1,5 @@
 {
-  "_about": "Projects on the app's Today board (owner, 26 Nov 2026): work that is not a channel reel. The project's session updates its entry at every stage in the same push as the work (design/runbook-studio.md \"Projects\"). stage: planned | building | stills | render | checking | critic | done | waiting (on the owner) | failed. line: one plain sentence. pct: optional 0-100. history: newest last, at most 20. The Worker reads this file from main (GET /api/projects, about 2 min cache) and merges any newer `node scripts/stage.mjs project:<id> <stage>` line. A done project leaves the board 2 days after its last update.",
+  "_about": "Projects on the app's Today board (owner, 26 Nov 2026): work that is not a channel reel. The project's session updates its entry at every stage in the same push as the work (design/runbook-studio.md \"Projects\"). stage: planned | building | stills | render | checking | critic | done | waiting (on the owner) | failed. line: one plain sentence. pct: optional 0-100. history: newest last, at most 20. The Worker reads this file from main (GET /api/projects, about 2 min cache) and merges any newer `node scripts/stage.mjs project:<id> <stage>` line. steps: its own ordered steps [{name, state: done | now | next | failed}]; next: {who: other | main | owner | github, action in plain words, eta or null}; both updated in the same push at every step (task 7). A done project leaves the board 2 days after its last update.",
   "projects": [
     {
       "id": "3d-kit-v7",
@@ -8,7 +8,7 @@
       "stage": "building",
       "line": "Render 4 (owner-approved, the last): the critic's fixes are in; checks before the render.",
       "pct": 97,
-      "updatedAt": "2026-11-27T17:09:00Z",
+      "updatedAt": "2026-11-27T18:10:00Z",
       "history": [
         {
           "at": "2026-11-26T13:12:00Z",
@@ -75,7 +75,46 @@
           "stage": "building",
           "line": "Render 4 (owner-approved, the last): the critic's fixes are in; checks before the render."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Rules",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Stills",
+          "state": "done"
+        },
+        {
+          "name": "Render",
+          "state": "done"
+        },
+        {
+          "name": "Checks",
+          "state": "now"
+        },
+        {
+          "name": "Critic",
+          "state": "next"
+        },
+        {
+          "name": "Kit final",
+          "state": "next"
+        },
+        {
+          "name": "Done",
+          "state": "next"
+        }
+      ],
+      "next": {
+        "who": "other",
+        "action": "Whole-reel glitch check, then render 4 on GitHub (about 40 min) and Output QA",
+        "eta": "render 4 tonight"
+      }
     },
     {
       "id": "3d-kit-v6",
@@ -121,7 +160,42 @@
           "stage": "done",
           "line": "Closed at render 2 (critic NOT READY); v7 replaces it."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Rules",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Stills",
+          "state": "done"
+        },
+        {
+          "name": "Render",
+          "state": "done"
+        },
+        {
+          "name": "Checks",
+          "state": "done"
+        },
+        {
+          "name": "Critic",
+          "state": "done"
+        },
+        {
+          "name": "Kit final",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "minutes-meter",
@@ -141,7 +215,26 @@
           "stage": "done",
           "line": "The meter always shows now, and says why if the count cannot be read."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Find cause",
+          "state": "done"
+        },
+        {
+          "name": "Fix",
+          "state": "done"
+        },
+        {
+          "name": "Live",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "app-projects",
@@ -156,7 +249,34 @@
           "stage": "done",
           "line": "Projects like the 3D kit now show on the Today board with their stage and history."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "queue-check",
@@ -171,7 +291,34 @@
           "stage": "done",
           "line": "An hourly check now starts the next open task by itself."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "tech-2d5-test",
@@ -207,7 +354,42 @@
           "stage": "waiting",
           "line": "Critic NOT READY (cleanliness 6.5); fix render waits for the owner's yes."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Rules",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Render",
+          "state": "done"
+        },
+        {
+          "name": "Checks",
+          "state": "done"
+        },
+        {
+          "name": "Critic",
+          "state": "done"
+        },
+        {
+          "name": "Fix render",
+          "state": "now"
+        },
+        {
+          "name": "Done",
+          "state": "next"
+        }
+      ],
+      "next": {
+        "who": "owner",
+        "action": "Say yes or no to one fix render",
+        "eta": null
+      }
     },
     {
       "id": "ref-upload-bar",
@@ -228,7 +410,34 @@
           "stage": "done",
           "line": "Live: uploads show a bar with the percent and the part, retry a failed part, continue after a stop, and end with \"Added\" and a preview. Owner to try one upload."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "needs-you-today",
@@ -249,7 +458,34 @@
           "stage": "done",
           "line": "Live: questions sit at the top of Today with a count on the Today tab; a question about a reel shows its cover, and a tap plays it."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "fix-at-stage",
@@ -270,7 +506,34 @@
           "stage": "done",
           "line": "Live: the board puts Fix and its reason on the exact step that failed or got stuck, and opens that card by itself."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "tests-list",
@@ -291,7 +554,34 @@
           "stage": "done",
           "line": "Live: Inbox > Tests lists every test video with its cover, date, what it tests and a player; never posted, not counted as reels."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "refs-thumbs",
@@ -312,7 +602,34 @@
           "stage": "done",
           "line": "Live: each reference shows a thumbnail or a 3 s silent loop, its state, the lesson in one line and the reels that used it; Clean up lists the safe ones."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "refs-measured",
@@ -333,7 +650,34 @@
           "stage": "done",
           "line": "Live: a side-by-side measure of our reel against its reference, a reference tag per reel, and the nightly numbers compare reels with and without one."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "app-probe-cards",
@@ -349,7 +693,34 @@
           "stage": "done",
           "line": "Live: the App probe checks what each Today button really does; APP PROBE: PASS on the live app."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "app-fresh",
@@ -365,7 +736,34 @@
           "stage": "done",
           "line": "Live: the app carries its build and reloads once when a newer one is out; APP PROBE: PASS."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "tabs-order",
@@ -386,7 +784,34 @@
           "stage": "done",
           "line": "Live: channel tabs follow the posting order and the workflow you came from; APP PROBE: PASS."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
     },
     {
       "id": "notify-policy",
@@ -407,7 +832,81 @@
           "stage": "done",
           "line": "Live: one plan for every push (ready 2 min before, slot-test days, late and logged); Settings shows today's plan; APP PROBE: PASS."
         }
-      ]
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Tests",
+          "state": "done"
+        },
+        {
+          "name": "Merge",
+          "state": "done"
+        },
+        {
+          "name": "Live check",
+          "state": "done"
+        },
+        {
+          "name": "Done",
+          "state": "done"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "project-steps",
+      "name": "Projects show their steps",
+      "account": "other",
+      "stage": "building",
+      "line": "Building: each project shows its own steps and the next action on Today; a push when a project is done.",
+      "pct": null,
+      "updatedAt": "2026-11-27T18:10:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T18:10:00Z",
+          "stage": "building",
+          "line": "Building: each project shows its own steps and the next action on Today; a push when a project is done."
+        }
+      ],
+      "steps": [
+        {
+          "name": "Plan",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "now"
+        },
+        {
+          "name": "Tests",
+          "state": "next"
+        },
+        {
+          "name": "Merge",
+          "state": "next"
+        },
+        {
+          "name": "Live check",
+          "state": "next"
+        },
+        {
+          "name": "Done",
+          "state": "next"
+        }
+      ],
+      "next": {
+        "who": "other",
+        "action": "Tests and a phone-size check, then merge and the live check",
+        "eta": "about 30 min"
+      }
     }
   ]
 }
