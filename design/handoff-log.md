@@ -1302,3 +1302,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/t6-t20-done · Handoff: tasks 6 and 20 done (APP PROBE: PASS)
 - Done: live App probe passed after both deploys; projects marked done.
 - Left: task 10 render 4 (glitch screen running), then task 7.
+## 2026-11-27 · claude/project-steps · App: projects show their steps and the next action (task 7)
+- Done: projects.json steps + next (Worker passes them through, tests in scripts/qa/stage-test.mjs); Today step bar, Next line, step list; project-done push type; backfill; rule in runbook-studio and handoff.
+- Left: live App probe after deploy.

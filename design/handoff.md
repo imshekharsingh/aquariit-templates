@@ -40,7 +40,7 @@ ran after it. Write what happened (did the session stop, hit a limit, or fail a 
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
 critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 10, then task 9
 (later numbers after these, in order); report each in Progress.
-Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
+Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board") Each step also updates its "steps" states and its "next" (who, the action in plain words, when) in the same push (task 7).
 
 ## Owner rule: work only on tasks marked GO (owner, 26 Nov 2026)
 Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
@@ -393,6 +393,7 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 27 Nov 22:48 IST, other account: task 10, render 4 checks: the whole-reel glitch screen is capturing (about 65 min, then the text, colour and glow pass). Next: the render once they pass. Meanwhile task 19 (the installed app never runs an old copy) starts.
 - 27 Nov 23:00 IST, other account: task 19 done: the app now carries its build and reloads once when a newer one is live (a stalled list reloads once too); live check: /api/version answers 200, APP PROBE: PASS. Task 20 merged (tabs in posting order; the live App probe runs after the next deploy). Task 6 started: one plan in design/notify-policy.json (ready 2 min before the slot, nudge at 15 min, last call 20:30, 08:00 summary; slot-test days get day N of M, nudge at 10, late at 30, logged when posted), Settings shows today's plan in words; pushing now. Task 10 render 4: the whole-reel glitch screen is still capturing; render 4 is dispatched once it passes.
 - 27 Nov 23:25 IST, other account: task 20 done and task 6 done: both live; the App probe on the live app after both deploys: APP PROBE: PASS. From now on the app sends the slot reminders (ready 2 min before; slot-test day N of M, nudge at 10, late at 30, logged when posted); the owner chat sends none of its own. Task 10 render 4: the whole-reel glitch screen is about two thirds done (ends about 23:50 IST); render 4 goes out once it is clean. Next: task 7.
+- 27 Nov 23:45 IST, other account: task 7 started and built: each project in design/projects.json now has its own steps (done / now / next / failed) and a next action (who, what, when); the Today card shows the step bar, the "Next:" line (amber when it is the owner's), and the full step list on tap; a project reaching Done sends one push ("<name> is done", type project-done, on by default, switch in Settings). Backfilled every current project (3D kit v7 at Checks, 2.5D test waiting on the owner's yes). Phone-width check on a local build: no overflow, no errors. Rule added here and in design/runbook-studio.md. Pushing; the live App probe follows the deploy.
 
 ---
 

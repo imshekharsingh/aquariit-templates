@@ -448,6 +448,12 @@
   .phist{list-style:none;margin:0;padding:0 14px 12px;display:flex;flex-direction:column;gap:8px}
   .phist li{display:flex;flex-direction:column;gap:1px;font-size:.84rem;line-height:1.35}.phist li b{font:700 .74rem system-ui,sans-serif;color:var(--mute)}
   .bfixb{width:100%;min-height:44px}
+  /* project steps and the next action (task 7, 27 Nov 2026): done filled, the current one highlighted, a failed one red */
+  .psteps{display:flex;gap:3px;margin-top:6px}.psteps i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+  .psteps i.done{background:var(--ok)}.psteps i.now{background:var(--ink);box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--ink)}.pcard.wait .psteps i.now{background:var(--act);box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--act)}.psteps i.failed{background:var(--bad)}
+  .pnext{display:block;margin-top:5px;font-size:.84rem;line-height:1.35}.pnext b{font-weight:700}.pcard.wait .pnext{color:var(--act)}
+  .pslist{list-style:none;margin:0;padding:0 14px 10px;display:flex;flex-wrap:wrap;gap:6px}.pslist li{font-size:.78rem;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mute)}
+  .pslist li.done{color:var(--ok);border-color:var(--ok)}.pslist li.now{color:var(--ink);border-color:currentColor;font-weight:700}.pslist li.failed{color:var(--bad);border-color:var(--bad)}
   @keyframes blift{0%{transform:translateY(0)}45%{transform:translateY(-4px)}100%{transform:translateY(0)}}
   .bcard.skipped{opacity:.78}
   .bmain{display:flex;align-items:stretch;gap:12px;width:100%;padding:12px 12px 14px;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
@@ -1441,13 +1447,13 @@
     Object.keys(pCards).forEach(function(id){ if (!PROWS.some(function(x){ return x.id === id; })) { pCards[id].card.remove(); delete pCards[id]; } });
     PROWS.forEach(function(x){ var c = pCards[x.id];
       if (!c) { var card = el('article', 'bcard pcard'), main = el('button', 'bmain'), th = el('span', 'bthumb'), body = el('span', 'bbody'), top = el('span', 'btop'), st = el('span', 'bstate'),
-          line = el('span', 'bline'), bar = el('span', 'bbar'), tr = el('span', 'tr'), bi = el('i'), bp = el('span'), meta = el('span', 'bmeta'), more = el('div', 'bmore'), inner = el('div'), ol = el('ol', 'phist'),
+          line = el('span', 'bline'), steps = el('span', 'psteps'), nxt = el('span', 'pnext'), slist = el('ol', 'pslist'), bar = el('span', 'bbar'), tr = el('span', 'tr'), bi = el('i'), bp = el('span'), meta = el('span', 'bmeta'), more = el('div', 'bmore'), inner = el('div'), ol = el('ol', 'phist'),
           fix = el('div', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix');
         main.type = 'button'; main.setAttribute('aria-expanded', 'false'); fixb.type = 'button'; th.appendChild(el('span', 'dot'));
         top.appendChild(el('b', null, '')); top.appendChild(st); tr.appendChild(bi); bar.appendChild(tr); bar.appendChild(bp);
-        body.appendChild(top); body.appendChild(line); body.appendChild(bar); body.appendChild(meta); main.appendChild(th); main.appendChild(body);
-        inner.appendChild(ol); more.appendChild(inner); fix.appendChild(fixb); card.appendChild(main); card.appendChild(fix); card.appendChild(more);
-        c = pCards[x.id] = { card: card, name: top.firstChild, st: st, line: line, bar: bar, bi: bi, bp: bp, meta: meta, ol: ol, fix: fix, fixb: fixb, main: main };
+        body.appendChild(top); body.appendChild(line); body.appendChild(steps); body.appendChild(bar); body.appendChild(nxt); body.appendChild(meta); main.appendChild(th); main.appendChild(body);
+        inner.appendChild(slist); inner.appendChild(ol); more.appendChild(inner); fix.appendChild(fixb); card.appendChild(main); card.appendChild(fix); card.appendChild(more);
+        c = pCards[x.id] = { card: card, name: top.firstChild, st: st, line: line, bar: bar, bi: bi, bp: bp, meta: meta, ol: ol, fix: fix, fixb: fixb, main: main, steps: steps, nxt: nxt, slist: slist };
         main.addEventListener('click', function(){ var on = !card.classList.contains('open'); card.classList.toggle('open', on); main.setAttribute('aria-expanded', String(on)); });
         (function(c){ c.fixb.addEventListener('click', function(){ if (!c.fail) return; c.fixb.disabled = true; c.fixb.textContent = 'Sending';
           fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ priority: true, text: 'FIX (from the board, top priority) ' + c.fail }) })
@@ -1458,6 +1464,11 @@
       c.name.textContent = x.name; c.st.textContent = PST[x.stage] || x.stage; c.line.textContent = x.line || PST[x.stage] || '';
       c.bar.style.display = pct == null ? 'none' : ''; if (pct != null) { c.bi.style.width = pct + '%'; c.bp.textContent = pct + '%'; }
       c.meta.textContent = (x.account === 'main' ? 'Main account' : 'Other account') + (x.updatedAt ? ' · updated ' + pWhen(x.updatedAt) : '');
+      var S = x.steps || []; c.steps.style.display = S.length ? '' : 'none'; c.steps.textContent = ''; c.slist.textContent = '';
+      S.forEach(function(q){ var i = el('i', q.state); i.title = q.name; c.steps.appendChild(i); c.slist.appendChild(el('li', q.state, (q.state === 'done' ? '✓ ' : q.state === 'failed' ? '✕ ' : '') + q.name)); });
+      if (S.length) c.bar.style.display = 'none';   // the step bar replaces the percent bar
+      var WHO = { other: 'Other account', main: 'Main account', owner: 'You', github: 'GitHub' }, n = x.next;
+      c.nxt.hidden = !n; c.nxt.textContent = ''; if (n) { c.nxt.appendChild(el('b', null, 'Next: ')); c.nxt.appendChild(document.createTextNode((WHO[n.who] || '') + ': ' + n.action + (n.eta ? ' (' + n.eta + ')' : ''))); }
       c.ol.textContent = ''; (x.history || []).slice().reverse().forEach(function(h){ var li = el('li'); li.appendChild(el('b', null, pWhen(h.at) + ' · ' + (PST[h.stage] || h.stage))); li.appendChild(el('span', null, h.line || '')); c.ol.appendChild(li); });
       var fail = x.stage === 'failed' ? 'Project ' + x.name + ', why: ' + String(x.line || '').slice(0, 400) : null; c.fix.hidden = !fail;
       if (fail) { if (c.fail !== fail) { c.fail = fail; c.sent = null; } c.fixb.disabled = c.sent === c.fail; c.fixb.textContent = c.sent === c.fail ? 'Sent to the studio' : 'Fix'; } else c.fail = null; }); }
@@ -1809,7 +1820,7 @@
   }).catch(function(){});
   // one switch per notification type (25 Nov 2026): GET/PUT /api/push/prefs; every type is on until switched off
   // the one plan (task 6, 27 Nov 2026): design/notify-policy.json; today's times in words come from GET /api/push/plan
-  var NP = [['ready', 'A reel is ready to post (2 min before its time)'], ['nudge', 'A gentle nudge if it is not posted (15 min after; 10 min on a slot test day)'], ['late', 'Slot test: a warning 30 min after the time'], ['logged', 'Slot test: the posting time is logged'], ['last', 'A last call at 8:30 PM'], ['posted', 'Posted, with the link'], ['failed', 'Posting failed, and why'], ['digest', 'A morning summary at 8:00 AM']];
+  var NP = [['ready', 'A reel is ready to post (2 min before its time)'], ['nudge', 'A gentle nudge if it is not posted (15 min after; 10 min on a slot test day)'], ['late', 'Slot test: a warning 30 min after the time'], ['logged', 'Slot test: the posting time is logged'], ['last', 'A last call at 8:30 PM'], ['posted', 'Posted, with the link'], ['failed', 'Posting failed, and why'], ['digest', 'A morning summary at 8:00 AM'], ['project-done', 'A project is done']];
   function npLoad(){ var box = document.getElementById('np-box');
     fetch('/api/push/prefs', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
       box.textContent = ''; var on = 0;

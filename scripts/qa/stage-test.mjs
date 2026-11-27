@@ -28,11 +28,17 @@ for (const [name, body, want] of [['project stage stores', { reel: 'project:3d-k
   const r2 = await post(body); const pass = r2.status === want; if (!pass) bad++; console.log(`${pass ? 'PASS' : 'FAIL'} ${name}: ${r2.status}`); }
 { const { projectsApi } = await import('../../src/worker.js');
   const file = { projects: [{ id: 'kit', name: 'Kit', account: 'other', stage: 'render', line: 'from the file', updatedAt: '2026-11-26T07:00:00Z', history: [] },
-    { id: 'old', name: 'Old', account: 'other', stage: 'done', line: 'done long ago', updatedAt: '2020-01-01T00:00:00Z', history: [] }] };
+    { id: 'old', name: 'Old', account: 'other', stage: 'done', line: 'done long ago', updatedAt: '2020-01-01T00:00:00Z', history: [] },
+    { id: 'meter', name: 'Meter', account: 'other', stage: 'building', line: 'x', updatedAt: '2099-01-01T00:00:00Z', history: [],
+      steps: [{ name: 'Find cause', state: 'done' }, { name: 'Fix', state: 'now' }, { name: 'Live', state: 'next' }, { name: 'Bad', state: 'weird' }],
+      next: { who: 'github', action: 'Render 1 running', eta: 'about 25 min' } }] };
   const rows = [{ reel: 'project-kit', stage: 'critic', line: 'from a stage call', pct: 90, at: '2026-11-26T08:00:00Z' }, { reel: 'project-new', stage: 'building', line: 'only a row', pct: null, at: '2026-11-26T08:00:00Z' }];
   const env = { DB: { exec: async () => {}, prepare: () => ({ bind() { return this; }, all: async () => ({ results: rows }) }) } };
   const j = await (await projectsApi(new Request('https://app.test/api/projects'), env, async () => new Response(JSON.stringify(file)))).json();
   const kit = j.projects.find((x) => x.id === 'kit'), checks = [['the newer row wins', kit && kit.stage === 'critic' && kit.line === 'from a stage call' && kit.history.length === 1],
-    ['a done project older than 2 days leaves the board', !j.projects.some((x) => x.id === 'old')], ['a row without a file entry shows', j.projects.some((x) => x.id === 'new' && x.account === 'main')]];
+    ['a done project older than 2 days leaves the board', !j.projects.some((x) => x.id === 'old')], ['a row without a file entry shows', j.projects.some((x) => x.id === 'new' && x.account === 'main')],
+    ['project steps pass through, an unknown state is dropped (task 7)', (() => { const m = j.projects.find((x) => x.id === 'meter'); return m && m.steps.length === 3 && m.steps[1].state === 'now'; })()],
+    ['the next action passes through with who and when', (() => { const m = j.projects.find((x) => x.id === 'meter'); return m && m.next.who === 'github' && m.next.eta === 'about 25 min'; })()],
+    ['a project with no steps has an empty list and no next', kit && Array.isArray(kit.steps) && kit.steps.length === 0 && kit.next === null]];
   for (const [n, pass] of checks) { if (!pass) bad++; console.log(`${pass ? 'PASS' : 'FAIL'} ${n}`); } }
 process.exit(bad ? 1 : 0);
