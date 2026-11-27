@@ -353,6 +353,7 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 27 Nov 20:25 IST, other account: task 10, checking: a full-size check showed two moments are real, not test artefacts: the camera's pull-back over the tangle had been squeezed into 0.5 s right over the last cables (two camera keys too close), and a polished plug sleeve flashed as it slid in. Fixed (the pull-back lands earlier and the camera holds still; satin sleeves); the board build and the last tool now pass. Re-checking at full size now. Next: the whole-reel check, then render 3.
 - 27 Nov 20:36 IST, other account: task 10, checking: the tangle and plug moments now pass at full size. One more found in the pull-back: each cable's start plug popped in at full size; it now grows in with its cable. Re-checking that at full size, then the whole-reel check (about 50 min), then render 3.
 - 27 Nov 20:50 IST, other account: task 10, render 3 started (the last v7 render; 120 fps, about 40-50 min). Every glitch moment found today is fixed and passes at full size except one stretch (the pull-back over the cable cascade, about 8.1-8.7 s: fast cable tips near the camera), which the render's own check will judge; I stop changing the scene here so the render runs tonight. Next: Output QA on the render, then "v7 ready for critic" with the result, plainly.
+- 27 Nov 21:22 IST, other account: task 10, render 3 running: 7 of 8 frame jobs done, the last one finishing; then the join and Output QA (about 10 min). Next: "v7 ready for critic" with the result.
 
 ---
 
