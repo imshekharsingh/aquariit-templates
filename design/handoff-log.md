@@ -1317,3 +1317,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-split · Web kit: before/after split piece (task 16)
 - Done: scripts/explainer/kitsplit.js (KM.split), its kit-inline entry, study clip scripts/explainer/demo/split.html, rules-web.md rule 21.
 - Left: none; the next web builder can use it.
+## 2026-11-28 · claude/t18-measured · Render speed: web already under 25 min (task 18)
+- Done: measured the last web renders (15-21 min); no change needed; time correction for two Progress lines.
+- Left: render 4 result; tech and Turns Out render times noted as the next possible win.
