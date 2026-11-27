@@ -184,6 +184,12 @@ and stills against points 1-7 before any render. (b) On its OK: one render, Outp
 v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
 if NOT READY the owner decides. Update projects.json at each step.
 
+## Queued task 21 GO, first after task 10 (owner chat, 27 Nov 2026 22:00 IST): App probe, posted cards
+The App probe's "OPEN FROM BOARD" step clicks each Today card's button. For a channel whose reel is already posted, that button is "Open reel"
+(it opens the reel page, not the reels tab), so the probe wrongly reports "Open from board web/c3: shows @techin20sec". Make the probe check
+what each button really does (Open to post -> that channel's reels tab and Ready box; Open reel -> that reel's page), then run it: APP PROBE: PASS.
+The tech path already passes (tech card -> tech tab, the tech reel under Ready to post).
+
 ## Queued tasks 19-20 GO, FIRST after task 10's render is running (owner, 27 Nov 2026): the installed app goes stale; tabs in posting order
 - **Task 19, the installed app never runs an old copy.** 27 Nov: the installed home-screen app hung on "Loading…" all afternoon while the
   same page in Safari worked; removing and re-adding the app fixed it. Make the app notice a newer deploy (a version string served by the
