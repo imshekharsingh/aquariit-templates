@@ -1,0 +1,83 @@
+{
+ "name": "showreel-tech-tag-relay",
+ "seek": "scripts/explainer/tech-tag-relay.html",
+ "style": "Tech 2.5D system map (same engine and grammar as showreel-tech-ai-words; design/references.md R-ref 27 Nov 2026): one camera over one canvas, a line out, a curve through the servers, the network that closes back on the tag; one colour world per step; fixed title, step pill, ghost of the next card, light wedges and dim sub-nodes filling the frame; opens on a find-my-tag window and ends on the same framing",
+ "dur": 29.6,
+ "fps": 60,
+ "blur": 2,
+ "shutter": 0.4,
+ "width": 540,
+ "height": 960,
+ "vignette": false,
+ "grain": 2,
+ "cover": 0.6,
+ "voice": {
+  "text": "Can a tag be found far from your phone? One: the tag sends a short Bluetooth signal. Two: any nearby Galaxy device with offline finding hears it. Three: it is locked, so only you can read it. Four: the servers get it, but cannot read it. Five: you open the map, and see where it was. Six: more than nine hundred million Galaxy devices form this network. So yes: other people's devices find it, and only you can read where.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "at": [
+   0.25,
+   3.5,
+   7.0,
+   10.6,
+   14.0,
+   17.3,
+   21.0,
+   24.9
+  ]
+ },
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0.0,
+    "to": 3.3,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the camera is close on the opening find-my-tag window; the dim map tiles around it run past the frame on purpose (context that the pull-back reveals at 2.6-3.2 s)"
+   },
+   {
+    "from": 25.0,
+    "to": 29.0,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the payoff banner ONLY YOU CAN READ IT is a tilted band that runs edge to edge across the top third on purpose (the reference's kinetic banner)"
+   },
+   {
+    "from": 29.0,
+    "to": 29.6,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the last move goes home to the opening window's framing (the loop): the dim tiles run past the frame as at frame 0"
+   }
+  ]
+ },
+ "caption": "Can a tag be found far from your phone? 📍 Yes. Here is how, step by step.\n\n1. The tag sends a short Bluetooth signal, every so often.\n2. A nearby Galaxy device with offline finding on hears it.\n3. The place is locked with a key only you hold.\n4. The servers get it but cannot read it.\n5. You open the map and see where it was (up to 7 days back).\n6. More than 900 million Galaxy devices make up the network that does this.\n\nThe useful bit: your tag does not need your phone nearby, and the devices that help cannot see where it is.\n\nWho would you tag in a lost-keys story? 👇\n\nSource: Samsung Newsroom, \"The Technology Behind More Precise Finding With Galaxy SmartTag3 and SmartThings\" (23 Nov 2026). Offline finding needs the feature switched on. The map, the 4-minute label and the dots are examples.",
+ "keywords": [
+  "how tracker tags work",
+  "how to find lost keys",
+  "bluetooth tag explained",
+  "Galaxy SmartTag3",
+  "offline finding",
+  "find my tag without phone",
+  "how item trackers work"
+ ],
+ "hashtags": [
+  "#tech",
+  "#smarttag",
+  "#bluetooth",
+  "#techexplained",
+  "#gadgets"
+ ],
+ "sources": [
+  {
+   "url": "https://news.samsung.com/global/the-technology-behind-more-precise-finding-with-galaxy-smarttag3-and-smartthings",
+   "note": "Samsung Newsroom, 23 Nov 2026 (read 28 Nov 2026 in the newsroom feed text; the page itself is blocked from the build container): offline finding: nearby Galaxy devices that have enabled it detect the tag's BLE signals and relay them to SmartThings servers; more than 900 million participating Galaxy devices form the Galaxy Find Network; location is encrypted with a unique private key for each device, only the tag's owner can access it and neither Samsung account servers nor the relaying devices can view it; Location History keeps up to seven days"
+  }
+ ]
+}
