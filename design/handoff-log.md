@@ -1174,3 +1174,6 @@ Format (at most 6 lines):
 ## 2026-11-27 · claude/tech-ai-words-close-2 · Tech showreel-tech-ai-words: READY on render 3, posts 20:30 IST (builder close-out)
 - Done: render 2 (caption fix) Output QA PASS, critic NOT READY on one lone hook word; render 3 (owner's yes) Output QA PASS, final critic READY. The critic's branch could not merge (it carried an old Turns Out postAt and log lines); its verdict and log entry re-landed here. First real 2.5D map reel; tech restarted.
 - Left: the owner posts at 20:30 IST. Next 2.5D reel: captions from the script text (keep marks), one sentence per group, break wrapped groups at the middle; check every group with the real voice word times before render 1.
+## 2026-11-27 · claude/tech-ai-words-r4 · Tech showreel-tech-ai-words: opening redone for render 4 (owner)
+- Done: owner note ("show a chatbot window"): frame 0-2.6 s is an invented chat window with the reply streaming, a 0.6 s pull-back turns it into card 1 (match cut), ring ghost on card 2; rest as render 3. Rule recorded (owner-feedback, direction.md 2.5D map reels, critic.md 5): open on the real-life moment, never an abstract map. FLICKER 60 fps PASS, preflight-all PASS.
+- Left: outside stills check of the opening, render 4 (the last, cap $12), Output QA, final critic. Post 20:30 IST.

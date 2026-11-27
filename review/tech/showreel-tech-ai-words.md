@@ -70,7 +70,6 @@ EXACT FIX (scripts/explainer/tech-ai-words.html, caption(), line 301):
 3. Cost: this is a third render, so the owner chat asks the owner first with the builder's cost estimate (CLAUDE.md, ASK BEFORE ANYTHING COSTLY). If the owner says no, the critic's view: render 2 is a fair post (one widow word on the hook, nothing broken), but it is not READY by the bar.
 ENHANCE: let the cursor in the reply bubble blink once before the first word lights (0.0-0.25 s), so the first second reads as a live chat.
 Fix for render 3 (builder, 27 Nov, the render 2 critic's EXACT FIX 1-2 + its MED banner point): a caption group that wraps breaks at its middle ("Why do chatbots / type like this?"), a group that fits one line stays one line; checked with render 2's real word times on every group, no line of 1-2 words; the payoff banner fades and settles in whole (no bare band edge at the left). TEXT FIT ok, SUBTITLES ok, SAFE ZONE ok, OVERLAP none, FLOW continuity 73%; stills at 0.5, 3.9, 17.8, 19.6, 25.3, 26.5, 28.5 s; FLICKER on a 60 fps full-resolution capture PASS. Render 3 waits for the owner's yes (owner chat).
-PREFLIGHT-ALL: PASS 0b3ffd5f (showreel-tech-ai-words, 44 s)
 13c. After render 3: PASS: render 3 (Showreel run 45958061268, 27 Nov, 07:23-07:47 UTC, owner's yes via the owner chat; the render 2 critic's caption and banner fixes): OUTPUT QA: PASS (PACE, STRAY, LOUD, SOUND, COLOUR, EDGES (banner waiver), VARIETY 13%, NUMBERS 6 spoken / 0 counters, DEAD none, SHEEN 0, FLICKER 1776 frames at 60 fps none; HERO skipped (2.5D map); LOOK WARN dark background 5% by design). All 3 allowed renders are used; no 4th.
 
 ## Critic, render 3 (fresh independent session, 27 Nov 2026, final render)
@@ -83,3 +82,4 @@ PREMIUM: animation 7.5/10 (t 3.5-4.0 push-in with the step pill rolling; t 7.0-8
 UPGRADES (next 2.5D reel, not this one):
 - MED, 0-3.5 s: a small question pill above the frame-0 reply bubble so the hook reads as a chat in under 1 s.
 - LOW, 24.9-29.6 s: the payoff map is small (tiles about 60 px wide at 1080); plan wide shots at scale 0.27+.
+PREFLIGHT-ALL: PASS 031929f1 (showreel-tech-ai-words, 44 s)
