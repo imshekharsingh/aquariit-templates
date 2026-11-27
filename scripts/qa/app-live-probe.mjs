@@ -26,11 +26,22 @@ for (const ch of ['web', 'tech', 'c3']) {
   await page.evaluate(() => { const b = document.getElementById('t-all'); if (b) b.click(); });
   await page.waitForTimeout(500);
   const t = await page.$(`.tab[data-ch=${ch}]`); if (t) await t.click(); await page.waitForTimeout(3000); await shot(`2-reels-${ch}`);
+  const rt = await txt('#t-ready'), other = { web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' };
+  for (const [k, n] of Object.entries(other)) if (k !== ch && rt.includes(n)) log.push(`PAGE ERROR  tab ${ch}: Ready to post names ${n}`);
   console.log(`REELS ${ch}: tabs=`, await txt('.tabs'), '| ready=', await txt('#t-ready'), '| list=', await txt('#list'));
 }
 const heavy = log.filter((l) => /\.mp4|\/api\/refs\/\d+\/file/.test(l)).length;
 console.log(`VIDEO REQUESTS WITHOUT A TAP: ${heavy} (want 0)`); const perr = log.filter((l) => l.startsWith('PAGE ERROR')).length;
 console.log(heavy ? 'APP PROBE: FAIL (videos load on open)' : perr ? `APP PROBE: FAIL (${perr} page error)` : 'APP PROBE: PASS');
+for (const ch of ['tech', 'web', 'c3']) {   // the Today board's Open to post / Open reel: the reels page must show that card's channel in every part
+  await page.evaluate(() => { const b = [...document.querySelectorAll('.bnav button, nav button')].find((x) => /today/i.test(x.textContent || '')); if (b) b.click(); });
+  await page.waitForTimeout(800);
+  const went = await page.evaluate((c) => { const cards = [...document.querySelectorAll('.bcard')]; const card = cards.find((x) => x.querySelector('.dot.d-' + c)) ; const b = card && card.querySelector('.bopen'); if (b && !b.hidden) { b.click(); return true; } return false; }, ch);
+  await page.waitForTimeout(1500);
+  if (went) { const title = await txt('#title'), rt = await txt('#t-ready'); console.log(`OPEN FROM BOARD ${ch}: title=${title} | ready=${rt.slice(0, 80)}`);
+    for (const [k, n] of Object.entries({ web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' })) if (k !== ch && (rt.includes(n) || title.includes(n))) log.push(`PAGE ERROR  Open from board ${ch}: shows ${n}`); }
+}
+const perr2 = log.filter((l) => l.startsWith('PAGE ERROR')).length; if (perr2) console.log(`APP PROBE: FAIL (${perr2} page error)`);
 console.log('STILL OPEN after the run:'); for (const [r, s] of open) console.log(`  ${Date.now() - s} ms  ${r.method()} ${new URL(r.url()).pathname}`);
 console.log('REQUESTS AND ERRORS:'); for (const l of log) console.log('  ' + l);
 await b.close();

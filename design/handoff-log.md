@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/app-ready-follows-tab · owner chat: Ready to post always matches the tab
+- Owner (21:48): the tech tab said "Nothing is ready to post for @webin20sec" and hid the tech reel. Opening the reels page from the Today board drew the list but left the Ready box from the last tab. render() now redraws the Ready box first. App probe: fails if a tab's Ready box names another channel, and now also opens the reels page from each board card.
+
 ## 2026-11-27 21:26 IST · claude/v7-r3-ready · other account: task 10, v7 render 3 done, ready for critic
 - Done: render 3 (120 fps); Output QA passes every check but FLICKER (cable cascade 7.7-8.7 s, three weak moments); review file, projects.json, previews.json (the Tests list plays render 3).
 - Left: the main account critic, then the owner decides. Fix idea for a later kit pass: show the cascade from further back.
