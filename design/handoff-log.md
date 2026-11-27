@@ -10,6 +10,10 @@ Format (at most 6 lines):
 - Done: templates/index.html chanOrder() orders the tabs by today's next reel to post (postAt, else the slot), posted channels last; only workflow entry points set the channel (board Open to post / Open reel, reel link or reminder, tab tap, All reels = the channel due next); the saved last tab and the Growth picker no longer switch it (Growth shows its own pick). scripts/qa/app-tabs-test.mjs in npm run check.
 - Left: App probe PASS on the live app (Progress).
 - For the main account: nothing.
+## 2026-11-27 22:50 IST · claude/app-fresh · other account: task 19, the installed app never runs an old copy
+- Done: src/worker.js stamps index.html with its build (appPage) and serves GET /api/version; templates/index.html checks it on open and resume and reloads once (?fresh=), and a 20 s stalled list reloads once (?stall=1). scripts/qa/app-fresh-test.mjs (exactly one reload); design/runbook-reels.md note.
+- Left: App probe PASS on the live app (Progress).
+- For the main account: nothing; a deploy reaches the installed app by itself.
 
 ## 2026-11-27 · claude/handoff-task-22-2d5-depth · owner chat: 2.5D kit borrows 3D's best parts (task 22)
 - Owner: no full 2.5D+3D merge now; keep 2.5D, add 3D's strengths (light, depth, materials, contact shadows, two-tier shadow builds) and one drop-in 3D object moment; compare first, one study sample (max 2 renders, ~$10-15), our critic judges. Revisit a full hybrid after a week of 2.5D numbers. Queued after v7 render 4 and tasks 21, 19, 20.

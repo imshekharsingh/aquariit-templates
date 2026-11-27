@@ -690,6 +690,20 @@
 </aside>
 <script>
 (function(){
+  // the installed app never runs an old copy (task 19, owner 27 Nov 2026: it hung on "Loading…" all afternoon while Safari had the new page).
+  // The Worker writes the deployed build into this page (APP_BUILD) and answers GET /api/version with the newest one; on open and on every
+  // resume the two are compared and a newer deploy reloads the page ONCE (the URL carries ?fresh=<build>, so a page that is still old after
+  // that reload never reloads again). A list that has no answer after 20 s reloads once too (?stall=1) before Try again is shown.
+  var APP_BUILD = '__APP_BUILD__';
+  // FRESH-START (scripts/qa/app-fresh-test.mjs runs these)
+  function urlFlag(search, k){ var m = new RegExp('[?&]' + k + '=([^&#]*)').exec(search || ''); return m ? decodeURIComponent(m[1]) : null; }
+  function freshDecide(mine, server, search){ if (!server || !mine || /^__/.test(mine) || mine === server) return 'ok'; return urlFlag(search, 'fresh') === server ? 'skip' : 'reload'; }
+  function stallDecide(search){ return urlFlag(search, 'stall') ? 'show' : 'reload'; }
+  // FRESH-END
+  function goFresh(k, v){ var q = location.search.replace(/[?&](fresh|stall)=[^&#]*/g, ''); location.replace(location.pathname + (q ? q + '&' : '?') + k + '=' + encodeURIComponent(v) + location.hash); }
+  function freshCheck(){ fetch('/api/version', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ if (freshDecide(APP_BUILD, j && j.v, location.search) === 'reload') goFresh('fresh', j.v); }).catch(function(){}); }
+  freshCheck(); document.addEventListener('visibilitychange', function(){ if (!document.hidden) freshCheck(); });
   var list = document.getElementById('list'), caps = fetch('/showreels/captions.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; });
   // refresh (owner, 25 Oct): the installed app can resume an old copy of this page and never reload on its own. The button drops the
   // offline copies, asks for a new service worker if there is one and reloads; after 15 minutes in the background the app reloads itself
@@ -1875,7 +1889,7 @@
     if (Date.now() - new Date(u.at).getTime() > 48 * 3600e3) document.getElementById('use-note').textContent += ' · this count is over 2 days old';
     useBox.hidden = false; }).catch(function(e){ useMiss((e && e.message) || 'the app could not reach the count.'); });
   // the list never hangs on "Loading…" (owner, 27 Nov 2026: a stuck list on 4G): after 20 s it says so and offers Try again (reloads the page)
-  var listTimer = setTimeout(function(){ if (DATA) return; list.textContent = ''; list.appendChild(el('p', 'empty', 'The list is taking too long (slow network?).'));
+  var listTimer = setTimeout(function(){ if (DATA) return; if (stallDecide(location.search) === 'reload') return goFresh('stall', '1'); list.textContent = ''; list.appendChild(el('p', 'empty', 'The list is taking too long (slow network?).'));
     var rb = el('button', 'btn', 'Try again'); rb.type = 'button'; rb.addEventListener('click', function(){ location.reload(); }); list.appendChild(rb); }, 20000);
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }), caps, load()]).then(function(r){ clearTimeout(listTimer);
     // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
