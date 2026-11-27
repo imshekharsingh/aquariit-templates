@@ -167,6 +167,11 @@
   .fflow span{font:600 .68rem system-ui,sans-serif;padding:3px 8px;border-radius:99px;background:var(--soft);color:var(--mute);transition:background .25s ease,color .25s ease}
   .fflow span.y{background:var(--okbg);color:var(--ok)}.fflow span.n{background:var(--ink);color:var(--bg)}
   .refi .stills{display:flex;gap:6px;overflow-x:auto;margin-top:8px}
+  /* task 15 (owner, 27 Nov 2026): each reference recognisable at a glance: a thumbnail or a 3 s silent loop, its state, the lesson in one line, the reels that used it */
+  .refi .rhead{display:flex;gap:12px;align-items:flex-start;margin-top:6px}.rthumb{flex:none;width:64px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:var(--well) center/cover no-repeat;border:1px solid var(--line)}
+  .rthumb video,.rthumb img{width:100%;height:100%;object-fit:cover;display:block}.refclean .rthumb{width:40px}.refi .rhead div{min-width:0}.refi .lesson{margin:0;font-weight:600}
+  .refi .used{margin:4px 0 0;font-size:.8rem;color:var(--mute)}.refi .used a{margin-right:8px}
+  .refclean{margin-top:12px}.refclean .crow{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}.refclean .crow > span:not(.rthumb){flex:1;min-width:0;font-size:.86rem}
   .refi .stills img{flex:none;height:96px;border-radius:8px;border:1px solid var(--line)}
   .rcheck{margin-top:10px}.rcheck small{color:var(--mute);font-weight:700}
   .rc{padding:8px 0;border-top:1px solid var(--line)}.rc p{margin:0}
@@ -660,6 +665,7 @@
       <div class="row"><button class="btn" id="ref-send" type="button">Add reference</button></div>
       <p class="msg" id="ref-msg" aria-live="polite"></p>
       <div id="ref-list"></div>
+      <details class="refclean" id="ref-clean" hidden><summary>Clean up <span id="ref-clean-n"></span></summary><p class="mute">Safe to remove: studied more than 2 days ago and used in a reel, or every point marked Skip. Remove deletes the file and its card; what was learned stays in the studio's notes and in the reels.</p><div id="ref-clean-list"></div></details>
     </details>
     <h2 class="lbl" id="cards-h" hidden>Daily reports</h2>
     <div id="cards"></div>
@@ -1534,12 +1540,31 @@
   Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(b){ b.addEventListener('click', function(){ refCh = b.getAttribute('data-ch');
     Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(x){ x.setAttribute('aria-pressed', String(x === b)); }); }); });
   refFile.addEventListener('change', function(){ var f = refFile.files && refFile.files[0]; refFname.textContent = f ? f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB' : 'Up to 1 GB'; });
-  function refItem(r){ var box = el('div', 'fbi refi'), h = el('div', 'h');
-    h.appendChild(el('span', null, fbWhen(r.created) + (r.channel && FBN[r.channel] ? ' · ' + FBN[r.channel] : ''))); h.appendChild(el('span', 'st' + (r.state !== 'new' ? ' done' : ''), REFST[r.state] || r.state));
+  // REF-VIEW-START (scripts/qa/app-refs-test.mjs runs this function): what a reference shows at a glance and whether it is safe to remove
+  function refView(r, caps, now){ caps = caps || {};
+    var f = r.file || null, img = f && /^image\//.test(f.type) && f.type !== 'image/heic', vid = f && /^video\//.test(f.type) && !f.deleted,
+      thumb = img ? { kind: 'img', src: '/api/refs/' + r.id + '/file' } : vid ? { kind: 'loop', src: '/api/refs/' + r.id + '/file' } : (r.stills || []).length ? { kind: 'img', src: r.stills[0] } : null,
+      reels = Object.keys(caps).filter(function(n){ var rf = (caps[n] || {}).refs; return Array.isArray(rf) && rf.some(function(x){ return String(x).replace(/\s+/g, '').toLowerCase() === 'app:' + r.id; }); }),
+      lesson = r.reply ? String(r.reply).split(/\.\s/)[0].replace(/\.?$/, '.') : r.state === 'new' ? 'Not studied yet.' : '',
+      ck = r.checklist || [], skipped = ck.length > 0 && ck.every(function(c){ return c.c === 'skip'; }), old = r.done_at && now - Date.parse(r.done_at) > 2 * 864e5,
+      safe = !r.uploading && (skipped || (r.state === 'used' && old) || (r.state === 'studied' && old && reels.length > 0)),
+      state = reels.length ? 'Used in ' + reels.length + ' reel' + (reels.length > 1 ? 's' : '') : r.state === 'used' ? 'Used' : r.state === 'studied' ? 'Studied' : r.state === 'uploading' ? 'Uploading' : 'New';
+    return { thumb: thumb, reels: reels, lesson: lesson, state: state, safe: safe, why: skipped ? 'every point skipped' : safe ? 'studied and used' : '' }; }
+  // REF-VIEW-END
+  function refLoop(v){ v.muted = true; v.playsInline = true; v.autoplay = true; v.preload = 'metadata'; v.setAttribute('aria-hidden', 'true');
+    v.addEventListener('timeupdate', function(){ if (v.currentTime > 3) v.currentTime = 0; }); }   // the first 3 s, silent, again and again (only those seconds load)
+  function refItem(r){ var box = el('div', 'fbi refi'), h = el('div', 'h'), vw = refView(r, REFCAPS, Date.now());
+    h.appendChild(el('span', null, fbWhen(r.created) + (r.channel && FBN[r.channel] ? ' · ' + FBN[r.channel] : ''))); h.appendChild(el('span', 'st' + (r.state !== 'new' ? ' done' : ''), vw.state));
     box.appendChild(h);
+    var hd = el('div', 'rhead'), tb = el('span', 'rthumb'), hx = el('div');
+    if (vw.thumb && vw.thumb.kind === 'img') { var ti = el('img'); ti.loading = 'lazy'; ti.alt = ''; ti.src = vw.thumb.src; tb.appendChild(ti); }
+    else if (vw.thumb) { var tv = el('video'); refLoop(tv); tv.src = vw.thumb.src + '#t=0,3'; tb.appendChild(tv); }
+    if (vw.thumb) hd.appendChild(tb); if (vw.lesson) hx.appendChild(el('p', 'lesson', vw.lesson));
+    if (vw.reels.length) { var ul = el('p', 'used'); vw.reels.forEach(function(n){ var a = el('a', null, ((REFCAPS[n] || {}).concept || n.replace(/^showreel-/, '').replace(/-/g, ' ')).slice(0, 48)); a.href = '#reel/' + n; ul.appendChild(a); }); hx.appendChild(ul); }
+    hd.appendChild(hx); if (hd.children.length > 1 || vw.lesson || vw.reels.length) box.appendChild(hd);
     if (r.url) { var a = el('a', null, r.url); a.href = r.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; var p0 = el('p'); p0.appendChild(a); box.appendChild(p0); }
-    if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); }
-      else if (/^video\//.test(r.file.type)) { var v = el('video', 'th'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
+    if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { if (!vw.thumb) { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); } }
+      else if (/^video\//.test(r.file.type) && !r.file.deleted) { var v = el('video', 'th'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
       else box.appendChild(el('p', null, r.file.name || 'File')); }
     if (r.file && r.file.deleted) box.appendChild(el('p', 'note', 'The video was deleted when you closed this. The report, stills and checklist are kept.'));
     if (r.note) box.appendChild(el('p', null, r.note));
@@ -1571,7 +1596,17 @@
     act.appendChild(d); box.appendChild(act); return box; }
   function refLoad(){ fetch('/api/refs', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
     .then(function(j){ var a = (j.refs || []).filter(function(r){ var undecided = (r.checklist || []).some(function(c){ return !c.c; }); if (r.closed) return Date.now() - Date.parse(r.closed) <= 2 * 864e5; return r.state === 'new' || r.state === 'uploading' || !r.done_at || undecided || Date.now() - Date.parse(r.done_at) <= 2 * 864e5; }), n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });  // studied or used more than 2 days ago leaves the list (owner, 23 Nov 2026)
-      refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; }).catch(function(){}); }
+      refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; refClean(j.refs || []); }).catch(function(){}); }
+  // Clean up (task 15): the references that are safe to remove, from the whole list (old ones too), one Remove button each
+  function refClean(all){ var box = document.getElementById('ref-clean'), lst = document.getElementById('ref-clean-list'), now = Date.now(), safe = all.filter(function(r){ return refView(r, REFCAPS, now).safe; });
+    lst.textContent = ''; box.hidden = !safe.length; document.getElementById('ref-clean-n').textContent = safe.length ? '(' + safe.length + ')' : '';
+    safe.forEach(function(r){ var vw = refView(r, REFCAPS, now), row = el('div', 'crow'), tb = el('span', 'rthumb');
+      if (vw.thumb && vw.thumb.kind === 'img') { var ti = el('img'); ti.loading = 'lazy'; ti.alt = ''; ti.src = vw.thumb.src; tb.appendChild(ti); }
+      row.appendChild(tb); row.appendChild(el('span', null, (r.file && r.file.name || r.url || 'Reference').slice(0, 60) + ' · ' + vw.why + (vw.lesson ? ' · ' + vw.lesson : '')));
+      var b = el('button', 'btn g', 'Remove'); b.type = 'button'; b.addEventListener('click', function(){ b.disabled = true;
+        fetch('/api/refs/' + r.id + '/delete', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: '{}' })
+          .then(function(x){ if (!x.ok) throw 0; row.remove(); refLoad(); }).catch(function(){ b.disabled = false; b.textContent = 'Try again'; }); });
+      row.appendChild(b); lst.appendChild(row); }); }
   // upload progress (owner, 26 Nov 2026: "reference upload should have progress bar"): a bar with the percent and the part count, a failed part
   // retried up to 3 times with a short back-off, a final failure keeps the upload so "Try again" continues from the last good part, and a clear
   // "Added" finish with a small preview of the file
@@ -1629,6 +1664,7 @@
     Promise.all(jobs).then(function(rs){ var bad = rs.filter(function(r){ return !r.ok; })[0]; if (!bad) return refDone(true, 'Added. Claude reads it on the next run.');
       return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 1 GB.' : 'Could not save it. Try again.'); }); })
       .catch(function(){ refDone(false, 'Could not save it. Try again.'); }); });
+  var REFCAPS = {}; caps.then(function(c){ REFCAPS = c || {}; refLoad(); });   // captions "refs": ["app:<id>"] links a reference to the reels that used it
   refLoad();
   // Previews: concept videos to review (not posts); the list lives in templates/showreels/previews.json, the files in R2 at
   // /reels/study/<name>-preview.mp4 and <name>-preview-stills.png (the Showreel workflow's "seconds" mode). "Like" / "Not this" go to the
