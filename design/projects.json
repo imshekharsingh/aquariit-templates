@@ -350,6 +350,54 @@
           "line": "Live: the App probe checks what each Today button really does; APP PROBE: PASS on the live app."
         }
       ]
+    },
+    {
+      "id": "app-fresh",
+      "name": "App never runs an old copy",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: the app carries its build and reloads once when a newer one is out; APP PROBE: PASS.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T17:30:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T17:30:00Z",
+          "stage": "done",
+          "line": "Live: the app carries its build and reloads once when a newer one is out; APP PROBE: PASS."
+        }
+      ]
+    },
+    {
+      "id": "tabs-order",
+      "name": "Tabs in posting order",
+      "account": "other",
+      "stage": "checking",
+      "line": "Merged: channel tabs follow the posting order and the workflow you came from; the live check runs next.",
+      "pct": 90,
+      "updatedAt": "2026-11-27T17:30:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T17:30:00Z",
+          "stage": "checking",
+          "line": "Merged: channel tabs follow the posting order and the workflow you came from; the live check runs next."
+        }
+      ]
+    },
+    {
+      "id": "notify-policy",
+      "name": "One notification plan",
+      "account": "other",
+      "stage": "checking",
+      "line": "Built: one plan for every push (ready 2 min before, slot-test pushes); checks, then live.",
+      "pct": 80,
+      "updatedAt": "2026-11-27T17:30:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T17:30:00Z",
+          "stage": "checking",
+          "line": "Built: one plan for every push (ready 2 min before, slot-test pushes); checks, then live."
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "note": "The one notification plan (task 6, owner 26-27 Nov 2026). src/notify.js and the Worker read it; the owner chat follows it and sends no slot reminders of its own. Times: 'at' = minutes from the reel's slot (negative = before); 'clock' = IST time. Words: {ch} channel, {title} reel title, {slot} its time, {n}/{days} the test day, {time} when it was posted, {ontime} on time or late. Slots always come from design/slots.json; a channel listed there under 'tests' uses the 'test' plan until its 'until' day.",
+  "regular": {
+    "ready":  { "at": -2,  "title": "{ch} reel is ready to post", "body": "{title} · {slot} IST. Tap to open it." },
+    "nudge":  { "at": 15,  "title": "{ch} reel is still waiting", "body": "{title}. Tap to post it when you are ready." },
+    "last":   { "clock": "20:30", "title": "Last call: {ch} reel", "body": "{title} is not posted yet today. Tap to open it." },
+    "digest": { "clock": "08:00" }
+  },
+  "test": {
+    "ready":  { "at": -2,  "title": "Slot test day {n} of {days}: post {ch} at {slot}", "body": "{title}. Tap to open it." },
+    "nudge":  { "at": 10,  "title": "Slot test: {ch} is 10 min past {slot}", "body": "{title}. Post now so the test day counts." },
+    "late":   { "at": 30,  "title": "Slot test: {ch} test day weakened", "body": "Posted more than 30 min after {slot} does not count as on time. Post now if you can." },
+    "logged": {             "title": "Logged: {ch} posted at {time}", "body": "Slot test day {n} of {days}: {ontime}." },
+    "last":   { "clock": "20:30", "title": "Last call: {ch} reel", "body": "{title} is not posted yet today. Tap to open it." },
+    "onTimeWithin": 30
+  }
+}

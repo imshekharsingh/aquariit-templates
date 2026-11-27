@@ -99,9 +99,12 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
   a better one when the rulebook says so.
 
 ## Notifications (owner plan, 24 Nov 2026; built 25 Nov)
-- The Worker cron `*/10 * * * *` runs the plan in src/notify.js (tested by scripts/qa/notify-test.mjs): at a reel's slot "<Channel> reel is ready to post" (tap opens the reel with Post now);
-  45 min later one gentle nudge; 20:30 IST one last call; "Posted ✓" with the link and the plain reason on a failure (sent when Post now reports back); 08:00 IST one morning
-  summary (today's reels, their slots, anything blocked). A reel the second look has not cleared gets no "ready" push.
+- One plan (task 6, 27 Nov 2026): design/notify-policy.json holds every push's time and words; src/notify.js and the Worker read it (tested by scripts/qa/notify-test.mjs).
+  The Worker cron `*/2 * * * *` runs it. Regular: "ready" 2 min BEFORE the slot (tap opens the reel with Post now), one nudge 15 min after if not posted, 20:30 IST one last call,
+  "Posted ✓" with the link and the plain reason on a failure (sent when Post now reports back), 08:00 IST one morning summary. A reel the second look has not cleared gets no "ready" push.
+  Slot tests: a channel listed in design/slots.json "tests" (from/until) gets "Slot test day N of M" on ready, the nudge at 10 min, a "late" push at 30 min, and a "logged" push
+  when posted (on time = within 30 min); after "until" it is back on the regular plan by itself. The weekly review reads the test days from D1 reel_uploaded.at against the slot.
+  Settings shows "Today's plan" in words (GET /api/push/plan).
 - Settings (gear) > "What to be told about": one switch per type (GET/PUT /api/push/prefs, D1 push_prefs; all on until switched off). Every send has a key in D1 notif_log, so a reel
   never gets more than 1 nudge and 1 last call. The old "10 minutes before" reminder is gone; the 12:50 cron stays only so old 13:00 entries pass `npm run check`.
 
