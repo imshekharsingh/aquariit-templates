@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-continue-27nov · owner chat: v7 render 4 approved; the other account keeps fixing
+- v7 render 3 critic: NOT READY (cable cascade 7.7-8.7 s stutters; 6.5/6.5/7.5; board, hub, type, payoff reusable). Owner: let the other account continue fixing: v7 render 4 with the critic's exact fix (the last), then tasks 21, 19, 20, 6, 7, 16-18, each proven (Output QA / App probe PASS).
+
 ## 2026-11-27 · claude/handoff-probe-posted-cards · owner chat: Ready box fix proven for tech; probe task 21 queued
 - App probe after the fix: the tech card opens the tech tab with the tech reel under Ready to post (PASS for the owner's case). Two probe "errors" are the probe's own mistake (posted cards open the reel page); handoff task 21 fixes the probe.
 
