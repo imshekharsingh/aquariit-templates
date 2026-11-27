@@ -298,8 +298,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     var gi = -1; for (var g = 0; g < GR.length; g++) if (GR[g][0].s - .05 <= t) gi = g;
     if (gi < 0){ capEl.style.opacity = 0; return; }
     var gr = GR[gi], gEnd = gr[gr.length - 1].e, next = GR[gi + 1], fadeOut = next ? P(t, next[0].s - .12, next[0].s - .05) : 0;
-    if (gi !== capG){ capG = gi; capEl.innerHTML = '<span class="bx"></span>'; var brk = gr.length > 6 ? Math.ceil(gr.length / 2) : -1;   // two lines of at most 6 words
-      capEls = gr.map(function(w, n){ if (n === brk) capEl.firstChild.appendChild(document.createElement('br')); var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w.w; capEl.firstChild.appendChild(sp); return sp; }); }
+    if (gi !== capG){ capG = gi; capEl.innerHTML = '<span class="bx"></span>'; var bx = capEl.firstChild;
+      capEls = gr.map(function(w){ var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w.w; bx.appendChild(sp); return sp; });
+      // a group that needs two lines breaks at its middle (critic, render 2: never "Why do chatbots type like" / "this?"); one line stays one line
+      if (capEls.length > 1 && capEls[capEls.length - 1].offsetTop > capEls[0].offsetTop + 4) bx.insertBefore(document.createElement('br'), capEls[Math.ceil(capEls.length / 2)]); }
     var first = P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
     capEl.style.opacity = (first * last).toFixed(3);
     gr.forEach(function(w, n){ var k = P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
@@ -361,7 +363,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
       var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
     // banner: the payoff sweeps in across the top third and holds
-    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = cl(bk * 3).toFixed(3); $('banner').style.transform = 'rotate(-3deg)'; $('banner').style.clipPath = 'inset(0 ' + ((1 - bk) * 100).toFixed(2) + '% 0 0)';
+    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = cl(bk * 1.6).toFixed(3); $('banner').style.transform = 'translateX(' + ((1 - bk) * -40).toFixed(1) + 'px) rotate(-3deg) scale(' + (.96 + .04 * bk).toFixed(4) + ')';   // fades and settles in whole (critic, render 2: no bare band edge at the left)
     drawBg(t, cm, col, fo); caption(t, col);
   }
   window.seek = seek;
