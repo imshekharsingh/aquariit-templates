@@ -1291,7 +1291,7 @@
       var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !!r && status(r).k === 'ready'; })
       .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); }).forEach(function(x){ out.push(x); });
     return out; }
-  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = tabOnly(readyReels(), DATA.c, ch); rBox.textContent = '';   // this tab's channel only (owner, 27 Nov 2026: the web tab showed the tech reel)
+  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = DATA ? tabOnly(readyReels(), DATA.c, ch) : [];   /* status can arrive before the reel list (27 Nov 2026 app probe: page error) */ rBox.textContent = '';   // this tab's channel only (owner, 27 Nov 2026: the web tab showed the tech reel)
     if (!j || jOld(j)) rBox.appendChild(el('p', 'empty', j ? 'Status not up to date' + ', so nothing is shown here. It rebuilds on its own.' : 'Status not loaded yet, so nothing is shown here.'));
     else if (!list.length) rBox.appendChild(el('p', 'empty', 'Nothing is ready to post for ' + CH[ch].name + ' yet.'));
     list.forEach(function(x){ var card = reelCard(x, DATA.c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); });
