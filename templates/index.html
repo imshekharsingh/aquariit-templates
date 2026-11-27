@@ -1313,6 +1313,8 @@
   // B-PROBLEM-START (scripts/qa/app-board-test.mjs runs this function)
   function bProblem(row, r, now, bst){ var at = function(id){ for (var i = 0; i < bst.length; i++) if (bst[i][0] === id) return i; return -1; },
       mins = function(t){ var x = Date.parse(t || ''); return isNaN(x) ? 0 : Math.round((now - x) / 60000); }, sg = (r && r.stages) || {}, g = function(k){ return sg[k] || { s: 'wait' }; };
+    if (r && (g('posted').s === 'done' || (g('ready').s === 'done' && g('posted').s !== 'fail'))) return null;   // ready or posted: no Fix (owner, 27 Nov 2026: Fix showed on all three channels from old morning rows)
+    if (row && r && Date.parse(row.at || '') < Math.max(Date.parse(g('render').at || '') || 0, Date.parse(g('checks').at || '') || 0)) row = null;   // a stage row older than the reel's newest video or checks is stale (e.g. a morning build that was redone)
     if (row && row.stage === 'failed') { var m = /^([a-z]+):\s*(.*)$/.exec(row.line || ''), st = m && at(m[1]) >= 0 ? m[1] : 'building'; return { idx: at(st), why: (m ? m[2] : row.line) || 'It stopped here.', stalled: false }; }
     if (r) {
       if (g('render').s === 'fail') return { idx: at('video'), why: 'The video did not finish: ' + (g('render').why || g('render').t || ''), stalled: false };
