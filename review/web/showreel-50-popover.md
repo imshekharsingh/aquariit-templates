@@ -29,3 +29,4 @@ Researched improvement (design/improvements.md web, no unused item left): the si
 Craft improvement (design/craft-log.md): see the 28 Nov web line.
 References used: none (rules 19, 20, 21; the tabwiggle gold).
 Deliberate differences from gold, for the critic: (a) the accent is green #6fe08a (hue 135, new); (b) the hero is the KM.split pair, not one phone (rule 21), so the demo is two 238 px cards instead of one 504 px phone; (c) the meter strip is replaced by a count in each pane's header (the panes need the height); (d) no camera drift, one 4% push.
+PREFLIGHT-ALL: PASS 42e68285 (showreel-50-popover, 16 s)

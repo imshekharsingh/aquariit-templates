@@ -14,4 +14,4 @@ Fill before the build (design/direction.md: the card, and this channel's default
 
 Stills check round 1 (Fable, session_01AYvWRkh492S7gneUMDmWsP, 2026-11-28): REDO (frame 0 showed "0 of 4" and no cut; "2 OF 4 CUT" and the ghosts arrived after the voice; menus closed while the code typed; the popover tag and code were about 10 px; the dimmed BEFORE lost its cut line; the accent matched gold). Fixed in one round: the menu is open at frame 0 with "2 of 4" / "4 of 4" already there; "2 OF 4 CUT" at about 2.6 s and the ghosts at about 3.0 s; the menus stay open until the dim; the tag is 22 px, the code card is POPOVER plus two 21 px lines; a veil dims BEFORE but the cut line, ghosts and "2" stay red; the accent is green #6fe08a (hue 135, new against 25, 85, 165, 225, 265, 285, 315).
 
-STILLS CHECK: PENDING
+STILLS CHECK: APPROVED (session_01AYvWRh31q143Z8U4JAKn39, 2026-11-28): all six round 1 asks are fixed and nothing is clipped, overlapping, empty or unreadable at phone size (watch in the render: the popover tag sits a few pixels under the open AFTER menu; the grey "of 4" is the smallest text).
