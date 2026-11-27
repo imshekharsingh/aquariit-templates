@@ -202,7 +202,8 @@
     const api = { curve, tube, strip, plugs: [pA, pB], bead, radius: r,
       lowest() { let m = 1e9; for (let i = 0; i <= 200; i++) m = Math.min(m, curve.getPointAt(i / 200).y); return m - r; },   // v7 check: the cable's lowest surface point (>= 0 = never through the floor)
       reveal(u) { u = clamp(u); const n = Math.floor(u * SEG); tube.geometry.setDrawRange(0, n * RAD * 6); if (strip) strip.geometry.setDrawRange(0, n * 6); const on = u > .001; tube.visible = on; if (strip) strip.visible = on;
-        if (pA) pA.visible = on; if (pB) { const k = clamp((u - .94) / .06); pB.visible = k > 0; pB.position.copy(pB.userData.at).addScaledVector(pB.userData.dir, .14 * (1 - k)); } },   // the end plug slides the last 0.14 in: the click
+        if (pA) pA.visible = on; if (pB) { const k = clamp((u - .85) / .15); pB.visible = k > 0;   // the end plug slides in over the last 15 % (6 % flicked)
+        pB.position.copy(pB.userData.at).addScaledVector(pB.userData.dir, .14 * (1 - k)); } },   // the end plug slides the last 0.14 in: the click
       pulse(k, t = 0, str = 1) { k = clamp(k); mat.emissiveIntensity = .35 * str * Math.sin(Math.PI * k); bead.visible = str > .5 && k > 0 && k < 1 && tube.visible; if (bead.visible) bead.position.copy(curve.getPointAt(k)); } };   // str < 1: a softer pulse without the bead (many cables at once)
     api.reveal(0); return api;
   }
