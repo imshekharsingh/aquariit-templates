@@ -21,7 +21,7 @@
 html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-family:var(--f);-webkit-font-smoothing:antialiased;color:#fff}
 .a{position:absolute}
 [data-ui]{-webkit-text-fill-color:currentColor}
-.tile,.pan,.ghost,#tags .tg,#hook{color:#fff}
+.tile,.pan,.ghost,#tags .tg{color:#fff}
 #stage{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #bgc{left:0;top:0;width:540px;height:960px}
 #view{left:0;top:0;width:540px;height:960px;overflow:hidden}
@@ -43,7 +43,6 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
 #title{left:0;top:132px;width:540px;text-align:center;font:900 38px/1.02 var(--f);letter-spacing:-.01em;white-space:nowrap;text-transform:uppercase}
 #pillw{left:50%;top:216px;width:260px;margin-left:-130px;height:30px;overflow:hidden;border-radius:999px;border:2px solid var(--c);background:#0c0e14}
 #pillw span{left:0;top:0;width:100%;text-align:center;font:800 13px/26px var(--m);letter-spacing:.12em;color:var(--c);white-space:nowrap}
-#hook{left:44px;top:262px;width:430px;height:84px}
 #banner{left:-60px;top:262px;width:660px;height:56px;transform-origin:50% 50%}
 #banner div{left:0;top:0;width:660px;height:56px;background:var(--c);color:#0a0b10;font:900 36px/56px var(--f);letter-spacing:.02em;text-align:center;white-space:nowrap}
 #cap{left:44px;top:708px;width:410px;text-align:center;font:800 27px/1.22 var(--f);letter-spacing:-.01em}
@@ -66,7 +65,6 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
 <div id="logo" class="a" data-ui>TECH IN 20 SEC</div>
 <div id="title" class="a" data-hook><div>WHY AI TYPES</div><div>WORD BY WORD</div></div>
 <div id="pillw" class="a" data-ui><span id="p0" class="a"></span><span id="p1" class="a"></span></div>
-<div id="hook" class="a" data-ui></div>
 <div id="banner" class="a" data-ui><div class="a">SHORTER = FASTER</div></div>
 <div id="subj" class="a" data-subject style="left:24px;top:268px;width:444px;height:428px;pointer-events:none"></div>
 <div id="bandm" class="a" data-band style="left:0;top:700px;width:540px;height:100px;pointer-events:none"></div>
@@ -97,14 +95,16 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var LAB = ['', ['YOUR', 'PROMPT'], ['TOKENS', 'PIECES'], ['THE', 'MODEL'], ['NEXT', 'TOKEN'], ['ADD', 'IT ON'], ['STREAM', 'TO YOU']];
   // camera stops: [x, y, scale] (screen centre of the map area is x 256, y 452); 0 = the whole map, 7 = the whole map again (payoff)
   var WIDE0 = [885, 724, .24], WIDE1 = [885, 744, .24];
-  var STOP = [WIDE0, [740, 600, .5], [1250, 610, .5], [1060, 1080, .51], [1120, 1150, .51], [1000, 1150, .51], [650, 740, .5], WIDE1];
-  var DRIFT = [[-12, 9, .005], [15, -8, .007], [-15, 9, .007], [12, 10, .006], [-14, 8, .006], [14, -8, .007], [-15, -9, .007], [8, 12, .002]];
+  var STOP = [[745, 690, .94], [740, 600, .5], [1250, 610, .5], [1060, 1080, .51], [1120, 1150, .51], [1000, 1150, .51], [650, 740, .5], WIDE1];
+  var DRIFT = [[0, 0, .01], [15, -8, .007], [-15, 9, .007], [12, 10, .006], [-14, 8, .006], [14, -8, .007], [-15, -9, .007], [8, 12, .002]];
   var X0 = 252, Y0 = 470;
-  function holdPos(i, t){ var a = STOP[i], d = DRIFT[i], h = Math.max(0, t - (AT[i] + FLY[i])); return [a[0] + d[0] * h, a[1] + d[1] * h, a[2] + d[2] * h]; }
+  // the camera's own clock: the same as the voice, except the opening pull-back from the chat window leaves at 2.6 s (owner, 27 Nov: open on the chat itself)
+  var CAT = AT.slice(); CAT[1] = 2.6;
+  function holdPos(i, t){ var a = STOP[i], d = DRIFT[i], h = Math.max(0, t - (CAT[i] + FLY[i])); return [a[0] + d[0] * h, a[1] + d[1] * h, a[2] + d[2] * h]; }
   function cam(t){
-    for (var i = 7; i >= 1; i--) if (t >= AT[i]){
-      var e = AT[i] + FLY[i]; if (t >= e) return holdPos(i, t);
-      var k = io(P(t, AT[i], e)), a = holdPos(i - 1, AT[i]), b = STOP[i], s = Math.exp(mix(Math.log(a[2]), Math.log(b[2]), k));
+    for (var i = 7; i >= 1; i--) if (t >= CAT[i]){
+      var e = CAT[i] + FLY[i]; if (t >= e) return holdPos(i, t);
+      var k = io(P(t, CAT[i], e)), a = holdPos(i - 1, CAT[i]), b = STOP[i], s = Math.exp(mix(Math.log(a[2]), Math.log(b[2]), k));
       return [mix(a[0], b[0], k), mix(a[1], b[1], k), s];
     }
     return holdPos(0, t);
@@ -153,7 +153,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   for (var i = 1; i <= 6; i++){
     var c = COL[i], ct = rgb(cmix(c, [16, 18, 26], .62));
     var nd = E(nodesEl, 'tile', 'left:' + (PT[i][0] - 105) + 'px;top:' + (PT[i][1] - 116) + 'px;--c:' + rgb(c) + ';--ct:' + ct, '');
-    E(nd, 'tn', '', String(i)); E(nd, '', 'left:63px;top:34px', ico(i, rgb(c)));
+    nd._tn = E(nd, 'tn', '', String(i)); E(nd, '', 'left:63px;top:34px', ico(i, rgb(c)));
     nd._tl = E(nd, 'tl', 'top:136px', LAB[i][0] + '<br>' + LAB[i][1]);
     nd._ring = E(nodesEl, 'ghost', 'left:' + (PT[i][0] - 125) + 'px;top:' + (PT[i][1] - 136) + 'px;width:250px;height:272px;border-radius:40px;--c:' + rgb(c, .8) + ';opacity:0');
     NODE.push(nd);
@@ -209,7 +209,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     var snd = E(p, '', 'right:24px;top:196px;height:56px;border-radius:28px;border:2.5px solid ' + cs + ';padding:0 22px;font:800 26px/51px var(--m);letter-spacing:.08em;color:' + cs + ';white-space:nowrap', 'SENT AS TEXT &rsaquo;');
     var Q = 'Why is the sky blue?', QS = Q.split('').map(function(ch){ var s = document.createElement('span'); s.textContent = ch; s.style.opacity = 0; bub.appendChild(s); return s; });
     // typed: each letter fades in over 0.08 s (no letter pops in a single frame); the bubble keeps its full size
-    X[1] = function(lt, t){ QS.forEach(function(s, n){ var a = .15 + n * .05; s.style.opacity = cl(P(lt, a, a + .08)).toFixed(3); }); bub.style.opacity = cl(P(lt, 0, .2)).toFixed(3);
+    X[1] = function(lt, t){ QS.forEach(function(s){ s.style.opacity = '1'; }); bub.style.opacity = '1';
       ent(snd, lt, 1.6, 'pop', .4); };
   })();
   // 2: the question splits into token chips
@@ -251,11 +251,16 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     var spans = ANS.map(function(w){ var s = document.createElement('span'); s.textContent = w; s.style.opacity = 0; ab.appendChild(s); return s; });
     X[6] = function(lt, t){ ent(ab, lt, .05, 'up', .35); spans.forEach(function(s, n){ s.style.opacity = TT[n] ? cl(P(t, TT[n] + .05, TT[n] + .2)).toFixed(3) : 0; }); };
   })();
-  // the hook (0-3.5 s): a chat answer typing word by word over the whole map, then it shrinks into the map as the camera goes in
-  var hk = $('hook');
-  var ha = E(hk, 'bub', 'left:0;top:0;width:430px;height:94px;background:#1b1e27;border:2px solid rgba(255,255,255,.18);font-size:27px;line-height:1.2', '');
-  var HSP = ANS.map(function(w){ var s = document.createElement('span'); s.textContent = w; s.style.opacity = 0; ha.appendChild(s); return s; });
-  var hcur = document.createElement('span'); hcur.textContent = '▍'; hcur.style.color = rgb(COL[6]); ha.appendChild(hcur);
+  // the opening (owner, 27 Nov: "show a chatbot window"): an invented, unbranded chat window, filling the frame at 0-2.6 s, the question asked and the
+  // reply streaming in word by word; it sits exactly where panel 1 sits, so the pull-back turns it into the map's first card (a match cut)
+  var cw = E(pans, 'pan', 'left:' + (PPOS[1][0] - 235) + 'px;top:' + (PPOS[1][1] - 150) + 'px;width:470px;height:300px;--c:' + rgb(COL[1]) + ';--ct:' + rgb(cmix(COL[1], [16, 18, 26], .7)), '');
+  E(cw, '', 'left:22px;top:20px;width:20px;height:20px;border-radius:50%;background:' + rgb(COL[5]), '');
+  E(cw, 'ph', 'left:52px;top:18px;color:#fff;letter-spacing:.06em', 'AI CHAT');
+  E(cw, '', 'left:0;top:58px;width:470px;height:2px;background:rgba(255,255,255,.12)', '');
+  var cq = E(cw, 'bub', 'right:20px;top:72px;background:' + rgb(COL[1], .92) + ';white-space:nowrap;font-size:26px;padding:10px 16px', 'Why is the sky blue?');
+  var ca = E(cw, 'bub', 'left:20px;top:134px;width:430px;height:146px;background:#1d2029;border:2px solid rgba(255,255,255,.16);font-size:29px;line-height:1.24', '');
+  var HSP = ANS.map(function(w){ var s = document.createElement('span'); s.textContent = w; s.style.opacity = 0; ca.appendChild(s); return s; });
+  var hcur = document.createElement('span'); hcur.textContent = '\u258d'; hcur.style.color = rgb(COL[6]); ca.appendChild(hcur);
   // ---- background (canvas, screen space): torch-like light wedges from the lit node, a faint grid with parallax, slow dust. No blur stacks.
   var bg = $('bgc').getContext('2d');
   // how far an element sits inside the safe zone (x 26-470, y 128-690): 1 inside, fading to 0 within 24 px beyond (no text under the side buttons or the caption overlay)
@@ -296,13 +301,14 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   var capEl = $('cap');
   function caption(t, col){
     var gi = -1; for (var g = 0; g < GR.length; g++) if (GR[g][0].s - .05 <= t) gi = g;
+    if (gi < 0 && GR.length) gi = 0;   // the hook line shows (dim) from frame 0
     if (gi < 0){ capEl.style.opacity = 0; return; }
     var gr = GR[gi], gEnd = gr[gr.length - 1].e, next = GR[gi + 1], fadeOut = next ? P(t, next[0].s - .12, next[0].s - .05) : 0;
     if (gi !== capG){ capG = gi; capEl.innerHTML = '<span class="bx"></span>'; var bx = capEl.firstChild;
       capEls = gr.map(function(w){ var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w.w; bx.appendChild(sp); return sp; });
       // a group that needs two lines breaks at its middle (critic, render 2: never "Why do chatbots type like" / "this?"); one line stays one line
       if (capEls.length > 1 && capEls[capEls.length - 1].offsetTop > capEls[0].offsetTop + 4) bx.insertBefore(document.createElement('br'), capEls[Math.ceil(capEls.length / 2)]); }
-    var first = P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
+    var first = gi === 0 ? 1 : P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
     capEl.style.opacity = (first * last).toFixed(3);
     gr.forEach(function(w, n){ var k = P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
       s.style.opacity = (.28 + .72 * k).toFixed(3); s.style.color = key ? rgb(col) : '#fff'; });
@@ -317,7 +323,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   cue({ t: 0, k: 'swell', d: 1.2, g: .26 }); cue({ t: AT[7] + .35, k: 'thud', g: .42, x: 270, r: .2 }); cue({ t: AT[7] + .4, k: 'resolve', notes: [50, 62, 66, 69, 74], g: .28 });
   window.CUES = { dur: DUR, cues: cues.sort(function(a, b){ return a.t - b.t; }), mix: { duck: 8 }, bed: { bpm: 100, origin: 0, gain: .2, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [45, 57, 64, 67, 71]] } };
   window.COVER = .6; window.HOLDS = [[26.6, 29.6]];   // the payoff: the whole map held (the loop still turns, the camera drifts)
-  window.TRANSITIONS = [1, 2, 3, 4, 5, 6, 7].map(function(f){ return [AT[f], AT[f] + FLY[f], f === 7 ? 'pullback' : 'fly']; });
+  window.TRANSITIONS = [1, 2, 3, 4, 5, 6, 7].map(function(f){ return [CAT[f], CAT[f] + FLY[f], f === 7 ? 'pullback' : 'fly']; });
   // ---- one frame (a pure function of t)
   function seek(t){
     t = cl(t, 0, DUR); var cm = cam(t), W = $('world');
@@ -338,8 +344,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     // nodes: lit one full, the rest 30 % (kept as context); the next one rises a little as its ghost appears
     var fo = [0]; for (var i = 1; i <= 6; i++){ var f3 = focus(i, t), pre = 0; for (var q = 2; q <= 6; q++) if (q === i) pre = io(P(t, AT[q] - .5, AT[q] - .1)) * (1 - io(P(t, AT[q], AT[q] + FLY[q]))); fo.push(f3);
       var ns = toScreen(PT[i], cm), nz = safeK(ns[0] - 105 * cm[2], ns[0] + 105 * cm[2], ns[1] - 116 * cm[2], ns[1] + 116 * cm[2]);
-      var op = .3 + .7 * Math.max(f3, pre * .55); NODE[i].style.opacity = op.toFixed(3); NODE[i]._tl.style.opacity = ((1 - wide) * labelK(ns[0] + 105 * cm[2], ns[1] + 116 * cm[2])).toFixed(3);
-      var rg = i >= 2 ? P(t, AT[i] - .5, AT[i] - .2) * (1 - P(t, AT[i] + .1, AT[i] + FLY[i])) : 0;   // the next card's ghost: a dashed ring round its tile (with the panel ghost where that is inside the safe zone)
+      var op = .3 + .7 * Math.max(f3, pre * .55); NODE[i].style.opacity = op.toFixed(3); var lk = labelK(ns[0] + 105 * cm[2], ns[1] + 116 * cm[2]); NODE[i]._tl.style.opacity = ((1 - wide) * lk).toFixed(3); NODE[i]._tn.style.opacity = lk.toFixed(3);
+      var rg = i >= 2 ? P(t, AT[i] - .5, AT[i] - .2) * (1 - P(t, AT[i] + .1, AT[i] + FLY[i])) : 0; if (i === 2) rg = Math.max(rg, P(t, 2.9, 3.2) * (1 - P(t, 3.7, 4.1)));   // the next card's ghost: a dashed ring round its tile (with the panel ghost where that is inside the safe zone)
       NODE[i]._ring.style.opacity = (rg * .9).toFixed(3); NODE[i]._ring.style.transform = 'scale(' + (1.06 - .06 * rg).toFixed(4) + ')'; NODE[i].style.transform = 'scale(' + (1 + .04 * f3).toFixed(4) + ')'; }
     // sub-nodes: dim context, a gentle bob (continuous), brighter next to the lit node
     SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = .32 + .4 * f4; s.el.style.opacity = o.toFixed(3); s.sl.style.opacity = ((1 - wide) * labelK(sp2[0] + hw, sp2[1] + 32 * cm[2])).toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
@@ -350,15 +356,15 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     if (ro > 0){ var a0 = ra - rl; RUN.setAttribute('d', 'M' + (C[0] + R * Math.cos(a0)).toFixed(1) + ' ' + (C[1] + R * Math.sin(a0)).toFixed(1) + 'A' + R + ' ' + R + ' 0 0 1 ' + (C[0] + R * Math.cos(ra)).toFixed(1) + ' ' + (C[1] + R * Math.sin(ra)).toFixed(1)); }
     RUN.setAttribute('opacity', ro.toFixed(3));
     // panels: ghost before the move, content builds from 0.15 s after the move starts (before the camera lands), out as the camera leaves
-    for (var pi = 1; pi <= 6; pi++){ var pin = AT[pi], pout = pi < 6 ? AT[pi + 1] : AT[7], kin = out(P(t, pin + (pi === 6 ? FLY[6] * .6 : .05), pin + (pi === 6 ? FLY[6] * .6 + .4 : .45))), kout = io(P(t, pout + .02, pout + .32)), kp = kin * (1 - kout);
+    for (var pi = 1; pi <= 6; pi++){ var pin = AT[pi], pout = pi < 6 ? AT[pi + 1] : AT[7], kin = pi === 1 ? io(P(t, 2.85, 3.25)) : out(P(t, pin + (pi === 6 ? FLY[6] * .6 : .05), pin + (pi === 6 ? FLY[6] * .6 + .4 : .45))), kout = io(P(t, pout + .02, pout + .32)), kp = kin * (1 - kout);
       var gk = P(t, pin - .5, pin - .2) * (1 - P(t, pin + .2, pin + .45)); if (pi === 1 || pi === 4 || pi === 5) gk = 0;
       if (gk > 0){ var gp = PPOS[pi], g0 = toScreen([gp[0] - gp[2] / 2, gp[1] - gp[3] / 2], cm), g1 = toScreen([gp[0] + gp[2] / 2, gp[1] + gp[3] / 2], cm); gk *= safeK(g0[0], g1[0], g0[1], g1[1]); }
       GH[pi].style.opacity = (gk * .8).toFixed(3); GH[pi].style.transform = 'scale(' + (.97 + .03 * gk).toFixed(4) + ')';
-      PAN[pi].style.opacity = cl(kp * 1.4).toFixed(3); PAN[pi].style.transform = 'scale(' + (.94 + .06 * kp).toFixed(4) + ')'; PAN[pi].style.visibility = kp > 0 ? 'visible' : 'hidden';
+      PAN[pi].style.opacity = cl(kp * 1.4).toFixed(3); PAN[pi].style.transform = pi === 1 && t < 4 ? 'none' : 'scale(' + (.94 + .06 * kp).toFixed(4) + ')'; PAN[pi].style.visibility = kp > 0 ? 'visible' : 'hidden';
       if (kp > 0) X[pi](t - pin, t); }
-    // the hook: a reply typing word by word (0-3.5 s), then it shrinks away as the camera pushes in
-    var hko = 1 - io(P(t, AT[1] - .1, AT[1] + .18)); hk.style.opacity = hko.toFixed(3); hk.style.transform = 'translateY(' + ((1 - hko) * 40).toFixed(2) + 'px) scale(' + (.8 + .2 * hko).toFixed(4) + ')'; hk.style.visibility = hko > 0 ? 'visible' : 'hidden';
-    if (hko > 0){ HSP.forEach(function(s, n){ s.style.opacity = (.3 + .7 * cl(P(t, .3 + n * .3, .42 + n * .3))).toFixed(3); }); hcur.style.opacity = (.55 + .45 * Math.cos(t * 7)).toFixed(3); }
+    // the opening chat window: words stream in (each fades over 0.1 s), then it hands over to panel 1 during the pull-back (2.85-3.25 s)
+    var cwo = 1 - io(P(t, 2.85, 3.25)); cw.style.opacity = cwo.toFixed(3); cw.style.visibility = cwo > 0 ? 'visible' : 'hidden';
+    if (cwo > 0){ HSP.forEach(function(s, n){ s.style.opacity = (n === 0 ? 1 : cl(P(t, n * .22, .1 + n * .22))).toFixed(3); }); hcur.style.opacity = (.55 + .45 * Math.cos(t * 7)).toFixed(3); cq.style.opacity = '1'; }
     // tags (screen space) on the wide shots, so every node's name reads at phone size on the whole map
     for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
       var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
