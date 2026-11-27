@@ -194,7 +194,7 @@
       const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col4, 4)); g.setIndex(idx);
       strip = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, fog: false })); strip.renderOrder = 2; S.scene.add(strip); }
     // plugs: a metal sleeve and a coloured boot, along the cable's own direction at each end
-    const metal = new THREE.MeshStandardMaterial({ color: 0xcfd5de, roughness: .3, metalness: 1 }), boot = new THREE.MeshPhysicalMaterial({ color: col.clone().multiplyScalar(.75), roughness: .45, clearcoat: .4 });
+    const metal = new THREE.MeshStandardMaterial({ color: 0xcfd5de, roughness: .6, metalness: .8 }), boot = new THREE.MeshPhysicalMaterial({ color: col.clone().multiplyScalar(.75), roughness: .45, clearcoat: .4 });   // satin sleeves (a polished one glinted for a frame as it slid in)
     const plug = (u, dir) => { const g = new THREE.Group(), b = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.9, r * 1.6, .17, 14), boot), m = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.15, r * 1.15, .11, 12), metal);
       b.position.y = -.02; m.position.y = .11; g.add(b, m); const p = curve.getPointAt(u), t = curve.getTangentAt(u).multiplyScalar(dir); g.position.copy(p); g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), t.normalize()); g.userData.at = p.clone(); g.userData.dir = t.clone(); S.scene.add(g); return g; };
     const pA = o.plugs === false ? null : plug(0, -1), pB = o.plugs === false ? null : plug(1, 1);
