@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 14:52 IST · claude/ref-upload-progress · other account: task 11, reference upload progress bar
+- Done: templates/index.html References upload: progress bar (percent, part n of N, XHR progress within a part), 3 retries per part with back-off, a stop keeps the multipart upload and Try again resumes from the last good part, Added with a small preview. Worker unchanged (it already accepts a part again).
+- Left: the owner tries one upload. Next GO: tasks 12-15, then 9 (after v7 render 3).
+- For the main account: nothing to change; messages can say "the bar shows how far it is".
+
 ## 2026-11-27 · claude/handoff-scope-27nov · owner chat: the other account does app and kit work only
 - Owner: the other account is a temporary helper for bigger app, tooling and kit chunks, never daily reels. CLAUDE.md Sessions line and a scope rule at the top of design/handoff.md.
 

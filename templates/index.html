@@ -119,6 +119,9 @@
   .use[open] .bar{margin-bottom:6px}
   .use summary::-webkit-details-marker{display:none}
   .bar{height:8px;margin:9px 0 6px;border-radius:99px;background:var(--soft);overflow:hidden}
+  .refprev{display:flex;align-items:center;gap:10px;margin:8px 0 4px}
+  .refprev img,.refprev video{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--soft)}
+  .refprev span{font-size:14px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .bar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
   .bar.warn i{background:#f2c14e}
   .bar.over i{background:#ff6b6b}
@@ -1515,35 +1518,60 @@
   function refLoad(){ fetch('/api/refs', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
     .then(function(j){ var a = (j.refs || []).filter(function(r){ var undecided = (r.checklist || []).some(function(c){ return !c.c; }); if (r.closed) return Date.now() - Date.parse(r.closed) <= 2 * 864e5; return r.state === 'new' || r.state === 'uploading' || !r.done_at || undecided || Date.now() - Date.parse(r.done_at) <= 2 * 864e5; }), n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });  // studied or used more than 2 days ago leaves the list (owner, 23 Nov 2026)
       refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; }).catch(function(){}); }
-  function refDone(ok, m){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; if (ok) { refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Up to 1 GB'; refLoad(); } }
+  // upload progress (owner, 26 Nov 2026: "reference upload should have progress bar"): a bar with the percent and the part count, a failed part
+  // retried up to 3 times with a short back-off, a final failure keeps the upload so "Try again" continues from the last good part, and a clear
+  // "Added" finish with a small preview of the file
+  var refBar = el('div', 'bar'), refBarI = el('i'), refPrev = el('div', 'refprev'), refJob = null; refBar.appendChild(refBarI); refBar.hidden = true; refPrev.hidden = true;
+  refMsg.parentNode.insertBefore(refBar, refMsg); refMsg.parentNode.insertBefore(refPrev, refMsg.nextSibling);
+  function refProg(done, total, k, n){ var pc = total ? Math.min(100, Math.floor(done / total * 100)) : 0; refBar.hidden = false; refBarI.style.width = pc + '%';
+    refMsg.textContent = pc + '%' + (n > 1 ? ' · part ' + k + ' of ' + n : '') + ' · keep this page open'; }
+  function refShow(f){ refPrev.textContent = ''; if (!f) { refPrev.hidden = true; return; } var u = URL.createObjectURL(f), m;
+    if (/^video\//.test(f.type)) { m = document.createElement('video'); m.muted = true; m.playsInline = true; m.preload = 'metadata'; m.src = u + '#t=0.1'; }
+    else { m = document.createElement('img'); m.alt = ''; m.src = u; }
+    refPrev.appendChild(m); refPrev.appendChild(el('span', null, f.name)); refPrev.hidden = false; }
+  function refDone(ok, m, f){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; refBar.hidden = !ok || !f; if (ok && f) refBarI.style.width = '100%';
+    if (ok) { refJob = null; refShow(f || null); refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Up to 1 GB'; refLoad(); } }
+  // one request with upload progress (fetch has none): resolves with the parsed reply, rejects with { status, body }
+  function refXhr(url, body, type, onp){ return new Promise(function(ok, no){ var x = new XMLHttpRequest(); x.open('POST', url); x.withCredentials = true;
+    x.setRequestHeader('X-Requested-With', 'reel'); x.setRequestHeader('Content-Type', type); x.upload.onprogress = function(e){ if (onp) onp(e.loaded); };
+    x.onload = function(){ var j = {}; try { j = JSON.parse(x.responseText || '{}'); } catch (e) { /* not json */ } if (x.status >= 200 && x.status < 300) ok(j); else no({ status: x.status, body: j }); };
+    x.onerror = x.ontimeout = function(){ no({ status: 0, body: {} }); }; x.send(body); }); }
+  var REF_TYPE = 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).';
   // a file over 50 MB goes up in parts (R2 multipart through the Worker, each part 64 MB; owner, 24 Nov 2026: up to 1 GB)
-  function bigUpload(f, note){ var H = { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, id = null, parts = [], sent = 0; refSend.disabled = true;
-    function say(t){ refMsg.textContent = t; }
-    function fail(m){ if (id) fetch('/api/refs/' + id + '/abort', { method: 'POST', credentials: 'same-origin', headers: H, body: '{}' }).catch(function(){}); refDone(false, m || 'The upload stopped. Try again.'); }
-    say('Starting…');
-    fetch('/api/refs/mp/start', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ name: f.name, type: f.type, size: f.size, channel: refCh || null, note: note || null }) })
-      .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw j; return j; }); })
-      .then(function(j){ id = j.id; var size = j.partSize, n = Math.ceil(f.size / size);
-        function next(k){ if (k > n) return Promise.resolve();
-          function once(left){ say('Uploading part ' + k + ' of ' + n + ' · ' + Math.round(sent / f.size * 100) + '%');
-            return fetch('/api/refs/' + id + '/part?n=' + k, { method: 'POST', credentials: 'same-origin', headers: { 'X-Requested-With': 'reel', 'Content-Type': 'application/octet-stream' }, body: f.slice((k - 1) * size, Math.min(f.size, k * size)) })
-              .then(function(r){ if (!r.ok) throw 0; return r.json(); }, function(e){ throw 0; })
-              .catch(function(){ if (left > 0) return new Promise(function(ok){ setTimeout(ok, 1500); }).then(function(){ return once(left - 1); }); throw 0; }); }
-          return once(2).then(function(pt){ parts.push({ partNumber: pt.partNumber, etag: pt.etag }); sent += Math.min(size, f.size - (k - 1) * size); return next(k + 1); }); }
-        return next(1); })
-      .then(function(){ say('Finishing…'); return fetch('/api/refs/' + id + '/complete', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ parts: parts }) }); })
-      .then(function(r){ if (!r.ok) throw 0; refDone(true, 'Added. Claude reads it on the next run.'); })
-      .catch(function(e){ fail(e && e.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : e && e.error === 'too-big' ? 'That file is over 1 GB.' : null); }); }
+  function bigUpload(f, note){ var H = { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }; refSend.disabled = true; refPrev.hidden = true;
+    var job = refJob && refJob.name === f.name && refJob.fsize === f.size && refJob.mod === f.lastModified ? refJob : null;   // the same file again: continue where it stopped
+    if (refJob && !job) fetch('/api/refs/' + refJob.id + '/abort', { method: 'POST', credentials: 'same-origin', headers: H, body: '{}' }).catch(function(){});   // another file: drop the old half upload
+    refJob = null;
+    var start = job ? Promise.resolve(job) : (refMsg.textContent = 'Starting…', fetch('/api/refs/mp/start', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ name: f.name, type: f.type, size: f.size, channel: refCh || null, note: note || null }) })
+      .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw j; return { id: j.id, part: j.partSize, n: Math.ceil(f.size / j.partSize), parts: [], name: f.name, fsize: f.size, mod: f.lastModified }; }); }));
+    start.then(function(jb){ job = jb;
+      function sentBefore(k){ return Math.min(f.size, (k - 1) * job.part); }
+      function next(k){ if (k > job.n) return Promise.resolve();
+        if (job.parts.some(function(p){ return p.partNumber === k; })) return next(k + 1);   // already up (a resumed upload)
+        function once(tries){ refProg(sentBefore(k), f.size, k, job.n);
+          return refXhr('/api/refs/' + job.id + '/part?n=' + k, f.slice((k - 1) * job.part, Math.min(f.size, k * job.part)), 'application/octet-stream', function(l){ refProg(sentBefore(k) + l, f.size, k, job.n); })
+            .catch(function(e){ if (tries < 3) { refMsg.textContent = 'Part ' + k + ' of ' + job.n + ' did not go through. Trying again…'; return new Promise(function(ok){ setTimeout(ok, 1500 * Math.pow(2, tries)); }).then(function(){ return once(tries + 1); }); } throw e; }); }
+        return once(0).then(function(pt){ job.parts.push({ partNumber: pt.partNumber, etag: pt.etag }); return next(k + 1); }); }
+      return next(1); })
+      .then(function(){ refMsg.textContent = 'Finishing…'; job.parts.sort(function(a, b){ return a.partNumber - b.partNumber; });
+        return fetch('/api/refs/' + job.id + '/complete', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ parts: job.parts }) }); })
+      .then(function(r){ if (!r.ok) throw { status: r.status, body: {} }; refDone(true, 'Added. Claude reads it on the next run.', f); })
+      .catch(function(e){ var b = (e && e.body) || e || {};
+        if (b.error === 'type') return refDone(false, REF_TYPE);
+        if (b.error === 'too-big') return refDone(false, 'That file is over 1 GB.');
+        if (job && job.id) { refJob = job; var got = job.parts.length; refDone(false, 'The upload stopped' + (got ? ' after part ' + got + ' of ' + job.n : '') + '. Tap Try again to continue from there (keep the same file chosen).'); refBar.hidden = false; return; }
+        refDone(false, 'The upload could not start. Try again.'); }); }
   refSend.addEventListener('click', function(){ var u = refUrl.value.trim(), f = refFile.files && refFile.files[0], note = refNote.value.trim();
     if (!u && !f) { refMsg.textContent = 'Paste a link or choose a file.'; refUrl.focus(); return; }
     if (u && !/^https:\/\/\S+$/i.test(u)) { refMsg.textContent = 'The link must start with https://'; refUrl.focus(); return; }
     if (f && f.size > REF_MAX) { refMsg.textContent = 'That file is ' + (f.size / 1073741824).toFixed(1) + ' GB. The limit is 1 GB, so choose a shorter clip.'; return; }
     if (f && f.size > REF_WARN && !confirm('This file is ' + Math.round(f.size / 1048576) + ' MB. It uploads in parts and can take a few minutes. Keep this page open until it says Added. Start now?')) return;
     if (f && f.size > REF_SINGLE) return bigUpload(f, note + (u ? (note ? '\n' : '') + u : ''));
-    refSend.disabled = true; refMsg.textContent = f ? 'Uploading…' : 'Saving…';
+    refSend.disabled = true; refMsg.textContent = f ? 'Uploading…' : 'Saving…'; refPrev.hidden = true;
     var H = { 'X-Requested-With': 'reel' }, jobs = [];
-    if (f) jobs.push(fetch('/api/refs/upload?' + new URLSearchParams({ channel: refCh, note: note + (u ? (note ? '\n' : '') + u : ''), name: f.name }), { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': f.type || 'application/octet-stream' }, H), body: f }));
-    else jobs.push(fetch('/api/refs', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify({ url: u, note: note || null, channel: refCh || null }) }));
+    if (f) { refProg(0, f.size, 1, 1); return refXhr('/api/refs/upload?' + new URLSearchParams({ channel: refCh, note: note + (u ? (note ? '\n' : '') + u : ''), name: f.name }), f, f.type || 'application/octet-stream', function(l){ refProg(l, f.size, 1, 1); })
+      .then(function(){ refDone(true, 'Added. Claude reads it on the next run.', f); }, function(e){ var j = (e && e.body) || {}; refDone(false, j.error === 'type' ? REF_TYPE : j.error === 'too-big' ? 'That file is over 1 GB.' : 'Could not save it. Try again.'); }); }
+    jobs.push(fetch('/api/refs', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify({ url: u, note: note || null, channel: refCh || null }) }));
     Promise.all(jobs).then(function(rs){ var bad = rs.filter(function(r){ return !r.ok; })[0]; if (!bad) return refDone(true, 'Added. Claude reads it on the next run.');
       return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 1 GB.' : 'Could not save it. Try again.'); }); })
       .catch(function(){ refDone(false, 'Could not save it. Try again.'); }); });

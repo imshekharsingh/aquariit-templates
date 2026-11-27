@@ -300,6 +300,8 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 27 Nov 01:30 IST, main account plan critic: PLAN: CHANGE FIRST + seven small changes (fewer headline words and a step pill instead of the grey words, dim everything but the subject in three moments, a still hold and one move home, a last frame that matches frame 0, a clean New shot, a readable first frame), then render 3 with no further plan check (review/tech/showreel-tech-gold3d-v7.md "Render 3 plan critic").
 - 27 Nov ~13:00 IST, owner (via the owner chat): HOLD lifted; start task 10 now (7 plan-critic changes, then render 3, Output QA, "v7 ready for critic").
 - 27 Nov ~14:45 IST, owner (via the owner chat): tasks 12-15 queued GO after tasks 10 and 11 (Needs you, Fix at the stage, Tests list, references with thumbnails and cleanup).
+- 27 Nov 14:52 IST, other account: task 11 started and done in one push: task 11 live, owner to try an upload. Inbox > Ideas and references: a bar with the percent and the part count ("62% · part 5 of 8"), a failed part is retried up to 3 times with a short wait, a final stop keeps the upload and "Try again" continues from the last good part (same file chosen), and the finish says Added with a small preview; the list updates at once. Checked at phone width against a local test server (51 parts, part 3 failing 4 times: stopped after part 2, resumed from part 3, finished; a small image: bar, Added, preview). task 11 done.
+
 ---
 
 # History: CLOSED (owner, 22 Nov 2026)
