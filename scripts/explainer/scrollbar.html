@@ -21,16 +21,16 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #scr{position:absolute;left:10px;top:10px;width:484px;height:426px;border-radius:52px;overflow:hidden;background:var(--pg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 #sb{position:absolute;left:0;right:0;top:0;height:44px;background:var(--pg);color:var(--paper);font:500 15px/44px var(--m);padding:0 34px;z-index:4}
 .pg{position:absolute;left:0;top:44px;width:484px;height:382px;background:var(--pg);overflow:hidden}
-.bar{position:absolute;left:0;top:0;width:484px;height:14px;background:rgba(255,255,255,.1);z-index:3}
-.fill{position:absolute;left:0;top:0;height:14px;width:0;border-radius:0 7px 7px 0}
+.bar{position:absolute;left:0;top:0;width:484px;height:22px;background:rgba(255,255,255,.1);z-index:3}
+.fill{position:absolute;left:0;top:0;height:22px;width:0;border-radius:0 11px 11px 0}
 #bad .fill{background:var(--red)}#good .fill{background:var(--acc)}
-.late{position:absolute;top:0;height:14px;left:0;width:0;opacity:0;background:repeating-linear-gradient(135deg,rgba(255,95,109,.75) 0 4px,rgba(255,95,109,.15) 4px 8px)}
-.tick{position:absolute;top:-4px;left:0;width:3px;height:22px;border-radius:2px;background:var(--paper);opacity:0}
-.hd{position:absolute;left:0;top:14px;width:484px;height:62px;background:var(--pg);z-index:2;box-shadow:inset 0 -1px 0 rgba(255,255,255,.09)}
+.late{position:absolute;top:0;height:22px;left:0;width:0;opacity:0;background:repeating-linear-gradient(135deg,rgba(255,95,109,.75) 0 4px,rgba(255,95,109,.15) 4px 8px)}
+.tick{position:absolute;top:-5px;left:0;width:3px;height:32px;border-radius:2px;background:var(--paper);opacity:0}
+.hd{position:absolute;left:0;top:22px;width:484px;height:62px;background:var(--pg);z-index:2;box-shadow:inset 0 -1px 0 rgba(255,255,255,.09)}
 .hd i{position:absolute;display:block;border-radius:8px}
 .hd .t{left:22px;top:15px;width:190px;height:16px;background:rgba(255,255,255,.42)}
 .hd .s{left:22px;top:40px;width:120px;height:10px;background:rgba(255,255,255,.17)}
-.sc{position:absolute;left:0;top:76px;width:484px;height:1400px}
+.sc{position:absolute;left:0;top:84px;width:484px;height:1400px}
 .cd2{position:absolute;left:20px;width:444px;height:68px;border-radius:18px;background:linear-gradient(120deg,#35501a,#21320f);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .cd2 i{position:absolute;display:block}
 .cd2 .th{left:10px;top:10px;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#9ccc34,#4a7413)}
@@ -95,7 +95,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     </div>
   </div>
 </div></div>
-<div id="ghost" class="a" aria-hidden="true">animation-timeline: scroll();</div>
+
 <div id="lbl" class="a">Nº 49 · SCROLL BAR</div>
 <div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>is</span> <span>your</span></span><span class="ln"><span>scroll</span> <span>bar</span> <span class="acc">late?</span></span></div>
 <div id="wide" class="a"><span class="ch" id="c1">scroll</span><span class="ar" id="a1">→</span><span class="ch" id="c2">your JS</span><span class="ar" id="a2">→</span><span class="ch" id="c3">bar</span><small id="ws">RUNS ON EVERY SCROLL</small><em id="wl">LATE</em></div>
@@ -666,7 +666,6 @@ var KM = (function(){
     A.wipe = A.typeEnd + .7;
     CAM = KM.rig({ x: 270, y: 480, z: 1, drift: 0 });
     T.morph = KM.transition('morph', A.fix - .1, .5);
-    T.glide = KM.transition('sharedElement', A.typeEnd + .1, .7);
     T.wipe = KM.transition('morph', A.wipe, .6);
     // the bug happens at once and again before 2 s (rule 20): a flick, the page scrolls, the bar arrives late; then on "script", "arrives", "page"
     var tb = [.25, 1.45, at('script', 1, S[1] + .4) - .05, at('lag', 1, S[1] + 1.8) - .15, at('page', 1, S[1] + 2.6) - .1], i;
@@ -694,7 +693,6 @@ var KM = (function(){
     ['c1', 'c3', 'a1', 'a2', 'ws'].forEach(function(id){ KM.mark($(id), 'self', 'with the cause picture'); });
     ['rx1', 'rx2'].forEach(function(id, k){ KM.sfx($(id), TB[k] + .5, 'enter', { size: 'small', g: .7, deg: k }); });
     KM.sfx($('code'), A.fix - .1, 'enter', { size: 'medium' }); KM.mark($('cd'), 'tree', 'the typing ticks');
-    KM.sfx($('ghost'), A.typeEnd + .1, 'enter', { size: 'small', g: .7 }); KM.sfx($('ghost'), A.typeEnd + .78, 'land', { size: 'small', g: .6 });
     KM.sfx($('good'), A.wipe, 'change', { size: 'large', g: .6 });
     KM.sfx($('lab'), A.lab, 'enter', { size: 'small', deg: 1 }); KM.mark($('ll'), 'self', 'drawn with its label');
     var hs = $('hook').querySelectorAll('.ln > span'); for (var h = 0; h < hs.length; h++) KM.sfx(hs[h], h === 0 ? 0 : V.words[h].s - V.lead, 'enter', { size: 'small', g: .6, deg: h % 3 });
@@ -714,7 +712,7 @@ var KM = (function(){
     fa.style.width = (prog * W).toFixed(1) + 'px';
     TB.forEach(function(x, k){ KM.ripple($('tr' + k), t, x, 400, 226); });
     // the reaction words sit in the page header's empty right half, never in the subtitle band
-    [['rx1', 330, 0, .45], ['rx2', 290, 1, .55]].forEach(function(q){ var s3 = CAM.toScreen(c, q[1], 470); $(q[0]).style.left = s3[0].toFixed(1) + 'px'; $(q[0]).style.top = s3[1].toFixed(1) + 'px'; KM.react($(q[0]), t, TB[q[2]] + .45, { rot: q[2] % 2 ? 5 : -7, hold: q[3] }); });
+    [['rx1', 330, 0, .45], ['rx2', 290, 1, .55]].forEach(function(q){ var s3 = CAM.toScreen(c, q[1], 484); $(q[0]).style.left = s3[0].toFixed(1) + 'px'; $(q[0]).style.top = s3[1].toFixed(1) + 'px'; KM.react($(q[0]), t, TB[q[2]] + .45, { rot: q[2] % 2 ? 5 : -7, hold: q[3] }); });
     var on = t >= A.wipe;
     $('good').style.visibility = on ? 'visible' : 'hidden'; $('bad').style.visibility = on ? 'hidden' : 'visible';
     TG.forEach(function(x, k){ KM.ripple($('rp' + k), t, x, 400, 226); });
@@ -731,7 +729,7 @@ var KM = (function(){
     // ---- the hook: word by word; it lifts away before the first sentence ----
     var gone = E.inOut3(P(t, A.leave, A.leave + .25)), st = [];
     for (i = 0; i < HOOK_N; i++) st.push(i === 0 ? -.3 : V.words[i].s - V.lead);
-    KM.rise($('hook').querySelectorAll('.ln > span'), t, st, gone);
+    $('hook').querySelectorAll('.ln > span').forEach(function(w, k){ var on1 = E.out3(P(t, st[k] - .05, st[k] + .2)); w.style.filter = 'none'; w.style.transform = 'translateY(' + (-10 * gone).toFixed(2) + 'px)'; w.style.opacity = ((.3 + .7 * on1) * (1 - gone)).toFixed(3); });
     $('lbl').style.opacity = (1 - P(t, A.leave - .2, A.leave)).toFixed(3);
     // ---- why: scroll -> your JS -> bar; the middle chip turns red when the voice says the bar can lag ----
     var wi = E.out3(P(t, A.wideIn, A.wideIn + .35)) * (1 - P(t, A.fix + .15, A.fix + .4)), hot = E.inOut3(P(t, A.hot - .05, A.hot + .3)), wp = P(t, A.late, A.late + .25);
@@ -744,9 +742,9 @@ var KM = (function(){
     KM.morph(cd, BOX, CARD, mk); cd.style.opacity = P(t, A.fix - .1, A.fix + .1).toFixed(3);
     KM.type($('cd'), CODE, t, A.typeStart, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
     [].forEach.call($('cd').querySelectorAll('b'), function(b, k){ KM.sweep(b, t, A.typeEnd + .05 + k * .12, .4, 'var(--soft)'); });
-    // the fix line glides from the code card to the bar (a copy: the card keeps it on screen for the save)
-    var g = T.glide(t), gh = $('ghost'), a = { x: 40, y: 188, w: 392, h: 34, r: 8 }, sc = CAM.toScreen(c, 270, 480), b = { x: sc[0] - 165, y: sc[1] - 16, w: 330, h: 32, r: 14 };
-    KM.shared(gh, a, b, g); gh.style.opacity = (t >= A.typeEnd + .1 && g < 1 ? 1 - P(g, .8, 1) : 0).toFixed(3);
+    // the lit fix line flashes once while the bar turns lime (no travelling copy: it doubled over the subtitle)
+    var fl = E.out3(P(t, A.wipe - .05, A.wipe + .12)) * (1 - P(t, A.wipe + .12, A.wipe + .65)), lits = $('cd').querySelectorAll('b');
+    if (lits[1] && fl > 0) lits[1].style.background = 'rgba(198,242,78,' + (.4 * fl).toFixed(3) + ')';
     // ---- payoff: a leader line from the bar to its label, in the header's empty right half ----
     var lp = CAM.toScreen(c, 270, 486), lk = P(t, A.lab, A.lab + .7);
     $('lab').style.left = lp[0].toFixed(1) + 'px'; $('lab').style.top = lp[1].toFixed(1) + 'px';
