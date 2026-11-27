@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/app-ready-null · owner chat: no page error when today's status arrives before the reel list
+- App probe after the video fix: PASS on videos (0 without a tap; reel list 0.26 s, today's status 0.23 s, was 11 s), but one page error: readyRender read DATA.c before the list loaded. Guarded; the probe now FAILs on any page error.
+
 ## 2026-11-27 · claude/app-no-video-preload · owner chat: the app no longer streams videos when it opens
 - App probe (signed in, iPhone size): the list itself loads in 0.5 s, but on open the app also fetched ~40 test videos (Tests list covers) and streamed every reference clip on a loop (refs thumbnails, 28 s each, repeated); /api/journey took 11 s behind them. On a phone that queue starves the reel list: the "Loading…" of 27 Nov. Now: reference thumbnails use a still, clips and test videos load only on a tap (preload none, no autoplay), no video fetch for a missing test cover. The probe prints VIDEO REQUESTS WITHOUT A TAP (want 0) and PASS/FAIL.
 
