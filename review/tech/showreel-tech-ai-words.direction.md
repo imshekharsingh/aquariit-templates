@@ -36,4 +36,32 @@ Structure follows the topic (owner note 6): a LINE out (1 -> 2 -> 3), a LOOP (3 
 - Life after landing: node bob none (owner: calm), sub-nodes bob 4 px slowly, wedges breathe 6 %, dust drifts, the camera drifts in every hold, the loop runner turns from 17.6 s to the end.
 - Glitch rules (owner note 2): every value is a continuous function of t; no modulo wraps, no per-frame random, no instant text swaps (letters and captions fade), no will-change layers; Output QA FLICKER on a 60 fps local capture: PASS (none over 4.0 / 5.0).
 
-STILLS CHECK: PENDING
+## Stills check (session_01AYvWRkqEmK6xtML2T4r3CS, 27 Nov 2026)
+Outside check, not the builder. Read on the 16-frame sheet plus one extra sheet of 10 moments around the moves (3.3, 6.7, 7.3, 10.3, 13.7, 17.0, 21.7, 25.1, 25.35, 26.0 s); tool lines on that run: SAFE ZONE ok, OVERLAP none, BAND clear, TEXT FIT ok, FLOW cuts 0, dead runs none, strobes 0, EMPTY FRAMES none, page errors none. Nothing was rendered or edited.
+
+Owner notes 1-6:
+1. Moves 0.4-0.6 s, no glow or flow pulses: PARTLY. Flights read short and leave on the number (3.8, 7.3, 21.7 s are mid-flight 0.3 s after the number); lines are thin, no glow, no pulses. Two moves are over the owner's 0.6 s: step 6 at 0.65 s and the pull-back at 0.75 s (24.9 s). The green loop runner (17.6 s to the end) is the story itself, not a decoration pulse: fine.
+2. Zero glitches: MET on the stills, with one thing that can read as a glitch: the dashed ghost of card 3 sits behind and around the caption at 10.3 s (see fault A). Mid-flight frames (7.3, 21.7, 25.1 s) show fades and scale-ins, nothing half-drawn; the banner wipes in from the left edge at 25.35-25.4 s without a jump; captions fade (15.8, 27.0 s).
+3. Ghost of the next card + ambient life: PARTLY. Ambient life is there in every frame (dust, grid, sub-nodes, wedges). The ghost reads only once, and badly: 6.7 s it is a thin outline cut by the right edge (mostly off frame); 10.3 s it lands on the caption; 13.7 and 17.0 s it is hidden under the panel already sitting in the loop's centre (only the next node lifting a little shows); 3.3 s none by design.
+4. Torch wedges, nothing empty, text readable: MET on the wide shots (0.0, 1.8, 27.0, 29.5 s: six hue wedges to the corners, strong). In the close steps the wedge softens to a colour wash (5.6, 8.4, 23.2 s), still not empty. All panel and caption text keeps its contrast.
+5. Whole frame used, Instagram zones left to background: MET. Every beat matches its map line; the bottom band and the right edge carry only wedges, dust and dim lines on all 26 frames, except the two ghosts above (6.7 s right edge, 10.3 s caption and bottom zone). Tightest spots, both still clear: the NEXT TOKEN tile at 15.8-17.0 s ends at about 84 % of the width; the caption plate ends at 82 % of the height.
+6. Structure follows the topic: MET. Line out (5.6, 8.4 s), loop (12.6, 15.8, 18.6, 20.9 s with the closed circle and runner), line back (23.2 s), whole shape on 0.0 and 27.0 s; no hub.
+Plus: frame 0 = the whole map, reply already typing, hook caption whole and dim: MET. Pause after each step number ("One:", "Two:", "Five:", "Six:" at 3.8, 7.3, 18.6, 21.7 s): MET. Panel text 24 px+: MET in the six panels (chips, bubbles, headers 54-64 px at 1080); NOT MET on the wide shots (fault B).
+Facts on screen against the review file's sources: match. Six example tokens marked EXAMPLE SPLIT, odds as bars without numbers marked EXAMPLE ODDS, "Sun" + "light" as sub-word tokens (glossary: tokens can be subwords), one token added per lap, the reply streamed to the screen, shorter = fewer loops = faster. No brand on screen.
+
+Faults (small, both fixable in the scene without changing the plan):
+A. 10.1-10.8 s: ghost 3 (dashed box) overlaps the caption plate and runs into the bottom band; it reads like a second, empty caption box. 6.5-7.2 s: ghost 2 is a sliver on the right edge.
+B. 0-3.5 s and 25-29.6 s (8 s of the reel, including frame 0 and the last frame): at the wide scale 0.24 the names inside the six tiles (29 px world type) come out about 14 px at 1080 and the 11 sub-node labels (26 px) about 12 px. The readable names are already on the 26 px tags, so this is duplicate unreadable type: the same fault the tap-to-pay critic called (under 24 px = dropped).
+
+UPGRADES
+- HIGH, 0-3.5 s and 24.9-29.6 s: fade the tile names (.tl) and the sub-node label text with the same "wide" factor that brings the tags in (opacity x (1 - wide)); keep the tile icon and number, keep sub-nodes as small dim pills or dots. No type under 24 px left on frame 0 or the last frame.
+- HIGH, 6.5-7.2 s and 10.1-10.8 s: run the ghosts through the same safe-area fade the nodes use (safeK), so no ghost shows in the caption plate, the bottom band or the right edge; for ghost 3 show only the part above the caption, or start the ghost when the flight starts.
+- MED, 13.5-14.2 s and 16.8-17.5 s: the ghost for cards 4 and 5 is hidden under the current panel. Give those two moves a visible cue instead: a dashed ring on the next tile (NEXT TOKEN, ADD IT ON) for the same 0.5 s, so the "ghost before every move" holds on all five moves.
+- MED, 24.9 s: pull-back 0.75 -> 0.6 s and step 6 0.65 -> 0.6 s (owner note 1 says 0.4-0.6 s).
+- LOW, 3.5-25 s: in the close steps the wedge reads as a wash; a harder inner edge on the lit tile's wedge (about 10 % more contrast along one side) would keep the torch feel of the wide shots.
+- LOW, 25.6-29.6 s: the banner's top edge comes within about 12 px (at 1080) of the step pill on its right side; drop the banner 8 css px.
+- LOW, 21.4-21.9 s: the pill still reads 05 while the voice says "Six:" for the first 0.3 s; start the roll at 25 % of the flight instead of 45 %.
+
+PREMIUM estimate on the stills against the reference grammar: animation 7.5, cleanliness 7.0 (7.5 once A and B are fixed), premium 7.5. Colour worlds, fixed title and pill, working mini interfaces and the pull-back payoff all read like the reference; the closed loop with the runner is the strongest picture.
+
+STILLS CHECK: APPROVED (session_01AYvWRkqEmK6xtML2T4r3CS, 2026-11-27): the card and the whole-frame map hold on 26 frames and nothing is broken, premium about 7.5; apply the two HIGH upgrades (no type under 24 px on the wide shots, ghosts kept out of the caption and edge zones) in the scene before the one render.
