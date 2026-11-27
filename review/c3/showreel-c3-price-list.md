@@ -33,4 +33,4 @@ Rebuild notes (27 Nov): the before is plain centring with ordinary proportional 
 PREMIUM: animation 7/10 (t 6-13), cleanliness 7.5/10 (t 2.5), premium 7/10 (t 18); weakest: t 12-14, the dots draw while the title line cross-fades.
 
 Critic: PENDING.
-PREFLIGHT-ALL: FAIL REVIEW - no "STILLS CHECK: APPROVED (<session>, <date>): ..." line: the stills check approves the card and the stills together before the render
+PREFLIGHT-ALL: PASS ca34e14c (showreel-c3-price-list, 30 s)
