@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/app-probe-runner · owner chat: App probe runs on ubuntu-24.04
+- First run failed before the probe: Playwright 1.56 has no Chromium for ubuntu-latest (26.04). Same runner as the Showreel workflow now.
+
 ## 2026-11-27 · claude/app-probe-workflow · owner chat: a live app probe (signs in, phone size, logs what hangs)
 - Owner: posts still do not load in the app. New "App probe" workflow + scripts/qa/app-live-probe.mjs: signs in with the GitHub secrets, opens the live app as an iPhone, waits 25 s, prints every request with status and time, page errors, what Today and each reels tab show, and uploads screenshots. Run it whenever the app misbehaves.
 
