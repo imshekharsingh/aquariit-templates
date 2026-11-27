@@ -1,7 +1,7 @@
 // studio app service worker (home = Showreels).
 // Network-first: HTML + the reel and channel lists (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v33';
+const VERSION = 'v34';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/channels/channels.json', '/showreels/captions.json', '/icons/icon.svg'];
 
@@ -44,6 +44,7 @@ self.addEventListener('fetch', (e) => {
   if (!fontHost && url.origin !== location.origin) return;
 
   if (url.pathname.startsWith('/reels/')) return; // large videos with Range requests: straight to the network, never cached
+  if (url.pathname.startsWith('/api/')) return; // live data: straight to the network (owner, 27 Nov 2026: the home-screen app hung on Loading while Safari worked)
   if (fontHost || url.pathname.startsWith('/icons/')) return e.respondWith(cacheFirst(req));
   if (req.mode === 'navigate' || url.pathname === '/channels/channels.json' || url.pathname === '/showreels/captions.json' || url.pathname.endsWith('.html')) {
     return e.respondWith(networkFirst(req, req.mode === 'navigate' ? '/' : null));

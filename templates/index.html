@@ -1181,7 +1181,7 @@
     var cur = MAIN[s] ? s : lastMain;
     Array.prototype.forEach.call(secBtns, function(b){ if (b.getAttribute('data-sec') === cur) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     if (s === 'growth') gShow();
-    if (s === 'reels' && DATA) render();
+    if (s === 'reels') { if (DATA) render(); else paint(); }   // without the list yet, still show the chosen channel (owner, 27 Nov 2026: Open to post showed another channel)
     if (s === 'reel' && reelName) rPage(reelName);
     if (s === 'today') sLoad(); else clearTimeout(sTimer);
     if (s === 'today' || s === 'reel') { if (!jLast || Date.now() - jAt > 30000) jLoad(); else jSchedule(); }
