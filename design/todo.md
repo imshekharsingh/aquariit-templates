@@ -5,6 +5,7 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] 27 Nov 2026 (owner chat, first thing 28 Nov): the 09:11 "Turns Out daily reel" scheduled task fired as a session with no repo, built the reel and could not push (about $9 lost). Make every firing start a child session with source_url, and make the builder stop at once and message the owner chat if it has no push access.
 - [ ] **CRITICAL** 27 Nov 2026 (owner: "note it, we fix it all soon"; queued as handoff tasks 12-15 GO, 27 Nov):
   **The app does not show the owner what they need.** Four gaps:
   (1) **"study" folder is invisible.** Test and preview renders (e.g. the tech 2.5D test) go to R2 under reels/study/ and are only reachable by link;
@@ -19,7 +20,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   references apart; nothing shows what was taken from which reference (design/references.md R-ref ids -> reels); and there is no clear
   cleanup (what is done, what can go). Needs: a thumbnail/short loop per reference, its state (new/studied/used in <reel>) with the lesson taken,
   and a remove/archive action.
-- [ ] **CRITICAL** 26 Nov 2026 (owner: "don't act on it right away, mark it critical"; owner chat picks it up, not the spare night):
+- [x] DROPPED 27 Nov 2026 (owner): settled by the scope rule (the other account does app and kit work only). **CRITICAL** 26 Nov 2026 (owner: "don't act on it right away, mark it critical"; owner chat picks it up, not the spare night):
   **Handoff account works read-only.** The owner's three questions, to answer with a plan and cost before any change:
   (1) Can the other account's session only READ the repo and never commit? Possible: it works in its own checkout and hands back a patch
   file plus notes; the main account reviews, commits and merges. Cost: no push means it cannot dispatch renders or GitHub jobs itself.
@@ -34,12 +35,12 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   screenshot or a short clip (private R2 under refs/, size cap per file, never in the repo), optional note and channel. The daily run reads new
   references with Feedback, studies each into design/references.md (techniques only, never a piece) and replies on the item; status per
   reference: new -> studied -> used in <reel>. Size M.
-- [ ] 15 Nov 2026 (night): showreel-tech-screen-120hz (posts Tue 17 Nov 13:00) needs ONE re-render on Mon 16 evening before its post: the glass sheen was removed from techkit/scenes/screen-120hz.js and techkit/base.html changed (subject box, holds), so its R2 video no longer matches its source. Check its Output QA SHEEN and HERO lines (HERO may need a bigger, busier phone and no box around the hero, rules-tech.md K1: the 5 ATM rebuild is the pattern) and update review/tech/showreel-tech-screen-120hz.md item 13.
-- [ ] 14 Nov 2026: the whole-frame tabs reel took 33 GitHub minutes (frames 29.2, was 19.5 before the rebuild; rule 12 caps 30): find the frame cost (the blurred line glow `.inkg` filter, the bigger cards) and bring a 20 s whole-frame reel back under 25.
-- [ ] 14 Nov 2026 (owner: "squeezing most of it in one place of the screen"): move the two web starters (starterweb.html, starterdetails.html,
+- [x] DROPPED 27 Nov 2026 (owner): long past. 15 Nov 2026 (night): showreel-tech-screen-120hz (posts Tue 17 Nov 13:00) needs ONE re-render on Mon 16 evening before its post: the glass sheen was removed from techkit/scenes/screen-120hz.js and techkit/base.html changed (subject box, holds), so its R2 video no longer matches its source. Check its Output QA SHEEN and HERO lines (HERO may need a bigger, busier phone and no box around the hero, rules-tech.md K1: the 5 ATM rebuild is the pattern) and update review/tech/showreel-tech-screen-120hz.md item 13.
+- [ ] HANDED OVER 27 Nov 2026 (design/handoff.md task 18). 14 Nov 2026: the whole-frame tabs reel took 33 GitHub minutes (frames 29.2, was 19.5 before the rebuild; rule 12 caps 30): find the frame cost (the blurred line glow `.inkg` filter, the bigger cards) and bring a 20 s whole-frame reel back under 25.
+- [ ] HANDED OVER 27 Nov 2026 (design/handoff.md task 17). 14 Nov 2026 (owner: "squeezing most of it in one place of the screen"): move the two web starters (starterweb.html, starterdetails.html,
   newweb.mjs) to the whole-frame layout of showreel-36-tabs (rules-web.md rule 16: KM.ZONES, subtitles under the top zone, hero to y 780,
   card edges locked with KM.worldY), so tomorrow's reel starts from it; Output QA SPREAD already fails a squeezed reel.
-- [ ] 12 Nov 2026 (owner, E23): web kit "split" piece: the broken and fixed versions of the same component running side by side in sync (labels BEFORE / AFTER, the broken one visibly misbehaving), one call in kitmotion.js and an option in newweb.mjs, so every web reel can show its fix as motion; must pass SAFE ZONE, OVERLAP and FLOW on the starter. Needed by Fri 13 Nov 06:47 IST.
+- [ ] HANDED OVER 27 Nov 2026 (design/handoff.md task 16). 12 Nov 2026 (owner, E23): web kit "split" piece: the broken and fixed versions of the same component running side by side in sync (labels BEFORE / AFTER, the broken one visibly misbehaving), one call in kitmotion.js and an option in newweb.mjs, so every web reel can show its fix as motion; must pass SAFE ZONE, OVERLAP and FLOW on the starter. Needed by Fri 13 Nov 06:47 IST.
 - [ ] 11 Nov 2026, from the first research pass (design/references.md, R-trend 11 Nov), before the experiments that need them:
   - caption question line: newweb.mjs and the techreel starter write caption line 1 as a one-word-answer question and the last line as the
     comment ask (E20 web from Sun 15; E21 tech uses it only if E20 wins);
@@ -64,11 +65,11 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 ## P2
 - [ ] 21 Nov 2026 (owner: the optical centre reel "looks centered"): rebuild only if the illusion can be made obvious at phone size: two tall posters side by side, the same heavy title at the maths centre (left) and nudged up ~5% (right), "which one is centred?", then the measure reveals the left one is exact; test the stills on 3 people first. Otherwise drop the topic. Size M.
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
-- [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
+- [x] DROPPED 27 Nov 2026 (owner): replaced by today's flow. One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
 
 ## P3
-- [ ] Future channel (owner, 13 Nov 2026; reference R-puzzle in design/references.md): a visual-puzzle channel ("find the odd one": the circle spinning in reverse, the shape a shade off, the dot out of phase), procedural and voice-free, built to loop and pull comments/saves. Before starting: a name and handle, a puzzle generator kit, 10 puzzle types, difficulty ramp, and when to reveal the answer; needs a new Instagram account from the owner. Pick up when the three current channels are stable.
-- [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
+- [x] DROPPED 27 Nov 2026 (owner): Future channel (owner, 13 Nov 2026; reference R-puzzle in design/references.md): a visual-puzzle channel ("find the odd one": the circle spinning in reverse, the shape a shade off, the dot out of phase), procedural and voice-free, built to loop and pull comments/saves. Before starting: a name and handle, a puzzle generator kit, 10 puzzle types, difficulty ramp, and when to reveal the answer; needs a new Instagram account from the owner. Pick up when the three current channels are stable.
+- [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call). Owner 27 Nov 2026: keep on this account, not now.
 
 ## Done
 - 26 Nov 2026 (owner: "yes, build the check"): **Full check before render 1**, `node scripts/preflight-all.mjs <reel> --write` (web, Turns Out, tech kit and older tech engine): 360x640 10 fps preview, Output QA on it (sound checks wait for the render), TEXT CLEAR every 0.25 s (the frame with and without its text: text on or within 6 px of any element, a chip or tag whose outline touches another element, text over text), review lint (PREMIUM three scores 7+, CRITIC line form, direction card), one PREFLIGHT-ALL line; scripts/review-gate.mjs refuses render 1 without a matching PASS for reels posting from 27 Nov. Tested on today's render 1s (both FAIL) and final versions (small real issues only). Run time: web 21 s, Turns Out about 1 min, tech 3D 2-3 min. Not calibrated: the older tech picture engine (its path runs, 74 s). design/runbook-reels.md "Preflight".
