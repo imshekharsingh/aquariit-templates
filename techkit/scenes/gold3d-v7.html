@@ -148,7 +148,7 @@ const SH = [
   { t: T_IN - .1, pos: [.3, 6.95, 3.9], look: [0, 6.95, -6.5], fov: 50, mv: 'dolly-in', frac: .9 },   // the board a little smaller (about 64 % of the width) so the top row sits below the headline     // 4 push to the board as it finishes; the tools stack, the camera rides them
   { t: W1 + .5, pos: [-5.0, 3.4, -3.8], look: [-1.75, 4.4, -6.45], fov: 46, mv: 'truck-down' },   // the plug in the lower half (the headline above it)      // 5 the first plug clicks in
   { t: CASC[0] + .9, pos: [-6.2, 4.6, 6.6], look: [0, 2.5, -3.4], fov: 52, mv: 'arc' },               // 6 the tangle grows on the floor
-  { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back' },   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
+  { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -1.6], fov: 56, mv: 'pull-back', frac: .96 },   // a longer move (near cables swept past fast)   // tilted down a little: the board's top edge stays out of the headline (TEXT CLEAR)                   // 7 the tangle at its worst (big moment 2), the problem breaks
   { t: PAN, pos: [2.6, 4.4, 5.0], look: [0, 2.4, -2.2], fov: 50, mv: 'whip', dur: 1.1 },     // 8 fix 9 (U14): a whip pan to the hub on "hub" (big moment 3)
   { t: COLLAPSE[0] + .8, pos: [0, 7.4, 17.4], look: [0, 3.7, -3.0], fov: 54, mv: 'crane-up', frac: .96, ease: 2 },       // 9 the collapse in one wave, from the high wide (fix 11: Notes whole)
   { t: C.newt, pos: [0, 7.326, 16.992], look: [0, 3.7, -3.0], fov: 54, mv: 'hold', frac: .96 },       // 10 the clean picture, 11: a still hold (a 2 % push) while the green sweep runs (plan critic C)
@@ -175,7 +175,7 @@ function camAt(t) {
 }
 
 // when each tool's (and each app's) first cable lands: they bump once (they react)
-const landT = (k) => (k === 0 ? W1 + 1.0 : lerp(CASC[0], CASC[1] - .55, (k - 1) / 22) + .55);
+const landT = (k) => (k === 0 ? W1 + 1.3 : lerp(CASC[0], CASC[1] - .55, (k - 1) / 22) + .55);
 // fix 10: the retraction wave: red crossings first, then the rest from the farthest tool row to the nearest
 const RET = [...RED, ...tangle.map((q) => q.k).filter((k) => !RED.includes(k)).sort((a, b) => Math.floor(b % 8 / 2) - Math.floor(a % 8 / 2) || a - b)];
 const retT = (k) => COLLAPSE[0] + RET.indexOf(k) * .04;
@@ -205,19 +205,19 @@ function frame(t) {
   FU.uR.value = lerp(1.0, 34, eout(prog(t, 0, 1.0))); FU.uW.value = t > LAND ? (t - LAND) * 16 : 0;
   // apps (fix 4): a chain, shadow first
   apps.forEach((m, i) => { const A = APPS[i], u = prog(t, A_IN[i], A_IN[i] + A.d), inn = A.e === 'slam' ? u : ease(u); W3D.enter(m, A.e, inn, { side: A.s, amp: A.amp, tilt: A.tilt });
-    if (u >= 1) { const bump = Math.max(...TOOLS.map((_, j) => pulse(t, landT(i * 8 + j), .12))) * .05, push = i === 1 ? pulse(t, A_IN[2] + .05, .12) * .06 : 0, idle = sm(prog(t, A_IN[i] + A.d, A_IN[i] + A.d + .6));   // the idle sway fades in after the landing (owner 27 Nov: no snaps)
+    if (u >= 1) { const bump = 0, push = 0,   /* no bump or push: quick scale pulses on big near tiles read as flicker at 30 fps */ idle = sm(prog(t, A_IN[i] + A.d, A_IN[i] + A.d + .6));   // the idle sway fades in after the landing (owner 27 Nov: no snaps)
       m.position.y += Math.sin(t * 1.3 + i * 2) * .05 * idle; m.position.x += push; m.rotation.z = Math.sin(t * .9 + i) * .03 * idle; m.rotation.y = Math.sin(t * .6 + i * 1.7) * .05 * idle; m.rotation.x = -lean; m.scale.setScalar(1 + bump); } });
   shadows.forEach((s, i) => s.update());
   apps.forEach((m, i) => { const f = sm(prog(t, A_IN[i] - .2, A_IN[i] + .15)); shadows[i].soft.material.opacity *= f; shadows[i].tight.material.opacity *= f; });   // the shadow grows in before the tile lands
   // board (fix 1): outline draws, panel rises, slots unfold, the edge light runs round to slot 1
   fMat.opacity = .85 * sm(prog(t, BOARD, BOARD + .12)) * (1 - .7 * sm(prog(t, BOARD + .9, BOARD + 1.4)));
   fLines.forEach((m, n) => { m.scale.x = Math.max(.001, prog(t, BOARD + n * .06, BOARD + n * .06 + .1)); });
-  const rise = eback(prog(t, BOARD + .25, BOARD + .55), 1.2); wall.scale.y = Math.max(.001, rise); wall.visible = rise > .002;
+  const rise = eout(prog(t, BOARD + .25, BOARD + .6));   // no overshoot (the back-and-forth read as flicker) wall.scale.y = Math.max(.001, rise); wall.visible = rise > .002;
   slots.forEach((m, j) => { const o = TX(j) < 0 ? Math.floor(j / 2) : 4 + Math.floor(j / 2); m.scale.x = Math.max(.001, eout(prog(t, BOARD + .55 + o * .04, BOARD + .75 + o * .04)));
-    const plug = Math.max(pulse(t, landT(j), .1), pulse(t, landT(8 + j), .1), pulse(t, landT(16 + j), .1), pulse(t, hubT(3 + j) + .45, .1)); m.material.emissiveIntensity = .55 * plug; });
-  const runs = [[BOARD + .5, .4], [WORST - .3, .5], [LAND, .5], [PAY + 1.6, .5]];   // fix 1 and 3: the edge light runs once round the board (ending at slot 1, top left) at the build, the tangle, the hub, the payoff
+    const plug = Math.max(pulse(t, landT(j), .3), pulse(t, landT(8 + j), .3), pulse(t, landT(16 + j), .3), pulse(t, hubT(3 + j) + .45, .3)) * .7;   // a soft, slower glow (a 0.1 s pulse blinked) m.material.emissiveIntensity = .55 * plug; });
+  const runs = [[BOARD + .4, .9], [WORST - .5, .9], [LAND, .9], [PAY + 1.4, .9]];   // slower runs (a small fast bead twinkled)   // fix 1 and 3: the edge light runs once round the board (ending at slot 1, top left) at the build, the tangle, the hub, the payoff
   let bu = -1; for (const [s0, d] of runs) { const k = prog(t, s0, s0 + d); if (k > 0 && k < 1) bu = k; }
-  if (bu >= 0) { bead.visible = true; bead.position.copy(perim(bu)); } else bead.visible = false;
+  if (bu >= 0) { bead.visible = true; bead.position.copy(perim(bu)); bead.scale.setScalar(Math.max(.001, Math.sin(Math.PI * bu))); } else bead.visible = false;   // grows in and out (no pop)
   edgeMat.opacity = rise > .5 ? (.22 + .03 * Math.sin(t * 2.1)) + .5 * Math.max(...runs.map(([s0, d]) => pulse(t, s0 + d / 2, d / 2))) : 0;
   // tools (fix 2): one flow along the S path, each landing against the one before with a squash, a contact flash and a nudge
   flash.visible = false; let flashK = 0;
@@ -227,7 +227,7 @@ function frame(t) {
     const sq = 0; let sc = (.06 + .94 * eout(u)); m.scale.set(sc * (1 + sq), sc * (1 - sq), sc);   // grows from a speck in front of the tile before it (no full-size pop)
     if (u >= 1) { const nx = ORDER[o + 1], nudge = 0;   // no squash or nudge: a back-and-forth inside a few frames reads as a flicker at 30 fps
       const dir = nx !== undefined ? V(TX(j) - TX(nx), TY(j) - TY(nx), 0).normalize() : V(0, 0, 0); m.position.addScaledVector(dir, nudge);
-      const bump = Math.max(pulse(t, landT(j), .12), pulse(t, landT(8 + j), .12), pulse(t, landT(16 + j), .12), pulse(t, hubT(3 + j) + .45, .12)) * .06;
+      const bump = 0;   // no landing bump (a quick pulse read as flicker)
       const idle = sm(prog(t, t0 + .32, t0 + .9));   // the idle sway fades in after the landing (it snapped on in one frame)
       m.scale.setScalar(1 + bump + .012 * Math.sin(t * 1.7 + j) * idle); m.rotation.y = Math.sin(t * .7 + j * 1.3) * .06 * idle; m.rotation.x = lean * .8; }
     const fk = pj >= 0 ? pulse(t, t0 + .32, .05) : 0;   // the contact flash on the shared edge: a short soft pulse (owner 27 Nov: no one-frame blinks)
@@ -237,7 +237,7 @@ function frame(t) {
   const fl = Math.min(1, pulse(t, BREAK + .07, .055) + pulse(t, BREAK + .23, .055));   // two soft grey dips (each about 4 frames), not a strobe
   toolBody[0].material.color.copy(toolCol[0]).lerp(new THREE.Color(0x5a5c66), fl);
   // the 24 cables
-  tangle.forEach((q) => { const u = q.k === 0 ? ease(prog(t, W1, W1 + 1.0)) : ease(prog(t, landT(q.k) - .55, landT(q.k)));
+  tangle.forEach((q) => { const lin = (x) => sm(x) * .3 + clamp(x) * .7, u = q.k === 0 ? lin(prog(t, W1, W1 + 1.3)) : lin(prog(t, landT(q.k) - .7, landT(q.k)));   // near-even growth (fast middles swept tips past the camera)
     const ret = ease(prog(t, retT(q.k), retT(q.k) + .22)); q.w.reveal(u * (1 - ret));   // fix 10: pulled back into its socket, one after another
     const pk = prog(t, landT(q.k), landT(q.k) + (q.k === 0 ? .6 : .35)), pw = prog(t, WORST - .2 + q.k * .03, WORST + .8 + q.k * .03);   // fix 7: the sweep along the tangle lasts about 1 s
     q.w.pulse(Math.max(pk, pw * .9), t, q.k === 0 && pk > 0 && pk < 1 ? 1 : .25);
