@@ -19,6 +19,10 @@ Where they fit the 3D look, also apply the owner's 27 Nov 2.5D notes in design/o
 nothing glitching, a hint of the next subject before the camera moves, the WHOLE frame planned with nothing empty). Tech now posts in the
 2.5D look (owner, 27 Nov); v7 continues as a kit. Render 3 is the last v7 render; after it the owner decides.
 
+## Owner rule: scope of this account (owner, 27 Nov 2026)
+This account is a temporary helper for bigger chunks of app, tooling and kit work only. It never builds, renders, schedules or posts the
+daily reels. The main account's owner chat writes the tasks here and reads Progress.
+
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
 critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 10, then task 9

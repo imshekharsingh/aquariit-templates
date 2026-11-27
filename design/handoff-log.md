@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-scope-27nov · owner chat: the other account does app and kit work only
+- Owner: the other account is a temporary helper for bigger app, tooling and kit chunks, never daily reels. CLAUDE.md Sessions line and a scope rule at the top of design/handoff.md.
+
 ## 2026-11-27 · claude/app-tab-mixup · owner chat: each channel tab shows only its own ready reels; app gaps queued
 - Owner's screen recording: the web tab's "Ready to post" showed the tech reel, web's own READY reel sat under Up next, tech said "posts paused". Fixed: Ready box filtered by tab (re-drawn on tab switch), journey.js reads "CRITIC:" on any item number (web 49's READY was item 22), tech slot 20:30 in design/slots.json, help text slots updated.
 - design/handoff.md tasks 12-15 GO (Needs you on Today, Fix at the failing stage, a Tests list for study renders, references with thumbnails and cleanup).
