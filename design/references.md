@@ -234,3 +234,10 @@ WHICH CHANNEL (studio decision; owner: test on tech first):
 - Turns Out: the grammar only (spotlight focus, colour world per step, section pill, mini UI cards), never the map format; before -> after stays the spine.
 - WE DO NOT TAKE: their hub disc look, any brand name or logo, their exact neon palette, their Hinglish captions (we stay in English), their 34 s length as a rule.
 
+
+### R-ref 27 Nov 2026: rules for the first real 2.5D tech reel (from the tap-to-pay test, critic of render 2, NOT READY, PREMIUM 7.5 / 7.0 / 7.0)
+Closer to the reference than the 3D v7 and the better format for "how a system works" topics; the 3D v7 still wins on big, tactile objects. Three faults to design out before the build:
+- OPEN ON THE WHOLE MAP, never an empty glow: frame 0 shows the whole small map (all nodes, the lines, a packet already running), then the camera pushes into the hub. No title-only frame, and the first step lands by about 2.8 s.
+- NO EMPTY CAPTION BOX: hide the caption pill until its first word. Put a pause mark after every step number in the spoken text and the captions ("One: your phone sends...", "Three: the shop's bank, the acquirer").
+- NO SMALL PANEL TEXT: every panel, card and sub-line is at least 24 px at 1080, or it is dropped; panel text is 1-3 words. Node labels in the final pull-back too (scale the final map about 1.25x so its labels read). Use the band under the caption for content only if it clears the Instagram overlay.
+- Waive near-grey cross-fades in the qa block (colour waiver with the reason): hue swings on near-grey colours are not cuts.
