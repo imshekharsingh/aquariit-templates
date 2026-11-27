@@ -246,6 +246,27 @@
           "line": "Live: the board puts Fix and its reason on the exact step that failed or got stuck, and opens that card by itself."
         }
       ]
+    },
+    {
+      "id": "tests-list",
+      "name": "Tests and previews you can see",
+      "account": "other",
+      "stage": "done",
+      "line": "Live: Inbox > Tests lists every test video with its cover, date, what it tests and a player; never posted, not counted as reels.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T09:43:00Z",
+      "history": [
+        {
+          "at": "2026-11-27T09:43:00Z",
+          "stage": "building",
+          "line": "Making a Tests list in the app for every test video."
+        },
+        {
+          "at": "2026-11-27T09:43:00Z",
+          "stage": "done",
+          "line": "Live: Inbox > Tests lists every test video with its cover, date, what it tests and a player; never posted, not counted as reels."
+        }
+      ]
     }
   ]
 }

@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 15:13 IST · claude/tests-list · other account: task 14, Tests list in the app
+- Done: src/worker.js GET /api/tests (R2 v/study/*.mp4 with covers c/study/<name>-cover-auto.jpg); templates/index.html Inbox > Tests (replaces Studio log): cover, title, date, what it tests, inline player, "never posted". scripts/qa/app-tests-test.mjs in npm run check. design/runbook-studio.md: say "Inbox > Tests".
+- Left: tasks 15 and 9.
+- For the main account: give each test an entry in previews.json (title, about, src) so its line reads well; say "Inbox > Tests", never "study folder".
+
 ## 2026-11-27 15:11 IST · claude/fix-at-stage · other account: task 13, Fix at the exact stage
 - Done: templates/index.html board: bProblem() finds the failed or stalled step (failed stage line, render/checks/critic fail, slot passed; render > 60 min, critic > 45 min after checks, build step quiet 2 h); that row turns red with its reason and the Fix button, the card opens once. New "Second look" row. stage.mjs + Worker: stage "failed" with --step. scripts/qa/app-board-test.mjs in npm run check.
 - Left: tasks 14, 15 and 9.
