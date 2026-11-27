@@ -371,15 +371,20 @@
       "id": "tabs-order",
       "name": "Tabs in posting order",
       "account": "other",
-      "stage": "checking",
-      "line": "Merged: channel tabs follow the posting order and the workflow you came from; the live check runs next.",
-      "pct": 90,
-      "updatedAt": "2026-11-27T17:30:00Z",
+      "stage": "done",
+      "line": "Live: channel tabs follow the posting order and the workflow you came from; APP PROBE: PASS.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T17:55:00Z",
       "history": [
         {
           "at": "2026-11-27T17:30:00Z",
           "stage": "checking",
           "line": "Merged: channel tabs follow the posting order and the workflow you came from; the live check runs next."
+        },
+        {
+          "at": "2026-11-27T17:55:00Z",
+          "stage": "done",
+          "line": "Live: channel tabs follow the posting order and the workflow you came from; APP PROBE: PASS."
         }
       ]
     },
@@ -387,15 +392,20 @@
       "id": "notify-policy",
       "name": "One notification plan",
       "account": "other",
-      "stage": "checking",
-      "line": "Built: one plan for every push (ready 2 min before, slot-test pushes); checks, then live.",
-      "pct": 80,
-      "updatedAt": "2026-11-27T17:30:00Z",
+      "stage": "done",
+      "line": "Live: one plan for every push (ready 2 min before, slot-test days, late and logged); Settings shows today's plan; APP PROBE: PASS.",
+      "pct": 100,
+      "updatedAt": "2026-11-27T17:55:00Z",
       "history": [
         {
           "at": "2026-11-27T17:30:00Z",
           "stage": "checking",
           "line": "Built: one plan for every push (ready 2 min before, slot-test pushes); checks, then live."
+        },
+        {
+          "at": "2026-11-27T17:55:00Z",
+          "stage": "done",
+          "line": "Live: one plan for every push (ready 2 min before, slot-test days, late and logged); Settings shows today's plan; APP PROBE: PASS."
         }
       ]
     }
