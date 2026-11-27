@@ -824,7 +824,7 @@
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
       sp.textContent = CH[k].sub; sp.className = n ? 'due' : '';
-      var nb = t.querySelector('i.n') || t.appendChild(el('i', 'n')); nb.textContent = n ? n + ' to post' : 'all posted'; nb.className = 'n' + (n ? ' due' : ''); });   /* the count on its own line (21 Nov 2026: it wrapped on phones) */
+      var nb = t.querySelector('i.n') || t.appendChild(el('i', 'n')); nb.textContent = !counts ? '…' : n ? n + ' to post' : 'all posted';   /* no counts yet (list still loading): never say all posted (owner, 27 Nov 2026) */ nb.className = 'n' + (n ? ' due' : ''); });   /* the count on its own line (21 Nov 2026: it wrapped on phones) */
   }
   // the "Posted" list (owner, 1 Nov 2026): cover, title, posted date and the reel's Instagram numbers once the nightly collector has them.
   // No video here: 15 days after upload the MP4 is deleted from the private R2 store (cover, post text and sources stay).
@@ -1858,14 +1858,17 @@
     (u.workflows || []).slice(0, 5).forEach(function(w){ var li = el('li'); li.appendChild(el('span', null, w.name)); li.appendChild(el('span', null, w.minutes + ' min · ' + w.runs + ' runs')); ul.appendChild(li); });
     if (Date.now() - new Date(u.at).getTime() > 48 * 3600e3) document.getElementById('use-note').textContent += ' · this count is over 2 days old';
     useBox.hidden = false; }).catch(function(e){ useMiss((e && e.message) || 'the app could not reach the count.'); });
-  Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
+  // the list never hangs on "Loading…" (owner, 27 Nov 2026: a stuck list on 4G): after 20 s it says so and offers Try again (reloads the page)
+  var listTimer = setTimeout(function(){ if (DATA) return; list.textContent = ''; list.appendChild(el('p', 'empty', 'The list is taking too long (slow network?).'));
+    var rb = el('button', 'btn', 'Try again'); rb.type = 'button'; rb.addEventListener('click', function(){ location.reload(); }); list.appendChild(rb); }, 20000);
+  Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }), caps, load()]).then(function(r){ clearTimeout(listTimer);
     // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
     DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); } tRender(); askFill();
     // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
     Promise.all((r[0].showreels || []).filter(function(s){ return !ticks[s.name] && !(r[1][s.name] || {}).hidden; })   /* every reel still to post (titles are the post's first line, 21 Nov 2026) */.map(function(s){
       return fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(x){ return x.ok ? x.json() : {}; }).then(function(j){ if (j && j.caption) TITLES[s.name] = firstLine(j.caption); }).catch(function(){}); }))
       .then(function(){ render(); tRender(); if (sec === 'reel' && reelName) rPage(reelName); }); })
-    .catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });
+    .catch(function(){ clearTimeout(listTimer); list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); var rb = el('button', 'btn', 'Try again'); rb.type = 'button'; rb.addEventListener('click', function(){ location.reload(); }); list.appendChild(rb); });
 })();
 </script>
 </body>

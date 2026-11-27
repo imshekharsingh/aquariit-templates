@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/app-list-timeout · owner chat: the reel list never hangs on "Loading…"
+- Owner's screenshot (16:30): all tabs said "all posted" and the list stayed on "Loading…" (the reel list request never answered on 4G; reproduced with a request that never returns). Tabs now show "…" until the counts load; after 20 s, or on an error, the list says so with a Try again button. Why the list request was slow is not known yet (no signed-in access from here): next step for the other account if it repeats.
+
 ## 2026-11-27 · claude/app-fix-only-when-stuck · owner chat: Fix shows only on a reel that is really stuck
 - Owner: Fix showed on all three channels. bProblem() judged old morning stage rows even after the reel was ready or posted. Now: ready or posted = no Fix (except a missed post time), and a stage row older than the reel's newest render or checks is ignored. Three new cases in scripts/qa/app-board-test.mjs.
 
