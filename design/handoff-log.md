@@ -1323,3 +1323,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/v7-closed · 3D kit v7 closed after render 4
 - Done: render 4 Output QA recorded (all pass but FLICKER at 0.8 s); v7 closed per the owner; project marked done.
 - Left: none for v7.
+## 2026-11-28 · claude/daily-28nov-launch · Daily studio run 28 Nov: feedback, audit card, builders started
+- Done: Owner answers read (0 answers, 0 new feedback); audit card sent (web below usual and in ALARM, tech fine, Turns Out low); no options for 28 Nov in the topic bank, so each builder researches fresh options and runs the Fable pick. Web builder (session_01AYvWRjJfUMBr1p7gctqGLW, post 19:00 IST) and tech builder (session_01AYvWRhzdyLvkLqFNWEBAnK, post 20:30 IST, from showreel-tech-ai-words) started with the full brief.
+- Left: both builders own their reel to READY (stills check, max 2 renders, Output QA, critic). Turns Out has its own task.
