@@ -7,6 +7,9 @@ Format (at most 6 lines):
 ```
 
 
+
+## 2026-11-28 · claude/inputs-session-brief · owner chat: an "Inputs" session on the other account
+- Owner will chat with the other account in one "Inputs" session for the rest of the week; design/inputs-brief.md gives it the full context (read order, reply style, 28 Nov state). handoff.md GO NOW item 5. The main account only coordinates its scheduled tasks.
 ## 2026-11-28 · claude/handoff-takes-all-till-tue · owner chat: the other account does everything 29 Nov - 2 Dec
 - Owner: all tasks until Tuesday go to the handoff account, daily reels included; this account keeps only the hourly probe (checks and reports) and the owner chat. design/handoff.md "GO NOW 28 Nov", CLAUDE.md Sessions line. Daily studio run and Turns Out daily tasks switched off; the owner chat turns them back on Wed 3 Dec.
 - Today (28 Nov): all three reels needed a 3rd render (owner yes ~09:10); they finish on this account.
