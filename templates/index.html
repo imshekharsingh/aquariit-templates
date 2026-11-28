@@ -1368,17 +1368,22 @@
     if (row && at(row.stage) >= 0 && at(row.stage) < at('video') && mins(row.at) > 120) return { idx: at(row.stage), why: 'No news for ' + Math.floor(mins(row.at) / 60) + ' h at this step.', stalled: true };
     return null; }
   // B-PROBLEM-END
+  // B-READY-START
+  // 28 Nov 2026: the builder's "ready" row must not make a card Ready when the reel's journey says its checks failed (or anything short of ready/posted)
+  function bRowReady(row, r, stt){ return !!(row && row.stage === 'ready' && r && stt && stt.k !== 'ready' && stt.k !== 'posted'); }
+  // B-READY-END
   // what a channel's card says now: { fin, idx, pct (inside the stage), line, model, thumb, name, making }
   function bState(k){
     var row = SROWS.filter(function(x){ return x.ch === k; })[0] || null, j = jLast && jLast.today, r = jLast ? (jLast.reels || []).filter(function(x){ return x.ch === k && x.day === j; })[0] : null,
         stt = r ? status(r) : null, o = { fin: null, idx: -1, pct: null, line: '', model: row ? modelName(row.model) : '', thumb: row && row.thumb, name: r ? r.name : (row && /^showreel-/.test(row.reel) ? row.reel : null), making: false };
-    if (row) { if (BFIN[row.stage]) o.fin = row.stage; else o.idx = bIndex(row.stage); o.pct = row.pct; o.line = row.line || ''; }
+    var rowOver = bRowReady(row, r, stt);   // the journey wins over a stage row that says ready
+    if (row && !rowOver) { if (BFIN[row.stage]) o.fin = row.stage; else o.idx = bIndex(row.stage); o.pct = row.pct; o.line = row.line || ''; }
     if (stt) {
       if (stt.k === 'posted') { o.fin = 'posted'; o.line = o.line || 'Posted'; }
       else if (stt.k === 'ready') { if (o.fin !== 'posted') o.fin = 'ready'; o.slot = r.slot; o.line = 'Ready, post at ' + r.slot; }
       else if (o.fin !== 'skipped') {
         if (stt.k === 'making') { o.fin = null; o.idx = 4; o.pct = stt.pct; o.making = true; o.line = 'Rendering' + (stt.pct != null ? ' ' + stt.pct + '%' : ''); }
-        else if (!row || (row.at && Date.now() - Date.parse(row.at) > 3 * 36e5)) {
+        else if (!row || rowOver || (row.at && Date.now() - Date.parse(row.at) > 3 * 36e5)) {
           if (stt.k === 'checking') { o.idx = 5; o.line = 'Checking the video'; }
           else if (stt.k === 'fixing') { o.idx = 5; o.line = 'Found a problem: ' + (stt.why || '').slice(0, 90); }
           else if (stt.k === 'building') { o.idx = 2; o.line = stt.t; } } } }

@@ -676,6 +676,12 @@ def ocr_block(png, sc=4):
     return res
 
 
+def digit_like(n, w, h):
+    """28 Nov 2026: a closed padlock icon (about as wide as tall) was read as the digit "6" and failed a tech reel. Text digits are narrow: one glyph
+    is about .45-.8 as wide as tall (DejaVu Bold "8" .62), so a square or wide blob is an icon, not a digit; a run of n glyphs is about n x that."""
+    return h > 0 and .3 * n <= w / h <= .85 * n
+
+
 def num_reads(mp4, tt, td, band):
     """Large numbers on the frame at tt: (value, cx, cy, h) at 1080x1920, whole-token digits only, conf num_conf+, glyphs num_h+ of the height,
     outside the subtitle band (the subtitles show the spoken words, and the next line's words, on purpose). Variants merged per place."""
@@ -684,6 +690,7 @@ def num_reads(mp4, tt, td, band):
     for txt, conf, l, t, r, b in ocr(p) + ocr_block(p):
         m = re.fullmatch(r'[$#(]?(\d{1,4})[%)+,.:!]?', txt)
         if not m or conf < T['num_conf'] or b - t < T['num_h'] * 1920: continue
+        if not digit_like(len(re.sub(r'\D', '', txt)), r - l, b - t): continue   # an icon shape, not a digit
         cy = (t + b) / 2
         if band[0] * 1920 <= cy <= band[1] * 1920: continue
         v, cx, h = int(m.group(1)), (l + r) / 2, b - t

@@ -1421,3 +1421,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-popover-focus · Web popover focus hand-off test (study preview, owner's idea)
 - Done: preview copy of showreel-50-popover with the focus hand-off (BEFORE lit with a soft glow while the problem is told, AFTER dark and blurred; hand-over at the fix word in .5 s, the AFTER menu opens to the top layer as it lands; both lit for the last second): scripts/previews/web-popover-focus.html and .json, review/web/showreel-50-popover-focus.md, Inbox > Tests entry. showreel-50-popover and its MP4 untouched. Local stills clear (SUBJECT FILL 41%, OVERLAP none, SAFE ZONE ok, FLOW ok).
 - Left: one full-length preview render (R2 study/), Output QA, reviewer session; the swap into the 19:00 post only if the reviewer writes READY and Inputs says the owner likes it before 17:30 IST.
+
+## 2026-11-28 · claude/numbers-icon-fix · Output QA NUMBERS ignores icons; board Ready follows the journey (item 6)
+- Done: output-qa.py digit_like(): a read needs digit proportions (a square padlock blob is not a digit), padlock case and unit checks in scripts/qa/test-numbers.py; templates/index.html bRowReady(): a "ready" stage row no longer overrides a journey that is not ready, cases in scripts/qa/app-board-test.mjs.
+- Left: Output QA re-run on showreel-tech-tag-relay after merge, then the App probe.

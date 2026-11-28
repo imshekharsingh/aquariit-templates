@@ -5,9 +5,18 @@ const html = readFileSync(new URL('../../templates/index.html', import.meta.url)
 const a = html.indexOf('// B-PROBLEM-START'), b = html.indexOf('// B-PROBLEM-END');
 if (a < 0 || b < 0) { console.log('FAIL bProblem() not found in templates/index.html'); process.exit(1); }
 const bProblem = new Function(html.slice(a, b) + '; return bProblem;')();
+const ra = html.indexOf('// B-READY-START'), rb = html.indexOf('// B-READY-END');
+if (ra < 0 || rb < 0) { console.log('FAIL bRowReady() not found in templates/index.html'); process.exit(1); }
+const bRowReady = new Function(html.slice(ra, rb) + '; return bRowReady;')();
 const BST = [['researching'], ['topic'], ['building'], ['stills'], ['video'], ['checking'], ['critic']];
 const NOW = Date.parse('2026-11-27T12:00:00Z'), ago = (m) => new Date(NOW - m * 60000).toISOString();
-let bad = 0; const ok = (n, c) => { if (!c) bad++; console.log(`${c ? 'PASS' : 'FAIL'} ${n}`); };
+let bad = 0;
+const READY_ROW = { stage: 'ready' };
+ const ok = (n, c) => { if (!c) bad++; console.log(`${c ? 'PASS' : 'FAIL'} ${n}`); };
+ok('a ready stage row with a journey whose checks failed is not Ready (28 Nov, tech tag-relay)', bRowReady(READY_ROW, {}, { k: 'fixing' }) === true);
+ok('a ready stage row with a journey that is ready stays Ready', bRowReady(READY_ROW, {}, { k: 'ready' }) === false);
+ok('a ready stage row with a posted journey stays posted', bRowReady(READY_ROW, {}, { k: 'posted' }) === false);
+ok('a ready stage row with no journey reel keeps the row', bRowReady(READY_ROW, null, null) === false);
 const P = (row, r) => bProblem(row, r, NOW, BST);
 let p = P({ stage: 'failed', line: 'building: no access to the repo', at: ago(5) }, null);
 ok('a failed build: Fix on the Building step, with its reason', p && p.idx === 2 && p.why === 'no access to the repo' && !p.stalled);
