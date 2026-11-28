@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): the critic is called "reviewer" to the owner
+- Owner: "going forward critic will be called reviewer". CLAUDE.md and design/inputs-brief.md: owner-facing words only; "CRITIC: READY", the critic tag and design/critic.md stay (scripts read them).
 ## 2026-11-28 · claude/inputs-session-brief · owner chat: an "Inputs" session on the other account
 - Owner will chat with the other account in one "Inputs" session for the rest of the week; design/inputs-brief.md gives it the full context (read order, reply style, 28 Nov state). handoff.md GO NOW item 5. The main account only coordinates its scheduled tasks.
 ## 2026-11-28 · claude/handoff-takes-all-till-tue · owner chat: the other account does everything 29 Nov - 2 Dec
