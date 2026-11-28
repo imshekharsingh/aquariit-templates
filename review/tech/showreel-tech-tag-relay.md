@@ -32,7 +32,6 @@ Deliberate differences from the brief, for the critic: (a) no hub: the process h
 
 ## Stills check (session_01AYvWRiTfvPQrdZu2hQMHS3, Fable, 28 Nov 2026): APPROVED on condition; the verdict and its seven faults are in the direction card file
 BUILDER REPLY (28 Nov): fault 1 (HIGH) fixed: the hook, title and post text now say "Can a tag be found far from your phone?" / "FIND A TAG FAR / FROM YOUR PHONE" (the relaying device is someone else's phone); fault 2 (HIGH) fixed: sub-node and tile labels now fade before the left edge (labelK has a left term), no cut words on the 10-moment re-check (8.5, 12.2, 18.8, 22.5, 24.5 s); fault 3: card 3's line starts at 1.25 s and the WHERE chip leaves a dashed outline; fault 4: the move home is 0.6 s (29.0-29.6 s); fault 5: label fade from y 640; fault 6: the hook plate fades back in over the last 0.3 s (29.6 s matches frame 0); fault 7 (LOW) is for the next 2.5D reel. Re-run: TEXT FIT ok, SAFE ZONE ok, OVERLAP none, page errors none.
-PREFLIGHT-ALL: PASS 85a49409 (showreel-tech-tag-relay, 47 s)
 
 Fix for render 2 (builder, 28 Nov, render 1's one FAIL): sentence 5 shortened from "Five: you open the map, and see where it was." (10 words, 4.63 words/s) to "Five: you open the map, and see it." (8 words); nothing visual changed. preflight-all PASS 85a49409.
 
@@ -60,3 +59,4 @@ Focus, structure, reason: one lit card per step with the rest dimmed (yes), the 
 LESSON for the next 2.5D reel: the real voice runs about 1 s longer than the simulated one at the end; plan the payoff hold to the real voice end and start the loop-home move only after the last word, never under it.
 
 Fix for render 3 (builder, 28 Nov, the render 2 critic's EXACT FIX 1 and 3, timing only): the reel is 30.4 s (was 29.6); the payoff hold runs to 29.8 s, the last caption group stays lit until the voice has ended and fades 29.8-30.0 s, the move home is 29.8-30.4 s (0.6 s), the window fades in 29.85-30.3 s, the hook plate 30.0-30.4 s, and the lit links fade back to frame 0's dashed grey over 29.9-30.4 s (the bottom-left line). Voice slots unchanged (the real voice ended about 29.6 s). Render 3 needs the owner's yes (asked of the owner chat 28 Nov).
+PREFLIGHT-ALL: PASS b4f95b12 (showreel-tech-tag-relay, 53 s)

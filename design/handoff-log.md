@@ -1349,3 +1349,8 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/critic-tech-tag-relay-r2 · Critic, showreel-tech-tag-relay render 2: NOT READY (last words clipped)
 - Done: independent critic on the real MP4 of render 2; item 18 CRITIC: NOT READY: the payoff line "and only you can read where" is never finished on screen (caption fades at 29.1-29.3 s under the voice) and "where" is cut by the 29.6 s end; everything else passes (frame 0, title, captions, loop picture, facts, sound). PREMIUM 7.5 / 7.0 / 7.5.
 - Left: fix 1 (reel 30.4 s, the move home after the voice) needs render 3, which needs the owner's yes with its cost; then a critic pass on render 3.
+## 2026-11-28 · claude/tech-28nov-r3 · Tech showreel-tech-tag-relay: render 2 passed Output QA, critic NOT READY (last caption cut), render 3 fix ready, waiting for the owner's yes
+- Done: render 2 (run 46089101336) passed Output QA (PACE, LOUD -14.0, 32 of 32 cues, FLICKER at 60 fps); independent critic (opus) NOT READY 7.5 / 7.0 / 7.5: the payoff caption "and only you can read where" fades while the voice is still talking and the loop restarts mid-word (the real voice ends about 1 s later than the simulated one). Fix (timing only): reel 30.4 s, move home at 29.8 s, last caption lit until the voice ends, lit links fade back for the loop; FLICKER PASS at 60 fps locally, preflight-all PASS.
+- Left: the owner's yes for render 3 (asked of the owner chat, about $12), render 3, Output QA, a fresh critic, post 20:30 IST.
+- For the other account: plan a payoff hold from the real voice end, not the simulated one (an Output QA voice-end line would catch it).
+
