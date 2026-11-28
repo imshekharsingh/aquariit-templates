@@ -1341,3 +1341,8 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out text-on-photo: stills round 2 APPROVED, preflight-all PASS, render 1 next
 - Done: round 2 approved by the outside check; preflight fixes after it: reel 19.6 s with an extra spark in the tail, the before flash declared as a transition, band and small print moved 14 px down clear of the title, chip timings, a brighter stage, text-clear waivers for the poster's own words on the photo and the BEFORE flash. preflight-all PASS 0fb398f4.
 - Left: render 1 on GitHub, Output QA, critic (opus, tag critic).
+## 2026-11-28 · claude/tech-28nov-r2 · Tech showreel-tech-tag-relay: stills check APPROVED with fixes, render 1 failed PACE only, fix for render 2
+- Done: topic "can a tag be found far from your phone" (Samsung Newsroom 23 Nov, Galaxy SmartTag3 offline finding relay; Fable pick T28-1); second real 2.5D map reel from showreel-tech-ai-words (find-my-tag window opening, six steps, loop-home ending); stills check APPROVED on condition (hook wording contradicted step 2, labels cut at the left edge; all fixed); FLICKER PASS at 60 fps locally and on render 1; preflight-all PASS; render 1 (run 46085220882) failed Output QA on PACE alone (sentence 5, 4.63 words/s), sentence shortened.
+- Left: render 2, Output QA, independent critic (opus), post 20:30 IST.
+- For the other account: the Pipeline merge job fails when main moved under a claude/ branch (captions.json add/add): merge origin/main into the branch keeping both entries, then push.
+
