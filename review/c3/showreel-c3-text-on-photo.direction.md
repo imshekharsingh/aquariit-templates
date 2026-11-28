@@ -12,4 +12,4 @@ Fill before the build (design/direction.md: the card, and this channel's default
 8. Rewatch moment: the three poster lines flipping to bold one after another at about 8.8-9.8 s on the dimmed photo | Why: it is the move people scrub back to see happen
 9. Payoff: the poster holds dimmed, bold, with the date on a dark band, green frames on the title and the band, the crowd hopping, the BEFORE thumbnail tilted under the poster, then loops back to the glare of frame 0 | Why: the viewer keeps before and after side by side to copy
 
-STILLS CHECK: PENDING
+STILLS CHECK: REDO applied (builder, 28 Nov 2026): rings full from t 0, title frame clear, BEFORE thumbnail raised, chips held, last subtitle cleared, photo kept saturated

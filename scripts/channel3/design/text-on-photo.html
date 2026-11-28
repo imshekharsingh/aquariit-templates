@@ -835,15 +835,15 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.intro($('board'), t + .6, .55);
+    DT.intro($('board'), t + 1.2, .55);
     var k1 = E.out3(P(t, A.dim, A.dim + .8)), k2 = DT.spring(t, A.band - .15, .7), k3 = P(t, A.scan, A.scan + 1.05);
     // the photo: beams swing and the lights twinkle (the busy part), calming as the dark layer lands
     var calm = 1 - .8 * k1, sw = Math.sin(t * 1.9) * 9 * calm;
     for (var i = 0; i < 4; i++) $('bm' + i).setAttribute('transform', 'rotate(' + (sw * (i % 2 ? -1 : 1) + Math.sin(t * 1.3 + i) * 4 * calm).toFixed(2) + ' ' + (67 + i * 90) + ' 0)');
     BOK.forEach(function(b){ b.e.setAttribute('opacity', (b.o * (.6 + .4 * Math.sin(t * 3.1 + b.ph) * calm + .4 * (1 - calm))).toFixed(3)); });
     var jp = Math.max(0, Math.sin(Math.PI * P(t, A.e2, A.e2 + .45))) + .7 * Math.max(0, Math.sin(Math.PI * P(t, A.e2 + .5, A.e2 + .95))); $('crowd').setAttribute('transform', 'translate(0,' + (-22 * jp).toFixed(2) + ')');   // the crowd jumps on the payoff
-    $('beams').style.opacity = (1 - .5 * k1 + .5 * P(t, A.e2, A.e2 + .5)).toFixed(3);
-    $('ph').style.filter = 'saturate(' + (1 - .3 * k1).toFixed(3) + ')';
+    $('beams').style.opacity = (1 - .3 * k1 + .3 * P(t, A.e2, A.e2 + .5)).toFixed(3);
+    $('ph').style.filter = 'saturate(1)';
     var dk = $('dk'); dk.style.opacity = (.85 * k1).toFixed(3); dk.style.transform = 'scaleY(' + (.2 + .8 * k1).toFixed(3) + ')';
     $('bnd').style.transform = 'scaleX(' + cl(k2).toFixed(4) + ')';
     IDS.forEach(function(id, i){ var el = $(id), a = TX[id].A, b = TX[id].B, t0f = A.scan + .1 + i * .2, kf = cl((t - t0f) / .45);
@@ -858,7 +858,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     // frame 0: the problems ringed (the words on the glare, the small print with nothing behind it)
     var ro = 1 - P(t, A.turns - .3, A.turns);
     [[.35, { x: BX + 20, y: BY + 66, w: 360, h: 66, r: 14 }, 'WHITE ON GLARE', BX + 8, BY + 334], [.65, { x: BX + 30, y: BY + 138, w: 340, h: 100, r: 14 }, 'NOTHING BEHIND IT', BX + 190, BY + 334]].forEach(function(r, i){
-      DT.box('ring' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); });
+      DT.box('ring' + i, r[1], ro, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], ro, 'r sm'); });
     DT.chip('busy', 'TOO <b>BUSY</b>', 300, 396, P(t, A.busy - .1, A.busy + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
     DT.chip('calm', 'WORDS NEED <b>CALM</b>', 100, 396, P(t, A.calm - .1, A.calm + .2) - P(t, A.f1 - .2, A.f1 + .1));
     // fix one: select the photo, the cursor pulls the dark layer up
@@ -867,22 +867,22 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     DT.chip('c1', 'DIM <b>THE PHOTO</b>', 100, 396, P(t, A.dim, A.dim + .3) - P(t, A.f2 - .1, A.f2 + .2));
     // fix two: the scan line, then the chip
     var sc = P(t, A.scan, A.scan + 1.05); DT.line('scan', BX + 4, BY + 80 + sc * 170, BX + BW - 4, BY + 80 + sc * 170, sc > 0 && sc < 1 ? 1 : 0, '#ffb35a', 3);
-    DT.chip('c2', 'MAKE IT <b>BOLD</b>', 300, 396, P(t, A.bold, A.bold + .3) - P(t, A.f3 - .1, A.f3 + .2));
+    DT.chip('c2', 'MAKE IT <b>BOLD</b>', 300, 396, P(t, A.bold, A.bold + .3) - P(t, A.f3 + .25, A.f3 + .45));
     // fix three: the band, measured across the poster
     DT.sel('bns', { x: BX, y: BY + 140, w: BW * cl(k2), h: 112 }, P(t, A.band - .1, A.band + .2) * (1 - P(t, A.d3 + .2, A.d3 + .5)));
-    DT.chip('c3', 'DATE ON A <b>BAND</b>', 150, 396, P(t, A.band, A.band + .3) - P(t, A.same - .2, A.same + .1));
+    DT.chip('c3', 'DATE ON A <b>BAND</b>', 150, 396, P(t, A.band, A.band + .3) - P(t, A.same + .25, A.same + .45));
     [[A.d1, BX + BW / 2, BY + 300], [A.d2, BX + BW / 2, BY + 120], [A.d3, BX + 40, BY + 196]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
     $('board').style.boxShadow = '0 30px 70px rgba(0,0,0,.6),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
-    DT.proof(t, A.proof, { flash: .5, x: 30, y: 778, s: .26, tx: 52, ty: 764 });
+    DT.proof(t, A.proof, { flash: .5, x: 30, y: 712, s: .26, tx: 52, ty: 698 });
     DT.chip('win', 'SAME POSTER · <b>READABLE</b>', 150, 396, P(t, A.readable - .2, A.readable + .15) - P(t, A.e2 - .2, A.e2 + .1), 'g'); DT.chip('win2', 'DIM · BOLD · <b>BAND</b>', 150, 396, P(t, A.e2, A.e2 + .3), 'g');
     // the tail: a green frame on the title with a spark, then one on the band
-    DT.box('ok', { x: BX + 14, y: BY + 62, w: BW - 28, h: 68, r: 14 }, P(t, A.e1, A.e1 + .4), '#5ee0a0'); DT.burst('b3', BX + BW - 20, BY + 66, t, A.e1 + .3, '#5ee0a0');
-    DT.box('ok2', { x: BX + 20, y: BY + 142, w: BW - 40, h: 104, r: 12 }, P(t, A.e2, A.e2 + .4), '#5ee0a0'); DT.burst('b4', BX + 30, BY + 190, t, A.e2 + .3, '#5ee0a0');
+    DT.box('ok', { x: BX + 12, y: BY + 56, w: BW - 24, h: 206, r: 14 }, P(t, A.e1, A.e1 + .4), '#5ee0a0'); DT.burst('b3', BX + BW - 20, BY + 66, t, A.e1 + .3, '#5ee0a0');
+    DT.burst('b4', BX + 30, BY + 196, t, A.e2 + .3, '#5ee0a0');
     var cp = DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.same, end: 1, sym: '✓', label: 'READABLE' }]);
     DT.title(t, [{ t: A.hook, html: 'White on a <em>busy photo</em>' }, { t: A.f1, html: 'Fix 1 · <em>dim the photo</em>' }, { t: A.f2, html: 'Fix 2 · <em>bold words</em>' }, { t: A.f3, html: 'Fix 3 · <em>a solid band</em>' }, { t: A.same, html: 'Same photo. <em>Readable.</em>' }]);
-    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(read|busy|calm|dim|photo|bold|band|street)/i.test(w) ? 'var(--amb)' : null; });
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .8), function(w){ return /^(read|busy|calm|dim|photo|bold|band|street)/i.test(w) ? 'var(--amb)' : null; });
   }
   function cursorKeys(){ CUR = [[A.f1 + .1, 420, 700, 0], [A.dim - .05, 270, 740, 1], [A.dim + .7, 270, 560, 1], [A.d1 + .2, 300, 560, 0]]; }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); cursorKeys(); } };

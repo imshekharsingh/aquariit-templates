@@ -1332,3 +1332,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out: showreel-c3-text-on-photo rebuilt on the improved kit (build pushed, stills check next)
 - Done: new scene scripts/channel3/design/text-on-photo.js (white regular words on a bright busy poster photo, three fixes: dim the photo, bold words, date on a band; BEFORE proof and tail), seven spoken sentences with breaths, direction card, review file, captions.json (c3, postOn 2026-11-28, postAt 14:00; hidden and hold stay until the critic says READY). Stills lines pass (SUBJECT FILL 89%, SAFE ZONE ok, OVERLAP none); npm run check passes.
 - Left: outside stills check (fable, tag stills), preflight-all, one render, Output QA, critic (opus, tag critic).
+## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out text-on-photo: stills check round 1 REDO applied
+- Done: rings and tags at full strength from t 0, one green frame clear of the bold title and band, BEFORE thumbnail raised 66 scene px, chips held about 1 s, last subtitle cleared 0.8 s after the voice, photo kept saturated with beams at .7. SAFE ZONE ok, OVERLAP none.
+- Left: second outside stills check, preflight-all, one render, Output QA, critic.
