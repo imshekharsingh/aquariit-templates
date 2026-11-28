@@ -1435,3 +1435,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/refs-keep-30d · Closed references keep their video 30 days
 - Done: Close sets closed_at and keeps the file; purgeClosedRefs (src/worker.js) deletes it 30 days after closing, run by the daily cron and by the refs list and close calls; GET /api/refs/<id>/file keeps working until then; app text says "kept 30 days, then deleted"; cases in scripts/qa/refs-test.mjs (kept, served, 29 days kept, 31 days purged, 404 after). npm run check passes.
 - Left: App probe after deploy, then the APP PROBE line in design/handoff.md Progress.
+
+## 2026-11-28 · claude/web-popover-focus-qa · Web popover focus test: preview rendered, Output QA by hand
+- Done: one full-length preview render of showreel-50-popover-focus (run 46113700512, R2 study/); Output QA by hand on the preview MP4: all pass except HUE against its own original (waived); voice ends 12.6 s of 15 s. Reviewer session started.
+- Left: the reviewer's verdict in review/web/showreel-50-popover-focus.md; swap into the 19:00 post only on READY plus Inputs saying the owner likes it before 17:30 IST.
