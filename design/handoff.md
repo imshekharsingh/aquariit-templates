@@ -446,6 +446,7 @@ Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md
 - 28 Nov 12:05 IST, other account: Closed references keep their video 30 days (Close sets closed_at; the Worker deletes the file after 30 days; the app text says so). APP PROBE: PASS (refs keep 30 days), run 46116615005 on the deployed app.
 - 28 Nov 12:40 IST, other account: ref lab first real run read (crop kept the app header on 3 of 4 phone recordings): fix pushed on claude/ref-lab-crop (phone_trim), re-running the study next, then the results block.
 - 28 Nov 13:20 IST, other account: ref lab done. Crop fixed and re-run; results in design/references.md "Lab results 28 Nov": v7 has 16 moves per 10 s against 44 and a 3.5 s longest still; ai-words already matches the references; popover has no high ticks and is still 39 % of the time. Kit pieces named: live screen, tick cue; critic.md has the motion density questions. Left: Turns Out reel in the next lab run.
+- 28 Nov 13:15 IST, other account: web focus test, render 2 scene ready (owner yes): frame 0 arrives from its shadow, hand-over on fix, breakout on popover, ticks, live code card, last-2.4 s beats; scene action count 4.4 a second, no gap over 1 s. Pushing, then ONE preview render; target done by 15:30 IST.
 
 ## How to work
 - Use the cheaper model unless the task needs more. One task per session.
