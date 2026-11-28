@@ -7,6 +7,11 @@ techniques it uses. Patterns are welcome, tweaked for our use (owner, 23 Nov 202
 footage, copy, art, characters or a near-identical look of that one piece (design/safety.md rule 1). From 23 Nov a reference reel is studied
 with the reverse-any-video skill (.claude/skills/) into a pattern card (its format is in that skill).
 Kits: kitmotion.js (KM, web), kitsfx.js (web element sound and entrances), kit25d.js (Kt, Turns Out), techreel/ (make.py, scenes/).
+STUDY RULES (owner, 28 Nov 2026: "learning from references should be the right place where we should be spending the most"):
+1. Reference videos are kept at least 30 days after a reference is closed (the app deletes them only after that), so a better method can study them again.
+2. A study is done only when it has produced at least ONE kit piece (or a dated todo line naming it) and ONE reviewer question in design/critic.md; notes alone do not count.
+3. Measure, then re-measure: each study runs the action and sound count (asks.yml refs-study) on the reference AND one of our reels; every week (spare usage night)
+   the newest reels of each channel are counted again against the kept references and the gap goes in one line under that reference's card.
 Older study notes stay in attic/design/film-playbook.md ("Reference study 2" and "3") and design/webin20sec.md ("Density").
 
 ## R1. A numbered "20 graphic design styles" list (13 Oct 2026; design/experiments.md E7: 470K saves, 171K shares)

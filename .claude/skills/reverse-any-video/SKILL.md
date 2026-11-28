@@ -48,6 +48,11 @@ A 1-frame-a-second sheet misses most small actions (a screen typing, a ripple, a
    TIMELINE (voice syllables count as hits, so compare like with like). Add one line "Sound hits a second: reference vs ours, longest quiet" to the card.
 The count is a guide, not a target to game: captions and camera moves are kept out of "picture" actions on purpose.
 
+## Done means built (owner, 28 Nov 2026)
+A study is finished only when it leaves at least one kit piece (or a dated todo line naming it) and one reviewer question in design/critic.md, and the
+action and sound count of the reference next to one of our reels. Weekly, the spare usage night counts our newest reels against the kept references
+(design/references.md "STUDY RULES").
+
 ## Every layer (what it is, how we would build it)
 
 - **A component** (text, captions, stickers, cards, UI, charts, maps): we rebuild the TECHNIQUE in our kit with our own content.
