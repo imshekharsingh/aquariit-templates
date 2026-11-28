@@ -12,6 +12,9 @@ Format (at most 6 lines):
 - design/references.md "R-ref 28 Nov": references 15-19 make 2.4-3.4 actions a second, v7 1.8 (ACTION LIST for v7 part b). References 9-14 were deleted when closed.
 - Board (owner: "there's no clarity"): src/journey.js puts a hidden reel dated today on the board as held; templates/index.html: [hidden] always hides, one plain line per card, folded cards, no model names, the top line names questions / reels to post.
 - For the main account: a held reel now shows on Today; nothing else changes for builders.
+
+## 2026-11-28 · claude/handoff-ocr-false-alarm · owner chat: queue a fix for an Output QA false alarm
+- A text check read a padlock icon as a number on today's tech reel; handoff.md GO NOW item 6 asks the other account to fix it with a test.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action count for references
 - Owner: count the actions in references so 3D kit v7 can get more actions and elements. scripts/qa/action-count.py (actions a second, things moving at once, gaps), asks.yml action refs-study (references by id in any state + our reels, 2 fps sheets), .claude/skills/reverse-any-video "Action count". References 15-19 (26 Nov) were never studied: in this run.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): the critic is called "reviewer" to the owner
@@ -1396,3 +1399,12 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/critic-web-28nov-popover-r3 · Critic, showreel-50-popover render 3: READY
 - Done: independent critic on the real MP4 of render 3 (run 46106486981, 15.0 s, -14.0 LUFS); contact sheet, gold side-by-side, 60 fps steps round 3.43 s and the re-open. All five render 1 fixes are on screen and render 2's grey is gone; the 3.43 s FLICKER warn is the subtitle page turning (intended). GOLD matches, STOP 7, REWATCH 7, PREMIUM 7.5 / 8 / 7.5.
 - Left: the builder / owner chat moves it to Ready to post for the 19:00 IST slot; next web reel applies the HIGH upgrade (one wide hero card after the fix).
+## 2026-11-28 · claude/tech-28nov-ready · Tech showreel-tech-tag-relay: READY on render 3, posts 20:30 IST (builder close-out)
+- Done: render 1 failed PACE (one 10-word sentence), render 2 passed but the critic (opus) found the last caption cut off while the voice was still talking (the real voice ends about 1 s later than the simulated one), render 3 (the owner's yes via the owner chat, 30.4 s, timing only) passed Output QA except NUMBERS, a false positive on card 3's padlock icon (no counter in the reel), and the render 3 critic wrote READY (STOP 7, REWATCH 7.5, PREMIUM 7.5 / 7.5 / 7.5) and waived NUMBERS with that reason. 3 renders used, all past 2 approved by the owner.
+- Left: the owner posts at 20:30 IST. Next 2.5D reel: plan the payoff hold from the real voice end, keep step sentences to 8-9 words, teach the NUMBERS check to ignore icon shapes (critic's upgrade), 900 MILLION+ as a hero number, card 3 key-turn line, card 1 grows 8 %.
+- For the other account: Output QA NUMBERS read a closed padlock icon as "6" (one render in two); a voice-end line in Output QA would have caught the clipped last word before the critic did.
+
+
+## 2026-11-28 · claude/critic-c3-text-on-photo-28nov-r3 · Critic, showreel-c3-text-on-photo render 3: READY
+- Done: independent critic on the real MP4 of render 3 (run 46106428084, 17.4 s, -14.0 LUFS); gold sheet, contact sheet, 20 phone-size frames, full-size crops of the frame-0 labels and the finished poster. All three render 2 fixes landed: the labels are stacked about 25 px apart, the after has its beams back and reads as a lit stage, the cursor stays below the small print. No regression. GOLD matches, STOP 7, REWATCH 7, PREMIUM 7.5 / 7.5 / 7.5.
+- Left: the owner chat moves it to Ready to post (Turns Out slot 14:00 IST, so it posts late today inside the window). Next Turns Out reel: bigger BEFORE thumbnail with a ring kept on it, chips handed over with the titles.
