@@ -3319,14 +3319,14 @@
   ],
   "style": {
    "lengthS": 30.4,
-   "wordsPerS": 2.6,
-   "shotChanges": 8,
+   "wordsPerS": 2.57,
+   "shotChanges": 0,
    "hookType": "question",
    "look": "dark",
    "hero": "system map",
    "firstSecondTension": "yes",
    "payoff": "fact",
-   "source": "plan"
+   "source": "mp4"
   },
   "refs": [
    "R-ref 27 Nov 2026: 2.5D system map"
