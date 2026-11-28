@@ -1478,3 +1478,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/qa-waiver-dash2 · Waiver matching reads the annotation's "- " prefix (item 6)
 - Done: the Output QA failure annotation arrives as "- NUMBERS: ..." so the first waiver version never matched; qaStage strips the prefix; test case with the real form. Found because the App probe after the first version still showed an empty tech Ready box.
 - Left: App probe again.
+
+## 2026-11-28 · claude/probe-journey · App probe prints the journey stages of today's reels (item 6)
+- Done: scripts/qa/app-live-probe.mjs prints JOURNEY / JOURNEY REEL lines (github state, warnings, render / checks / critic / ready per reel) so an empty Ready box says which stage holds it. The waiver logic itself is proven on the real run data (qaStage returns done "waived by the reviewer" for run 46117765710 and the real annotations); the live box was still empty after the deploy, cause not yet seen.
+- Left: App probe, read the JOURNEY REEL line for tech, fix what it shows.
