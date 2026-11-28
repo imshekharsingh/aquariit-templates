@@ -9,6 +9,12 @@ Format (at most 6 lines):
 
 
 
+
+## 2026-11-28 · claude/owner-chat-28nov · owner chat: day summary
+- Decisions: owner said yes to a 3rd render on all three reels (~$18-28 total); the other account does everything 29 Nov - 2 Dec incl. daily reels, the owner chats with it in an "Inputs" session (design/inputs-brief.md); this account's Daily studio run and Turns Out tasks are OFF until Wed 3 Dec (owner chat re-enables them); 2.5D depth study: no 3rd render for now.
+- Ready: Turns Out text-on-photo 14:00, web popover 19:00, tech tag-relay 20:30 (all reviewer READY on render 3). Turns Out spend ~$16.
+- Broken / learned: the 05:11 Turns Out task failed 2 mornings (no repo/tools; built by hand from the owner chat); all three reels needed render 3 for faults a pre-render check would catch (voice longer than picture, grey "broken" states, frame-0 label spacing): in handoff.md GO NOW item 2. An Output QA text check read an icon as a digit (item 6).
+- Tomorrow: the owner opens the other account's Inputs session before 05:00 IST so the 29 Nov reels get built.
 ## 2026-11-28 · claude/handoff-ocr-false-alarm · owner chat: queue a fix for an Output QA false alarm
 - A text check read a padlock icon as a number on today's tech reel; handoff.md GO NOW item 6 asks the other account to fix it with a test.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action count for references
