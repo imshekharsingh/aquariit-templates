@@ -38,14 +38,15 @@ html,body{width:540px;height:960px;overflow:hidden;background:#0b0c10;color:#eef
 <div id="pill" class="a">01 / 03 · THE TOKEN</div>
 <div id="map" class="a" data-subject data-fit="free">
   <svg id="lines" class="a" width="540" height="960" aria-hidden="true">
-    <path id="l1" d="M150 390 C 210 380, 250 350, 292 340" fill="none" stroke="#8fb4ff" stroke-width="3" stroke-linecap="round"/>
-    <path id="l2" d="M390 410 C 380 470, 300 500, 252 520" fill="none" stroke="#ffbf5e" stroke-width="3" stroke-linecap="round"/>
-    <path id="l3" d="M252 580 C 300 610, 330 620, 290 628" fill="none" stroke="#6fe0a8" stroke-width="3" stroke-linecap="round"/>
+    <path id="l1" d="M150 390 C 210 380, 250 350, 292 340" fill="none" stroke="#8fb4ff" stroke-width="3" stroke-linecap="butt"/>
+    <path id="l2" d="M390 410 C 380 470, 300 500, 252 520" fill="none" stroke="#ffbf5e" stroke-width="3" stroke-linecap="butt"/>
+    <path id="l3" d="M252 580 C 300 610, 330 620, 290 628" fill="none" stroke="#6fe0a8" stroke-width="3" stroke-linecap="butt"/>
   </svg>
   <div class="g" id="g1"><div class="cd" id="c1" style="left:292px;top:290px;width:210px;height:124px"><i>01</i><b>TOKEN</b><small>not your card</small></div></div>
   <div class="g" id="g2"><div class="cd" id="c2" style="left:40px;top:470px;width:212px;height:124px"><i>02</i><b>TERMINAL</b><small>reads it</small></div></div>
   <div class="g" id="g3"><div class="cd" id="c3" style="left:290px;top:540px;width:212px;height:124px"><i>03</i><b>BANK</b><small>says yes</small></div></div>
   <div class="g" id="hold"></div>
+  <div id="okp" style="position:absolute;left:356px;top:648px;padding:7px 14px;border-radius:999px;background:#6fe0a8;color:#07160e;font:800 17px/1 var(--m);letter-spacing:.08em;opacity:0">APPROVED</div>
 </div>
 <div id="band" class="a" data-band></div>
 <div id="cap" class="a" data-subs></div>
@@ -148,25 +149,25 @@ var KMAP = (function(){
 })();
 /*kitmap:end*/
 (function(){
-  var $ = function(id){ return document.getElementById(id); }, P = KMAP.P, E = KMAP.ease, DUR = 11;
+  var $ = function(id){ return document.getElementById(id); }, P = KMAP.P, E = KMAP.ease, DUR = 10;
   var HUE = ['#8fb4ff', '#ffbf5e', '#6fe0a8'], NAMES = ['THE TOKEN', 'THE TERMINAL', 'THE BANK'];
   var TEXT = 'Tap your phone at the till. One: it sends a token, not your card number. Two: the terminal reads it. Three: your bank says yes.';
-  var WORDS = null, A = { s1: 3.0, s2: 6.0, s3: 8.0, end: 10.2 };
+  var WORDS = null, A = { s1: 2.1, s2: 4.6, s3: 6.7, end: 8.1 };   // the render 1 voice's measured timings (Output QA PACE); the real words replace them
   var H = [KMAP.card($('c1'), { mat: 'glass', hue: HUE[0] }), KMAP.card($('c2'), { mat: 'satin', hue: HUE[1] }), KMAP.card($('c3'), { mat: 'metal', hue: HUE[2] })];
-  var PHONE = KMAP.object($('hold'), { kind: 'phone', x: 270, y: 470, s: 1.15, hue: HUE[0], t0: .15, d: 1.8, from: -34, to: 12,
+  var PHONE = KMAP.object($('hold'), { kind: 'phone', x: 270, y: 470, s: 1.15, hue: HUE[0], t0: .1, d: 1.3, from: -34, to: 12,
     screen: '<div style="position:absolute;left:0;right:0;top:38%;text-align:center;font:900 22px/1.1 Inter Tight,sans-serif;color:#eef0f5">Hold near<br>reader</div><div style="position:absolute;left:50%;top:66%;width:44px;height:44px;margin-left:-22px;border-radius:50%;box-shadow:0 0 0 3px #8fb4ff"></div>' });
   var L = ['l1', 'l2', 'l3'].map(function(id){ var p = $(id), n = p.getTotalLength(); p.style.strokeDasharray = n; p.style.strokeDashoffset = n; return { p: p, n: n }; });
   function anchors(){ if (WORDS) { var f = function(re){ for (var i = 0; i < WORDS.length; i++) if (re.test(WORDS[i].w)) return WORDS[i].s; return null; };
       A.s1 = f(/^one/i) || A.s1; A.s2 = f(/^two/i) || A.s2; A.s3 = f(/^three/i) || A.s3; A.end = WORDS[WORDS.length - 1].e; }
-    window.CUES = { dur: DUR, cues: [{ t: .15, k: 'swell', d: .6, g: .3, x: 270 }, { t: A.s1, k: 'blip', g: .3, x: 390 }, { t: A.s2, k: 'blip', g: .3, x: 150 }, { t: A.s3, k: 'blip', g: .3, x: 390 }], mix: { duck: 8 } };
-    window.TRANSITIONS = [[2.5, 3.1, 'pullback']]; window.COVER = 8.6; }
+    window.CUES = { dur: DUR, cues: [{ t: .15, k: 'swell', d: .6, g: .3, x: 270 }, { t: A.s1, k: 'blip', g: .3, x: 390 }, { t: A.s2, k: 'blip', g: .3, x: 150 }, { t: A.s3, k: 'blip', g: .3, x: 390 }, { t: A.end + .15, k: 'snap', g: .32, x: 390 }], mix: { duck: 8 } };
+    window.TRANSITIONS = [[A.s1 - .65, A.s1 - .05, 'pullback']]; window.COVER = 8.6; }
   function groupAt(t){ if (!WORDS) return ''; var sents = [], cur = [];
     WORDS.forEach(function(w){ cur.push(w); if (/[.?!]$/.test(w.w)) { sents.push(cur); cur = []; } }); if (cur.length) sents.push(cur);
     for (var i = sents.length - 1; i >= 0; i--) if (t >= sents[i][0].s - .05) { var g = sents[i]; if (t > g[g.length - 1].e + .6 && i === sents.length - 1) return '';
       return g.map(function(w){ return '<span style="opacity:' + (t >= w.s - .03 ? 1 : .35) + '">' + w.w + '</span>'; }).join(' '); } return ''; }
   function seek(t){
     // the object moment, then the phone eases to the top left (0.6 s) and stays as the map's start
-    var mv = E.inOut(P(t, 2.5, 3.1)), ph = PHONE.el;
+    var mv = E.inOut(P(t, A.s1 - .65, A.s1 - .05)), ph = PHONE.el;   // the phone is in its corner as step one is said (render 1: TOKEN built over the big phone)
     PHONE.draw(t); ph.style.transform = 'translate(' + (-150 * mv).toFixed(2) + 'px,' + (-112 * mv).toFixed(2) + 'px) scale(' + (1.15 - .62 * mv).toFixed(4) + ')';
     var step = t >= A.s3 ? 2 : t >= A.s2 ? 1 : 0, starts = [A.s1, A.s2, A.s3];
     for (var i = 0; i < 3; i++) { KMAP.build(H[i], t, starts[i] - .1, { tier: 1, lift: i === step && t >= starts[0] ? E.out3(P(t, starts[i], starts[i] + .4)) : 0 });
@@ -177,6 +178,11 @@ var KMAP = (function(){
     var wk = E.inOut(P(t, A.s1 - .3, A.s1 + .3)), c = HUE[step], side = step === 1 ? '25% 55%' : '75% 45%';
     $('wedge').style.opacity = (wk * .9).toFixed(3); $('wedge').style.background = 'radial-gradient(60% 40% at ' + side + ',' + c + '24,' + c + '00 70%)';
     $('pill').textContent = '0' + (step + 1) + ' / 03 · ' + NAMES[step]; $('pill').style.opacity = E.out3(P(t, A.s1 - .4, A.s1)).toFixed(3); $('pill').style.borderColor = c + '99';
+    // the payoff once the voice ends: every step lit again, APPROVED lands on the bank, a slow push in keeps the end moving (render 1: DEAD 9.2-11 s)
+    var pk = E.out3(P(t, A.end + .1, A.end + .5)), push = E.inOut(P(t, A.end, DUR));
+    for (var j = 0; j < 3; j++) { var g = $('g' + (j + 1)), o = +g.style.opacity; g.style.opacity = (o + (1 - o) * pk).toFixed(3); L[j].p.style.opacity = (.45 + .55 * Math.max(j === step ? 1 : 0, pk)).toFixed(3); }
+    $('okp').style.opacity = pk.toFixed(3); $('okp').style.transform = 'translateY(' + ((1 - pk) * 10).toFixed(2) + 'px) scale(' + (.9 + .1 * pk).toFixed(4) + ')';
+    $('map').style.transformOrigin = '50% 48%'; $('map').style.transform = 'scale(' + (1 + .05 * push).toFixed(4) + ')';
     $('cap').innerHTML = groupAt(t);
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words.map(function(w){ return { w: String(w.w), s: +w.s, e: +w.e }; }); anchors(); } };

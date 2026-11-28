@@ -1367,3 +1367,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/c3-text-on-photo-28nov-r3 · Turns Out text-on-photo: critic NOT READY on render 2, fix for render 3 prepared
 - Done: render 2 (run 46093523921) passed Output QA; the critic (opus) wrote NOT READY (PREMIUM 7.5 / 6 / 6.5: the two frame-0 labels, a flat finish next to gold). Fix applied in the scene: first label one row up, dark layer .7, beams back on "Now", cursor off the small print. preflight-all PASS 6fbe4850. Measured on the scene: the two labels had a gap of about 20 px, so "overlap" was too strong a word, the stacked rows make it certain anyway.
 - Left: render 3 needs the owner's yes with its cost (asked in the Owner chat); then Output QA and a fresh critic. Reel stays hidden and on hold until READY.
+## 2026-11-28 · claude/kit-2d5-depth-r2 · 2.5D depth study: render 1 fixes (task 22)
+- Done: channel tech, payoff end (DEAD), phone move tied to step one, flat line caps; local FLICKER pass.
+- Left: render 2 (the last), Output QA, ready for critic.
