@@ -1338,3 +1338,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/stills-c3-text-on-photo-28nov-r2 · Turns Out: outside stills check round 2 of showreel-c3-text-on-photo: APPROVED
 - Done: one new stills sheet plus position measurements on the builder's fix commit (no render, no scene or config change). All six round 1 points are fixed and nothing regressed; verdict written in review/c3/showreel-c3-text-on-photo.direction.md.
 - Left: the builder corrects card line 9 (one green frame, not two), then preflight-all, one render, Output QA, critic.
+## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out text-on-photo: stills round 2 APPROVED, preflight-all PASS, render 1 next
+- Done: round 2 approved by the outside check; preflight fixes after it: reel 19.6 s with an extra spark in the tail, the before flash declared as a transition, band and small print moved 14 px down clear of the title, chip timings, a brighter stage, text-clear waivers for the poster's own words on the photo and the BEFORE flash. preflight-all PASS 0fb398f4.
+- Left: render 1 on GitHub, Output QA, critic (opus, tag critic).

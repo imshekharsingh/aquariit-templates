@@ -4,7 +4,7 @@
 #board{left:70px;top:396px;width:400px;height:380px;border-radius:6px;background:#2a0f4a}
 #ph{position:absolute;left:0;top:0;width:400px;height:380px;transform-origin:50% 50%}
 #dk{position:absolute;left:0;top:0;width:400px;height:380px;background:linear-gradient(180deg,rgba(10,6,24,.62),rgba(10,6,24,.84));transform-origin:50% 100%;opacity:0}
-#bnd{position:absolute;left:0;top:140px;width:400px;height:112px;background:#110c1e;transform-origin:0 50%;transform:scaleX(0)}
+#bnd{position:absolute;left:0;top:154px;width:400px;height:100px;background:#110c1e;transform-origin:0 50%;transform:scaleX(0)}
 .tx{position:absolute;left:0;top:0;white-space:nowrap}
 .tape{position:absolute;width:62px;height:20px;background:rgba(240,232,210,.82);box-shadow:0 2px 4px rgba(0,0,0,.25);z-index:29}
 /*css:end*/
@@ -44,12 +44,12 @@
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ffc44d', '#ff7a45');
   // spoken sentences with breaths (rules-c3.md V1-V3); the before is the everyday draft: white words straight on a bright photo, no dimming, no backing (B1)
   var TEXT = "This poster is hard to read. The photo is too busy. Turns out, words need calm behind them. First, dim the photo. Next, make the words bold. Then put the date on a band. Now it reads from across the street.";
-  var DUR = 21, BX = 70, BY = 396, BW = 400, V, PH, A = {}, CAM, CUR = [];
+  var DUR = 19.6, BX = 70, BY = 396, BW = 400, V, PH, A = {}, CAM, CUR = [];
   // A: the words as a tool leaves them (white, regular weight); B: bold and larger, on the dimmed photo
   var TX = {
     t0: { A: { f: "500 36px 'Space Grotesk'", c: '#ffffff', y: 98, ls: '.02em' }, B: { f: "700 42px 'Space Grotesk'", c: '#ffffff', y: 94, ls: '.01em' } },
-    t1: { A: { f: "400 19px 'Space Grotesk'", c: '#ffffff', y: 156, ls: '.03em' }, B: { f: "700 20px 'Space Grotesk'", c: '#ffffff', y: 158, ls: '.04em' } },
-    t2: { A: { f: "400 21px 'Space Grotesk'", c: '#ffffff', y: 208, ls: '.05em' }, B: { f: "700 24px 'Space Grotesk'", c: '#ffc44d', y: 204, ls: '.04em' } } };
+    t1: { A: { f: "400 19px 'Space Grotesk'", c: '#ffffff', y: 170, ls: '.03em' }, B: { f: "700 20px 'Space Grotesk'", c: '#ffffff', y: 172, ls: '.04em' } },
+    t2: { A: { f: "400 21px 'Space Grotesk'", c: '#ffffff', y: 210, ls: '.05em' }, B: { f: "700 24px 'Space Grotesk'", c: '#ffc44d', y: 206, ls: '.04em' } } };
   var IDS = ['t0', 't1', 't2'], BOK = [];
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; }
   function build(){ var g = $('bok'), NS = 'http://www.w3.org/2000/svg', cols = ['#fff', '#ffe3f4', '#d9f2ff', '#fff2c4'];
@@ -70,12 +70,13 @@
     A.scan = A.bold - .05; S.rise(A.f2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.scan + .1 + i * .2, .4, 270, 6); }); S.tint(A.bold + .1, 270); A.d2 = A.scan + 1.05; S.done(A.d2, 270, 2);
     // fix three: the band slides in under the small print
     S.rise(A.f3 - .1, .4); S.whoosh(A.f3 + .3, 90, .2); S.snap(A.band + .1, 270, 3); A.d3 = A.band + .5; S.done(A.d3, 270, 4);
-    S.reveal(A.readable - .05); S.flip(A.proof, .5); S.land(A.e1, 200, 5); S.done(A.e2, 270, 6);
+    S.reveal(A.readable - .05); S.flip(A.proof, .5); S.land(A.e1, 200, 5); S.done(A.e2, 270, 6); S.land(A.e2 + 1.1, 330, 7);
     CAM = KM.rig({ x: 270, y: 490, z: 1.06, drift: 1 }).pull(0, .55, 270, 490, 1);
     DT.close(CAM, A.d1, 1.08, BY); DT.close(CAM, A.d2, 1.08, BY); DT.close(CAM, A.d3, 1.08, BY);
     window.ALIGN = [{ at: A.end - .05, sel: 'span', each: '#t0, #t1, #t2', edge: 'bottom', why: 'every letter on its line' }];
     window.HOLDS = [[A.end, DUR]];
     KM.publish(DT.score(A.same, A.f1));
+    window.TRANSITIONS = [[A.proof - .1, A.proof + .2, 'before flashes back']];
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
@@ -85,7 +86,7 @@
     var calm = 1 - .8 * k1, sw = Math.sin(t * 1.9) * 9 * calm;
     for (var i = 0; i < 4; i++) $('bm' + i).setAttribute('transform', 'rotate(' + (sw * (i % 2 ? -1 : 1) + Math.sin(t * 1.3 + i) * 4 * calm).toFixed(2) + ' ' + (67 + i * 90) + ' 0)');
     BOK.forEach(function(b){ b.e.setAttribute('opacity', (b.o * (.6 + .4 * Math.sin(t * 3.1 + b.ph) * calm + .4 * (1 - calm))).toFixed(3)); });
-    var jp = Math.max(0, Math.sin(Math.PI * P(t, A.e2, A.e2 + .45))) + .7 * Math.max(0, Math.sin(Math.PI * P(t, A.e2 + .5, A.e2 + .95))); $('crowd').setAttribute('transform', 'translate(0,' + (-22 * jp).toFixed(2) + ')');   // the crowd jumps on the payoff
+    var jp = Math.max(0, Math.sin(Math.PI * P(t, A.e2, A.e2 + .45))) + .7 * Math.max(0, Math.sin(Math.PI * P(t, A.e2 + .5, A.e2 + .95))); $('crowd').setAttribute('transform', 'translate(0,' + (-9 * jp).toFixed(2) + ')');   // the crowd jumps on the payoff
     $('beams').style.opacity = (1 - .3 * k1 + .3 * P(t, A.e2, A.e2 + .5)).toFixed(3);
     $('ph').style.filter = 'saturate(1)';
     var dk = $('dk'); dk.style.opacity = (.85 * k1).toFixed(3); dk.style.transform = 'scaleY(' + (.2 + .8 * k1).toFixed(3) + ')';
@@ -95,13 +96,13 @@
       var w = el.offsetWidth; el.style.transform = 'translate(' + ((BW - w) / 2).toFixed(1) + 'px,' + mix(a.y, b.y, k3 > 0 ? cl((t - t0f) / .45) : 0).toFixed(1) + 'px)';
       el.style.textShadow = kf >= 1 ? '0 2px 10px rgba(0,0,0,.35)' : 'none'; });
     // the payoff wave: the title's letters hop one after another (a new element in the tail, above the captions)
-    var tl = $('t0')._ch || []; if (t >= A.e2 - .05) tl.forEach(function(s, i){ var u = P(t, A.e2 + i * .05, A.e2 + i * .05 + .4); s.style.transform = 'translateY(' + (-14 * Math.sin(Math.PI * u)).toFixed(2) + 'px)'; s.style.color = u > 0 && u < 1 ? '#ffc44d' : '#ffffff'; });
+    var tl = $('t0')._ch || []; if (t >= A.e2 - .05) tl.forEach(function(s, i){ var u = P(t, A.e2 + i * .05, A.e2 + i * .05 + .4); s.style.transform = 'translateY(' + (-7 * Math.sin(Math.PI * u)).toFixed(2) + 'px)'; s.style.color = u > 0 && u < 1 ? '#ffc44d' : '#ffffff'; });
     DT.mood(t, .34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)));
     DT.sweep(t, [A.d1, A.d2, A.d3, A.readable]);
     DT.hook(t, '<i>Hard</i> <i>to</i> <em><i>read.</i></em>', A.hook);
     // frame 0: the problems ringed (the words on the glare, the small print with nothing behind it)
     var ro = 1 - P(t, A.turns - .3, A.turns);
-    [[.35, { x: BX + 20, y: BY + 66, w: 360, h: 66, r: 14 }, 'WHITE ON GLARE', BX + 8, BY + 334], [.65, { x: BX + 30, y: BY + 138, w: 340, h: 100, r: 14 }, 'NOTHING BEHIND IT', BX + 190, BY + 334]].forEach(function(r, i){
+    [[.35, { x: BX + 20, y: BY + 66, w: 360, h: 66, r: 14 }, 'WHITE ON GLARE', BX + 8, BY + 334], [.65, { x: BX + 30, y: BY + 150, w: 340, h: 94, r: 14 }, 'NOTHING BEHIND IT', BX + 190, BY + 334]].forEach(function(r, i){
       DT.box('ring' + i, r[1], ro, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], ro, 'r sm'); });
     DT.chip('busy', 'TOO <b>BUSY</b>', 300, 396, P(t, A.busy - .1, A.busy + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
     DT.chip('calm', 'WORDS NEED <b>CALM</b>', 100, 396, P(t, A.calm - .1, A.calm + .2) - P(t, A.f1 - .2, A.f1 + .1));
@@ -113,16 +114,16 @@
     var sc = P(t, A.scan, A.scan + 1.05); DT.line('scan', BX + 4, BY + 80 + sc * 170, BX + BW - 4, BY + 80 + sc * 170, sc > 0 && sc < 1 ? 1 : 0, '#ffb35a', 3);
     DT.chip('c2', 'MAKE IT <b>BOLD</b>', 300, 396, P(t, A.bold, A.bold + .3) - P(t, A.f3 + .25, A.f3 + .45));
     // fix three: the band, measured across the poster
-    DT.sel('bns', { x: BX, y: BY + 140, w: BW * cl(k2), h: 112 }, P(t, A.band - .1, A.band + .2) * (1 - P(t, A.d3 + .2, A.d3 + .5)));
+    DT.sel('bns', { x: BX, y: BY + 154, w: BW * cl(k2), h: 100 }, P(t, A.band - .1, A.band + .2) * (1 - P(t, A.d3 + .2, A.d3 + .5)));
     DT.chip('c3', 'DATE ON A <b>BAND</b>', 150, 396, P(t, A.band, A.band + .3) - P(t, A.same + .25, A.same + .45));
     [[A.d1, BX + BW / 2, BY + 300], [A.d2, BX + BW / 2, BY + 120], [A.d3, BX + 40, BY + 196]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
     $('board').style.boxShadow = '0 30px 70px rgba(0,0,0,.6),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
     DT.proof(t, A.proof, { flash: .5, x: 30, y: 712, s: .26, tx: 52, ty: 698 });
-    DT.chip('win', 'SAME POSTER · <b>READABLE</b>', 150, 396, P(t, A.readable - .2, A.readable + .15) - P(t, A.e2 - .2, A.e2 + .1), 'g'); DT.chip('win2', 'DIM · BOLD · <b>BAND</b>', 150, 396, P(t, A.e2, A.e2 + .3), 'g');
+    DT.chip('win', 'SAME PHOTO · <b>READS</b>', 150, 396, P(t, Math.max(A.readable - .2, A.same + .5), Math.max(A.readable - .2, A.same + .5) + .3) - P(t, A.proof - .2, A.proof - .05), 'g'); DT.chip('win2', 'DIM · BOLD · <b>BAND</b>', 150, 396, P(t, A.e2, A.e2 + .3), 'g');
     // the tail: a green frame on the title with a spark, then one on the band
     DT.box('ok', { x: BX + 12, y: BY + 56, w: BW - 24, h: 206, r: 14 }, P(t, A.e1, A.e1 + .4), '#5ee0a0'); DT.burst('b3', BX + BW - 20, BY + 66, t, A.e1 + .3, '#5ee0a0');
-    DT.burst('b4', BX + 30, BY + 196, t, A.e2 + .3, '#5ee0a0');
+    DT.burst('b4', BX + 30, BY + 196, t, A.e2 + .3, '#5ee0a0'); DT.burst('b5', BX + BW - 30, BY + 200, t, A.e2 + 1.1, '#ffc44d');
     var cp = DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.same, end: 1, sym: '✓', label: 'READABLE' }]);
     DT.title(t, [{ t: A.hook, html: 'White on a <em>busy photo</em>' }, { t: A.f1, html: 'Fix 1 · <em>dim the photo</em>' }, { t: A.f2, html: 'Fix 2 · <em>bold words</em>' }, { t: A.f3, html: 'Fix 3 · <em>a solid band</em>' }, { t: A.same, html: 'Same photo. <em>Readable.</em>' }]);
@@ -137,12 +138,12 @@
 /*script:end*/
 
 /*stage:begin*/
-<div style="position:absolute;inset:0;background:linear-gradient(180deg,#6a4a5e 0%,#5a3e56 50%,#46344e 100%)"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,#8a6478 0%,#765470 50%,#5e4668 100%)"></div>
 <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(30,16,28,.55) 0 3px,transparent 3px 34px),repeating-linear-gradient(90deg,rgba(30,16,28,.45) 0 3px,transparent 3px 70px);opacity:.8"></div>
 <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 34px,transparent 34px 68px),repeating-linear-gradient(90deg,rgba(150,80,64,.28) 0 35px,rgba(110,60,56,.2) 35px 70px)"></div>
 <div style="position:absolute;left:290px;top:0;width:30px;height:1040px;background:linear-gradient(90deg,#2a2f3e,#596178 45%,#232836);box-shadow:6px 0 14px rgba(0,0,0,.4)"></div>
 <div style="position:absolute;left:0;right:0;top:850px;height:190px;background:linear-gradient(180deg,#4a4a5e,#2c2c3c);box-shadow:0 -2px 0 rgba(255,200,140,.18)"></div>
 <div style="position:absolute;left:120px;top:880px;width:380px;height:60px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(255,190,110,.25),transparent 70%)"></div>
-<div class="lit" style="background:radial-gradient(42% 30% at 58% 8%,rgba(255,196,110,.75),transparent 75%)"></div>
-<div class="lit" style="background:radial-gradient(60% 40% at 50% 55%,rgba(255,170,90,.22),transparent 75%)"></div>
+<div class="lit" style="background:radial-gradient(42% 30% at 58% 8%,rgba(255,206,130,.9),transparent 75%)"></div>
+<div class="lit" style="background:radial-gradient(60% 40% at 50% 55%,rgba(255,180,110,.34),transparent 75%)"></div>
 /*stage:end*/
