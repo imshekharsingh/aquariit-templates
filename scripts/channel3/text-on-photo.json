@@ -3,7 +3,7 @@
  "seek": "scripts/channel3/text-on-photo.html",
  "engine": "design",
  "dt": 2,
- "dur": 21,
+ "dur": 19.6,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -58,7 +58,7 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 21,
+    "to": 19.6,
     "sides": [
      "left",
      "right",
@@ -73,6 +73,23 @@
    400,
    470,
    776
+  ],
+  "textclear_ok": [
+   [
+    0,
+    9.6,
+    "the poster's own words sit on the busy photo before and while it is dimmed; that contact is the flaw being fixed"
+   ],
+   [
+    10.2,
+    11.7,
+    "the amber scan line crosses the poster's lines while they turn bold"
+   ],
+   [
+    13.9,
+    19.8,
+    "the BEFORE flash covers the design for half a second, then a miniature of the before poster lies over the crowd; its tiny words are part of that picture"
+   ]
   ]
  },
  "before": {
