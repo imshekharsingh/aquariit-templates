@@ -997,6 +997,57 @@
         }
       ],
       "next": null
+    },
+    {
+      "id": "kit-2d5-depth",
+      "name": "2.5D look gets 3D's depth",
+      "account": "other",
+      "stage": "render",
+      "line": "Built: the 2.5D map kit gets light, materials, contact shadows, shadow-first builds and one 3D object moment; the study sample passes the glitch check; render 1 next.",
+      "pct": null,
+      "updatedAt": "2026-11-28T02:04:00Z",
+      "history": [
+        {
+          "at": "2026-11-28T02:04:00Z",
+          "stage": "render",
+          "line": "Built: the 2.5D map kit gets light, materials, contact shadows, shadow-first builds and one 3D object moment; the study sample passes the glitch check; render 1 next."
+        }
+      ],
+      "steps": [
+        {
+          "name": "Compare",
+          "state": "done"
+        },
+        {
+          "name": "Build",
+          "state": "done"
+        },
+        {
+          "name": "Glitch check",
+          "state": "done"
+        },
+        {
+          "name": "Render",
+          "state": "now"
+        },
+        {
+          "name": "Checks",
+          "state": "next"
+        },
+        {
+          "name": "Critic",
+          "state": "next"
+        },
+        {
+          "name": "Done",
+          "state": "next"
+        }
+      ],
+      "next": {
+        "who": "github",
+        "action": "Render 1 of the study sample (about 15 min), then Output QA",
+        "eta": "about 15 min"
+      }
     }
   ]
 }

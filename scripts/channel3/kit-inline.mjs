@@ -10,7 +10,8 @@ export const KITS = [{ file: 'kit3d.js', begin: '<script>/*kit:begin*/', end: '/
   { file: '../explainer/kitmotion.js', begin: '/*kitmotion:begin*/', end: '/*kitmotion:end*/', skip: 0, name: 'web motion' },   // @webin20sec (scripts/explainer/newweb.mjs)
   { file: '../explainer/kitsfx.js', begin: '/*kitsfx:begin*/', end: '/*kitsfx:end*/', skip: 0, name: 'web element sound' },
   { file: '../explainer/kithook.js', begin: '/*kithook:begin*/', end: '/*kithook:end*/', skip: 0, name: 'web hook' },
-  { file: '../explainer/kitsplit.js', begin: '/*kitsplit:begin*/', end: '/*kitsplit:end*/', skip: 0, name: 'web before/after split' }];   // task 16, 28 Nov 2026   // 8 Nov 2026: size-matched sound + entrance variants
+  { file: '../explainer/kitsplit.js', begin: '/*kitsplit:begin*/', end: '/*kitsplit:end*/', skip: 0, name: 'web before/after split' },
+  { file: '../explainer/kitmap.js', begin: '/*kitmap:begin*/', end: '/*kitmap:end*/', skip: 0, name: '2.5D map (depth)' }];   // task 22, 28 Nov 2026   // task 16, 28 Nov 2026   // 8 Nov 2026: size-matched sound + entrance variants
 export function kitText(k){ return readFileSync(new URL('./' + k.file, import.meta.url), 'utf8').trim().replace(/<\/script/gi, '<\\/script'); }
 // the kit's copy in a scene (null when the scene has none)
 export function kitCopy(html, k){ const a = html.indexOf(k.begin), b = html.indexOf(k.end); return a < 0 || b < a ? null : html.slice(a + k.begin.length, b).trim(); }
