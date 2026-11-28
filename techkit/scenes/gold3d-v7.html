@@ -44,7 +44,7 @@ const PAY = C.same + .4;
 
 // ---------- the cast ----------
 const TILT = +(window.__TILT ?? .15);   // plan critic item 4: Notes leans back less while it slams in, so frame 0 reads "Notes" (the label faced the key light)
-const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slam', s: -1, amp: .4, d: 1.4, tilt: TILT }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'rise', s: 1, amp: .5, d: .5 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'slideTurn', s: 1, amp: .45, d: .5 }];
+const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slam', s: -1, amp: .4, d: 1.4, tilt: TILT }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'rise', s: 1, amp: .5, d: .45 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'slideTurn', s: 1, amp: .45, d: .45 }];
 const TOOLS = [['Pay', 0x6b3cff, 'pay'], ['Photos', 0xe0449a, 'photos'], ['Files', 0x2f7bff, 'files'], ['Maps', 0x1fb86a, 'maps'], ['Calendar', 0xff6a3c, 'calendar'], ['Docs', 0x7a4cff, 'files'], ['Tasks', 0x1294d6, 'tasks'], ['Music', 0xd9a21b, 'music']];
 const WALL_Y = 2.3, WALL_Z = -6.5, HUB_P = V(0, 1.25, -2.2), NEW_P = [2.85, HUB_P.y - .05, -1.7], R = .048, FL = R + .006;
 const AX = (i) => (i - 1) * 1.88, TX = (j) => (j % 2 - .5) * 2.2, TY = (j) => WALL_Y + Math.floor(j / 2) * 1.45, SIDE = (j) => (j % 2 ? 1 : -1);
@@ -381,7 +381,7 @@ function frame(t) {
     const gs = prog(t, C.eleven + .4 + q.k * .03, C.eleven + 1.4 + q.k * .03);   // fix 12 (U8): the green sweep along the 11, the before/after rhyme
     q.w.pulse(Math.max(prog(t, s0 + .45, s0 + .8), gs * .9, prog(t, PAY + 1.6 + q.k * .03, PAY + 2.0 + q.k * .03)), t, (gs > 0 && gs < 1) || prog(t, PAY + 1.6, PAY + 2.4) > 0 ? .45 : 1); });
   leds.forEach((m, k) => { const on = sm(prog(t, hubT(k) + .4, hubT(k) + .5)); m.material.color.setRGB(lerp(.05, .3, on), lerp(.12, 1.4, on), lerp(.08, .7, on)); });   // softer LEDs (small bright dots twinkled in fast moves)
-  W3D.enter(newTool, 'pop', eout(prog(t, NEW_IN, NEW_IN + .6)), { side: 1 }); if (newTool.visible && t > NEW_IN + .6) newTool.rotation.y = Math.sin(t * .8) * .04 * sm(prog(t, NEW_IN + .6, NEW_IN + 1.1));   // a steady grow (no fast middle), the sway fades in
+  W3D.enter(newTool, 'pop', eout(prog(t, NEW_IN, NEW_IN + .45)), { side: 1 }); if (newTool.visible && t > NEW_IN + .6) newTool.rotation.y = Math.sin(t * .8) * .04 * sm(prog(t, NEW_IN + .6, NEW_IN + 1.1));   // a steady grow (no fast middle), the sway fades in
   newW.reveal(sm(prog(t, NEW_W[0], NEW_W[1])) * .3 + prog(t, NEW_W[0], NEW_W[1]) * .7);   // a near-even speed (the tip swept past the close camera) newW.pulse(Math.max(prog(t, NEW_W[1], NEW_W[1] + .6), prog(t, PAY + 1.6, PAY + 2.1), prog(t, TOTAL - 1.3, TOTAL - .7)));
   // light sweeps: Notes (big moment 1), along one tangle cable plug to plug for 1 s (big moment 2), the hub (big moment 3), green along the 11
   let sw = 0; sweep.color.setRGB(1, .95, .86);
