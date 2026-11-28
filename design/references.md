@@ -271,3 +271,4 @@ Not taken: their brands, logos, screens, palettes, faces and scripts; their 35-7
 FOR V7 (owner yes 28 Nov, part b): build items 1-3 and 5 INSIDE objects already on screen (app screens alive, a connection-log card ticking each
 plug, stamps TANGLED / 24 CABLES / 11 on the objects, a selection box on each number), so v7 reaches 2.5+ actions a second, 2+ moving at once
 and no gap over 1.2 s, without more camera moves (fast 3D moves strobe: renders 2-4). The 2.5D builders take the same list.
+Sound hits a second (SOUND, scripts/qa/action-count.py, refs-study 28 Nov; voice syllables count): references 15 / 16 / 18 / 19 = 1.04 / 1.05 / 1.32 / 1.21, longest quiet 0.8 / 0.7 / 0.4 / 0.2 s; ours: 2.5D tech gold (ai-words) 1.15 (quiet 0.1 s), web popover 1.07 (quiet 0.1 s). Sound is not where we lag: ours matches the references, the gap is in the picture (popover still 49 %, longest picture gap 1.7-2.6 s).
