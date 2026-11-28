@@ -60,7 +60,7 @@ FB = {   # the owner-feedback.md lines each check guards
 T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=.95, stray_p=.5,
          sat_s=.6, sat_v=.4, sat_frac=.25, hue_jump=45, ring_sat=.12,
          edge_frac=.06, edge_dist=48, edge_secs=1.0,
-         ocr_conf=70, num_win=1.0, num_pre=2.0, num_step=.25, num_conf=80, num_h=.03, num_said=.5, sync_win=1.0, sync_pre=.5, sync_conf=50, sync_ratio=.8,
+         ocr_conf=70, num_win=1.0, num_pre=2.0, num_step=.25, num_conf=80, num_still=4.0, num_h=.03, num_said=.5, sync_win=1.0, sync_pre=.5, sync_conf=50, sync_ratio=.8,
          big_h=.08, big_edge=.03, big_ocr_h=.05, big_secs=.3, subs={'tech': [.66, .84], 'c3': [.66, .80], 'web': [.70, .90]},
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
          mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
@@ -719,6 +719,20 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
             if tr: tr[3].append((tt, v)); tr[4].append((tt, v, round(cf), round(wd), round(h)))
             else: tracks.append([cx, cy, h, [(tt, v)], [(tt, v, round(cf), round(wd), round(h))]])
     counters = [x for x in tracks if len({v for _, v in x[3]}) >= 2]
+    # 28 Nov 2026: a closed padlock icon was read as 6, 8, 6, 4, 6 on a STILL region (OCR noise). A place whose pixels do not change between the reads
+    # is no counter, whatever the OCR says; a region whose pixels change and whose value disagrees with the voice still fails.
+    if counters:
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as td2:
+            def still(x):
+                crops = []
+                for tt, v, cf, wd, hh in sorted(x[4]):
+                    p2 = os.path.join(td2, f's{tt:.2f}.png'); grab(mp4, tt, p2)
+                    im = Image.open(p2).convert('L'); cx, cy = x[0], x[1]; w2, h2 = max(x[5]) * .6 + 10, x[2] * .6 + 10
+                    crops.append(np.asarray(im.crop((int(cx - w2), int(cy - h2), int(cx + w2), int(cy + h2))), float))
+                return len(crops) >= 2 and max(float(np.abs(c - crops[0]).mean()) for c in crops[1:]) < T['num_still']
+            moved = [x for x in counters if not still(x)]
+        counters = moved
     bad = []
     for v, ts in said:
         for x in counters:
