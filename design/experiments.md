@@ -437,3 +437,12 @@ not the format, is the lever (hand to the research round).
 - 28 Nov: tech's second real 2.5D map reel (showreel-tech-tag-relay, experiment tech-2d5-map) explains a thing nobody sees (a lost tag found through strangers' devices) from a find-my-tag window and ends by moving back to frame 0's framing for the loop; yesterday's map reel is read at 24 h; a long spoken sentence (10 words in 3.7 s) fails PACE at 4.6 words/s, so keep step sentences to 8-9 words.
 - 28 Nov (lesson): the real voice ends about 1 s after the simulated one, so a loop-home move planned on the simulated end clipped the last word; plan the payoff hold to the real voice end plus 0.2 s and start the move after it.
 
+
+## E31 · @webin20sec: 25-30 s designed reels vs the usual length (owner, 28 Nov 2026; from Wed 3 Dec, after the slot test ends 2 Dec)
+- Owner: "it totally depends on how much thought we have put around our designing": length follows the design, not a rule. No channel rename
+  until this decides. Not taken (owner, 28 Nov): "how it's made" posts (not asked for by our audience).
+- Change: 3 web reels at 25-30 s whose extra time is designed beats (a new action at least every second, no still over 1.2 s by
+  scripts/qa/action-count.py), against the channel's usual length. Config `"experiment": {"id": "web-long-designed", "change": "25-30 s designed beats", "vs": "median"}`.
+- Read at 24 h on watch seconds, hold % and saves + shares per 1k reach against the last 7 web reels' median (hold % is compared with
+  watch seconds, since a longer reel lowers hold % by length). WIN = watch seconds above the median AND saves + shares per 1k at least the median.
+  Keep longer web reels if 2 of 3 WIN; then the owner decides about the channel name.
