@@ -43,7 +43,15 @@ A 1-frame-a-second sheet misses most small actions (a screen typing, a ripple, a
 3. Layers: count the elements on screen at once (hero, supporting objects, small detail, type, background life) at 3 moments.
 4. The card gets an "Action count" line: reference vs ours (actions a second in the picture, moving at once, longest gap) and the 3-5 action kinds
    we lack, each as a kit piece to build (owner: actions inside objects already on screen are cheap; more camera moves are not).
+5. Sound (28 Nov 2026): the same script also prints SOUND (audible hits a second: spectral-flux peaks over a floor, with a per-second list) and QUIET
+   (the longest stretch with no hit and no audible level). refs-study prints them for references and our reels together; read them next to the
+   TIMELINE (voice syllables count as hits, so compare like with like). Add one line "Sound hits a second: reference vs ours, longest quiet" to the card.
 The count is a guide, not a target to game: captions and camera moves are kept out of "picture" actions on purpose.
+
+## Done means built (owner, 28 Nov 2026)
+A study is finished only when it leaves at least one kit piece (or a dated todo line naming it) and one reviewer question in design/critic.md, and the
+action and sound count of the reference next to one of our reels. Weekly, the spare usage night counts our newest reels against the kept references
+(design/references.md "STUDY RULES").
 
 ## Every layer (what it is, how we would build it)
 

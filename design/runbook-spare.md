@@ -15,6 +15,7 @@ VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY, published as Worker secrets by the pipelin
    once, no other work.
 2. If yes: growth work only (owner, 5 Nov 2026: no surplus reels, no app work):
    (0) the weekly research pass (design/runbook-daily.md, "Research what works now");
+   (0a) the reference re-measure (owner, 28 Nov 2026; design/references.md "STUDY RULES" 3): "Owner answers" refs-study on the kept references and each channel's newest reel, one gap line under each reference card;
    (0b) the style ranking (design/what-works.md "Style record": join each reel's "style" with its settled numbers, rank per channel, replace the "Style ranking" block);
    (1) plan next week's topics in design/topics.md against the rulebooks and that research;
    (2) sharpen the rulebooks (design/rules-*.md) from the numbers, analysis of what held and what did not;

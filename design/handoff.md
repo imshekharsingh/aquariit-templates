@@ -439,6 +439,8 @@ for (owner, 20 Nov 2026). The one thing it never does: create, change or fire sc
 Keeping the two accounts in sync is the main account's job; this account only has to leave a clear trail.
 Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md. Nothing else up front.
 - 28 Nov 11:10 IST, other account: web focus test, scene and preview config built (scripts/previews/web-popover-focus.*), local stills clear (SUBJECT FILL 41%, OVERLAP none, SAFE ZONE ok, FLOW ok); push, merge and ONE full-length preview render next (showreel-50-popover and its MP4 untouched).
+- 28 Nov IST, other account: kit-ref pieces built on claude/kit-ref-pieces (no renders): scripts/explainer/kitref.js (KREF.numberFill, KREF.keyword, KREF.handoff; join KM and KMAP when present; inlined via the kitref markers), test scene scripts/previews/kit-ref-pieces.html with one phone-size stills sheet checked, SOUND HITS and QUIET lines added to scripts/qa/action-count.py (so refs-study prints them). Next: refs-study run, numbers into references.md.
+- 28 Nov 11:55 IST, other account: web focus test, preview rendered and Output QA run by hand on it: everything passes except HUE, which only compares the test with its own original (waived, same reel). Reviewer session started next; swap only if READY and Inputs says the owner likes it before 17:30.
 
 ## How to work
 - Use the cheaper model unless the task needs more. One task per session.

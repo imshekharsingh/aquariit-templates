@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/ref-process-rules · other account (Inputs): reference study rules
+- Owner yes: videos kept 30 days after close (app change queued to its own session), a study is done only with a kit piece + a reviewer question, weekly re-measure on the spare night. design/references.md "STUDY RULES", reverse-any-video "Done means built", runbook-spare (0a).
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action list from the count, and a clearer Today board
 - design/references.md "R-ref 28 Nov": references 15-19 make 2.4-3.4 actions a second, v7 1.8 (ACTION LIST for v7 part b). References 9-14 were deleted when closed.
 - Board (owner: "there's no clarity"): src/journey.js puts a hidden reel dated today on the board as held; templates/index.html: [hidden] always hides, one plain line per card, folded cards, no model names, the top line names questions / reels to post.
@@ -1429,3 +1431,14 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/numbers-icon-fix4 · NUMBERS ignores still regions (item 6, follow-up)
 - Done: the padlock read as 6, 8, 6, 4, 6 at 56x72 px (aspect like a digit, so shape alone cannot tell it); output-qa.py drops a changing-value place whose pixels are static across the reads (a region that moves and disagrees with the voice still fails); the read dump prints on a FAIL.
 - Left: Output QA re-run on showreel-tech-tag-relay, board check, App probe.
+## 2026-11-28 · claude/kit-ref-pieces · Kit reference pieces: number fill, keyword jump, blur hand-off, sound count
+- Done: scripts/explainer/kitref.js (KREF.numberFill with tick cues, KREF.keyword with reserved box and width cut, KREF.handoff swap and focus modes; kit-inline entry), local test scene scripts/previews/kit-ref-pieces.html (one stills sheet, no render), SOUND and QUIET lines in scripts/qa/action-count.py, skill "Action count" updated.
+- Left: refs-study run (ids 15, 16, 18, 19; showreel-tech-ai-words, showreel-50-popover), SOUND numbers into references.md.
+
+## 2026-11-28 · claude/refs-keep-30d · Closed references keep their video 30 days
+- Done: Close sets closed_at and keeps the file; purgeClosedRefs (src/worker.js) deletes it 30 days after closing, run by the daily cron and by the refs list and close calls; GET /api/refs/<id>/file keeps working until then; app text says "kept 30 days, then deleted"; cases in scripts/qa/refs-test.mjs (kept, served, 29 days kept, 31 days purged, 404 after). npm run check passes.
+- Left: App probe after deploy, then the APP PROBE line in design/handoff.md Progress.
+
+## 2026-11-28 · claude/web-popover-focus-qa · Web popover focus test: preview rendered, Output QA by hand
+- Done: one full-length preview render of showreel-50-popover-focus (run 46113700512, R2 study/); Output QA by hand on the preview MP4: all pass except HUE against its own original (waived); voice ends 12.6 s of 15 s. Reviewer session started.
+- Left: the reviewer's verdict in review/web/showreel-50-popover-focus.md; swap into the 19:00 post only on READY plus Inputs saying the owner likes it before 17:30 IST.
