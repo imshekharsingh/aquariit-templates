@@ -1452,3 +1452,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/critic-popover-focus · Reviewer, showreel-50-popover-focus study preview: READY (stills only)
 - Done: independent review of the focus hand-off preview (run 46113700512, Output QA 46116075083) from local stills and the logged QA; the real MP4 could not be fetched (proxy refused the host). Lit pane is the talked-about one, dark pane stays maroon and readable, hand-over about 0.4 s on "The fix:", soft glow, both lit for the last 1.4 s. STOP 7.5, REWATCH 7.5, PREMIUM 7.5 / 8 / 7.5. Modest reach win over the original.
 - Left: the owner decides the swap; if swapped, check on the real MP4 that the green burst sits inside the "popover" sentence; next version keeps BEFORE's cut menu open through the hand-over.
+
+## 2026-11-28 · claude/qa-waiver-dash · Waiver matching reads the annotation's "- " prefix (item 6)
+- Done: the Output QA failure annotation arrives as "- NUMBERS: ..." so the first waiver version (claude/qa-waiver) never matched; qaStage strips the prefix; test case with the real form. App probe after the first version still showed an empty tech Ready box, which is how it was found.
+- Left: App probe again.
