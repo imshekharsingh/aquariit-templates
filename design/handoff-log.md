@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/critic-popover-focus-2 · main account: reviewer verdict on the web focus test
+- Real MP4 vs the original: READY (nothing broken) but KEEP ORIGINAL at 19:00: the green breakout lands ~1 s before "popover" and BEFORE's menu is closed as the light leaves it. Fix for a next version in review/web/showreel-50-popover-focus.md.
 ## 2026-11-28 · claude/ref-process-rules · other account (Inputs): reference study rules
 - Owner yes: videos kept 30 days after close (app change queued to its own session), a study is done only with a kit piece + a reviewer question, weekly re-measure on the spare night. design/references.md "STUDY RULES", reverse-any-video "Done means built", runbook-spare (0a).
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action list from the count, and a clearer Today board
