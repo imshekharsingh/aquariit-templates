@@ -1417,3 +1417,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/c3-text-on-photo-28nov-ready · Turns Out: showreel-c3-text-on-photo render 3 READY (critic), posts 14:00 IST
 - Done: render 1 failed PACE and ELEMENTS, render 2 got NOT READY (frame-0 labels, flat finish), render 3 (run 46106428084, the owner's yes) passed Output QA and the independent critic (opus) wrote READY on the real MP4 (PREMIUM 7.5 / 7.5 / 7.5, STOP 7, REWATCH 7). captions.json: c3, postOn 2026-11-28, postAt 14:00, hidden and hold removed.
 - Left: post at 14:00 IST. Next Turns Out reel: critic's notes in the review file (the MAKE IT BOLD chip lingers a little; a larger BEFORE thumbnail).
+
+## 2026-11-28 · claude/web-popover-focus · Web popover focus hand-off test (study preview, owner's idea)
+- Done: preview copy of showreel-50-popover with the focus hand-off (BEFORE lit with a soft glow while the problem is told, AFTER dark and blurred; hand-over at the fix word in .5 s, the AFTER menu opens to the top layer as it lands; both lit for the last second): scripts/previews/web-popover-focus.html and .json, review/web/showreel-50-popover-focus.md, Inbox > Tests entry. showreel-50-popover and its MP4 untouched. Local stills clear (SUBJECT FILL 41%, OVERLAP none, SAFE ZONE ok, FLOW ok).
+- Left: one full-length preview render (R2 study/), Output QA, reviewer session; the swap into the 19:00 post only if the reviewer writes READY and Inputs says the owner likes it before 17:30 IST.

@@ -438,6 +438,7 @@ For sessions on the second account. The owner gives it its tasks in its own chat
 for (owner, 20 Nov 2026). The one thing it never does: create, change or fire scheduled tasks; those belong to the main account.
 Keeping the two accounts in sync is the main account's job; this account only has to leave a clear trail.
 Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md. Nothing else up front.
+- 28 Nov 11:10 IST, other account: web focus test, scene and preview config built (scripts/previews/web-popover-focus.*), local stills clear (SUBJECT FILL 41%, OVERLAP none, SAFE ZONE ok, FLOW ok); push, merge and ONE full-length preview render next (showreel-50-popover and its MP4 untouched).
 
 ## How to work
 - Use the cheaper model unless the task needs more. One task per session.

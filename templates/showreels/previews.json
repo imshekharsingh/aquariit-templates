@@ -98,6 +98,16 @@
    "added": "2026-11-27",
    "needsOwner": false,
    "ask": "Nothing to check: a study record (critic decides)."
+  },
+  {
+   "name": "showreel-50-popover-focus",
+   "channel": "web",
+   "title": "Focus hand-off test: the popover reel",
+   "about": "Same popover reel (topic, script, voice, timing), new look: the BEFORE card is lit with a soft glow while the problem is told, AFTER dark and blurred; at the fix word the focus hands over in half a second and the menu opens to the top layer; both lit for the last second. Preview of the owner's idea, never posted on its own.",
+   "techniques": "focus hand-off between a lit and a dimmed pane (brightness and blur, hue kept), soft glow edge, hand-over on the fix word, both lit for the proof frame.",
+   "added": "2026-11-28",
+   "needsOwner": false,
+   "ask": "Nothing to check: a study record (the reviewer decides)."
   }
  ],
  "v": 20
