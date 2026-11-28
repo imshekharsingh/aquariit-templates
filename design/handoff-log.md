@@ -1370,3 +1370,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/kit-2d5-depth-r2 · 2.5D depth study: render 1 fixes (task 22)
 - Done: channel tech, payoff end (DEAD), phone move tied to step one, flat line caps; local FLICKER pass.
 - Left: render 2 (the last), Output QA, ready for critic.
+## 2026-11-28 · claude/t22-ready · 2.5D depth study ready for critic (task 22)
+- Done: render 2 Output QA (FLICKER and DEAD pass); review file for the critic.
+- Left: the main account's critic.

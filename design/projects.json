@@ -1002,10 +1002,10 @@
       "id": "kit-2d5-depth",
       "name": "2.5D look gets 3D's depth",
       "account": "other",
-      "stage": "render",
-      "line": "Render 1: no glitches (FLICKER passes) but the end held still and the first card built over the phone; both fixed; render 2 (the last) next.",
+      "stage": "critic",
+      "line": "Render 2 (the last) passes the glitch and still-frame checks; ready for the critic. If READY, tech builders use the kit from the next day.",
       "pct": null,
-      "updatedAt": "2026-11-28T02:40:00Z",
+      "updatedAt": "2026-11-28T02:58:00Z",
       "history": [
         {
           "at": "2026-11-28T02:04:00Z",
@@ -1016,6 +1016,11 @@
           "at": "2026-11-28T02:40:00Z",
           "stage": "render",
           "line": "Render 1: no glitches (FLICKER passes) but the end held still and the first card built over the phone; both fixed; render 2 (the last) next."
+        },
+        {
+          "at": "2026-11-28T02:58:00Z",
+          "stage": "critic",
+          "line": "Render 2 (the last) passes the glitch and still-frame checks; ready for the critic. If READY, tech builders use the kit from the next day."
         }
       ],
       "steps": [
@@ -1033,15 +1038,15 @@
         },
         {
           "name": "Render",
-          "state": "now"
+          "state": "done"
         },
         {
           "name": "Checks",
-          "state": "next"
+          "state": "done"
         },
         {
           "name": "Critic",
-          "state": "next"
+          "state": "now"
         },
         {
           "name": "Done",
@@ -1049,9 +1054,9 @@
         }
       ],
       "next": {
-        "who": "github",
-        "action": "Render 2 (the last), then Output QA",
-        "eta": "about 30 min"
+        "who": "main",
+        "action": "Main account's critic judges it against the reference and the 27 Nov 2.5D reel",
+        "eta": null
       }
     }
   ]
