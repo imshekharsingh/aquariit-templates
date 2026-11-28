@@ -1357,3 +1357,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/c3-text-on-photo-28nov-r2 · Turns Out text-on-photo: render 1 failed Output QA (PACE, ELEMENTS), fixed for render 2
 - Done: render 1 (run 46087823761) failed PACE (two sentences of short words read at 6.4 and 4.7 words/s) and ELEMENTS (3.6 s with nothing new at the end). Sentences 6 and 7 rewritten ("Then add a solid band." / "Now it reads, even from far away."), reel cut from 19.6 s to 17.4 s. preflight-all PASS 757435d0, npm run check passes.
 - Left: merge, render 2 (the last without the owner's yes), Output QA, critic.
+## 2026-11-28 · claude/kit-2d5-depth · 2.5D map kit with 3D's depth (task 22)
+- Done: comparison page, scripts/explainer/kitmap.js (KMAP.card / build / object), kit-inline entry, study sample scripts/previews/tech-2d5-depth; local FLICKER pass.
+- Left: render 1, Output QA, 2.5D depth ready for critic.
