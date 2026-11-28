@@ -132,3 +132,7 @@ The critic is also the design lead. After the fault check, always:
 ## Item 20 format (owner, 22 Nov 2026)
 The verdict line must contain exactly `CRITIC: READY` or `CRITIC: NOT READY` (26 Nov: a critic wrote "CRITIC 2: READY", the app could not read it and showed a READY tech reel as failed). A later pass appends a new line BELOW the old ones; the app reads the last one.
 The app's Journey shows only the start of the critic line to the owner, so write it plain first: `CRITIC: NOT READY: <one plain sentence the owner understands: what is wrong, and where in seconds>` and only then `Detail: ...` with question numbers, frames and the fix. No question numbers in the first sentence. Example: `CRITIC: NOT READY: the "10:00" time prints over the BEFORE label at 11-13 s. Detail: questions 2 and 35, ...`. `CRITIC: READY` needs no sentence. The app shows the first sentence (up to "Detail:") and the rest under "More"; older files without "Detail:" still work.
+
+## Motion density, from the reference lab (owner yes 28 Nov 2026; design/references.md "Lab results 28 Nov")
+Ask on every reel: (1) is any still over 1.5 s with nothing moving inside an object on screen (the references' longest still gap is 1.4-2.6 s, ours up to 3.5 s)? (2) is there a high sound tick wherever a small thing changes (chip, row, toggle, number)? (3) are the sound hits no more than about 6 dB over the bed? Name the second of each miss.
+
