@@ -1003,14 +1003,19 @@
       "name": "2.5D look gets 3D's depth",
       "account": "other",
       "stage": "render",
-      "line": "Built: the 2.5D map kit gets light, materials, contact shadows, shadow-first builds and one 3D object moment; the study sample passes the glitch check; render 1 next.",
+      "line": "Render 1: no glitches (FLICKER passes) but the end held still and the first card built over the phone; both fixed; render 2 (the last) next.",
       "pct": null,
-      "updatedAt": "2026-11-28T02:04:00Z",
+      "updatedAt": "2026-11-28T02:40:00Z",
       "history": [
         {
           "at": "2026-11-28T02:04:00Z",
           "stage": "render",
           "line": "Built: the 2.5D map kit gets light, materials, contact shadows, shadow-first builds and one 3D object moment; the study sample passes the glitch check; render 1 next."
+        },
+        {
+          "at": "2026-11-28T02:40:00Z",
+          "stage": "render",
+          "line": "Render 1: no glitches (FLICKER passes) but the end held still and the first card built over the phone; both fixed; render 2 (the last) next."
         }
       ],
       "steps": [
@@ -1045,8 +1050,8 @@
       ],
       "next": {
         "who": "github",
-        "action": "Render 1 of the study sample (about 15 min), then Output QA",
-        "eta": "about 15 min"
+        "action": "Render 2 (the last), then Output QA",
+        "eta": "about 30 min"
       }
     }
   ]
