@@ -2488,7 +2488,7 @@
   ],
   "style": {
    "lengthS": 21,
-   "wordsPerS": 2.0,
+   "wordsPerS": 2,
    "shotChanges": 0,
    "hookType": "claim",
    "look": "dark",

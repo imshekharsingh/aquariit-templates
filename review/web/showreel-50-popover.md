@@ -17,7 +17,7 @@ Eye path (rule 14), one line per beat: 0-1.9 s hook top-left, then down to the t
 10. Facts: PASS: MDN popover (read 28 Nov 2026): open popovers appear in the top layer and are not influenced by parent position or overflow styling; browser-compat-data api.HTMLElement.popover: Chrome 114, Firefox 125, Safari 17; MDN overflow: hidden clips content that overflows the box; the "2 of 4" is the count of items in OUR demo card
 11. Post data: PASS: captions.json entry (web, postOn 2026-11-28, postAt 19:00 from design/slots.json, concept, experiment web-clipped-layer, palette black, style record, aiLabel false); 7 keywords, 5 hashtags
 12. Review file: PASS: this file; items 1 to 11 read PASS
-13. After the render: PENDING
+13. After the render: PASS: render 1 (Showreel run 46085484430, 28 Nov, 00:00-00:14 UTC, voice 1.5 min, capture 9 min, render 2 min): OUTPUT QA: PASS (LOUD -14.0 LUFS, true peak -2.9; SOUND 42 of 42 element cues audible, recorded CC0 samples; PACE 3.24 words/s overall, sentences 3.95 / 3.64 / 3.37 / 4.44 / 3.70, all ok; STRAY none; BULK largest 174 px; DEMO saturation 0.59 / colourfulness 40; HUE 145 vs 85, 265, 225; FOCUS subject 49 vs rest 24; BLACKBG 6; VARIETY 60% (at the limit); CALM median 0.5% / mean 2.1%; DEAD none; MUTE the fix moves 6.0% and the broken before 1.6% in 0.2 s; NUMBERS none; FLICKER WARN: one-frame jumps at 2.23, 2.47, 3.43 (52.7), 5.67, 9.63 s and A-B-A at 0.37 and 1.82 s, for the critic to look at)
 14. Cuts: PASS: FLOW: cuts 0 (2 declared transitions: the panes' split and the morph of the rule picture into the code card)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 43% (web: 35% or more)
