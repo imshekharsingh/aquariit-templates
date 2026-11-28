@@ -449,6 +449,7 @@ Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md
 - 28 Nov 13:15 IST, other account: web focus test, render 2 scene ready (owner yes): frame 0 arrives from its shadow, hand-over on fix, breakout on popover, ticks, live code card, last-2.4 s beats; scene action count 4.4 a second, no gap over 1 s. Pushing, then ONE preview render; target done by 15:30 IST.
 - 28 Nov 13:50 IST, other account: web focus test, owner's three notes built into the scene (0.35 s transitions, no waits over 0.7 s, reel 13.8 s, a colour world per pane); not rendered: the earlier render (run 46122018953) could not be cancelled here and still runs; waiting for Inputs to choose cancel (then render 2) or finish (then render 3, needs the owner's yes).
 - 28 Nov 14:00 IST, other account: web focus test, render 2 finished (run 46122018953) and Output QA by hand done: PACE 4.51 words/s on one unchanged sentence (limit 4.5) and HUE vs its own original fail, both explained; all else passes. Ready for the full-video review; action count on the MP4 not possible from here.
+- 28 Nov 15:45 IST, other account: web focus swap, the 19:00 web post is now the focus version: R2 promote of run 46122018953 over v/showreel-50-popover.mp4 (old render 3 backed up as study/showreel-50-popover-r3-backup), same reel name, captions entry and slot; no new render. App probe next.
 
 ## How to work
 - Use the cheaper model unless the task needs more. One task per session.

@@ -1505,3 +1505,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-popover-focus-qa2 · Web popover focus test: render 2 Output QA by hand
 - Done: Output QA by hand on render 2 (run 46122018953): two FAILs, both explained (PACE 4.51 words/s on an unchanged sentence against the 4.5 limit, HUE against its own original); everything else passes (DEMO 0.57, BLACKBG 6, DEAD none, MUTE 5.4%). Action count could not run on the MP4 here (host refused); scene capture 4.4 a second, longest gap 0.9 s.
 - Left: the owner-side full-video review; pace-only version on main (scripts/previews/web-popover-focus.html, 13.8 s) is NOT rendered; render 3 only with an owner yes.
+
+## 2026-11-28 · claude/web-popover-swap · Web: the 19:00 post becomes the focus version (owner yes), no new render
+- Done: R2 promote of the focus render 2 (study/showreel-50-popover-focus-preview, run 46122018953) over v/showreel-50-popover.mp4, old render 3 backed up as study/showreel-50-popover-r3-backup; swap note in review/web/showreel-50-popover.md. Same reel name, captions entry and slot, so the app card, Ready box, Post now and the journey follow it without any new run.
+- Left: the App probe (web tab Ready box lists the one reel), the owner posts at 19:00 IST.
