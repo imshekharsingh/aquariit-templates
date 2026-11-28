@@ -15,6 +15,7 @@ the daily reels (this overrides "never daily reels" until 2 Dec):
 3. Between builds, the open queue below: task 22 fix (from the 28 Nov critic; no 3rd study render without the owner's yes), then 11,
    12-15, 9. Each app change: App probe PASS on the live app.
 4. Status: one Progress line here at each stage (the main account's probe and owner chat read it and tell the owner).
+5. The owner chats with this account in ONE session titled "Inputs" until 2 Dec: start it by reading design/inputs-brief.md, which has the read order, the owner's reply style and the 28 Nov state. Inputs is the owner's chat; reel builds still go to their own sessions.
 
 # History: 3D tech look sample v5 (owner, 26 Nov 2026), DONE
 
