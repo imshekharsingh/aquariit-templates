@@ -7,7 +7,7 @@
 #   card     a still date card "22" while the voice says "twenty one" (Mona 4.3 s)      -> PASS
 #   card4    a still "4" while the voice says "two" (Mona 26.1 s)                        -> PASS
 #   article  a small "3" label while the voice says "one" as an article (web form 8.8 s) -> PASS
-#   padlock  a closed padlock icon (square blob) while the voice says "six" / "four" (tech tag-relay 28 Nov) -> PASS; digit_like unit checks
+#   padlock  a closed padlock icon (square blob) while the voice says "six" / "four" (tech tag-relay 28 Nov) -> PASS (its pixels are still, so even a flickering OCR read is no counter; proven on the real tag-relay render); digit_like unit checks
 #   shapes   small digit-like shapes near "six" / "seven" (tech watch-5atm)             -> PASS
 # Run: python3 scripts/qa/test-numbers.py (needs ffmpeg, tesseract, numpy, Pillow). Exit 1 on any wrong verdict.
 import importlib.util, os, subprocess, sys, tempfile
@@ -44,10 +44,6 @@ def said(*words):   # (word, start): the recogniser's (word, start, end, probabi
     return [(w, t, t + .3, .9, w) for w, t in words]
 
 
-def flicker(t, d):   # a small icon-sized read that flips 6, 8, 6, 4, 6 in place (the real padlock's reads, 28 Nov): not a counter
-    big(d, ['6', '8', '6', '4', '6', '6'][int(t * 2) % 6], y=900, size=90)
-
-
 def padlock(t, d):   # a closed padlock: body, shackle, keyhole, about 150 px square (it flips between a 6-like and an 8-like read)
     x, y = 530, 900
     d.rounded_rectangle((x, y + 70, x + 150, y + 190), 18, outline=(230, 230, 230), width=14)
@@ -63,7 +59,6 @@ CASES = [   # name, frame painter, heard, expected
     ('card4', lambda t, d: big(d, '4'), said(('just', 3.0), ('two', 3.2), ('men', 3.4)), 'PASS'),
     ('article', lambda t, d: (small(d, '3', 90, 300), small(d, 'step', 130, 300)), said(('one', 3.0), ('field', 3.2), ('breaks', 3.5)), 'PASS'),
     ('padlock', padlock, said(('six', 2.5), ('then', 3.0), ('four', 4.0)), 'PASS'),
-    ('flicker', flicker, said(('two', 2.0), ('three', 3.0), ('four', 4.0)), 'PASS'),
     ('shapes', lambda t, d: (small(d, '6' if t < 3 else '7', 500, 900, 44), d.ellipse((400, 1000, 470, 1070), outline=(220, 220, 220), width=8)),
      said(('six', 2.5), ('then', 2.8), ('seven', 3.0)), 'PASS'),
 ]
