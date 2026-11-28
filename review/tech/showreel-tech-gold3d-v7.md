@@ -304,3 +304,48 @@ CRITIC: NOT READY: v7 render 3 is not STABLE: the cable cascade at 7.7-8.7 s sho
 - Verdict: NOT READY as a whole reel (FLICKER fails), and no render is left: v7 is closed. No critic session is started for it. Its good parts
   (the wall build, the far high wide over the cascade, the collapse and the payoff wide) can be reused as pieces in the 2.5D tech reels; the opening
   slam would need a slower landing first.
+
+
+## Part b plan (builder, 28 Nov 2026, branch claude/v7-actions): more actions and elements inside objects already on screen; NO render yet, waiting for the owner's yes
+Owner yes 28 Nov (part b): reopen v7 for more actions, budget about $10-20 with at most 2 renders, render 5 only after the owner approves this plan. Target (design/references.md "R-ref 28 Nov 2026 · action count"): 2.5+ new actions a second in the picture, 2+ moving at once, no gap over 1.2 s, measured with scripts/qa/action-count.py. No new camera moves (the SH list is untouched).
+Stills sheet (ONE, phone size, scene frames at the real cue times, placeholder voice, no render): review/tech/study-28nov/v7-partb-stills.jpg (1.8, 2.7, 4.6, 6.9, 7.9, 10.0, 10.9, 14.9, 17.2, 19.4 s).
+Where the pieces live: techkit/scenes/gold3d-v7.html, the block "PART B" (const ACT) before frame(); every value a pure function of t (no modulo wraps, no per-frame random).
+
+### The render 4 fault first (FLICKER 0.77 s and the 0.83 s jump)
+Notes now lands at 0.9 s (was 0.65 s; the slam takes 1.4 s, was 1.0 s), its light sweep runs 0.95-1.8 s (was 0.5-1.4 s), Chat and Mail start 0.25 s later (0.8 / 1.2 s) and their shadows fade in from the moment the tile appears (they popped in at 0.8 s: that was the real one-frame jump, a dark shadow smear at the right edge). Checked locally at 60 fps on scene frames 0-1.6 s: FLICKER PASS (render 4: A-B-A 4.7 and a 7.8 jump). The first build of this change failed with a 14.9 jump at 0.85 s (the shadow); the shadow fix cleared it.
+
+### Beat by beat: what is new, where, and when (real cue times; times in s)
+| Beat | New action (all inside objects already on screen) | Where |
+|---|---|---|
+| 0.9-3.1 the three apps | Notes screen types a line at a time (0.95 on); Chat pops a bubble every 0.95 s (1.3 on) with typing dots before each; Mail inbox gets a new row and its badge counts 3 to 4 (2.6), later 5, 6, 7 (9.9, 15.7, 19.7); chips land on the apps: SAVED on Notes (1.55), 3 NEW on Chat (2.05), +1 MAIL on Mail (2.65); a blue selection box snaps round "3 APPS" (1.55) | on the tiles, headline word |
+| 3.9-5.3 the 8 tools | selection box round "8 TOOLS" as it is said (4.5) | headline word |
+| 6.8-7.8 first cable | PAID stamp lands on Pay (6.8), the first plug click (7.66) puts badge 1 on Pay and a ripple ring round it | on Pay |
+| 9.3-11.6 the tangle | selection box round TANGLED (9.35); the connection log card slides in (9.4): 24 pips fill in four beats of 0.42 s (9.86, 10.28, 10.70, 11.12), each beat a row wipes in ("Tasks ✓✓✓"); every tool gets a badge that ticks 1, 2, 3 and a ripple ring as its cables land; selection box snaps round the 24 (10.36); the red 24 CABLES stamp lands on the tangle (10.51) with a ring; red crossings, half-pulled plug, Pay grey dips stay (11.26) | tools, floor, right margin (log), number block |
+| 13.4-15.5 the fix | the log shows the pips going out in the retraction order, then 11 green pips refilling as the hub cables arrive, rows "Hub → Notes ✓" ...; tool badges turn green 1; hub LEDs fill (already in v7); selection box round the 11 (14.58); the green 11 CABLES stamp lands on the hub (15.59) | right margin, hub, tools |
+| 16.4-18.4 New | New cable grows (as before) | New tile |
+| 18.6-20.3 payoff hold | selection box round LESS WIRING (18.52) and the 12 (19.17); the log card moves left (the 12 is on the right) with three beats: Hub → New (18.9), Hub → 3 apps (19.2), Hub → 8 tools (19.55), "All 12 linked" (19.9); the 12th pip pulses; the +1 CABLE stamp lands above New (18.77) | headline, number block, left margin, New |
+| 20.3-22.9 dolly home | nothing new: the whole picture moves with the camera (see below) | |
+Not taken or changed from the owner chat's list: "hub LEDs filling" was already in v7 (U11); "number-to-picture fill, keyword jump, blur hand-off" from branch claude/kit-ref-pieces: that branch is not on origin yet, so v7 has its own 3D equivalents: the 24 log pips are the number-to-picture fill; a keyword jump on the headline words was built and removed (it merged into the headline's own change and lowered the count); no blur hand-off (it is a camera-like move). When the other session's pieces land they can replace these.
+
+### Expected action count per second, and what was measured (no render: scene frames at the real cue times, 270x480, 10 fps, the same script)
+| | picture actions a second | moving at once | gaps over 1 s |
+|---|---|---|---|
+| v7 render 4 (the MP4, from the owner chat) | 1.8 | 1.3 | 5 (9.7 s) |
+| v7 scene as in render 4, scene frames | 2.27 | 1.33 | 5.1-7.0, 7.8-10.0, 11.4-12.7, 12.7-14.6, 20.2-22.9 |
+| v7 with part b, scene frames | 2.27 | 1.52 | 5.1-7.0, 7.8-9.9, 11.1-12.7, 12.7-14.4, 15.7-16.8, 17.2-18.8, 20.3-22.9 |
+The scene frames read about 0.45 a second higher than the MP4 (2.27 here against 1.8 on render 4), so the expected render numbers are about 1.8 actions a second, about 1.5 at once, with five gaps.
+Per second (picture onsets): before 3 2 4 3 4 2 0 3 0 0 4 4 1 0 2 4 1 2 2 9 2 0 0; after 3 1 4 3 4 2 0 3 0 1 4 1 1 0 6 4 1 2 1 5 6 0 0. Gains: the hub close 14-15.5 s (2 to 6), the cascade 9-10 s; losses: 11 s and 19 s, where the new rings and flashes merged into the cable pulses that were already counted separately (the 9 at 19.x).
+
+### Why part b alone does not reach the target (the finding to decide on)
+The counter counts a thing only when it starts in a part of the picture that was still for the last 0.3 s, and it skips every frame where over 45 % of the picture moves (camera time). In v7 four stretches are camera moves with 35-65 % of the picture moving: 5.1-6.6 s (dolly to the first plug), 7.6-9.2 s (the pull-back to the high wide), 11.5-14.4 s (whip to the hub and the collapse) and 20.1-22.9 s (the dolly home): 11 s of 23 s. Anything added inside them joins the moving picture and does not count (the dolly-home log beats and the headline jump were tried: zero onsets), and those moves are slow on purpose (render 3 strobed when they were faster). So with the camera as it is, part b gives the pieces (live screens, log, stamps, selection boxes, ripples, badges) and +0.2 things moving at once, but not 2.5 a second, not 2 at once and not "no gap over 1.2 s".
+Options for the owner (the owner chat decides, then render 5):
+1. Render as it is (about $10, one render, then the reviewer): expect about 1.8 a second, 1.5 at once, five camera-bound gaps; FLICKER fixed; it does NOT meet the target and I would not call it done on the numbers.
+2. Recommended: a short camera retime first, no render: cut each of the four long moves to about 1.2 s and put a 1.2 s hold with events after it (the dolly home as 1.4 s of move after a 1.2 s hold with the log beats; the collapse stretch as whip, hold, collapse). That is a change of timing, not a new move, but a faster move risks the strobe, so it needs the same local 60 fps FLICKER screen before any render (about one more session, no render cost). Then render 5 with the numbers measured locally first.
+3. Stop at the pieces: keep part b as a kit of parts for the 2.5D reels (the screens, the log, the stamps and the selection box are the same grammar there) and close v7.
+
+### Checks done locally (no render)
+- FLICKER at 60 fps on scene frames 0-1.6 s: PASS (the render 4 fail).
+- Stills sheet read at phone size: no text over an object except the stamps and selection boxes that sit on their own object; the log card clears the number block (the log is on the other side); the first +1 CABLE stamp covered New's name in the close shot and was moved to the payoff wide (18.77 s).
+- Not run yet (they come with the render): Output QA on the MP4, preflight-all TEXT CLEAR on the new log card and stamps, the reviewer.
+
+(No verdict line here: the builder never writes one. The critic adds its own.)
