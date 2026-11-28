@@ -1492,3 +1492,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/journey-fewer-calls · Journey reads GitHub runs only for today's and later reels (item 6)
 - Done: the live probe's JOURNEY line showed the cause of the empty tech Ready box: "Too many subrequests by single Worker invocation" on the jobs / annotations calls (the tag reel's Output QA run was never read, so checks said "No result yet"). src/journey.js now fetches runs' jobs only for reels dated today or later (older ones are posted), about 12 calls instead of 40+. The waiver logic itself was fine.
 - Left: App probe: the tech Ready box must list showreel-tech-tag-relay.
+
+## 2026-11-28 · claude/handoff-item6-done · Item 6 done: tech reel Ready in the app
+- Done: App probe PASS (run 46122163605): tag-relay checks "Output QA PASS (waived by the reviewer)", ready for 20:30; item 6 marked done in design/handoff.md with the probe line; todo line for the remaining "built" subrequest warnings.
+- Left: nothing for item 6; the better NUMBERS rule is a dated todo.
