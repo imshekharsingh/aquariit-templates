@@ -1462,3 +1462,8 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/kit-ref-sound-numbers · SOUND HITS numbers from refs-study (kit-ref task)
 - Done: refs-study run on references 15, 16, 18, 19 and showreel-tech-ai-words, showreel-50-popover; SOUND line in design/references.md R-ref 28 Nov (references 1.04-1.32 hits a second, ours 1.07-1.15).
 - Left: nothing; kit pieces are on main (PR 1713).
+
+## 2026-11-28 · claude/ref-lab-crop · Ref lab: phone-recording crop cuts the app's header, caption and button column
+- Done: first real run (refs 15, 16, 18, 19 and three of ours) showed the change-based crop kept the Reels header, status bar, caption and right buttons on refs 15, 16 and 19; ref-lab.py phone_trim() cuts 13 % top, 14 % bottom, 14 % right for recordings taller than 2:1 (our own 9:16 reels untouched); test cases in scripts/qa/ref-lab-test.py.
+- Left: re-run refs-study with lab, then the "Lab results 28 Nov" block.
+

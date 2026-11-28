@@ -75,6 +75,17 @@ def med(v, default=0.0):
 
 
 # ---------------------------------------------------------------- 1. crop
+def phone_trim(crop, pw, ph):
+    """A screen recording of a phone (taller than 2:1) carries the app's own overlay on top of the reel: status bar and header on top (13 %),
+    caption and account row at the bottom (14 %) and the button column on the right (14 %). Those overlays sit over changing pictures, so the
+    'what changes' rule cannot see them (28 Nov run: refs 15, 16, 19 kept them); this cuts them from whatever the change rule found."""
+    if ph / pw <= 2.0:
+        return crop
+    x, y, w, h = crop
+    y0, y1, x1 = max(y, int(round(ph * 0.13 / 2) * 2)), min(y + h, int(round(ph * 0.86 / 2) * 2)), min(x + w, int(round(pw * 0.86 / 2) * 2))
+    return (x, y0, x1 - x, y1 - y0)
+
+
 def find_crop(path, pw, ph):
     """The reel area (x, y, w, h in source pixels) and a note. A pixel is 'reel' when it changes over time (temporal std over 4 fps)."""
     full = (0, 0, pw, ph)
@@ -317,6 +328,9 @@ def key_moments(path, crop, dur, onsets_pic, hits, strips, tmp, label):
 def study(label, path, strips, tmp):
     pw, ph, dur = probe(path)
     crop, note = find_crop(path, pw, ph)
+    t = phone_trim(crop, pw, ph)
+    if t != crop:
+        crop, note = t, note + '; phone recording: app header, caption and button column cut'
     print(f'CROP {label} {crop[0]},{crop[1]},{crop[2]},{crop[3]} ({note})')
     res, onsets_pic, lines = ac.count(path, label, crop)
     print('ACTIONS ' + json.dumps(res))

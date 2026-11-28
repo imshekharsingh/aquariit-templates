@@ -51,6 +51,9 @@ with tempfile.TemporaryDirectory() as td:
     print('CROP', crop, note)
     check(abs(crop[0] - 20) <= 6 and abs(crop[1] - 100) <= 6 and abs(crop[2] - 360) <= 8 and abs(crop[3] - 640) <= 8, f'crop finds the moving area (20,100,360,640), got {crop}')
 
+    check(lab.phone_trim((0, 0, 400, 800), 400, 800) == (0, 0, 400, 800), 'a 2:1 video is not a phone recording: no trim')
+    check(lab.phone_trim((0, 0, 1206, 2622), 1206, 2622) == (0, 340, 1038, 1914), 'a phone recording loses the header, the caption and the button column')
+
     pw, ph, dur = lab.probe(B)
     moves, _ = lab.motion(B, (0, 0, pw, ph))
     big = [m for m in moves if 0.8 <= m['start'] <= 1.5 and m['travel'] >= 25]
