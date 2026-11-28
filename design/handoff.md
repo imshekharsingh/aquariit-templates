@@ -444,6 +444,7 @@ Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md
 - 28 Nov 11:55 IST, other account: web focus test, preview rendered and Output QA run by hand on it: everything passes except HUE, which only compares the test with its own original (waived, same reel). Reviewer session started next; swap only if READY and Inputs says the owner likes it before 17:30.
 - 28 Nov 11:58 IST, other account: web focus test, reviewer wrote READY (stills only: MP4 fetch refused; STOP 7.5, REWATCH 7.5, PREMIUM 7.5 / 8 / 7.5, a modest win). Swap waits for Inputs saying the owner likes it before 17:30 IST; the original popover posts otherwise.
 - 28 Nov 12:05 IST, other account: Closed references keep their video 30 days (Close sets closed_at; the Worker deletes the file after 30 days; the app text says so). APP PROBE: PASS (refs keep 30 days), run 46116615005 on the deployed app.
+- 28 Nov 12:40 IST, other account: ref lab first real run read (crop kept the app header on 3 of 4 phone recordings): fix pushed on claude/ref-lab-crop (phone_trim), re-running the study next, then the results block.
 
 ## How to work
 - Use the cheaper model unless the task needs more. One task per session.
