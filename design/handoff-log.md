@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/web-length-test · other account (Inputs): web length test from 3 Dec
+- Owner agreed: E31 in design/experiments.md (3 web reels at 25-30 s with designed beats from Wed 3 Dec, after the slot test); no channel rename until it decides; no "how it's made" posts (owner: not asked for by our audience).
 ## 2026-11-28 · claude/critic-popover-focus-2 · main account: reviewer verdict on the web focus test
 - Real MP4 vs the original: READY (nothing broken) but KEEP ORIGINAL at 19:00: the green breakout lands ~1 s before "popover" and BEFORE's menu is closed as the light leaves it. Fix for a next version in review/web/showreel-50-popover-focus.md.
 ## 2026-11-28 · claude/ref-process-rules · other account (Inputs): reference study rules
