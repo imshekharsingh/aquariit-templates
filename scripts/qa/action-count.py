@@ -28,22 +28,24 @@ W, H, FPS, C = 135, 240, 10, 15
 GX, GY = W // C, H // C   # 9 x 16
 
 
-def frames(path):
-    p = subprocess.Popen(['ffmpeg', '-v', 'error', '-i', path, '-vf', f'fps={FPS},scale={W}:{H},format=gray', '-f', 'rawvideo', '-'],
-                         stdout=subprocess.PIPE)
-    n = W * H
+def frames(path, crop=None, w=W, h=H, fps=FPS, dtype=np.int16):
+    """Grey frames at fps, scaled to w x h; crop = (x, y, w, h) in source pixels (the reel area found by scripts/qa/ref-lab.py)."""
+    vf = (f'crop={crop[2]}:{crop[3]}:{crop[0]}:{crop[1]},' if crop else '') + f'fps={fps},scale={w}:{h},format=gray'
+    p = subprocess.Popen(['ffmpeg', '-v', 'error', '-i', path, '-vf', vf, '-f', 'rawvideo', '-'], stdout=subprocess.PIPE)
+    n = w * h
     while True:
         b = p.stdout.read(n)
         if len(b) < n:
             break
-        yield np.frombuffer(b, np.uint8).reshape(H, W).astype(np.int16)
+        yield np.frombuffer(b, np.uint8).reshape(h, w).astype(dtype)
 
 
-def sound(path, label):
+def sound_hits(path):
+    """Audio onsets: dict(hits=[seconds], mag=FFT magnitudes, db=level per frame, audible, step, dur), or None without audio."""
     p = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-vn', '-ac', '1', '-ar', '16000', '-f', 'f32le', '-'], capture_output=True)
     x = np.frombuffer(p.stdout, np.float32)
     if len(x) < 4096:
-        print(f'SOUND {label}: no audio track'); return
+        return None
     N, hop = 1024, 256
     win = np.hanning(N).astype(np.float32)
     nf = 1 + (len(x) - N) // hop
@@ -59,18 +61,31 @@ def sound(path, label):
     med = float(np.median(flux)); mad = float(np.median(np.abs(flux - med)))
     thr = max(med + 4 * mad, 0.5)
     step = hop / 16000.0
-    hits, last = [], -1.0
+    hits, last, hit_idx = [], -1.0, []
     for i in range(1, len(flux) - 1):
         if flux[i] > thr and flux[i] >= flux[i - 1] and flux[i] > flux[i + 1] and audible[i] and db[min(i + 2, len(db) - 1)] - db[max(i - 4, 0)] > 3 and i * step - last >= 0.08:
-            hits.append(i * step); last = i * step
-    dur = len(x) / 16000.0
-    per = [sum(1 for h in hits if s0 <= h < s0 + 1) for s0 in range(int(np.ceil(dur)))]
-    marks = sorted(hits + [i * step for i in range(len(audible)) if audible[i] and i % 4 == 0])   # a hit or any audible level breaks silence
+            hits.append(i * step); hit_idx.append(i); last = i * step
+    return {'hits': hits, 'hit_idx': hit_idx, 'mag': mag, 'db': db, 'audible': audible, 'step': step, 'dur': len(x) / 16000.0}
+
+
+def quiet_stretch(sd):
+    """Longest run with no hit and no audible level: (seconds, from, to)."""
+    audible, step, dur = sd['audible'], sd['step'], sd['dur']
+    marks = sorted(sd['hits'] + [i * step for i in range(len(audible)) if audible[i] and i % 4 == 0])   # a hit or any audible level breaks silence
     quiet, prev = [], 0.0
     for m in marks + [dur]:
         quiet.append((m - prev, prev, m)); prev = m
-    q = max(quiet)
-    print(f'SOUND {label} HITS a second {len(hits) / max(dur, .1):.2f} ({len(hits)} hits in {dur:.1f} s, audible {audible.mean() * 100:.0f} % of the time): ' + ' '.join(map(str, per)))
+    return max(quiet)
+
+
+def sound(path, label):
+    sd = sound_hits(path)
+    if sd is None:
+        print(f'SOUND {label}: no audio track'); return
+    hits, dur = sd['hits'], sd['dur']
+    per = [sum(1 for h in hits if s0 <= h < s0 + 1) for s0 in range(int(np.ceil(dur)))]
+    q = quiet_stretch(sd)
+    print(f'SOUND {label} HITS a second {len(hits) / max(dur, .1):.2f} ({len(hits)} hits in {dur:.1f} s, audible {sd["audible"].mean() * 100:.0f} % of the time): ' + ' '.join(map(str, per)))
     print(f'QUIET {label} longest silent stretch {q[0]:.1f} s ({q[1]:.1f}-{q[2]:.1f} s)')
 
 
@@ -89,13 +104,13 @@ def regions(mask):
     return out
 
 
-def main():
-    path, label = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].split('/')[-1])
+def count(path, label, crop=None):
+    """The picture measure; returns (result dict, onsets_pic per frame at 10 fps, timeline lines)."""
     top, bot = int(GY * 0.12), GY - int(GY * 0.25)
     prev, hist, med = None, [], []
     onsets, onsets_pic, moving, moving_pic = [], [], [], []
     cuts = cam = still = n = 0
-    for f in frames(path):
+    for f in frames(path, crop):
         n += 1
         if prev is None:
             prev = f; hist.append(np.zeros((GY, GX), bool)); onsets.append(0); onsets_pic.append(0); moving.append(0); moving_pic.append(0); continue
@@ -121,23 +136,34 @@ def main():
     dur = n / FPS
     sec = [sum(onsets[i:i + FPS]) for i in range(0, n, FPS)]
     secp = [sum(onsets_pic[i:i + FPS]) for i in range(0, n, FPS)]
-    gaps, last = [], 0.0
+    gaps, last, longest = [], 0.0, 0.0
     for i, v in enumerate(onsets_pic):
         if v:
             t = i / FPS
+            longest = max(longest, t - last)
             if t - last > 1.0:
                 gaps.append(f'{last:.1f}-{t:.1f}')
             last = t
+    longest = max(longest, dur - last)
     if dur - last > 1.0:
         gaps.append(f'{last:.1f}-{dur:.1f}')
     res = {'label': label, 'seconds': round(dur, 1), 'onsets_per_s': round(sum(onsets) / max(dur, 0.1), 2),
            'picture_onsets_per_s': round(sum(onsets_pic) / max(dur, 0.1), 2),
            'moving_at_once': round(float(np.mean(moving)), 2), 'picture_moving_at_once': round(float(np.mean(moving_pic)), 2),
            'peak_moving': int(max(moving) if moving else 0), 'cuts_per_min': round(cuts / max(dur, 0.1) * 60, 1),
-           'camera_share': round(cam / max(n, 1), 2), 'still_share': round(still / max(n, 1), 2), 'gaps_over_1s': len(gaps)}
+           'camera_share': round(cam / max(n, 1), 2), 'still_share': round(still / max(n, 1), 2), 'gaps_over_1s': len(gaps),
+           'longest_gap_s': round(longest, 1)}
+    lines = [f'TIMELINE {label} picture onsets per second: ' + ' '.join(str(v) for v in secp) + '   (all: ' + ' '.join(str(v) for v in sec) + ')',
+             f'GAPS {label} (no new action in the picture for over 1 s): ' + (', '.join(gaps) or 'none')]
+    return res, onsets_pic, lines
+
+
+def main():
+    path, label = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].split('/')[-1])
+    res, _, lines = count(path, label)
     print('ACTIONS ' + json.dumps(res))
-    print(f'TIMELINE {label} picture onsets per second: ' + ' '.join(str(v) for v in secp) + '   (all: ' + ' '.join(str(v) for v in sec) + ')')
-    print(f'GAPS {label} (no new action in the picture for over 1 s): ' + (', '.join(gaps) or 'none'))
+    for l in lines:
+        print(l)
     sound(path, label)
 
 
