@@ -1442,3 +1442,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-popover-focus-qa · Web popover focus test: preview rendered, Output QA by hand
 - Done: one full-length preview render of showreel-50-popover-focus (run 46113700512, R2 study/); Output QA by hand on the preview MP4: all pass except HUE against its own original (waived); voice ends 12.6 s of 15 s. Reviewer session started.
 - Left: the reviewer's verdict in review/web/showreel-50-popover-focus.md; swap into the 19:00 post only on READY plus Inputs saying the owner likes it before 17:30 IST.
+
+## 2026-11-28 · claude/critic-popover-focus · Reviewer, showreel-50-popover-focus study preview: READY (stills only)
+- Done: independent review of the focus hand-off preview (run 46113700512, Output QA 46116075083) from local stills and the logged QA; the real MP4 could not be fetched (proxy refused the host). Lit pane is the talked-about one, dark pane stays maroon and readable, hand-over about 0.4 s on "The fix:", soft glow, both lit for the last 1.4 s. STOP 7.5, REWATCH 7.5, PREMIUM 7.5 / 8 / 7.5. Modest reach win over the original.
+- Left: the owner decides the swap; if swapped, check on the real MP4 that the green burst sits inside the "popover" sentence; next version keeps BEFORE's cut menu open through the hand-over.
