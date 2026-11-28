@@ -1360,3 +1360,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/kit-2d5-depth · 2.5D map kit with 3D's depth (task 22)
 - Done: comparison page, scripts/explainer/kitmap.js (KMAP.card / build / object), kit-inline entry, study sample scripts/previews/tech-2d5-depth; local FLICKER pass.
 - Left: render 1, Output QA, 2.5D depth ready for critic.
+
+## 2026-11-28 · claude/critic-c3-text-on-photo-28nov · Critic, showreel-c3-text-on-photo render 2: NOT READY (frame-0 tags overlap, flat after)
+- Done: independent critic on the real MP4 of render 2 (run 46093523921, 17.4 s, -14.0 LUFS); gold sheet, contact sheet, 24 phone-size frames, full-size crops. Fixes land on their words, the before is honest, voice natural, BEFORE/AFTER tagged and held. NOT READY: the "WHITE ON GLARE" and "NOTHING BEHIND IT" tags overlap 0-4.5 s (frame 0 and cover); the after (12-17.4 s) is muddy next to gold (GOLD: below). STOP 7, REWATCH 7, PREMIUM 7.5 / 6 / 6.5.
+- Left: builder applies the EXACT FIX in the review file (tag moved up a row, dark layer .7 with beams back on "Now", cursor off the small print), preflight-all, render 3 needs the owner's yes with its cost, Output QA, fresh critic, post today.
