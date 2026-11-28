@@ -1493,6 +1493,9 @@ Format (at most 6 lines):
 - Done: the live probe's JOURNEY line showed the cause of the empty tech Ready box: "Too many subrequests by single Worker invocation" on the jobs / annotations calls (the tag reel's Output QA run was never read, so checks said "No result yet"). src/journey.js now fetches runs' jobs only for reels dated today or later (older ones are posted), about 12 calls instead of 40+. The waiver logic itself was fine.
 - Left: App probe: the tech Ready box must list showreel-tech-tag-relay.
 
+## 2026-11-28 · claude/web-popover-focus-r2b · Web popover focus test: owner notes added before the render (faster transitions, no waits, colour worlds)
+- Done: hand-over and transitions 0.35 s with a tiny overshoot; reel 13.8 s; item-by-item beats, count and ghost pulses, live code card; a warm red-amber light pool behind BEFORE and a cool green-teal pool behind AFTER; owner line in design/owner-feedback.md. Scene action count 4.4 a second, longest gap 0.7 s.
+- Left: the render. A render of the earlier version (run 46122018953) is still running because the cancel was blocked here; waiting for Inputs to choose between cancelling it (then this is render 2) or letting it finish (then this is render 3, needs the owner's yes with its cost).
 ## 2026-11-28 · claude/handoff-item6-done · Item 6 done: tech reel Ready in the app
 - Done: App probe PASS (run 46122163605): tag-relay checks "Output QA PASS (waived by the reviewer)", ready for 20:30; item 6 marked done in design/handoff.md with the probe line; todo line for the remaining "built" subrequest warnings.
 - Left: nothing for item 6; the better NUMBERS rule is a dated todo.
