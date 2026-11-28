@@ -272,3 +272,24 @@ FOR V7 (owner yes 28 Nov, part b): build items 1-3 and 5 INSIDE objects already 
 plug, stamps TANGLED / 24 CABLES / 11 on the objects, a selection box on each number), so v7 reaches 2.5+ actions a second, 2+ moving at once
 and no gap over 1.2 s, without more camera moves (fast 3D moves strobe: renders 2-4). The 2.5D builders take the same list.
 Sound hits a second (SOUND, scripts/qa/action-count.py, refs-study 28 Nov; voice syllables count): references 15 / 16 / 18 / 19 = 1.04 / 1.05 / 1.32 / 1.21, longest quiet 0.8 / 0.7 / 0.4 / 0.2 s; ours: 2.5D tech gold (ai-words) 1.15 (quiet 0.1 s), web popover 1.07 (quiet 0.1 s). Sound is not where we lag: ours matches the references, the gap is in the picture (popover still 49 %, longest picture gap 1.7-2.6 s).
+
+### Lab results 28 Nov (reference lab, scripts/qa/ref-lab.py, run 28 Nov 2026 after the phone-recording crop fix; refs 15, 16, 18, 19 against 3 of our reels)
+Crop: refs 15, 16, 19 1038x1914, ref 18 1004x1914 (the app's header, caption and buttons cut), ours 1080x1734 (v7), 1080x1248 (ai-words), 1026x1410 (popover). MOVES and TEXT are heuristics (move counts run high, "ease-in" is over-called because slow tails drop out, text arrival often reads "already on screen" or "unclear"); compare like with like, confirm on the strips.
+| | actions/s | moving at once | longest gap s | still share | moves/10 s | move s | overshoot % | hits/s (low/mid/high) | hit dB vs bed |
+|---|---|---|---|---|---|---|---|---|---|
+| ref 15 (26 s) | 3.42 | 1.56 | 2.1 | 0.13 | 39.2 | 0.37 | 18 | 1.04 (.31/.69/.04) | +2.9 |
+| ref 16 (72 s) | 3.59 | 2.70 | 2.6 | 0.02 | 48.3 | 0.43 | 23 | 1.05 (.29/.62/.14) | +3.2 |
+| ref 18 (52 s) | 3.08 | 1.66 | 1.4 | 0.10 | 30.6 | 0.50 | 35 | 1.32 (.04/1.14/.14) | +6.1 |
+| ref 19 (35 s) | 3.53 | 2.37 | 1.6 | 0.02 | 49.7 | 0.40 | 22 | 1.21 (.08/.96/.17) | +3.3 |
+| reference median | 3.47 | 2.0 | 1.85 | 0.06 | 43.7 | 0.42 | 22 | 1.1 | +3.3 |
+| ours: 3D kit v7 r4 (tech) | 1.79 | 1.10 | 3.5 | 0.07 | 16.2 | 0.60 | 27 | 0.92 (.44/.39/.09) | +12.3 |
+| ours: 2.5D ai-words (tech) | 3.51 | 2.47 | 1.4 | 0.06 | 44.3 | 0.53 | 29 | 1.15 (.30/.51/.34) | +9.1 |
+| ours: popover (web) | 3.60 | 1.47 | 1.8 | 0.39 | 32.7 | 0.33 | 12 | 1.07 (.53/.53/0) | +6.2 |
+Reference grammar: moves last 0.37-0.50 s (ours 0.33-0.60) and 18-35 % of them overshoot and settle; ref 18 (one continuous take) leans on overshoot (35 %), the cut-based ones on ease-in/ease-in-out; sound is mostly mid clicks (0.6-1.1 a second) with a few low thuds and high ticks, never silent for over 0.8 s, hits only 3-6 dB over the bed.
+Our 3 largest gaps per channel (GAP lines of the run), each with what it needs (STUDY RULES 2):
+- TECH, 3D kit v7: (1) moves per 10 s 16 against 44 (63 % short); (2) actions a second 1.8 against 3.5 (48 % short); (3) longest still gap 3.5 s against 1.85 (the stills are 4.5-7.3, 7.8-9.9, 11.4-14.9 s). Needs: KIT PIECE "live screen" (a prompt that types, then rows/tiles fill in by themselves, ends on a button; strip ref 19 at 5.5 s shows it in 1 s: typing, layout fill, ticking caption) built inside the apps already on screen, plus KREF.numberFill and KREF.keyword placed in the three long stills; v7 must not add camera moves (31 % of it is already camera). REVIEWER QUESTION (design/critic.md): any still over 1.5 s with nothing moving inside an object?
+- TECH, 2.5D ai-words: no gap over 5 % (3.51 actions a second against 3.47, 2.5 things moving at once against 2.0): this look already meets the references on motion. Only note: its hits sit 9 dB over the bed against 3-6 for the references, so it is loud rather than busy. Needs: REVIEWER QUESTION: are the hits more than 6 dB over the bed? (a mix change, not a kit piece).
+- WEB, popover: (1) high ticks 0 a second against 0.14 (none at all); (2) still share 0.39 against 0.06 (the still stretches are 3.0-4.3, 7.9-9.2, 12.3-14.1 s); (3) things moving at once 1.5 against 2.0. Needs: KIT PIECE "tick cue": a high tick on every small UI change (KREF.numberFill already carries tick cues; make them a one-line call for any chip, row or toggle); the same live-screen piece to fill the three still stretches. REVIEWER QUESTION: is there a high tick wherever a small thing changes?
+- TURNS OUT: not in this run (no c3 reel was given); add the newest c3 reel to the next run (spare usage night) so its gaps get named.
+Lab itself: needed one fix after its first real run (the change-based crop kept the app header on the phone recordings); text arrival is the weakest reading, so the strips stay the proof. Next weekly re-measure (STUDY RULES 3): same four references against the newest reel of each channel.
+
