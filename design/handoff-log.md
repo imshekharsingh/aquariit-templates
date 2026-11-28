@@ -1384,3 +1384,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/critic-kit-2d5-depth · 2.5D depth study: critic NOT READY on render 2 (task 22)
 - Done: critic on the real MP4 (PREMIUM 6.5 / 6.0 / 6.5): lone dark shadow blobs and line ticks at 4.55 s and 6.95 s, frame 0 title only, lower half empty; builders keep the 27 Nov kit; exact fix for kitmap.js in review/tech/showreel-pv-tech-2d5-depth.md.
 - Left: the other account applies the fix to kitmap.js; no third render without the owner's yes.
+
+## 2026-11-28 · claude/critic-web-28nov-popover-r3 · Critic, showreel-50-popover render 3: READY
+- Done: independent critic on the real MP4 of render 3 (run 46106486981, 15.0 s, -14.0 LUFS); contact sheet, gold side-by-side, 60 fps steps round 3.43 s and the re-open. All five render 1 fixes are on screen and render 2's grey is gone; the 3.43 s FLICKER warn is the subtitle page turning (intended). GOLD matches, STOP 7, REWATCH 7, PREMIUM 7.5 / 8 / 7.5.
+- Left: the builder / owner chat moves it to Ready to post for the 19:00 IST slot; next web reel applies the HIGH upgrade (one wide hero card after the fix).
