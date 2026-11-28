@@ -66,6 +66,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - No side programs while the weekly limit is low (owner, 24 Nov 2026): the Improvement lab task is paused; no preview studies, no kit programs.
   One reel per channel a day, and that is it.
 - Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
+- 29 Nov - 2 Dec 2026 (owner, 28 Nov): the other account does EVERYTHING, daily reels included (design/handoff.md "GO NOW 28 Nov"); this account runs only the Studio probe and the owner chat, and the owner chat re-enables the Daily studio run and Turns Out tasks on Wed 3 Dec.
 - App, tooling and kit work (code fixes, app features, the 3D kit) go to the other account's queue in design/handoff.md (owner, 26 and 27 Nov 2026: it is a temporary helper for bigger chunks, never daily reels); the owner chat only writes those tasks there, reads Progress and tells the owner. This account keeps the daily reel builds, critics, anything needing reel videos and posting reminders. ALL app work, including fixes that block today's post, goes to the other account (owner, 27 Nov 2026, option 1); the owner chat only writes the task and reads Progress. No app change is called fixed until the App probe workflow (signed in, phone size) passes on the live app.
 - One session = one task, one channel, one branch; finish it (pushed, merged, checked) and archive it before the next starts. One heavy
   session at a time. The owner chats in the daily "Owner chat <date>" session, which never builds.
@@ -77,6 +78,8 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
   (read the Instagram collect POSTED lines). Every message to the owner (chat, app, reports; owner, 24 Nov 2026): the answer in one line first,
   then numbered steps or short bullets, plain words with no tool names, run numbers, branch names or check codes, and anything that needs the
   owner last as one action. Tell the owner each stage of a reel without being asked (owner, 24 Nov 2026).
+- In everything the owner reads, the critic is called the "reviewer" (owner, 28 Nov 2026). Inside the repo the marker "CRITIC: READY", the critic tag and
+  design/critic.md keep their names (scripts and the probe read them).
 - Read workflow files before dispatching; most check out main, so merge before a run tests a branch. Any step done by hand twice becomes a script.
 
 ## Git and deploy

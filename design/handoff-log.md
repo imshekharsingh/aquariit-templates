@@ -6,6 +6,15 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+
+
+## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): the critic is called "reviewer" to the owner
+- Owner: "going forward critic will be called reviewer". CLAUDE.md and design/inputs-brief.md: owner-facing words only; "CRITIC: READY", the critic tag and design/critic.md stay (scripts read them).
+## 2026-11-28 · claude/inputs-session-brief · owner chat: an "Inputs" session on the other account
+- Owner will chat with the other account in one "Inputs" session for the rest of the week; design/inputs-brief.md gives it the full context (read order, reply style, 28 Nov state). handoff.md GO NOW item 5. The main account only coordinates its scheduled tasks.
+## 2026-11-28 · claude/handoff-takes-all-till-tue · owner chat: the other account does everything 29 Nov - 2 Dec
+- Owner: all tasks until Tuesday go to the handoff account, daily reels included; this account keeps only the hourly probe (checks and reports) and the owner chat. design/handoff.md "GO NOW 28 Nov", CLAUDE.md Sessions line. Daily studio run and Turns Out daily tasks switched off; the owner chat turns them back on Wed 3 Dec.
+- Today (28 Nov): all three reels needed a 3rd render (owner yes ~09:10); they finish on this account.
 ## 2026-11-27 22:53 IST · claude/tabs-order · other account: task 20, channel tabs in posting order, the tab follows the workflow
 - Done: templates/index.html chanOrder() orders the tabs by today's next reel to post (postAt, else the slot), posted channels last; only workflow entry points set the channel (board Open to post / Open reel, reel link or reminder, tab tap, All reels = the channel due next); the saved last tab and the Growth picker no longer switch it (Growth shows its own pick). scripts/qa/app-tabs-test.mjs in npm run check.
 - Left: App probe PASS on the live app (Progress).
@@ -1377,3 +1386,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/critic-kit-2d5-depth · 2.5D depth study: critic NOT READY on render 2 (task 22)
 - Done: critic on the real MP4 (PREMIUM 6.5 / 6.0 / 6.5): lone dark shadow blobs and line ticks at 4.55 s and 6.95 s, frame 0 title only, lower half empty; builders keep the 27 Nov kit; exact fix for kitmap.js in review/tech/showreel-pv-tech-2d5-depth.md.
 - Left: the other account applies the fix to kitmap.js; no third render without the owner's yes.
+
+## 2026-11-28 · claude/critic-web-28nov-popover-r3 · Critic, showreel-50-popover render 3: READY
+- Done: independent critic on the real MP4 of render 3 (run 46106486981, 15.0 s, -14.0 LUFS); contact sheet, gold side-by-side, 60 fps steps round 3.43 s and the re-open. All five render 1 fixes are on screen and render 2's grey is gone; the 3.43 s FLICKER warn is the subtitle page turning (intended). GOLD matches, STOP 7, REWATCH 7, PREMIUM 7.5 / 8 / 7.5.
+- Left: the builder / owner chat moves it to Ready to post for the 19:00 IST slot; next web reel applies the HIGH upgrade (one wide hero card after the fix).
