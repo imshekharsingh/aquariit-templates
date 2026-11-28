@@ -74,5 +74,5 @@
   }
  ],
  "channel": "web",
- "note": "Owner's focus hand-off test of showreel-50-popover (28 Nov 2026): same topic, script, voice and timing; BEFORE lit while the problem is told, AFTER lit from the fix word, both lit for the last second. Never posted on its own: no captions.json entry; rendered as a full-length preview into R2 study/. showreel-50-popover keeps the 19:00 slot unless the swap in design/handoff.md happens. Render 2 adds the owner's notes of 28 Nov: transitions 0.3-0.4 s, no idle beat over 0.5 s, reel 13.8 s, a colour world per pane (warm red-amber light pool behind BEFORE, cool green-teal behind AFTER)."
+ "note": "Owner's focus hand-off test of showreel-50-popover (28 Nov 2026): same topic, script, voice and timing; BEFORE lit while the problem is told, AFTER lit from the fix word, both lit for the last second. Never posted on its own: no captions.json entry; rendered as a full-length preview into R2 study/. showreel-50-popover keeps the 19:00 slot unless the swap in design/handoff.md happens. Possible render 3 (not dispatched without the owner's yes): pace only, hand-over and transitions 0.35 s, no idle beat, reel 13.8 s; the colours stay the render 1 ones."
 }

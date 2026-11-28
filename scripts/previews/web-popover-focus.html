@@ -29,8 +29,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .pcard .pmn{left:16px;top:108px}
 .pmn b{position:absolute;left:0;width:190px;height:48px;font:600 20px/48px var(--f);letter-spacing:-.015em;padding-left:50px;white-space:nowrap}
 .pmn b::before{content:"";position:absolute;left:20px;top:16px;width:16px;height:16px;border-radius:5px;background:var(--wc)}
-.pmn.fx{background:#17493f;box-shadow:inset 0 0 0 2.5px var(--acc),0 16px 32px -10px rgba(0,0,0,.75)}
-.pcard.fx{background:#103a34}
+.pmn.fx{background:#1c4a30;box-shadow:inset 0 0 0 2.5px var(--acc),0 16px 32px -10px rgba(0,0,0,.75)}
+.pcard.fx{background:#163826}
 .pbt.bd{filter:none}
 .pedge{position:absolute;left:2px;width:234px;height:0;border-top:2.5px dashed rgba(255,255,255,.8);z-index:5;opacity:0}
 .pgh{z-index:4;position:absolute;left:24px;width:190px;height:48px;border-radius:18px;border:2px dashed var(--red);font:500 17px/44px var(--m);color:var(--red);letter-spacing:.02em;padding-left:50px;opacity:0;white-space:nowrap}
@@ -696,7 +696,7 @@ var KM = (function(){
         n.shd.style.opacity = (.75 * (1 - E.out3(P(t, .3, .55)))).toFixed(3); var sk = E.out3(P(t, 0, .45)); n.shd.style.transformOrigin = '50% 0'; n.shd.style.transform = 'scale(' + (1.07 - .07 * sk).toFixed(4) + ',' + (1.8 - .8 * sk).toFixed(4) + ')'; }
       var bump = function(x){ return x < 0 || x > .4 ? 0 : x < .1 ? x / .1 : 1 - (x - .1) / .3; };
       var fx = n.broken ? 0 : E.out3(P(t, A.fixAt, A.fixAt + .35)), fixed = !n.broken && t >= A.fixAt;
-      n.menu.classList.toggle('fx', fixed); n.card.classList.toggle('fx', fixed); n.btn.classList.toggle('bd', !fixed); n.pane.style.background = fixed ? '#0b2b28' : '#4a2029';
+      n.menu.classList.toggle('fx', fixed); n.card.classList.toggle('fx', fixed); n.btn.classList.toggle('bd', !fixed); n.pane.style.background = fixed ? '#0f2418' : '#4a2029';
       for (i = 0; i < n.rows.length; i++) n.rows[i].style.setProperty('--wc', fixed ? 'var(--acc)' : 'var(--red)');
       if (!n.broken) n.menu.style.clipPath = fx < 1 ? 'inset(0 0 ' + (96 * (1 - fx)).toFixed(1) + 'px 0)' : 'none';
       n.btn.style.transform = 'scale(' + (1 - .06 * press).toFixed(4) + ')'; n.chev.style.transform = 'rotate(' + (180 * E.inOut3(ok)).toFixed(1) + 'deg)';
@@ -705,11 +705,11 @@ var KM = (function(){
       for (i = 0; i < n.rows.length; i++) { var rk = E.back(P(u, .05 + i * .06, .05 + i * .06 + .28), 1.1); n.rows[i].style.opacity = cl(rk * 3 * ok * 3).toFixed(3); var bp = 0; if (!n.broken) A.rps.forEach(function(r0){ bp = Math.max(bp, bump(t - (r0 + i * .3))); }); n.rows[i].style.transform = 'translateY(' + (-8 * (1 - rk)).toFixed(2) + 'px) scale(' + (1 + .05 * bp).toFixed(4) + ')';
         n.rows[i].style.background = bp > .001 ? 'rgba(111,224,138,' + (.22 * bp).toFixed(3) + ')' : 'transparent'; n.rows[i].style.borderRadius = '14px'; }
       // the count in the pane's header: items shown of 4 (BEFORE steps to 2 and stays, AFTER steps to 4), a small pop on each change
-      var shown = n.broken ? 2 : (fixed ? 4 : 2), cp = 1 + .22 * (1 - E.out3(P(t, TB[0], TB[0] + .3))) + (n.broken ? 0 : .35 * (1 - E.out3(P(t, A.fixAt, A.fixAt + .35))) * (t >= A.fixAt ? 1 : 0) + .28 * Math.max(bump(t - A.cp), bump(t - A.cp1)) + (n.broken ? .24 * Math.max(bump(t - A.cb[0]), bump(t - A.cb[1]), bump(t - A.cb[2])) : 0));
+      var shown = n.broken ? 2 : (fixed ? 4 : 2), cp = 1 + .22 * (1 - E.out3(P(t, TB[0], TB[0] + .3))) + (n.broken ? 0 : .35 * (1 - E.out3(P(t, A.fixAt, A.fixAt + .35))) * (t >= A.fixAt ? 1 : 0) + .28 * Math.max(bump(t - A.cp), bump(t - A.cp1)));
       n.cnt.style.color = fixed ? 'var(--acc)' : 'var(--red)';
       var cs = shown + '<small>of 4</small>'; if (n.cnt.__v !== cs) { n.cnt.innerHTML = cs; n.cnt.__v = cs; } n.cnt.style.transform = 'scale(' + cp.toFixed(3) + ')'; if (n.broken) n.cnt.style.opacity = E.out3(P(t, .3, .5)).toFixed(3);
       { var gk = E.out3(P(t, A.cut, A.cut + .3)) * ok * (1 - fx);
-        n.gh.forEach(function(g, j){ var gp = Math.max(bump(t - (A.cut + 1.3 + j * .2)), bump(t - (A.cut + 2.2 + j * .2))); g.style.opacity = Math.min(1, gk * (.8 * E.out3(P(t, A.cut + j * .12, A.cut + j * .12 + .25)) + .2 * gp)).toFixed(3); g.style.transform = 'translateX(' + (3 * gp).toFixed(2) + 'px)'; });
+        n.gh.forEach(function(g, j){ g.style.opacity = (gk * .8 * E.out3(P(t, A.cut + j * .12, A.cut + j * .12 + .25))).toFixed(3); });
         n.cut.style.opacity = (ok * (1 - fx)).toFixed(3); n.cut.style.transform = 'scaleX(' + (E.out3(P(u, .15, .45))).toFixed(3) + ')'; n.cut.style.transformOrigin = '0 50%'; }
       if (n.edge) n.edge.style.opacity = (P(t, A.k + .5, A.k + .8) * (1 - P(t, A.k + 2.3, A.k + 2.6)) * ok).toFixed(3);
     };
@@ -733,14 +733,12 @@ var KM = (function(){
     for (var c = 0, t0 = A.fix + .05; t0 + c * .09 < A.typeEnd; c++) KM.cue({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7 });
     KM.cue({ t: A.fixAt, k: 'pop', g: .34, p: 4 }); KM.cue({ t: A.fixAt + .12, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
     // high tick cues on every small action (render 2, lab learning): the slice, the hand-over, each row landing, the count steps, the closing item pulses
-    KM.cue({ t: .6, k: 'tick', g: .14, p: 10 }); [1.3, 1.5, 2.2, 2.4].forEach(function(d, q){ KM.cue({ t: A.cut + d + .02, k: 'tick', g: .11, p: 9 + q * 2 }); }); KM.cue({ t: A.fix + .25, k: 'tick', g: .12, p: 12 });
+    KM.cue({ t: .6, k: 'tick', g: .14, p: 10 }); KM.cue({ t: A.fix + .25, k: 'tick', g: .12, p: 12 });
     for (var q = 0; q < 4; q++) { KM.cue({ t: A.fixAt + .1 + q * .08, k: 'tick', g: .12, p: 8 + q * 2 }); A.rps.forEach(function(r0){ KM.cue({ t: r0 + q * .3 + .02, k: 'tick', g: .13, p: 8 + q * 2 }); }); }
-    KM.cue({ t: A.fixAt + .14, k: 'tick', g: .13, p: 13 }); KM.cue({ t: A.fixAt + .28, k: 'tick', g: .13, p: 15 }); KM.cue({ t: A.cp + .02, k: 'tick', g: .15, p: 14 }); KM.cue({ t: A.cp1 + .02, k: 'tick', g: .13, p: 13 }); A.cb.forEach(function(c0, q){ KM.cue({ t: c0 + .02, k: 'tick', g: .12, p: 9 + q * 2 }); });
+    KM.cue({ t: A.fixAt + .14, k: 'tick', g: .13, p: 13 }); KM.cue({ t: A.fixAt + .28, k: 'tick', g: .13, p: 15 }); KM.cue({ t: A.cp + .02, k: 'tick', g: .15, p: 14 }); KM.cue({ t: A.cp1 + .02, k: 'tick', g: .13, p: 13 }); 
     KM.cue({ t: DUR - 1.1, k: 'tick', g: .13, p: 12 }); KM.cue({ t: DUR - .55, k: 'tick', g: .13, p: 14 });
     KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
     SP = KM.split($('sp'), { t0: -.01, d: .01, build: build, faults: TB, y: PY, h: PH_, gap: 12, side: 26, labels: ['BEFORE', 'AFTER'] });
-    var pools = [['rgba(255,128,48,', 145], ['rgba(32,226,176,', 395]].map(function(c){ var d = document.createElement('div'); d.setAttribute('aria-hidden', 'true');
-      d.style.cssText = 'position:absolute;left:' + (c[1] - 320) + 'px;top:340px;width:640px;height:600px;pointer-events:none;opacity:0;background:radial-gradient(closest-side,' + c[0] + '.9),' + c[0] + '.34) 55%,' + c[0] + '0) 100%)'; $('sp').insertBefore(d, $('sp').firstChild); return d; }); PN.pools = pools;
     SP.panes.forEach(function(pn){ pn.removeAttribute('data-key'); }); SP.panes[1].style.background = '#4a2029';   // the panes are the subject (inside #hero), not key actions
     // element sound (scripts/explainer/kitsfx.js): every element that enters, moves or changes has a cue by its size, or is marked with the cue that covers it
     KM.mark($('sp'), 'tree', 'the split has its swell, the menu opens have their tap and pop cues, the bug has its hits');
@@ -768,9 +766,8 @@ var KM = (function(){
     //      BEFORE is lit while the problem is told, the hand-off to AFTER takes .5 s at the fix word, and both are lit for the last second (the proof frame) ----
     var hr = P(t, A.fix, A.fix + .35), ho0 = E.out3(P(hr, .3, 1)), ho1 = E.back(P(hr, 0, .75), 1.3), en = E.back(P(t, DUR - 1.4, DUR - 1.05), 1.2), lits = [1 - ho0 * (1 - en), ho1], gl = [.6 + .4 * E.out3(P(t, .1, .6)), 1], rgbs = ['255,95,109', '111,224,138'];
     var bmp = function(x){ return x < 0 || x > .2 ? 0 : x < .06 ? x / .06 : 1 - (x - .06) / .14; };   // the proof frame breathes twice (a small scale pulse with a tick), so the last second is never still
-    PN.pools.forEach(function(d, q){ d.style.opacity = (Math.max(0, lits[q]) * (q ? 1 : .55 + .45 * gl[0])).toFixed(3); });   // each side's colour world: a light pool on the background behind the lit pane, spilling into the frame
     SP.panes.forEach(function(pn, q){ var L = lits[q];
-      pn.style.filter = 'brightness(' + mix(.4, 1.14, L).toFixed(3) + ') saturate(' + mix(1.15, 1.1, L).toFixed(3) + ') contrast(' + mix(1, 1.06, L).toFixed(3) + ') blur(' + mix(1.2, 0, L).toFixed(2) + 'px)';
+      pn.style.filter = L >= .999 ? 'none' : 'brightness(' + mix(.4, 1, L).toFixed(3) + ') saturate(' + mix(1.15, 1, L).toFixed(3) + ') blur(' + mix(1.2, 0, L).toFixed(2) + 'px)';
       pn.style.transformOrigin = '50% 0'; pn.style.transform += ' scale(' + (1 + .02 * L + .055 * Math.max(bmp(t - (DUR - 1.1)), bmp(t - (DUR - .55)))).toFixed(4) + ')';
       pn.style.boxShadow += ',0 ' + (14 * L).toFixed(1) + 'px ' + (26 * L).toFixed(1) + 'px -10px rgba(0,0,0,' + (.55 * L).toFixed(3) + '),0 0 ' + (4 + 34 * L).toFixed(1) + 'px rgba(' + rgbs[q] + ',' + (.4 * L * gl[q]).toFixed(3) + '),inset 0 0 0 ' + (1.5 * L).toFixed(2) + 'px rgba(' + rgbs[q] + ',' + (.5 * L).toFixed(3) + ')'; });
     var tp2 = P(t, A.fixAt + .15, A.fixAt + .45); PN.tag.style.opacity = cl(tp2 * 3).toFixed(3); PN.tag.style.transform = 'scale(' + mix(.6, 1, E.back(tp2, 2)).toFixed(3) + ')';
