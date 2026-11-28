@@ -159,7 +159,8 @@ function qaStage(render, qaRun, rv, rStage) {
 export async function journeyApi(env, { captions, postSlot, chOf, uploaded, media }) {
   const now = Date.now(), today = istDay(new Date(now).toISOString());
   const from = istDay(new Date(now - 3 * DAY_MS).toISOString()), to = istDay(new Date(now + 3 * DAY_MS).toISOString());
-  const reels = Object.entries(captions).filter(([, m]) => m && !m.hidden && !m.sample && /^\d{4}-\d{2}-\d{2}$/.test(m.postOn || '') && m.postOn >= from && m.postOn <= to);
+  // a hidden reel dated today is on the board too, as held (owner, 28 Nov 2026: Turns Out showed "Not started" while on its 3rd render); it is never ready or due while held
+  const reels = Object.entries(captions).filter(([, m]) => m && (!m.hidden || m.postOn === today) && !m.sample && /^\d{4}-\d{2}-\d{2}$/.test(m.postOn || '') && m.postOn >= from && m.postOn <= to);
   const names = Object.keys(captions);
   let r2 = {};
   if (env.REELS) {   // the MP4 (v/, deleted after 15 days) or its cover (c/, kept) shows the render finished
@@ -185,14 +186,15 @@ export async function journeyApi(env, { captions, postSlot, chOf, uploaded, medi
       : { s: 'wait', t: st.checks.s === 'done' ? 'Waiting for the critic' : 'After the checks' };
     const postedAt = uploaded[name] || (media[name] && media[name].posted_at) || null;
     const ok = st.render.s === 'done' && st.checks.s === 'done' && st.critic.s === 'done';
-    st.ready = postedAt || ok ? { s: 'done', t: 'Post at ' + slot + (m.postOn === today ? ' today' : '') } : now > due ? { s: 'fail', t: 'Slot ' + slot + ' passed', why: 'Not every step above is green.' } : { s: 'wait', t: slot + ' slot' };
-    st.posted = postedAt ? { s: 'done', t: 'Posted ' + istTime(postedAt), at: postedAt, link: (media[name] && media[name].permalink) || null }
+    const held = !!m.hidden && !postedAt;
+    st.ready = held ? { s: 'wait', t: 'Held until its reviewer passes' } : postedAt || ok ? { s: 'done', t: 'Post at ' + slot + (m.postOn === today ? ' today' : '') } : now > due ? { s: 'fail', t: 'Slot ' + slot + ' passed', why: 'Not every step above is green.' } : { s: 'wait', t: slot + ' slot' };
+    st.posted = held ? { s: 'wait', t: 'Not yet' } : postedAt ? { s: 'done', t: 'Posted ' + istTime(postedAt), at: postedAt, link: (media[name] && media[name].permalink) || null }
       : now > due + 6 * 3600e3 ? { s: 'fail', t: 'Not marked posted', why: 'The ' + slot + ' slot passed. If it went out, tap Mark posted in Reels (the nightly collect also finds it).' }
       : ok && now > due ? { s: 'now', t: 'Due now' } : { s: 'wait', t: 'Not yet' };
     for (const k of Object.keys(st)) if (st[k].at) st[k].at = when(st[k].at);
     const cap = hook(m.caption || capR2[name]), con = / · /.test(m.concept || '') ? String(m.concept).split(' · ').pop().split(':')[0].trim() : '';
     const title = (cap || con || short.replace(/-/g, ' ')).slice(0, 90);
-    return { name, ch, day: m.postOn, slot, title, score: rv.score == null ? null : rv.score, stages: st, live: !!(st.render.live || st.checks.live) };
+    return { name, ch, day: m.postOn, slot, title, held, score: rv.score == null ? null : rv.score, stages: st, live: !!(st.render.live || st.checks.live) };
   }).sort((a, b) => (a.day === b.day ? ['web', 'tech', 'c3'].indexOf(a.ch) - ['web', 'tech', 'c3'].indexOf(b.ch) : a.day < b.day ? 1 : -1));
   return { now: new Date(now).toISOString(), today, github: g.state, warn: warns, reels: out };
 }

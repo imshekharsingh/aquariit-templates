@@ -241,3 +241,28 @@ Closer to the reference than the 3D v7 and the better format for "how a system w
 - NO EMPTY CAPTION BOX: hide the caption pill until its first word. Put a pause mark after every step number in the spoken text and the captions ("One: your phone sends...", "Three: the shop's bank, the acquirer").
 - NO SMALL PANEL TEXT: every panel, card and sub-line is at least 24 px at 1080, or it is dropped; panel text is 1-3 words. Node labels in the final pull-back too (scale the final map about 1.25x so its labels read). Use the band under the caption for content only if it clears the Instagram overlay.
 - Waive near-grey cross-fades in the qa block (colour waiver with the reason): hue swings on near-grey colours are not cuts.
+
+## R-ref 28 Nov 2026 · action count: owner uploads 15-19 (26 Nov, never studied before) against 3D kit v7 and the 2.5D tech gold
+Measured on GitHub with scripts/qa/action-count.py (asks.yml refs-study, run 28 Nov; method in .claude/skills/reverse-any-video "Action count").
+References 9-14 could not be counted: their videos were deleted when they were closed (26 Nov). 16 and 17 are the same clip.
+- 15 "100 reels to a million views" (26 s, white then dark): a 3D wall of reel cards filling and flipping colour, counters 0 -> 100 -> 1,000,000, a phone card stamped NOT NEEDED, a 100x calendar grid filling, a bar chart growing.
+- 16 "an app nobody knows exists" (72 s, white / purple, flips dark per section): a hub icon with cards fanning out, a terminal typing, a SHIPPED stamp, a Live chip, a node network spreading, a ring of tools around a hub, bars rising.
+- 18 "fastest growing repos" (52 s, white + green, one continuous take, no cuts): a ranked card per item with a +49.3K counter and a sparkline, icons connecting to a hub by drawn lines, a terminal with checks ticking green, a blur hand-off between items.
+- 19 "vibe coders making money" (35 s, white / pink, flips dark at the big number): a map filling with pins, an app-tracker card counting 194,485 -> 430,000, an invoice building line by line, an 81 % ring filling, chips (business / person / company) landing on cards.
+
+| | actions a second (picture) | moving at once | longest still gaps | cuts a minute |
+|---|---|---|---|---|
+| References 15, 16, 18, 19 | 2.4 - 3.4 | 1.5 - 2.5 | 6-7 gaps over 1 s in 35-72 s (each about 1.1-2 s) | 0 - 23 |
+| 3D kit v7 render 4 | 1.8 | 1.3 | 5 gaps in 23 s, 9.7 s in all (42 % of the reel), the longest 3.3 s (11.6-14.9 s) | 0 (23 % camera moves) |
+| 2.5D tech gold (ai-words) | 2.3 | 1.35 | 8 gaps in 30 s, the longest 2.6 s at the end | 0 (31 % still) |
+ACTION LIST (what the references do that v7 does not, per 10 s of reference):
+1. Numbers that keep counting (3-5 per 10 s): every card carries a live number (+45.1K -> +49.3K, 0 -> 100, 81 % ring) that ticks while the voice talks. v7 counts 3 times in 23 s.
+2. Small UI that works (3-4): a checklist ticks, a terminal types, an invoice adds lines, a toggle flips, a sparkline draws. v7's apps are icon tiles with dead screens.
+3. Stamps and chips landing on objects (1-2): NOT NEEDED, SHIPPED, Live, Free, company. v7 has the big headline words only.
+4. Fill-ups of many small things (1): a wall of cards, a map of pins, a grid of days, a dot sphere, bars. v7's cable cascade is its one fill.
+5. Selection marks (1): a box or ring snaps round the number being said. v7: none.
+6. Lines drawing between icons (1-2), and a blur hand-off to the next card instead of a camera move.
+Not taken: their brands, logos, screens, palettes, faces and scripts; their 35-72 s lengths.
+FOR V7 (owner yes 28 Nov, part b): build items 1-3 and 5 INSIDE objects already on screen (app screens alive, a connection-log card ticking each
+plug, stamps TANGLED / 24 CABLES / 11 on the objects, a selection box on each number), so v7 reaches 2.5+ actions a second, 2+ moving at once
+and no gap over 1.2 s, without more camera moves (fast 3D moves strobe: renders 2-4). The 2.5D builders take the same list.

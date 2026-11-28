@@ -201,6 +201,7 @@
   .ref textarea{min-height:56px}
   .ref .msg{color:var(--mute);font-size:.78rem;margin-top:6px;min-height:1em}
   /* Previews (owner, 21 Nov 2026: "put these 5 in app somewhere"): short concept videos to review, from templates/showreels/previews.json */
+  [hidden]{display:none!important}   /* owner, 28 Nov 2026: display rules were overriding hidden (Fix on a ready card, a stray Inbox line) */
   .chk{margin:0 0 12px;font:650 .95rem system-ui,sans-serif;color:var(--mute)}
   .chk.on{color:var(--act)}
   button.chk{display:block;background:none;border:0;padding:0;text-align:left;cursor:pointer}
@@ -495,6 +496,7 @@
   .bopen{display:block;margin:4px 14px 14px;min-height:40px}
   .bedge{position:absolute;left:0;right:0;bottom:0;height:3px;opacity:0;transition:opacity .25s ease}
   .bcard.making .bedge{opacity:1}
+  .bcard.late .bline{color:var(--act);font-weight:650}
   .bedge i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--c-tech));transition:width .35s ease;position:relative}
   .bedge i::after{content:'';position:absolute;right:0;top:0;bottom:0;width:36px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7));animation:brun 1.2s ease-in-out infinite}
   @keyframes brun{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
@@ -1257,7 +1259,7 @@
     top.textContent = say; top.className = 'chk' + (n ? ' on' : ''); tc.hidden = !n; tc.textContent = say + ' in Inbox'; tc.className = 'chk on'; }
   document.getElementById('t-chk').addEventListener('click', function(){ go('inbox'); });
   function syncNeeds(){ var q = needsList.children.length, rd = (typeof readyReels === 'function' ? readyReels().length : 0), n = q + rd, b = document.getElementById('today-n');   // questions + reels that are ready
-    needs.hidden = !q; document.getElementById('needs-h').textContent = q > 1 ? 'Needs you · ' + q : 'Needs you'; b.textContent = n; b.hidden = !n; tSub(n); }
+    needs.hidden = !q; document.getElementById('needs-h').textContent = q > 1 ? 'Needs you · ' + q : 'Needs you'; b.textContent = n; b.hidden = !n; tSubQ = q; tSubR = rd; tSub(n); }
   // ---- the reel journey (owner, 15 Nov 2026: "cover the whole flow of reel making in the app"): GET /api/journey, one card per reel, its seven
   // stages in order. The Worker caches GitHub for a minute; this page asks again every minute only while a reel is rendering and Journey is open.
   var STAGES = [['planned', 'Planned'], ['built', 'Built'], ['render', 'Rendering'], ['checks', 'Checks'], ['critic', 'Critic'], ['ready', 'Ready to post'], ['posted', 'Posted']];
@@ -1314,9 +1316,13 @@
     b.appendChild(m); b.appendChild(pill(stt)); b.addEventListener('click', function(){ openReel(r.name); }); return b; }
   function tEmpty(k, text){ var d = el('div', 'trow off'), m = el('span', 'm'); d.appendChild(chDot(k)); m.appendChild(el('span', 'n', text)); m.appendChild(el('span', 's', CH[k].name)); d.appendChild(m); return d; }
   function onGoCount(k){ if (!DATA) return 0; var c = DATA.c; return ((DATA.d && DATA.d.showreels) || []).filter(function(x){ var m = c[x.name] || {}; return chOf(x, c) === k && !ticks[x.name] && x.video && !m.hidden && !m.sample && !m.postOn && m.onGo; }).length; }
-  var tSubN = 0;
-  function tSub(n){ if (n != null) tSubN = n; var d = jLast ? jLast.today : istToday();
-    document.getElementById('t-sub').textContent = nice(d) + ' · ' + (tSubN ? tSubN + ' need' + (tSubN === 1 ? 's' : '') + ' you' : 'nothing needs you right now'); }
+  var tSubN = 0, tSubQ = 0, tSubR = 0;
+  // owner, 28 Nov 2026: "1 needs you" did not say what. Name it: questions to answer, reels to post.
+  function tSub(n){ if (n != null) tSubN = n; var d = jLast ? jLast.today : istToday(), say = [];
+    if (tSubQ) say.push(tSubQ + (tSubQ === 1 ? ' question' : ' questions') + ' for you');
+    if (tSubR) say.push(tSubR + (tSubR === 1 ? ' reel' : ' reels') + ' to post');
+    if (!say.length && tSubN) say.push(tSubN + ' need' + (tSubN === 1 ? 's' : '') + ' you');
+    document.getElementById('t-sub').textContent = nice(d) + ' · ' + (say.length ? say.join(', ') : 'nothing needs you right now'); }
   // Today = the workflow board only (owner, 26 Nov 2026); the ready reels live at the top of the reels menu. A reel counts only when its journey
   // status is ready (critic READY on main); no data or old data = none, with a plain line saying why.
   function jOld(j){ return !!j && (!!j.stale || Date.now() - Date.parse(j.now) > 15 * 60e3); }   // marked stale by the server, or older than 15 minutes (a copy kept on this phone)
@@ -1354,7 +1360,7 @@
     if (row && row.stage === 'failed') { var m = /^([a-z]+):\s*(.*)$/.exec(row.line || ''), st = m && at(m[1]) >= 0 ? m[1] : 'building'; return { idx: at(st), why: (m ? m[2] : row.line) || 'It stopped here.', stalled: false }; }
     if (r) {
       if (g('render').s === 'fail') return { idx: at('video'), why: 'The video did not finish: ' + (g('render').why || g('render').t || ''), stalled: false };
-      if (g('checks').s === 'fail') return { idx: at('checking'), why: 'A check found a problem: ' + String(g('checks').t || '').replace(/^Failed:\s*/, ''), stalled: false };
+      if (g('checks').s === 'fail') { var cw = String(g('checks').t || '').replace(/^Failed:?\s*/, '').trim(); return { idx: at('checking'), why: 'a machine check flagged the video' + (cw ? ' (' + cw + ')' : '') + '; the builder is on it', stalled: false }; }
       if (g('critic').s === 'fail') return { idx: at('critic'), why: 'Not ready yet: ' + (g('critic').why || 'see its notes'), stalled: false };
       if (g('ready').s === 'done' && g('posted').s === 'fail') return { idx: bst.length, why: 'The posting time passed and it is not marked posted.', stalled: false };
       if (g('render').s === 'now' && mins(g('render').at) > 60) return { idx: at('video'), why: 'Making the video for ' + mins(g('render').at) + ' min (it takes under 60).', stalled: true };
@@ -1378,9 +1384,12 @@
           else if (stt.k === 'building') { o.idx = 2; o.line = stt.t; } } } }
     if (r && !o.fin && !o.making) { var sg2 = r.stages || {}; if (sg2.checks && sg2.checks.s === 'done' && (!sg2.critic || sg2.critic.s !== 'done')) { o.idx = bIndex('critic'); o.line = 'Waiting for the second look'; } }
     var pb = o.fin === 'posted' ? null : bProblem(row, r, Date.now(), BST);
-    if (pb) { o.prob = pb; if (pb.idx < BST.length) o.idx = pb.idx; o.line = (pb.stalled ? 'Stuck at ' : 'Problem at ') + (pb.idx < BST.length ? BST[pb.idx][1].toLowerCase() : 'posting') + ': ' + pw(pb.why).slice(0, 110);
+    if (pb) { o.prob = pb; if (pb.idx < BST.length) o.idx = pb.idx; o.line = (pb.stalled ? 'Stuck: ' : 'Being fixed: ') + pw(pb.why).slice(0, 110);
       o.fail = 'Reel ' + (o.name || k) + ', step: ' + (pb.idx < BST.length ? BST[pb.idx][1] : 'Post') + (pb.stalled ? ' (stalled)' : '') + ', why: ' + String(pb.why).slice(0, 400); }
-    if (!o.line) o.line = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Not started yet';
+    if (r && r.held && !o.fin && !o.prob) o.line = 'Held until its reviewer passes' + (o.line ? ' · ' + o.line : '');   // hidden reels are on the board too (owner, 28 Nov 2026)
+    if (!o.line && !o.fin && o.idx < 0) { var sl = (r && r.slot) || SLOTS[k], due = Date.parse(istToday() + 'T' + sl + ':00+05:30'); o.late = !isNaN(due) && Date.now() > due - 4 * 36e5;
+      o.line = o.late ? 'Late: no news from the builder, posts at ' + sl : 'No news yet, posts at ' + sl; }
+    if (!o.line) o.line = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'No news yet';
     if (jOld(jLast)) o.line += ' (old status)';
     return o; }
   function bPct(o){ if (o.fin === 'ready' || o.fin === 'posted') return 100; if (o.idx < 0) return 0; return Math.round((o.idx + (o.pct != null ? Math.max(0, Math.min(100, o.pct)) / 100 : 0)) / BST.length * 100); }
@@ -1406,7 +1415,7 @@
   function bUpdate(c, o){
     var prev = c.prev, p = bPct(o), cur = o.fin ? (o.fin === 'skipped' ? Math.max(o.idx, 0) : BST.length) : o.idx;
     c.name = o.name; c.ready = o.fin === 'ready'; c.open.textContent = c.ready ? 'Open to post' : 'Open reel'; c.open.hidden = !o.name && !c.ready;
-    c.card.className = 'bcard' + (o.fin ? ' ' + o.fin : '') + (o.making ? ' making' : '') + (c.card.classList.contains('open') ? ' open' : '');
+    c.card.className = 'bcard' + (o.fin ? ' ' + o.fin : '') + (o.making ? ' making' : '') + (o.late ? ' late' : '') + (c.card.classList.contains('open') ? ' open' : '');
     if (o.fin === 'ready' && prev && prev.fin !== 'ready' && prev.fin !== 'posted') { c.card.classList.add('lift'); setTimeout(function(){ c.card.classList.remove('lift'); }, 420); }
     c.st.textContent = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Waiting';
     if (!prev || prev.line !== o.line) { c.line.textContent = o.line; if (prev) { c.line.classList.remove('draw'); void c.line.offsetWidth; c.line.classList.add('draw'); } }
@@ -1420,14 +1429,14 @@
     c.bi.style.width = p + '%'; c.bp.textContent = p + '%';
     c.ei.style.width = (o.making && o.pct != null ? Math.max(3, o.pct) : 0) + '%';
     var sm = o.name && DATA && DATA.c ? DATA.c[o.name] : null, slot = sm && /^\d{2}:\d{2}$/.test(sm.postAt || '') ? sm.postAt : SLOTS[c.k],
-        mm = o.fin === 'posted' ? '' : o.fin ? (o.model ? 'Last worked on by ' + o.model : '') : o.model ? o.model + ' is working on it' : '';
+        mm = '';   // owner, 28 Nov 2026: no model names on the board
     c.meta.textContent = (o.fin === 'posted' ? 'Posted' : 'Posts at ' + slot + ' IST') + (mm ? ' · ' + mm : '');   // the slot comes from design/slots.json
     var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
     if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
     // Fix (owner, 26 Nov 2026): a red step sends its failure line (reel, step, why) as a top-priority Feedback item
     var bad = !!(o.fail && o.prob); c.fix.hidden = !bad;
     if (bad) { var at2 = rows[o.prob.idx]; if (c.fix.parentNode !== at2) at2.after(c.fix); if (o.prob.idx === BST.length) fr.lastChild.textContent = pw(o.prob.why);   // the Fix button sits under the row that failed or stalled
-      if (c.openFor !== o.fail) { c.openFor = o.fail; c.card.classList.add('open'); c.main.setAttribute('aria-expanded', 'true'); } }   // opened once for each new problem, so the row shows
+    }   // the card stays folded (owner, 28 Nov 2026): its one line says the problem; a tap shows the steps and Fix
     if (bad) { if (c.fail !== o.fail) { c.fail = o.fail; c.sent = null; } c.fixb.disabled = c.sent === c.fail; c.fixb.textContent = c.sent === c.fail ? 'Sent to the studio' : 'Fix'; } else c.fail = null;
     c.prev = o; }
   function bRender(){

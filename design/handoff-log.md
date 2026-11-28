@@ -8,6 +8,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action list from the count, and a clearer Today board
+- design/references.md "R-ref 28 Nov": references 15-19 make 2.4-3.4 actions a second, v7 1.8 (ACTION LIST for v7 part b). References 9-14 were deleted when closed.
+- Board (owner: "there's no clarity"): src/journey.js puts a hidden reel dated today on the board as held; templates/index.html: [hidden] always hides, one plain line per card, folded cards, no model names, the top line names questions / reels to post.
+- For the main account: a held reel now shows on Today; nothing else changes for builders.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action count for references
 - Owner: count the actions in references so 3D kit v7 can get more actions and elements. scripts/qa/action-count.py (actions a second, things moving at once, gaps), asks.yml action refs-study (references by id in any state + our reels, 2 fps sheets), .claude/skills/reverse-any-video "Action count". References 15-19 (26 Nov) were never studied: in this run.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): the critic is called "reviewer" to the owner
