@@ -1425,3 +1425,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/numbers-icon-fix · Output QA NUMBERS ignores icons; board Ready follows the journey (item 6)
 - Done: output-qa.py digit_like(): a read needs digit proportions (a square padlock blob is not a digit), padlock case and unit checks in scripts/qa/test-numbers.py; templates/index.html bRowReady(): a "ready" stage row no longer overrides a journey that is not ready, cases in scripts/qa/app-board-test.mjs.
 - Left: Output QA re-run on showreel-tech-tag-relay after merge, then the App probe.
+
+## 2026-11-28 · claude/kit-ref-pieces · Kit reference pieces: number fill, keyword jump, blur hand-off, sound count
+- Done: scripts/explainer/kitref.js (KREF.numberFill with tick cues, KREF.keyword with reserved box and width cut, KREF.handoff swap and focus modes; kit-inline entry), local test scene scripts/previews/kit-ref-pieces.html (one stills sheet, no render), SOUND and QUIET lines in scripts/qa/action-count.py, skill "Action count" updated.
+- Left: refs-study run (ids 15, 16, 18, 19; showreel-tech-ai-words, showreel-50-popover), SOUND numbers into references.md.
