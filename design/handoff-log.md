@@ -1499,3 +1499,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/handoff-item6-done · Item 6 done: tech reel Ready in the app
 - Done: App probe PASS (run 46122163605): tag-relay checks "Output QA PASS (waived by the reviewer)", ready for 20:30; item 6 marked done in design/handoff.md with the probe line; todo line for the remaining "built" subrequest warnings.
 - Left: nothing for item 6; the better NUMBERS rule is a dated todo.
+
+## 2026-11-28 · claude/web-popover-focus-qa2 · Web popover focus test: render 2 Output QA by hand
+- Done: Output QA by hand on render 2 (run 46122018953): two FAILs, both explained (PACE 4.51 words/s on an unchanged sentence against the 4.5 limit, HUE against its own original); everything else passes (DEMO 0.57, BLACKBG 6, DEAD none, MUTE 5.4%). Action count could not run on the MP4 here (host refused); scene capture 4.4 a second, longest gap 0.9 s.
+- Left: the owner-side full-video review; pace-only version on main (scripts/previews/web-popover-focus.html, 13.8 s) is NOT rendered; render 3 only with an owner yes.
