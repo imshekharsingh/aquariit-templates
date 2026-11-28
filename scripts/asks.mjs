@@ -9,6 +9,7 @@
 //                  REF <id> <time> <channel|-> <url|-> <file type|-> <note>; for each file a small JPEG preview (an image scaled to 720 px, a clip as
 //                  a 4x2 sheet of 8 frames spread over the whole clip; ASKS {"full": [ids]} adds time-stamped sheets of the whole clip at 1 frame a second) as a "B64 ref-<id>.jpg <base64>" log line (stderr, not the summary):
 //                  node scripts/media/from-log.mjs <run id> <dir> turns them back into files. Study each into design/references.md, then refs-done
+//   refs-study:    ASKS {"ids": [10], "reels": ["study/showreel-x-preview.mp4"], "sheets": true}: the action count (scripts/qa/action-count.py) of references (any state) and our reels, plus 2 fps sheets
 //   refs-done:     (also "checklist", "stills", "replies", "close": true, see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
 //          optional "reel": "showreel-..." or "preview": "showreel-pv-..." (task 12, 27 Nov 2026): the app shows that reel's cover and player beside the question,
@@ -29,7 +30,7 @@
 const SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, ''), ACTION = process.env.ACTION || 'read';
 const die = (m) => { console.error('✗ ' + m); process.exit(1); };
 let items = [];
-if (ACTION !== 'read' && ACTION !== 'list' && ACTION !== 'tidy' && ACTION !== 'feedback' && ACTION !== 'feedback-done' && ACTION !== 'refs' && ACTION !== 'refs-done') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (ACTION === 'unmark' && (!Array.isArray(items) || !items.length || !items.every((id) => /^showreel-[a-z0-9-]{1,60}$/.test(id)))) die('unmark: ASKS is ["showreel-..."]');
+if (ACTION !== 'read' && ACTION !== 'list' && ACTION !== 'tidy' && ACTION !== 'feedback' && ACTION !== 'feedback-done' && ACTION !== 'refs' && ACTION !== 'refs-done' && ACTION !== 'refs-study') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (ACTION === 'unmark' && (!Array.isArray(items) || !items.length || !items.every((id) => /^showreel-[a-z0-9-]{1,60}$/.test(id)))) die('unmark: ASKS is ["showreel-..."]');
 if (ACTION !== 'mark' && (!Array.isArray(items) || !items.length)) die('ASKS must be a non-empty list'); }
 if (ACTION === 'mark') { if (!items || Array.isArray(items) || typeof items !== 'object' || !Object.keys(items).length) die('mark: ASKS is {"showreel-...": "ISO time"}'); for (const [id, at] of Object.entries(items)) if (!/^showreel-[a-z0-9-]{1,60}$/.test(id) || isNaN(Date.parse(at))) die(`mark: bad entry ${id}`); }
 const ID = /^[a-z0-9-]{1,60}$/;
@@ -45,7 +46,7 @@ if (ACTION === 'feedback-done') { try { fbDone = JSON.parse(process.env.ASKS || 
 let refDone = null;
 if (ACTION === 'refs-done') { try { refDone = JSON.parse(process.env.ASKS || '{}'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
   if (!refDone || !Array.isArray(refDone.ids) || !refDone.ids.length || !refDone.ids.every((i) => /^[0-9]{1,9}$/.test(String(i))) || !['new', 'studied', 'used'].includes(refDone.state) || typeof refDone.note !== 'string' || !refDone.note.trim()) die('refs-done: ASKS is {"ids": [3], "state": "studied", "note": "what was taken"}'); }
-if (!['read', 'list', 'tidy', 'add', 'clear', 'mark', 'unmark', 'feedback', 'feedback-done', 'refs', 'refs-done'].includes(ACTION)) die('ACTION is read, list, tidy, add, clear, mark, unmark, feedback, feedback-done, refs or refs-done');
+if (!['read', 'list', 'tidy', 'add', 'clear', 'mark', 'unmark', 'feedback', 'feedback-done', 'refs', 'refs-done', 'refs-study'].includes(ACTION)) die('ACTION is read, list, tidy, add, clear, mark, unmark, feedback, feedback-done, refs, refs-done or refs-study');
 const U = process.env.BASIC_AUTH_USER, P = process.env.BASIC_AUTH_PASS;
 if (!U || !P) die('BASIC_AUTH_USER / BASIC_AUTH_PASS are missing');
 const login = await fetch(SITE + '/login', { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ username: U, password: P }) });
@@ -68,6 +69,27 @@ if (ACTION === 'read' || ACTION === 'feedback') {
 if (ACTION === 'feedback-done') for (const id of fbDone.ids) {
   const r = await fetch(`${SITE}/api/feedback/${id}/flag`, { method: 'POST', headers: H, body: JSON.stringify({ flag: fbDone.flag, by: fbDone.by, report: (fbDone.note || '').trim(), proof: fbDone.proof, image: fbDone.image }) });
   if (!r.ok) die(`could not set feedback ${id} to ${fbDone.flag} (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ feedback ${id} ${fbDone.flag}` : `✗ feedback ${id}: not changed (closed, or no such item)`);
+}
+if (ACTION === 'refs-study') {   // owner, 28 Nov 2026: count actions per second in references AND our reels the same way (scripts/qa/action-count.py)
+  // ASKS {"ids": [10, 12], "reels": ["study/showreel-x-preview.mp4", "showreel-y.mp4"], "sheets": true}: any reference state; sheets = 2 frames a second, 20 s a sheet
+  let q = {}; try { q = JSON.parse(process.env.ASKS || '{}') || {}; } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
+  const ids = (q.ids || []).map(Number).filter((i) => Number.isInteger(i) && i > 0), reels = (q.reels || []).filter((r) => /^(study\/)?showreel-[a-z0-9-]{1,60}\.mp4$/.test(r));
+  if (!ids.length && !reels.length) die('refs-study: ASKS is {"ids": [10], "reels": ["showreel-x.mp4"], "sheets": true}');
+  const { execFileSync } = await import('node:child_process'), { mkdtempSync, readFileSync, readdirSync, createWriteStream } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
+  const { Readable } = await import('node:stream'), { pipeline } = await import('node:stream/promises'), td = mkdtempSync(join(tmpdir(), 'study-'));
+  const jobs = [...ids.map((i) => ({ label: `ref-${i}`, url: `${SITE}/api/refs/${i}/file` })), ...reels.map((r) => ({ label: r.replace(/^study\//, '').replace(/\.mp4$/, ''), url: `${SITE}/reels/${r}` }))];
+  for (const j of jobs) {
+    const g = await fetch(j.url, { headers: { Cookie: cookie } });
+    if (!g.ok) { console.log(`STUDY ${j.label}: not available (HTTP ${g.status}${g.status === 404 ? ': deleted or never uploaded' : ''})`); continue; }
+    const src = join(td, j.label); await pipeline(Readable.fromWeb(g.body), createWriteStream(src));
+    try { console.log(execFileSync('python3', ['scripts/qa/action-count.py', src, j.label], { timeout: 600000 }).toString().trim()); } catch (e) { console.log(`STUDY ${j.label}: count failed (${e.message.split('\n')[0]})`); }
+    if (q.sheets) {
+      const pat = join(td, `${j.label}-s%02d.jpg`);
+      try { execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', src, '-vf', "fps=2,scale=135:-2,drawtext=text='%{pts\\:hms}':x=3:y=3:fontsize=13:fontcolor=yellow:box=1:boxcolor=black@0.6,tile=8x5", '-q:v', '6', pat], { stdio: 'ignore', timeout: 300000 }); } catch (e) { console.log(`  (sheets ${j.label} failed)`); }
+      let n = 0; for (const s of readdirSync(td).filter((x) => x.startsWith(`${j.label}-s`) && x.endsWith('.jpg')).sort()) { console.error(`B64 ${s} ${readFileSync(join(td, s)).toString('base64')}`); n++; }
+      console.log(`  ${j.label}: ${n} sheets (2 frames a second, 20 s a sheet)`);
+    }
+  }
 }
 if (ACTION === 'refs') {
   const r = await fetch(SITE + '/api/refs?state=new', { headers: { Cookie: cookie } });

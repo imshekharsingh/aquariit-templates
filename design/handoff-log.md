@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action count for references
+- Owner: count the actions in references so 3D kit v7 can get more actions and elements. scripts/qa/action-count.py (actions a second, things moving at once, gaps), asks.yml action refs-study (references by id in any state + our reels, 2 fps sheets), .claude/skills/reverse-any-video "Action count". References 15-19 (26 Nov) were never studied: in this run.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): the critic is called "reviewer" to the owner
 - Owner: "going forward critic will be called reviewer". CLAUDE.md and design/inputs-brief.md: owner-facing words only; "CRITIC: READY", the critic tag and design/critic.md stay (scripts read them).
 ## 2026-11-28 · claude/inputs-session-brief · owner chat: an "Inputs" session on the other account
