@@ -1373,3 +1373,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/t22-ready · 2.5D depth study ready for critic (task 22)
 - Done: render 2 Output QA (FLICKER and DEAD pass); review file for the critic.
 - Left: the main account's critic.
+
+## 2026-11-28 · claude/critic-kit-2d5-depth · 2.5D depth study: critic NOT READY on render 2 (task 22)
+- Done: critic on the real MP4 (PREMIUM 6.5 / 6.0 / 6.5): lone dark shadow blobs and line ticks at 4.55 s and 6.95 s, frame 0 title only, lower half empty; builders keep the 27 Nov kit; exact fix for kitmap.js in review/tech/showreel-pv-tech-2d5-depth.md.
+- Left: the other account applies the fix to kitmap.js; no third render without the owner's yes.
