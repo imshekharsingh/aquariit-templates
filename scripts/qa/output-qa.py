@@ -732,7 +732,8 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
                     crops.append(np.asarray(im.crop((int(cx - w2), int(cy - h2), int(cx + w2), int(cy + h2))), float))
                 return len(crops) >= 2 and max(float(np.abs(c - crops[0]).mean()) for c in crops[1:]) < T['num_still']
             moved = [x for x in counters if not still(x)]
-        counters = moved    bad = []
+        counters = moved
+    bad = []
     for v, ts in said:
         for x in counters:
             near = [(tt, n) for tt, n in x[3] if ts - T['num_pre'] <= tt <= ts + T['num_win']]
