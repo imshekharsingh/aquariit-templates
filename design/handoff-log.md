@@ -1425,3 +1425,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/numbers-icon-fix · Output QA NUMBERS ignores icons; board Ready follows the journey (item 6)
 - Done: output-qa.py digit_like(): a read needs digit proportions (a square padlock blob is not a digit), padlock case and unit checks in scripts/qa/test-numbers.py; templates/index.html bRowReady(): a "ready" stage row no longer overrides a journey that is not ready, cases in scripts/qa/app-board-test.mjs.
 - Left: Output QA re-run on showreel-tech-tag-relay after merge, then the App probe.
+
+## 2026-11-28 · claude/numbers-icon-fix3 · NUMBERS counters must count one way (item 6, follow-up)
+- Done: the padlock read as 6, 8, 6, 4, 6 at 56x72 px (aspect like a digit, so shape alone cannot tell it); output-qa.py now treats a place as a counter only when its values never reverse; flicker case in test-numbers.py; the read dump prints on a FAIL.
+- Left: Output QA re-run on showreel-tech-tag-relay, board check, App probe.

@@ -718,7 +718,9 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
             tr = next((x for x in tracks if abs(cx - x[0]) < max(1.5 * x[2], 65) and abs(cy - x[1]) < x[2] / 2 and .6 < h / x[2] < 1.6), None)
             if tr: tr[3].append((tt, v))
             else: tracks.append([cx, cy, h, [(tt, v)]])
-    counters = [x for x in tracks if len({v for _, v in x[3]}) >= 2]
+    def steady(x):   # a real counter only goes one way; an icon read as 6, 8, 6, 4, 6 (the 28 Nov padlock) is flicker, not counting
+        vs = [v for _, v in sorted(x[3])]; return all(a <= b for a, b in zip(vs, vs[1:])) or all(a >= b for a, b in zip(vs, vs[1:]))
+    counters = [x for x in tracks if len({v for _, v in x[3]}) >= 2 and steady(x)]
     bad = []
     for v, ts in said:
         for x in counters:
