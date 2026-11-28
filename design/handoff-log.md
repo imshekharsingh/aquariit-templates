@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/critic-popover-focus-r2 · main account: reviewer verdict on the web focus test, render 2
+- Real MP4 (13:31 IST upload) vs the original: READY and SWAP for 19:00: the burst now lands on "popover", BEFORE stays broken through the hand-over, the ending moves (1 action gap vs 3). PACE (4.51 vs 4.5) and HUE (its own original) waived. Length: 15 s is right. Next-version fixes in review/web/showreel-50-popover-focus.md.
 ## 2026-11-28 · claude/tech-pace-feedback · other account (Inputs): owner feedback on today's tech reel
 - design/owner-feedback.md 28 Nov line: slow transitions, needless waits, colour like the last tech reel. Tonight's reel posts as is (owner); tomorrow's tech build (this account) applies it.
 ## 2026-11-28 · claude/critic-popover-focus-2 · main account: reviewer verdict on the web focus test
