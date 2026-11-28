@@ -8,6 +8,9 @@ Format (at most 6 lines):
 
 
 
+
+## 2026-11-28 · claude/handoff-ocr-false-alarm · owner chat: queue a fix for an Output QA false alarm
+- A text check read a padlock icon as a number on today's tech reel; handoff.md GO NOW item 6 asks the other account to fix it with a test.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action count for references
 - Owner: count the actions in references so 3D kit v7 can get more actions and elements. scripts/qa/action-count.py (actions a second, things moving at once, gaps), asks.yml action refs-study (references by id in any state + our reels, 2 fps sheets), .claude/skills/reverse-any-video "Action count". References 15-19 (26 Nov) were never studied: in this run.
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): the critic is called "reviewer" to the owner
