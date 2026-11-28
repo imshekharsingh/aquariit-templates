@@ -6,6 +6,8 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-28 · claude/critic-popover-focus · main account: reviewer verdict on the web focus test
+- Real MP4 vs the original: READY (nothing broken) but KEEP ORIGINAL at 19:00: the green breakout lands ~1 s before "popover" and BEFORE's menu is closed as the light leaves it. Fix for a next version in review/web/showreel-50-popover-focus.md.
 ## 2026-11-24 23:55 IST · claude/topic-bank-24nov · topic bank for 25-27 Nov (Sonnet research, Fable only picks)
 - Done: design/topic-bank.md: web 15 options (25, 26, 27 Nov), tech 10 (26, 27 Nov; 25 Nov skipped), each with hook, the one lesson, 2 facts with URLs, gold-look fit, a prop and the 2 picks per day. Web facts read in MDN's page source and browser-compat-data; tech facts read on apple.com, support.apple.com and developer.android.com (the only maker hosts reachable from here).
 - Not done: the CV critic verdict was NOT written into the review file; the write was blocked (it needs the critic's own session to write it, not a copy). Turns Out's task on 25 Nov re-checks and records it.

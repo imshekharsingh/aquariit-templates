@@ -1,0 +1,12 @@
+
+## Reviewer (main account, full video)
+Real MP4 judged (study/showreel-50-popover-focus-preview.mp4, 15.0 s, -14.0 LUFS), side by side with showreel-50-popover render 3 (READY): one contact sheet each at 0.5 s, 16 targeted frames 5.3-7.5 s with the subtitle word lighting as the voice clock, two full-res crops (3.0 s, 14.6 s).
+1. One side lit at a time: yes, 0-5.7 s BEFORE only, 6.2-14.0 s AFTER only, both 14.0-15 s (planned). The light moves on "The fix:" (5.7-6.2 s): on the fix word. But the green burst (count 2 to 4, rows, tag) lands at 6.2-6.4 s, and "popover" is spoken at 7.3-7.4 s: the burst is about 1.0 s early, between "fix:" and "make the menu". In the original it lands on "popover" (7.5 s).
+2. Dimmed side keeps its colour: yes (maroon AFTER at 3.0 s, dark red BEFORE after 6.2 s, never grey). Glow soft, no bloom, text sharp at phone size.
+3. BEFORE breaks while lit: yes (flinch 0.3 s, "sliced!" 0.5-1.0 s, "again?!" 2.0-2.5 s, "2 OF 4 CUT" and dashed Save / Report ghosts from 3.0 s). Weak spot: 5.5-6.1 s both menus are closed, so the lit BEFORE pane is an empty card as the light leaves it, and at 5.9-6.0 s neither pane reads as lit.
+4. The last 2.4 s (12.6-15 s): one re-open at 12.5-13.0 s, a still hold 13.0-14.0 s, then BEFORE relights at 14.0 s for the side-by-side proof. Better than the original's flat hold, but one beat in 2.4 s; it holds, it does not pull.
+5. Better or different: different, not clearly better. Gains: frame 0 points the eye at the bug (STOP up), the 14-15 s proof frame. Loss: the original's hero beat (red to green on the word "popover") becomes a burst a second before the word, with a dark empty gap just before it.
+STOP: 7.5/10 (0-1 s one lit, sliced menu). REWATCH: 7/10 (6.2 s burst; 14.0 s both lit).
+PREMIUM: animation 7/10 (t 5.7-6.4 the hand-over, then the burst), cleanliness 8/10 (t 0-15 nothing cut, no text over text), premium 7.5/10 (t 14.0-15 both lit side by side).
+CRITIC: READY (nothing broken; postable). Exact fix for any next version: keep BEFORE's cut menu open through the hand-over (close it after 6.2 s, not at 5.5 s), and move the AFTER breakout (A.fixAt) from A.fix + .5 to the word "popover" (V.at('popover')), keeping the light hand-over on "fix".
+KEEP ORIGINAL: showreel-50-popover posts at 19:00. Its breakout lands exactly on "popover", which is the lesson; this test moves it a second early and adds an empty dark beat, so the gain (a clearer frame 0, a proof ending) is not worth the swap today.
