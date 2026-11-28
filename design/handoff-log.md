@@ -1453,6 +1453,9 @@ Format (at most 6 lines):
 - Done: independent review of the focus hand-off preview (run 46113700512, Output QA 46116075083) from local stills and the logged QA; the real MP4 could not be fetched (proxy refused the host). Lit pane is the talked-about one, dark pane stays maroon and readable, hand-over about 0.4 s on "The fix:", soft glow, both lit for the last 1.4 s. STOP 7.5, REWATCH 7.5, PREMIUM 7.5 / 8 / 7.5. Modest reach win over the original.
 - Left: the owner decides the swap; if swapped, check on the real MP4 that the green burst sits inside the "popover" sentence; next version keeps BEFORE's cut menu open through the hand-over.
 
+## 2026-11-28 · claude/qa-waiver · The app honours a critic's check waiver (item 6)
+- Done: src/journey.js waiversOf() + qaStage(): a failed Output QA run whose every failing check has a "<CHECK> WAIVER (critic" line in the review file is "Output QA PASS (waived by the reviewer)"; any unwaived check, or a builder-written waiver, still fails. scripts/qa/qa-waiver-test.mjs in npm run check. todo line for the better NUMBERS rule.
+- Left: App probe (the tech Ready box must list showreel-tech-tag-relay).
 ## 2026-11-28 · claude/handoff-numbers-progress · Item 6 stopped for a decision
 - Done: NUMBERS icon proportion rule, still-region rule (dry-run proven, but the real padlock crop is not pixel-static), board Ready follows the journey; read dump on a FAIL.
 - Left: showreel-tech-tag-relay still fails NUMBERS on the re-run; waiver or one more rule (Inputs decides); then the App probe.

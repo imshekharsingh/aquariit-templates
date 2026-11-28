@@ -91,13 +91,18 @@ export function criticOf(verdict, rest) {
   const ready = verdict.toUpperCase() === 'READY';
   return { ready, why, more: !ready && full.length > why.length ? full.slice(0, 1200) : '' };
 }
+// 28 Nov 2026: a check the independent critic waived in the review file ("NUMBERS WAIVER (critic, 28 Nov 2026): ..."); a builder's waiver (no "(critic") counts for nothing
+export function waiversOf(text) {
+  const w = new Set(); for (const l of String(text || '').split('\n')) { const m = /^\s*(?:\d+\.\s*)?([A-Z]{3,10}) WAIVER \(critic\b/.exec(l); if (m) w.add(m[1]); }
+  return [...w];
+}
 // the review file: CRITIC: READY / NOT READY on the critic line (item 20), and item 13 (the render's Output QA line) as a fallback for checks
 async function review(ch, name, warns) {
   return cached(`review-${name}`, REVIEW_TTL, async () => {
     try {
       const r = await fetch(RAW + `review/${ch}/${name}.md`, { cf: { cacheTtl: REVIEW_TTL, cacheEverything: true } });
       if (!r.ok) { if (warns && r.status !== 404 && warns.length < 12) warns.push('review ' + name + ': HTTP ' + r.status); return { exists: false }; }
-      const t = await r.text(), out = { exists: true, critic: null, qa: null };
+      const t = await r.text(), out = { exists: true, critic: null, qa: null, waivers: waiversOf(t) };
       for (const l of t.split('\n')) {
         const c = /^\s*(?:\d+\.\s*)?(?:Critic\b.*?\b)?CRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);   // any item number (27 Nov: a fix verdict as item 22 was missed, so a READY web reel showed as not ready); both "20. CRITIC: READY" and "Critic ... CRITIC: READY" (25 Nov: the first form was missed, so READY reels stayed on Checking)
         if (c) out.critic = criticOf(c[1], c[2]);
@@ -139,7 +144,7 @@ function qaReason(lines) {
   const m = /^([A-Z]{3,10}): (.*)$/.exec(l), more = (lines || []).filter((x) => /^[A-Z]{3,10}: /.test(x)).length - 1;
   return m ? { t: 'Failed: ' + (QA_WORDS[m[1]] || m[1].toLowerCase()) + (more > 0 ? ' (+' + more + ' more)' : ''), why: m[1] + ': ' + m[2].slice(0, 160) } : { t: 'Failed', why: l.slice(0, 160) };
 }
-function qaStage(render, qaRun, rv, rStage) {
+export function qaStage(render, qaRun, rv, rStage) {
   // the newest of: the Output QA step of the render run, or a separate Output QA run
   const fromRender = render && render.status === 'completed' && rStage.s === 'done' ? { at: render.updated_at, fail: rStage.qaFailed, ok: render.conclusion === 'success' } : null;
   let fromQa = null;
@@ -150,7 +155,10 @@ function qaStage(render, qaRun, rv, rStage) {
   const pick = fromQa && (!fromRender || fromQa.at > fromRender.at) ? fromQa : fromRender;
   if (pick && pick.live) return { s: 'now', t: 'Running the checks', at: pick.at, live: true };
   if (pick && pick.ok) return { s: 'done', t: 'Output QA PASS', at: pick.at };
-  if (pick && pick.fail) return { s: 'fail', ...qaReason(pick.fail), at: pick.at };
+  if (pick && pick.fail) {   // every failing check waived by the critic = done (any unwaived failing check still fails)
+    const names = [...new Set(pick.fail.map((x) => (/^([A-Z]{3,10}): /.exec(x) || [])[1]).filter(Boolean))];
+    if (names.length && pick.fail.every((x) => /^[A-Z]{3,10}: /.test(x)) && names.every((n) => rv && (rv.waivers || []).includes(n))) return { s: 'done', t: 'Output QA PASS (waived by the reviewer)', at: pick.at };
+    return { s: 'fail', ...qaReason(pick.fail), at: pick.at }; }
   if (rStage.s === 'now') return { s: 'wait', t: 'After the render' };
   if (rv && rv.qa) return rv.qa.pass ? { s: 'done', t: 'Output QA PASS' } : { s: 'fail', t: 'Failed', why: rv.qa.why || 'See the review file.' };
   return { s: 'wait', t: rStage.s === 'done' ? 'No result yet' : 'After the render' };
