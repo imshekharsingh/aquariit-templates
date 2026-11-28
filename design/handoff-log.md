@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/tech-pace-feedback · other account (Inputs): owner feedback on today's tech reel
+- design/owner-feedback.md 28 Nov line: slow transitions, needless waits, colour like the last tech reel. Tonight's reel posts as is (owner); tomorrow's tech build (this account) applies it.
 ## 2026-11-28 · claude/critic-popover-focus-2 · main account: reviewer verdict on the web focus test
 - Real MP4 vs the original: READY (nothing broken) but KEEP ORIGINAL at 19:00: the green breakout lands ~1 s before "popover" and BEFORE's menu is closed as the light leaves it. Fix for a next version in review/web/showreel-50-popover-focus.md.
 ## 2026-11-28 · claude/ref-process-rules · other account (Inputs): reference study rules
@@ -1494,3 +1496,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-popover-focus-r2b · Web popover focus test: owner notes added before the render (faster transitions, no waits, colour worlds)
 - Done: hand-over and transitions 0.35 s with a tiny overshoot; reel 13.8 s; item-by-item beats, count and ghost pulses, live code card; a warm red-amber light pool behind BEFORE and a cool green-teal pool behind AFTER; owner line in design/owner-feedback.md. Scene action count 4.4 a second, longest gap 0.7 s.
 - Left: the render. A render of the earlier version (run 46122018953) is still running because the cancel was blocked here; waiting for Inputs to choose between cancelling it (then this is render 2) or letting it finish (then this is render 3, needs the owner's yes with its cost).
+## 2026-11-28 · claude/handoff-item6-done · Item 6 done: tech reel Ready in the app
+- Done: App probe PASS (run 46122163605): tag-relay checks "Output QA PASS (waived by the reviewer)", ready for 20:30; item 6 marked done in design/handoff.md with the probe line; todo line for the remaining "built" subrequest warnings.
+- Left: nothing for item 6; the better NUMBERS rule is a dated todo.
