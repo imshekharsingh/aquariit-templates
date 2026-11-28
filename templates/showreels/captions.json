@@ -2463,10 +2463,40 @@
  "showreel-c3-text-on-photo": {
   "channel": "c3",
   "engine": "design",
-  "concept": "Design series · Nobody can read this poster. Three fixes, same photo. 🎤 (a gig poster on a lamp post at night whose thin pale text sits on a busy, bright crowd photo, fixed in three moves: darken the photo, put the title on a solid band, one bold colour for the text)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "concept": "Design series · This poster is hard to read. White words sit straight on a busy photo. 🎤 (a gig poster on a lamp post at night, fixed in three moves: dim the photo, make the words bold, put the date on a band; the last frame shows BEFORE next to AFTER)",
+  "note": "Rebuilt on the improved design kit (28 Nov 2026) from the gold reel showreel-c3-grey-text; hidden until the stills check, one render, Output QA and a critic READY, then postOn 2026-11-28 14:00 with hidden and hold removed.",
   "hidden": true,
-  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first.",
+  "postOn": "2026-11-28",
+  "postAt": "14:00",
+  "aiLabel": false,
+  "caption": "This poster is hard to read. White words sit straight on a busy photo. 🎤\n\n1. Dim the photo. A dark layer gives the words calm behind them.\n2. Make the words bold. Thin letters melt into bright light; heavy ones hold.\n3. Put the small print on a solid band. A flat colour is easier to read than any photo.\n\nSave this for your next poster, flyer or story. Which fix would you try first?",
+  "keywords": [
+   "poster design tips",
+   "text on image",
+   "how to make text readable on photos",
+   "typography tips",
+   "graphic design for beginners",
+   "colour contrast"
+  ],
+  "hashtags": [
+   "#designtips",
+   "#graphicdesign",
+   "#typography",
+   "#posterdesign",
+   "#contrast"
+  ],
+  "style": {
+   "lengthS": 21,
+   "wordsPerS": 2.0,
+   "shotChanges": 0,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "a gig poster on a lamp post",
+   "firstSecondTension": "yes",
+   "payoff": "tip",
+   "source": "mp4"
+  }
  },
  "showreel-c3-tap-targets": {
   "channel": "c3",

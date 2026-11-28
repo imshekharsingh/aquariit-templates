@@ -2,7 +2,8 @@
  "name": "showreel-c3-text-on-photo",
  "seek": "scripts/channel3/text-on-photo.html",
  "engine": "design",
- "dur": 16,
+ "dt": 2,
+ "dur": 21,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,16 +11,24 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "Nobody can read this poster. The photo is too busy. Turns out, text needs calm. Fix one: darken the photo. Fix two: a solid band. Fix three: one bold colour. Now it reads across the street.",
+  "text": "This poster is hard to read. The photo is too busy. Turns out, words need calm behind them. First, dim the photo. Next, make the words bold. Then put the date on a band. Now it reads from across the street.",
   "voice": "af_heart",
-  "speed": 1
+  "speed": 1,
+  "gap": [
+   0.3,
+   0.35,
+   0.3,
+   0.3,
+   0.3,
+   0.4
+  ]
  },
  "experiment": {
   "id": "c3-design-series",
   "change": "design-tutorial format (queue of 10)",
   "vs": "median"
  },
- "caption": "Nobody can read this poster. Three fixes, same photo. 🎤\n\n1. Darken the photo. A dark layer over a busy picture gives the words calm behind them.\n2. Put the words on a solid band. A flat colour behind text is easier to read than any photo.\n3. One bold colour for the text. Thin, pale letters disappear into bright light; bold ones hold.\n\nSave this for your next poster, flyer or story. Which fix would you try first?",
+ "caption": "This poster is hard to read. White words sit straight on a busy photo. 🎤\n\n1. Dim the photo. A dark layer gives the words calm behind them.\n2. Make the words bold. Thin letters melt into bright light; heavy ones hold.\n3. Put the small print on a solid band. A flat colour is easier to read than any photo.\n\nSave this for your next poster, flyer or story. Which fix would you try first?",
  "keywords": [
   "poster design tips",
   "text on image",
@@ -49,7 +58,7 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 18,
+    "to": 21,
     "sides": [
      "left",
      "right",
@@ -65,5 +74,9 @@
    470,
    776
   ]
+ },
+ "before": {
+  "mistake": "white, regular-weight words straight on a bright, busy photo, with nothing dimming or backing them",
+  "source": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
  }
 }
