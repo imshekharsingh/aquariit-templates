@@ -1400,3 +1400,7 @@ Format (at most 6 lines):
 - Left: the owner posts at 20:30 IST. Next 2.5D reel: plan the payoff hold from the real voice end, keep step sentences to 8-9 words, teach the NUMBERS check to ignore icon shapes (critic's upgrade), 900 MILLION+ as a hero number, card 3 key-turn line, card 1 grows 8 %.
 - For the other account: Output QA NUMBERS read a closed padlock icon as "6" (one render in two); a voice-end line in Output QA would have caught the clipped last word before the critic did.
 
+
+## 2026-11-28 · claude/critic-c3-text-on-photo-28nov-r3 · Critic, showreel-c3-text-on-photo render 3: READY
+- Done: independent critic on the real MP4 of render 3 (run 46106428084, 17.4 s, -14.0 LUFS); gold sheet, contact sheet, 20 phone-size frames, full-size crops of the frame-0 labels and the finished poster. All three render 2 fixes landed: the labels are stacked about 25 px apart, the after has its beams back and reads as a lit stage, the cursor stays below the small print. No regression. GOLD matches, STOP 7, REWATCH 7, PREMIUM 7.5 / 7.5 / 7.5.
+- Left: the owner chat moves it to Ready to post (Turns Out slot 14:00 IST, so it posts late today inside the window). Next Turns Out reel: bigger BEFORE thumbnail with a ring kept on it, chips handed over with the titles.
