@@ -1329,3 +1329,15 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/daily-28nov-launch · Daily studio run 28 Nov: feedback, audit card, builders started
 - Done: Owner answers read (0 answers, 0 new feedback); audit card sent (web below usual and in ALARM, tech fine, Turns Out low); no options for 28 Nov in the topic bank, so each builder researches fresh options and runs the Fable pick. Web builder (session_01AYvWRjJfUMBr1p7gctqGLW, post 19:00 IST) and tech builder (session_01AYvWRhzdyLvkLqFNWEBAnK, post 20:30 IST, from showreel-tech-ai-words) started with the full brief.
 - Left: both builders own their reel to READY (stills check, max 2 renders, Output QA, critic). Turns Out has its own task.
+## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out: showreel-c3-text-on-photo rebuilt on the improved kit (build pushed, stills check next)
+- Done: new scene scripts/channel3/design/text-on-photo.js (white regular words on a bright busy poster photo, three fixes: dim the photo, bold words, date on a band; BEFORE proof and tail), seven spoken sentences with breaths, direction card, review file, captions.json (c3, postOn 2026-11-28, postAt 14:00; hidden and hold stay until the critic says READY). Stills lines pass (SUBJECT FILL 89%, SAFE ZONE ok, OVERLAP none); npm run check passes.
+- Left: outside stills check (fable, tag stills), preflight-all, one render, Output QA, critic (opus, tag critic).
+## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out text-on-photo: stills check round 1 REDO applied
+- Done: rings and tags at full strength from t 0, one green frame clear of the bold title and band, BEFORE thumbnail raised 66 scene px, chips held about 1 s, last subtitle cleared 0.8 s after the voice, photo kept saturated with beams at .7. SAFE ZONE ok, OVERLAP none.
+- Left: second outside stills check, preflight-all, one render, Output QA, critic.
+## 2026-11-28 · claude/stills-c3-text-on-photo-28nov-r2 · Turns Out: outside stills check round 2 of showreel-c3-text-on-photo: APPROVED
+- Done: one new stills sheet plus position measurements on the builder's fix commit (no render, no scene or config change). All six round 1 points are fixed and nothing regressed; verdict written in review/c3/showreel-c3-text-on-photo.direction.md.
+- Left: the builder corrects card line 9 (one green frame, not two), then preflight-all, one render, Output QA, critic.
+## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out text-on-photo: stills round 2 APPROVED, preflight-all PASS, render 1 next
+- Done: round 2 approved by the outside check; preflight fixes after it: reel 19.6 s with an extra spark in the tail, the before flash declared as a transition, band and small print moved 14 px down clear of the title, chip timings, a brighter stage, text-clear waivers for the poster's own words on the photo and the BEFORE flash. preflight-all PASS 0fb398f4.
+- Left: render 1 on GitHub, Output QA, critic (opus, tag critic).
