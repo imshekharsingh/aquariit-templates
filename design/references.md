@@ -10,7 +10,7 @@ Kits: kitmotion.js (KM, web), kitsfx.js (web element sound and entrances), kit25
 STUDY RULES (owner, 28 Nov 2026: "learning from references should be the right place where we should be spending the most"):
 1. Reference videos are kept at least 30 days after a reference is closed (the app deletes them only after that), so a better method can study them again.
 2. A study is done only when it has produced at least ONE kit piece (or a dated todo line naming it) and ONE reviewer question in design/critic.md; notes alone do not count.
-3. Measure, then re-measure: each study runs the action and sound count (asks.yml refs-study) on the reference AND one of our reels; every week (spare usage night)
+3. Measure, then re-measure: each study runs the reference lab (asks.yml refs-study with "lab": true: crop, action and sound count, moves, key-moment strips, scorecard; skill reverse-any-video "Study with the lab") on the reference AND one of our reels; every week (spare usage night)
    the newest reels of each channel are counted again against the kept references and the gap goes in one line under that reference's card.
 Older study notes stay in attic/design/film-playbook.md ("Reference study 2" and "3") and design/webin20sec.md ("Density").
 
