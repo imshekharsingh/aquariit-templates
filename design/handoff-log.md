@@ -1486,3 +1486,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/web-popover-focus-r2 · Web popover focus test, render 2 prepared (owner yes)
 - Done: frame 0 arrives from its shadow (card lands with a small overshoot, glow fades up, menu sliced with a tick by 0.6 s); BEFORE's cut menu open through the hand-over; the AFTER breakout on the word "popover"; high tick cues, live code card from "fix", keyword jump on POPOVER, item beats in the last 2.4 s. Local stills clear (SUBJECT FILL 51%, FLOW ok), scene action count 4.4 a second, longest gap 0.9 s.
 - Left: ONE preview render 2 (Inbox > Tests), Output QA + action count on the MP4, the main account's full-video review before 17:30 IST. showreel-50-popover untouched.
+
+## 2026-11-28 · claude/journey-fewer-calls · Journey reads GitHub runs only for today's and later reels (item 6)
+- Done: the live probe's JOURNEY line showed the cause of the empty tech Ready box: "Too many subrequests by single Worker invocation" on the jobs / annotations calls (the tag reel's Output QA run was never read, so checks said "No result yet"). src/journey.js now fetches runs' jobs only for reels dated today or later (older ones are posted), about 12 calls instead of 40+. The waiver logic itself was fine.
+- Left: App probe: the tech Ready box must list showreel-tech-tag-relay.

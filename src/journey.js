@@ -54,7 +54,7 @@ async function jobsOf(get, run) {
     return jobs;
   });
 }
-async function github(env, names, reels, warns) {
+async function github(env, names, reels, warns, live) {
   const warn = (w, e) => { if (warns && warns.length < 12) warns.push(w + ': ' + String(e && e.message || e).slice(0, 70)); };
   if (!env.GH_READ_TOKEN) return { state: 'no-token' };
   const get = gh(env);
@@ -68,7 +68,8 @@ async function github(env, names, reels, warns) {
     });
     // the newest render run and the newest Output QA run per reel (run lists come newest first)
     const latest = {};
-    for (const r of base.runs) { const n = runReel(r, names); if (!n) continue; const k = n + '|' + r.kind; if (!latest[k] || r.started > latest[k].started) latest[k] = r; }
+    for (const r of base.runs) { const n = runReel(r, names); if (!n || (live && !live.has(n))) continue;   // only today's and later reels: older ones are posted, and every run costs 2 GitHub calls (the Worker allows 50 in all: 28 Nov "Too many subrequests" left the tag reel's QA run unread)
+       const k = n + '|' + r.kind; if (!latest[k] || r.started > latest[k].started) latest[k] = r; }
     const runs = {};
     await Promise.all(Object.entries(latest).map(async ([k, r]) => { let jobs = []; try { jobs = await jobsOf(get, r); } catch (e) { warn('jobs ' + k, e); /* stage from the run alone */ } runs[k] = { ...r, jobs }; }));
     // built: the commit that first added the reel's review file (its squash message ends with the PR number), cached 30 minutes
@@ -179,7 +180,7 @@ export async function journeyApi(env, { captions, postSlot, chOf, uploaded, medi
   const capR2 = {};
   if (env.REELS) await Promise.all(reels.filter(([, m]) => !m.caption).map(async ([n]) => { try { const o = await env.REELS.get('c/' + n + '.json'); if (o) capR2[n] = (await o.json()).caption || ''; } catch { /* name instead */ } }));
   const warns = [];   // swallowed failures (GitHub errors, "Too many subrequests"): returned as warn so a stuck board says why
-  const [g, reviews] = await Promise.all([github(env, names, reels.map(([n, m]) => [n, chOf(n, m)]), warns), Promise.all(reels.map(([n, m]) => review(chOf(n, m), n, warns)))]);
+  const [g, reviews] = await Promise.all([github(env, names, reels.map(([n, m]) => [n, chOf(n, m)]), warns, new Set(reels.filter(([, m]) => m.postOn >= today).map(([n]) => n))), Promise.all(reels.map(([n, m]) => review(chOf(n, m), n, warns)))]);
   const out = reels.map(([name, m], i) => {
     const ch = chOf(name, m), slot = postSlot(name, m), due = Date.parse(`${m.postOn}T${slot}:00+05:30`), rv = reviews[i] || {};
     const run = g.runs && g.runs[name + '|render'], qaRun = g.runs && g.runs[name + '|qa'];
