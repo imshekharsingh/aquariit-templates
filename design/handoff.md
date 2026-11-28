@@ -2,6 +2,20 @@
 
 Tasks 0, 2 and 3 are below under their own headings; the v5 task and its history follow. Progress is at the end of the v5 section.
 
+## GO NOW (owner, 28 Nov 2026 ~09:30 IST): this account does EVERYTHING from 29 Nov through Tue 2 Dec 2026
+Owner: "All tasks until Tuesday should be handled by the handoff session." The main account only runs its hourly Studio probe (checks
+and reports to the owner) and the daily owner chat; its daily reel tasks are switched off until Wed 3 Dec. So this account now also builds
+the daily reels (this overrides "never daily reels" until 2 Dec):
+1. Every day 29 Nov - 2 Dec, ONE reel per channel: Turns Out (slot 14:00 IST), web (19:00), tech (20:30); slots in design/slots.json.
+   Follow CLAUDE.md, design/runbook-daily.md and design/runbook-reels.md (web, tech) and design/c3-plan.md section 0 (Turns Out, next held
+   design in order). Start each build by about 05:00 IST. Gates unchanged: outside stills check, at most 2 renders, Output QA, an independent
+   critic in a separate session writing "CRITIC: READY"; a 3rd render needs the owner's yes. Captions.json entry with postOn/postAt.
+2. Before rendering, check what failed today on all three reels: voice longer than the picture (last words cut), colour saturation of
+   "broken" states, and label spacing on frame 0. All three needed a 3rd render on 28 Nov for these.
+3. Between builds, the open queue below: task 22 fix (from the 28 Nov critic; no 3rd study render without the owner's yes), then 11,
+   12-15, 9. Each app change: App probe PASS on the live app.
+4. Status: one Progress line here at each stage (the main account's probe and owner chat read it and tell the owner).
+
 # History: 3D tech look sample v5 (owner, 26 Nov 2026), DONE
 
 The owner runs this task from another Claude account. That session reads this file, does the task, and writes every stage in
