@@ -1346,3 +1346,6 @@ Format (at most 6 lines):
 - Left: render 2, Output QA, independent critic (opus), post 20:30 IST.
 - For the other account: the Pipeline merge job fails when main moved under a claude/ branch (captions.json add/add): merge origin/main into the branch keeping both entries, then push.
 
+## 2026-11-28 · claude/critic-tech-tag-relay-r2 · Critic, showreel-tech-tag-relay render 2: NOT READY (last words clipped)
+- Done: independent critic on the real MP4 of render 2; item 18 CRITIC: NOT READY: the payoff line "and only you can read where" is never finished on screen (caption fades at 29.1-29.3 s under the voice) and "where" is cut by the 29.6 s end; everything else passes (frame 0, title, captions, loop picture, facts, sound). PREMIUM 7.5 / 7.0 / 7.5.
+- Left: fix 1 (reel 30.4 s, the move home after the voice) needs render 3, which needs the owner's yes with its cost; then a critic pass on render 3.
