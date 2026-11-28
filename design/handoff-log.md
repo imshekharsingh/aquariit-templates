@@ -1430,7 +1430,7 @@ Format (at most 6 lines):
 
 ## 2026-11-28 · claude/numbers-icon-fix4 · NUMBERS ignores still regions (item 6, follow-up)
 - Done: the padlock read as 6, 8, 6, 4, 6 at 56x72 px (aspect like a digit, so shape alone cannot tell it); output-qa.py drops a changing-value place whose pixels are static across the reads (a region that moves and disagrees with the voice still fails); the read dump prints on a FAIL.
-- Left: Output QA re-run on showreel-tech-tag-relay, board check, App probe.
+- Left: Output QA re-run on showreel-tech-tag-relay, board check, App probe. (fix5: the still-region crop read a missing width; dry-run proven on a still clip with flickering reads.)
 ## 2026-11-28 · claude/kit-ref-pieces · Kit reference pieces: number fill, keyword jump, blur hand-off, sound count
 - Done: scripts/explainer/kitref.js (KREF.numberFill with tick cues, KREF.keyword with reserved box and width cut, KREF.handoff swap and focus modes; kit-inline entry), local test scene scripts/previews/kit-ref-pieces.html (one stills sheet, no render), SOUND and QUIET lines in scripts/qa/action-count.py, skill "Action count" updated.
 - Left: refs-study run (ids 15, 16, 18, 19; showreel-tech-ai-words, showreel-50-popover), SOUND numbers into references.md.

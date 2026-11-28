@@ -728,7 +728,7 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
                 crops = []
                 for tt, v, cf, wd, hh in sorted(x[4]):
                     p2 = os.path.join(td2, f's{tt:.2f}.png'); grab(mp4, tt, p2)
-                    im = Image.open(p2).convert('L'); cx, cy = x[0], x[1]; w2, h2 = max(x[5]) * .6 + 10, x[2] * .6 + 10
+                    im = Image.open(p2).convert('L'); cx, cy = x[0], x[1]; w2, h2 = max(r[3] for r in x[4]) * .6 + 10, x[2] * .6 + 10
                     crops.append(np.asarray(im.crop((int(cx - w2), int(cy - h2), int(cx + w2), int(cy + h2))), float))
                 return len(crops) >= 2 and max(float(np.abs(c - crops[0]).mean()) for c in crops[1:]) < T['num_still']
             moved = [x for x in counters if not still(x)]
