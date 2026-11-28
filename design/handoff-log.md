@@ -8,6 +8,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action list from the count, and a clearer Today board
+- design/references.md "R-ref 28 Nov": references 15-19 make 2.4-3.4 actions a second, v7 1.8 (ACTION LIST for v7 part b). References 9-14 were deleted when closed.
+- Board (owner: "there's no clarity"): src/journey.js puts a hidden reel dated today on the board as held; templates/index.html: [hidden] always hides, one plain line per card, folded cards, no model names, the top line names questions / reels to post.
+- For the main account: a held reel now shows on Today; nothing else changes for builders.
 
 ## 2026-11-28 · claude/handoff-ocr-false-alarm · owner chat: queue a fix for an Output QA false alarm
 - A text check read a padlock icon as a number on today's tech reel; handoff.md GO NOW item 6 asks the other account to fix it with a test.
