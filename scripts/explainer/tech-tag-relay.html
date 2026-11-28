@@ -82,9 +82,9 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     r = [c, x, 0, 0, x, c][q]; g = [x, c, c, x, 0, 0][q]; b = [0, 0, x, c, c, x][q]; return [(r + m) * 255, (g + m) * 255, (b + m) * 255]; }
   function hslMix(a, b, k){ var A = toHsl(a), B = toHsl(b), dh = ((B[0] - A[0] + 540) % 360) - 180; return fromHsl((A[0] + dh * k + 360) % 360, mix(A[1], B[1], k), mix(A[2], B[2], k)); }
   var cmix = function(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k), mix(a[2], b[2], k)]; };
-  var DUR = 29.6;
+  var DUR = 30.4;
   // ---- the story clock: each step starts on its sentence ("One: ..."); the camera leaves on that word (no dwell), the next card's ghost shows 0.5 s before
-  var AT = [0.25, 3.5, 7.0, 10.6, 14.0, 17.3, 21.0, 24.9, 29.0];
+  var AT = [0.25, 3.5, 7.0, 10.6, 14.0, 17.3, 21.0, 24.9, 29.8];
   var FLY = [0, .6, .5, .5, .45, .45, .6, .6, .6];
   // ---- the map (world px): a line out on top, the loop on the right, a line back along the bottom
   var C = [1060, 1220], R = 360;
@@ -314,7 +314,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   function caption(t, col){
     var gi = -1; for (var g = 0; g < GR.length; g++) if (GR[g][0].s - .05 <= t) gi = g;
     if (gi < 0 && GR.length) gi = 0;
-    var lateHook = t >= 29.3; if (lateHook && GR.length) gi = 0;   // the last 0.3 s fades the hook plate back in (frame 0), the loop   // the hook line shows (dim) from frame 0
+    var lateHook = t >= 30.0; if (lateHook && GR.length) gi = 0;   // the last 0.3 s fades the hook plate back in (frame 0), the loop   // the hook line shows (dim) from frame 0
     if (gi < 0){ capEl.style.opacity = 0; return; }
     var gr = GR[gi], gEnd = gr[gr.length - 1].e, next = GR[gi + 1], fadeOut = next && !lateHook ? P(t, next[0].s - .12, next[0].s - .05) : 0;
     if (gi !== capG){ capG = gi; capEl.innerHTML = '<span class="bx"></span>'; var bx = capEl.firstChild;
@@ -322,7 +322,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
       // a group that needs two lines breaks at its middle (critic, render 2: never "Why do chatbots type like" / "this?"); one line stays one line
       if (capEls.length > 1 && capEls[capEls.length - 1].offsetTop > capEls[0].offsetTop + 4) bx.insertBefore(document.createElement('br'), capEls[Math.ceil(capEls.length / 2)]); }
     var first = gi === 0 ? 1 : P(t, gr[0].s - .05, gr[0].s + .1), last = gi === GR.length - 1 ? 1 : 1 - fadeOut;
-    capEl.style.opacity = (first * last * (t < 29.3 ? 1 - io(P(t, 29.0, 29.3)) : io(P(t, 29.3, 29.6)))).toFixed(3);
+    capEl.style.opacity = (first * last * (t < 30.0 ? 1 - io(P(t, 29.8, 30.0)) : io(P(t, 30.0, 30.4)))).toFixed(3);
     gr.forEach(function(w, n){ var k = gi === 0 && n === 0 ? 1 : lateHook ? 0 : P(t, w.s - .03, w.s + .14), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
       s.style.opacity = (.28 + .72 * k).toFixed(3); s.style.color = key ? rgb(col) : '#fff'; });
   }
@@ -335,7 +335,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   cue({ t: 0, k: 'swell', d: 1.2, g: .26 }); cue({ t: AT[7] + .35, k: 'thud', g: .42, x: 270, r: .2 }); cue({ t: AT[7] + .4, k: 'resolve', notes: [50, 62, 66, 69, 74], g: .28 });
   [[2, 1.3], [3, 1.15], [3, 1.6], [4, 1.0], [5, 1.3], [5, 2.1], [6, 1.3]].forEach(function(a, n){ cue({ t: AT[a[0]] + a[1], k: 'tick', g: .12, p: n }); });
   window.CUES = { dur: DUR, cues: cues.sort(function(a, b){ return a.t - b.t; }), mix: { duck: 8 }, bed: { bpm: 100, origin: 0, gain: .2, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [45, 57, 64, 67, 71]] } };
-  window.COVER = .6; window.HOLDS = [[26.6, 29.0]];   // the payoff: the whole map held (the loop still turns, the camera drifts)
+  window.COVER = .6; window.HOLDS = [[26.6, 29.8]];   // the payoff: the whole map held (the loop still turns, the camera drifts)
   window.TRANSITIONS = [1, 2, 3, 4, 5, 6, 7, 8].map(function(f){ return [CAT[f], CAT[f] + FLY[f], f === 7 ? 'pullback' : 'fly']; });
   // ---- one frame (a pure function of t)
   function seek(t){
@@ -363,7 +363,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     // sub-nodes: dim context, a gentle bob (continuous), brighter next to the lit node
     SUBS.forEach(function(s){ var f4 = fo[s.i], sp2 = toScreen([PT[s.i][0] + SUBD[s.n][3], PT[s.i][1] + SUBD[s.n][4]], cm), hw = (SUBD[s.n][2].length * 8.1 + 44) * cm[2] * 2, sz = safeK(sp2[0] - hw, sp2[0] + hw, sp2[1] - 32 * cm[2], sp2[1] + 32 * cm[2]), o = .32 + .4 * f4; s.el.style.opacity = o.toFixed(3); s.sl.style.opacity = ((1 - wide) * labelK(sp2[0] - hw, sp2[0] + hw, sp2[1] + 32 * cm[2])).toFixed(3); s.el.style.transform = 'translateY(' + (Math.sin(t * .8 + s.n * 1.3) * 4).toFixed(2) + 'px)'; s.ln.setAttribute('opacity', (.5 + .5 * f4).toFixed(3)); });
     // links: the one short draw (cause -> effect) just before the camera follows it, then it stays lit
-    LINKS.forEach(function(l){ var k = io(P(t, l.drawAt, l.drawAt + .4)); l.lit.setAttribute('stroke-dashoffset', (l.len * (1 - k)).toFixed(1)); l.lit.setAttribute('opacity', (k > 0 ? .55 + .45 * Math.max(fo[l.to], fo[l.from] * .6) : 0).toFixed(3)); if (l.head) l.head.setAttribute('opacity', (P(t, l.drawAt + .3, l.drawAt + .45)).toFixed(3)); });
+    LINKS.forEach(function(l){ var k = io(P(t, l.drawAt, l.drawAt + .4)); l.lit.setAttribute('stroke-dashoffset', (l.len * (1 - k)).toFixed(1)); l.lit.setAttribute('opacity', ((k > 0 ? .55 + .45 * Math.max(fo[l.to], fo[l.from] * .6) : 0) * (1 - io(P(t, 29.9, 30.4)))).toFixed(3)); if (l.head) l.head.setAttribute('opacity', (P(t, l.drawAt + .3, l.drawAt + .45)).toFixed(3)); });
     // panels: ghost before the move, content builds from 0.15 s after the move starts (before the camera lands), out as the camera leaves
     for (var pi = 1; pi <= 6; pi++){ var pin = AT[pi], pout = pi < 6 ? AT[pi + 1] : AT[7], kin = pi === 1 ? io(P(t, 2.85, 3.25)) : out(P(t, pin + (pi === 6 ? FLY[6] * .6 : .05), pin + (pi === 6 ? FLY[6] * .6 + .4 : .45))), kout = io(P(t, pout + .02, pout + .32)), kp = kin * (1 - kout);
       var gk = P(t, pin - .5, pin - .2) * (1 - P(t, pin + .2, pin + .45)); if (pi === 1 || pi === 4 || pi === 5) gk = 0;
@@ -371,8 +371,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
       GH[pi].style.opacity = (gk * .8).toFixed(3); GH[pi].style.transform = 'scale(' + (.97 + .03 * gk).toFixed(4) + ')';
       PAN[pi].style.opacity = cl(kp * 1.4).toFixed(3); PAN[pi].style.transform = pi === 1 && t < 4 ? 'none' : 'scale(' + (.94 + .06 * kp).toFixed(4) + ')'; PAN[pi].style.visibility = kp > 0 ? 'visible' : 'hidden';
       if (kp > 0) X[pi](t - pin, t); }
-    // the opening window: the pin pulses, then it hands over to panel 1 during the pull-back (2.85-3.25 s); the last move (28.9-29.6 s) brings it back (the loop)
-    var cwo = t < 10 ? 1 - io(P(t, 2.85, 3.25)) : io(P(t, 29.05, 29.5)); cw.style.opacity = cwo.toFixed(3); cw.style.visibility = cwo > 0 ? 'visible' : 'hidden';
+    // the opening window: the pin pulses, then it hands over to panel 1 during the pull-back (2.85-3.25 s); the last move (29.8-30.4 s) brings it back (the loop)
+    var cwo = t < 10 ? 1 - io(P(t, 2.85, 3.25)) : io(P(t, 29.85, 30.3)); cw.style.opacity = cwo.toFixed(3); cw.style.visibility = cwo > 0 ? 'visible' : 'hidden';
     if (cwo > 0){ pulse(WIN_R, t, 16, 56, 1); wl.style.opacity = '1'; wm.style.opacity = '1';
       var hk0 = t < 10 ? 1 - io(P(t, 2.85, 3.05)) : cwo; CWH.forEach(function(e){ e.style.opacity = hk0.toFixed(3); }); cq.style.opacity = '1'; }
     P1H.style.opacity = t < 4 ? io(P(t, 3.05, 3.25)).toFixed(3) : '1';
@@ -380,7 +380,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
     for (var i2 = 1; i2 <= 6; i2++){ var sp = toScreen(PT[i2], cm), tg = TAG[i2]; tg.style.opacity = (wide * (t < AT[1] ? 1 : 1)).toFixed(3); tg.style.visibility = wide > 0 ? 'visible' : 'hidden';
       var tw = tg.offsetWidth; tg.style.transform = 'translate(' + (sp[0] - tw / 2).toFixed(1) + 'px,' + (sp[1] + 116 * cm[2] + 8).toFixed(1) + 'px)'; }
     // banner: the payoff sweeps in across the top third and holds
-    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = (cl(bk * 1.6) * (1 - io(P(t, 29.0, 29.3)))).toFixed(3); $('banner').style.transform = 'translateX(' + ((1 - bk) * -40).toFixed(1) + 'px) rotate(-3deg) scale(' + (.96 + .04 * bk).toFixed(4) + ')';   // fades and settles in whole (critic, render 2: no bare band edge at the left)
+    var bk = io(P(t, AT[7] + .3, AT[7] + .9)); $('banner').style.opacity = (cl(bk * 1.6) * (1 - io(P(t, 29.8, 30.1)))).toFixed(3); $('banner').style.transform = 'translateX(' + ((1 - bk) * -40).toFixed(1) + 'px) rotate(-3deg) scale(' + (.96 + .04 * bk).toFixed(4) + ')';   // fades and settles in whole (critic, render 2: no bare band edge at the left)
     drawBg(t, cm, col, fo); caption(t, col);
   }
   window.seek = seek;

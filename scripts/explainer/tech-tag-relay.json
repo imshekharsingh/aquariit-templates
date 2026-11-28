@@ -2,7 +2,7 @@
  "name": "showreel-tech-tag-relay",
  "seek": "scripts/explainer/tech-tag-relay.html",
  "style": "Tech 2.5D system map (same engine and grammar as showreel-tech-ai-words; design/references.md R-ref 27 Nov 2026): one camera over one canvas, a line out, a curve through the servers, the network that closes back on the tag; one colour world per step; fixed title, step pill, ghost of the next card, light wedges and dim sub-nodes filling the frame; opens on a find-my-tag window and ends on the same framing",
- "dur": 29.6,
+ "dur": 30.4,
  "fps": 60,
  "blur": 2,
  "shutter": 0.4,
@@ -39,7 +39,7 @@
    },
    {
     "from": 25.0,
-    "to": 29.0,
+    "to": 29.8,
     "sides": [
      "left",
      "right"
@@ -47,8 +47,8 @@
     "why": "the payoff banner ONLY YOU CAN READ IT is a tilted band that runs edge to edge across the top third on purpose (the reference's kinetic banner)"
    },
    {
-    "from": 29.0,
-    "to": 29.6,
+    "from": 29.8,
+    "to": 30.4,
     "sides": [
      "left",
      "right"

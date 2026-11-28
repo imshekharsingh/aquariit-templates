@@ -35,3 +35,5 @@ BUILDER REPLY (28 Nov): fault 1 (HIGH) fixed: the hook, title and post text now 
 PREFLIGHT-ALL: PASS 85a49409 (showreel-tech-tag-relay, 47 s)
 
 Fix for render 2 (builder, 28 Nov, render 1's one FAIL): sentence 5 shortened from "Five: you open the map, and see where it was." (10 words, 4.63 words/s) to "Five: you open the map, and see it." (8 words); nothing visual changed. preflight-all PASS 85a49409.
+
+Fix for render 3 (builder, 28 Nov, the render 2 critic's EXACT FIX 1 and 3, timing only): the reel is 30.4 s (was 29.6); the payoff hold runs to 29.8 s, the last caption group stays lit until the voice has ended and fades 29.8-30.0 s, the move home is 29.8-30.4 s (0.6 s), the window fades in 29.85-30.3 s, the hook plate 30.0-30.4 s, and the lit links fade back to frame 0's dashed grey over 29.9-30.4 s (the bottom-left line). Voice slots unchanged (the real voice ended about 29.6 s). Render 3 needs the owner's yes (asked of the owner chat 28 Nov).
