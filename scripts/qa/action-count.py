@@ -14,6 +14,12 @@ Method (10 fps, 135x240 grey, a 9x16 grid of 15 px cells):
   was active in the 3 frames before (0.3 s). Moving regions per frame = how many things move at once.
 "Picture" excludes the top 12 % and the bottom 25 % (headline and caption bands), so captions alone do not inflate it.
 Prints one ACTIONS line, one TIMELINE line (onsets per second) and one GAPS line (stretches over 1.0 s with no onset).
+
+SOUND HITS (owner yes 28 Nov 2026): the same run also counts audible sound hits a second in the audio track: ffmpeg decodes 16 kHz mono,
+a 1024-sample FFT every 16 ms, spectral flux (positive change of the log spectrum), peaks over a floor (median + 4 x MAD of the flux and
+at least 0.5) where the level also rises (3 dB), at least 80 ms apart, and only where the frame is audible (above -50 dBFS). Prints one SOUND line (hits a second, per-second
+list, longest silent stretch = longest run with no hit AND no audible level) and one QUIET line. Voice syllables count as hits too: read it
+beside the TIMELINE; the number is a guide, as with actions.
 """
 import subprocess, sys, json
 import numpy as np
@@ -31,6 +37,41 @@ def frames(path):
         if len(b) < n:
             break
         yield np.frombuffer(b, np.uint8).reshape(H, W).astype(np.int16)
+
+
+def sound(path, label):
+    p = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-vn', '-ac', '1', '-ar', '16000', '-f', 'f32le', '-'], capture_output=True)
+    x = np.frombuffer(p.stdout, np.float32)
+    if len(x) < 4096:
+        print(f'SOUND {label}: no audio track'); return
+    N, hop = 1024, 256
+    win = np.hanning(N).astype(np.float32)
+    nf = 1 + (len(x) - N) // hop
+    idx = np.arange(N)[None, :] + hop * np.arange(nf)[:, None]
+    fr = x[idx] * win
+    mag = np.abs(np.fft.rfft(fr, axis=1))
+    logm = np.log1p(mag * 30)
+    flux = np.maximum(logm[1:] - logm[:-1], 0).sum(axis=1)
+    flux = np.concatenate([[0], flux])
+    rms = np.sqrt((x[idx] ** 2).mean(axis=1) + 1e-12)
+    db = 20 * np.log10(rms)
+    audible = db > -50
+    med = float(np.median(flux)); mad = float(np.median(np.abs(flux - med)))
+    thr = max(med + 4 * mad, 0.5)
+    step = hop / 16000.0
+    hits, last = [], -1.0
+    for i in range(1, len(flux) - 1):
+        if flux[i] > thr and flux[i] >= flux[i - 1] and flux[i] > flux[i + 1] and audible[i] and db[min(i + 2, len(db) - 1)] - db[max(i - 4, 0)] > 3 and i * step - last >= 0.08:
+            hits.append(i * step); last = i * step
+    dur = len(x) / 16000.0
+    per = [sum(1 for h in hits if s0 <= h < s0 + 1) for s0 in range(int(np.ceil(dur)))]
+    marks = sorted(hits + [i * step for i in range(len(audible)) if audible[i] and i % 4 == 0])   # a hit or any audible level breaks silence
+    quiet, prev = [], 0.0
+    for m in marks + [dur]:
+        quiet.append((m - prev, prev, m)); prev = m
+    q = max(quiet)
+    print(f'SOUND {label} HITS a second {len(hits) / max(dur, .1):.2f} ({len(hits)} hits in {dur:.1f} s, audible {audible.mean() * 100:.0f} % of the time): ' + ' '.join(map(str, per)))
+    print(f'QUIET {label} longest silent stretch {q[0]:.1f} s ({q[1]:.1f}-{q[2]:.1f} s)')
 
 
 def regions(mask):
@@ -97,6 +138,7 @@ def main():
     print('ACTIONS ' + json.dumps(res))
     print(f'TIMELINE {label} picture onsets per second: ' + ' '.join(str(v) for v in secp) + '   (all: ' + ' '.join(str(v) for v in sec) + ')')
     print(f'GAPS {label} (no new action in the picture for over 1 s): ' + (', '.join(gaps) or 'none'))
+    sound(path, label)
 
 
 if __name__ == '__main__':
