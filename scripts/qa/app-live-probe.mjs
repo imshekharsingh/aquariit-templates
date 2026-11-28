@@ -22,6 +22,10 @@ const shot = async (n) => page.screenshot({ path: `probe/${n}.png` });
 await page.waitForTimeout(25000); await shot('1-today');
 const txt = async (sel) => ((await page.$(sel)) ? (await page.textContent(sel)).replace(/\s+/g, ' ').trim().slice(0, 300) : '(missing)');
 console.log('TODAY BOARD:', await txt('#s-today'));
+// 28 Nov 2026: the journey's stages for today's reels, so a Ready box that stays empty says which stage holds it (no secrets in this output)
+try { const jr = await page.evaluate(async () => { const r = await fetch('/api/journey', { credentials: 'same-origin' }); return r.ok ? r.json() : { error: r.status }; });
+  console.log('JOURNEY:', jr.error ? 'HTTP ' + jr.error : 'github=' + jr.github + ' warn=' + JSON.stringify(jr.warn || []));
+  for (const x of (jr.reels || []).filter((y) => y.day === jr.today)) console.log('JOURNEY REEL:', x.name, ['render', 'checks', 'critic', 'ready'].map((k) => k + '=' + (x.stages[k].s + ' ' + x.stages[k].t)).join(' | ').slice(0, 400)); } catch (e) { console.log('JOURNEY: not read', String(e).slice(0, 80)); }
 for (const ch of ['web', 'tech', 'c3']) {
   await page.evaluate(() => { const b = document.getElementById('t-all'); if (b) b.click(); });
   await page.waitForTimeout(500);

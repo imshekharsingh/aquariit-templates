@@ -1,5 +1,5 @@
 // References flow test (24 Nov 2026): runs src/worker.js against an in-memory SQLite (as D1) and a mock R2. Checks the 1 GB limit, the multipart
-// upload (start, parts, complete), the report + checklist (Keep / Skip / Ask thread), and that Close deletes the video but keeps report, stills and checklist.
+// upload (start, parts, complete), the report + checklist (Keep / Skip / Ask thread), and that Close keeps the video 30 days (then it is purged) and keeps report, stills and checklist.
 // Run: node scripts/qa/refs-test.mjs
 let DatabaseSync;
 try { ({ DatabaseSync } = await import('node:sqlite')); } catch { console.log('REFS TEST: skipped (this Node has no node:sqlite)'); process.exit(0); }
@@ -40,8 +40,15 @@ r = await call(`/api/refs/${id}/thread`, { method: 'POST', body: { item: 1, text
 r = await call(`/api/refs/${id}/thread`, { method: 'POST', body: { item: 1, text: 'Because the beat lands.', who: 'claude' } }); ok('Claude answers in the thread', r.j.item.th.length === 2 && r.j.item.th[1].w === 'claude');
 r = await call(`/api/refs/${id}/report`, { method: 'POST', body: { note: 'Report 2', checklist: ['Another'] } }); l = await call('/api/refs');
 ok('a second report never replaces the owner\'s checklist', l.j.refs[0].checklist.length === 2 && l.j.refs[0].checklist[0].c === 'keep');
-r = await call(`/api/refs/${id}/close`, { method: 'POST', body: {} }); l = await call('/api/refs'); const x = l.j.refs[0];
-ok('Close deletes the video from R2', r.j.videoDeleted && !files.has(`refs/${id}.mp4`));
-ok('Close keeps the report, the stills and the checklist', x.reply === 'Report 2' && x.stills.length === 1 && x.checklist.length === 2 && x.closed && x.file.deleted);
+r = await call(`/api/refs/${id}/close`, { method: 'POST', body: {} }); l = await call('/api/refs'); let x = l.j.refs[0];
+ok('Close keeps the video for 30 days', !r.j.videoDeleted && r.j.keptDays === 30 && files.has(`refs/${id}.mp4`));
+ok('Close keeps the report, the stills and the checklist', x.reply === 'Report 2' && x.stills.length === 1 && x.checklist.length === 2 && x.closed && x.file && !x.file.deleted);
+r = await call(`/api/refs/${id}/file`); ok('the file still serves while closed (under 30 days)', r.s === 200);
 l = await call('/api/refs?state=new'); ok('a closed reference is not offered to Claude again', l.j.refs.length === 0);
+const old = (d) => new Date(Date.now() - d * 864e5).toISOString();
+sql.prepare('UPDATE owner_refs SET closed_at = ? WHERE id = ?').run(old(29), id); await call('/api/refs');
+ok('closed 29 days ago: the video is still there', files.has(`refs/${id}.mp4`));
+sql.prepare('UPDATE owner_refs SET closed_at = ? WHERE id = ?').run(old(31), id); l = await call('/api/refs'); x = l.j.refs[0];
+ok('closed 31 days ago: the video is deleted, the row and report stay', !files.has(`refs/${id}.mp4`) && x.file && x.file.deleted && x.reply === 'Report 2' && x.checklist.length === 2);
+r = await call(`/api/refs/${id}/file`); ok('the file is 404 after the purge', r.s === 404);
 process.exit(bad ? 1 : 0);

@@ -54,7 +54,7 @@ async function jobsOf(get, run) {
     return jobs;
   });
 }
-async function github(env, names, reels, warns) {
+async function github(env, names, reels, warns, live) {
   const warn = (w, e) => { if (warns && warns.length < 12) warns.push(w + ': ' + String(e && e.message || e).slice(0, 70)); };
   if (!env.GH_READ_TOKEN) return { state: 'no-token' };
   const get = gh(env);
@@ -68,7 +68,8 @@ async function github(env, names, reels, warns) {
     });
     // the newest render run and the newest Output QA run per reel (run lists come newest first)
     const latest = {};
-    for (const r of base.runs) { const n = runReel(r, names); if (!n) continue; const k = n + '|' + r.kind; if (!latest[k] || r.started > latest[k].started) latest[k] = r; }
+    for (const r of base.runs) { const n = runReel(r, names); if (!n || (live && !live.has(n))) continue;   // only today's and later reels: older ones are posted, and every run costs 2 GitHub calls (the Worker allows 50 in all: 28 Nov "Too many subrequests" left the tag reel's QA run unread)
+       const k = n + '|' + r.kind; if (!latest[k] || r.started > latest[k].started) latest[k] = r; }
     const runs = {};
     await Promise.all(Object.entries(latest).map(async ([k, r]) => { let jobs = []; try { jobs = await jobsOf(get, r); } catch (e) { warn('jobs ' + k, e); /* stage from the run alone */ } runs[k] = { ...r, jobs }; }));
     // built: the commit that first added the reel's review file (its squash message ends with the PR number), cached 30 minutes
@@ -91,13 +92,18 @@ export function criticOf(verdict, rest) {
   const ready = verdict.toUpperCase() === 'READY';
   return { ready, why, more: !ready && full.length > why.length ? full.slice(0, 1200) : '' };
 }
+// 28 Nov 2026: a check the independent critic waived in the review file ("NUMBERS WAIVER (critic, 28 Nov 2026): ..."); a builder's waiver (no "(critic") counts for nothing
+export function waiversOf(text) {
+  const w = new Set(); for (const l of String(text || '').split('\n')) { const m = /^\s*(?:\d+\.\s*)?([A-Z]{3,10}) WAIVER \(critic\b/.exec(l); if (m) w.add(m[1]); }
+  return [...w];
+}
 // the review file: CRITIC: READY / NOT READY on the critic line (item 20), and item 13 (the render's Output QA line) as a fallback for checks
 async function review(ch, name, warns) {
   return cached(`review-${name}`, REVIEW_TTL, async () => {
     try {
       const r = await fetch(RAW + `review/${ch}/${name}.md`, { cf: { cacheTtl: REVIEW_TTL, cacheEverything: true } });
       if (!r.ok) { if (warns && r.status !== 404 && warns.length < 12) warns.push('review ' + name + ': HTTP ' + r.status); return { exists: false }; }
-      const t = await r.text(), out = { exists: true, critic: null, qa: null };
+      const t = await r.text(), out = { exists: true, critic: null, qa: null, waivers: waiversOf(t) };
       for (const l of t.split('\n')) {
         const c = /^\s*(?:\d+\.\s*)?(?:Critic\b.*?\b)?CRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);   // any item number (27 Nov: a fix verdict as item 22 was missed, so a READY web reel showed as not ready); both "20. CRITIC: READY" and "Critic ... CRITIC: READY" (25 Nov: the first form was missed, so READY reels stayed on Checking)
         if (c) out.critic = criticOf(c[1], c[2]);
@@ -139,7 +145,7 @@ function qaReason(lines) {
   const m = /^([A-Z]{3,10}): (.*)$/.exec(l), more = (lines || []).filter((x) => /^[A-Z]{3,10}: /.test(x)).length - 1;
   return m ? { t: 'Failed: ' + (QA_WORDS[m[1]] || m[1].toLowerCase()) + (more > 0 ? ' (+' + more + ' more)' : ''), why: m[1] + ': ' + m[2].slice(0, 160) } : { t: 'Failed', why: l.slice(0, 160) };
 }
-function qaStage(render, qaRun, rv, rStage) {
+export function qaStage(render, qaRun, rv, rStage) {
   // the newest of: the Output QA step of the render run, or a separate Output QA run
   const fromRender = render && render.status === 'completed' && rStage.s === 'done' ? { at: render.updated_at, fail: rStage.qaFailed, ok: render.conclusion === 'success' } : null;
   let fromQa = null;
@@ -150,7 +156,10 @@ function qaStage(render, qaRun, rv, rStage) {
   const pick = fromQa && (!fromRender || fromQa.at > fromRender.at) ? fromQa : fromRender;
   if (pick && pick.live) return { s: 'now', t: 'Running the checks', at: pick.at, live: true };
   if (pick && pick.ok) return { s: 'done', t: 'Output QA PASS', at: pick.at };
-  if (pick && pick.fail) return { s: 'fail', ...qaReason(pick.fail), at: pick.at };
+  if (pick && pick.fail) {   // every failing check waived by the critic = done (any unwaived failing check still fails)
+    const lines = pick.fail.map((x) => String(x).replace(/^[-*\s]+/, '')), names = [...new Set(lines.map((x) => (/^([A-Z]{3,10}): /.exec(x) || [])[1]).filter(Boolean))];   // the GitHub annotation reads "- NUMBERS: ..."
+    if (names.length && lines.every((x) => /^[A-Z]{3,10}: /.test(x)) && names.every((n) => rv && (rv.waivers || []).includes(n))) return { s: 'done', t: 'Output QA PASS (waived by the reviewer)', at: pick.at };
+    return { s: 'fail', ...qaReason(pick.fail), at: pick.at }; }
   if (rStage.s === 'now') return { s: 'wait', t: 'After the render' };
   if (rv && rv.qa) return rv.qa.pass ? { s: 'done', t: 'Output QA PASS' } : { s: 'fail', t: 'Failed', why: rv.qa.why || 'See the review file.' };
   return { s: 'wait', t: rStage.s === 'done' ? 'No result yet' : 'After the render' };
@@ -171,7 +180,7 @@ export async function journeyApi(env, { captions, postSlot, chOf, uploaded, medi
   const capR2 = {};
   if (env.REELS) await Promise.all(reels.filter(([, m]) => !m.caption).map(async ([n]) => { try { const o = await env.REELS.get('c/' + n + '.json'); if (o) capR2[n] = (await o.json()).caption || ''; } catch { /* name instead */ } }));
   const warns = [];   // swallowed failures (GitHub errors, "Too many subrequests"): returned as warn so a stuck board says why
-  const [g, reviews] = await Promise.all([github(env, names, reels.map(([n, m]) => [n, chOf(n, m)]), warns), Promise.all(reels.map(([n, m]) => review(chOf(n, m), n, warns)))]);
+  const [g, reviews] = await Promise.all([github(env, names, reels.map(([n, m]) => [n, chOf(n, m)]), warns, new Set(reels.filter(([, m]) => m.postOn >= today).map(([n]) => n))), Promise.all(reels.map(([n, m]) => review(chOf(n, m), n, warns)))]);
   const out = reels.map(([name, m], i) => {
     const ch = chOf(name, m), slot = postSlot(name, m), due = Date.parse(`${m.postOn}T${slot}:00+05:30`), rv = reviews[i] || {};
     const run = g.runs && g.runs[name + '|render'], qaRun = g.runs && g.runs[name + '|qa'];

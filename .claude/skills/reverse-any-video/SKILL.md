@@ -32,9 +32,30 @@ Use ffmpeg, python and your own eyes on frames you extract (the reel itself stay
 5. Captions: group size (words), when each group switches (from the caption band's pixels), where the band sits.
 6. Sound: where the hits land against the picture, music in or out, loudness if you can measure it.
 
+## Study with the lab (owner, 28 Nov 2026): look at 5 moments, not 100 frames
+The studio cannot watch or hear a video, so the lab does the seeing (scripts/qa/ref-lab.py; python with ffmpeg + numpy, run in the refs-study job).
+A study is now: **the scorecard + the 5 key-moment strips**. Full 2 fps sheets are only for a moment the strips cannot explain.
+1. Run: the "Owner answers" workflow, action refs-study, ASKS {"ids": [<reference ids>], "reels": ["<our reel>.mp4", "study/<preview>.mp4"], "lab": true}.
+   Always put one of OUR reels in the same run (labels that start with ref- are references, the rest are ours). No render, a few minutes.
+2. Fetch the strips: `node scripts/media/from-log.mjs <run id> <dir>` writes lab-<label>-km<n>-t<second>.jpg (one strip per key moment: 6 frames over one
+   second, cropped to the reel area, 360 px each, time stamped). Look at those strips only.
+3. Read the text lines (they are in the run summary):
+   - CROP: the reel area found inside the phone screen recording (static bars and UI stripped); every measure uses it.
+   - ACTIONS / TIMELINE / GAPS / SOUND / QUIET: the action and sound count (action-count.py), on the crop.
+   - MOVES: the main moving elements at 30 fps: moves per 10 s, median duration, travel as % of the frame, ease (linear / ease-out / ease-in /
+     ease-in-out / overshoot + settle) and overshoot %. This is the motion grammar to copy (our kit's eases and durations against theirs).
+   - HITS / HITLIST: each sound hit by band (low thud, mid click, high tick), length in ms and loudness against the median level.
+   - KEY: the 5 busiest seconds (picture actions + sound hits) and TEXT: how the largest text block arrives (fade / scale / slide / word by word / pop)
+     and its line height in px at 1080 wide.
+   - SCORECARD: one row per video, all numbers side by side. GAP: our 3 largest gaps against the references.
+4. Name each gap as a kit piece or a reviewer question (STUDY RULES 2 in design/references.md); write the numbers into the card.
+The rules are simple and listed in the script header; MOVES and TEXT are heuristics, so confirm what matters on the strip. The lab is measured from pixels and
+audio, never from the reference's content: nothing of the reference is kept (videos and frames stay out of the repo).
+Test: scripts/qa/ref-lab-test.py (synthetic ffmpeg video: a box easing in with overshoot, three tone bursts, a fading text line); it runs in npm run check.
+
 ## Action count (owner, 28 Nov 2026: "more actions and elements")
 A 1-frame-a-second sheet misses most small actions (a screen typing, a ripple, a badge ticking). Count them, then read them:
-1. Measure: the "Owner answers" workflow, action refs-study, ASKS {"ids": [<reference ids>], "reels": ["<our reel>.mp4", "study/<preview>.mp4"], "sheets": true}.
+1. Measure: the lab above ("lab": true) prints all of this plus the rest; the fast path without the lab is the "Owner answers" workflow, action refs-study, ASKS {"ids": [<reference ids>], "reels": ["<our reel>.mp4", "study/<preview>.mp4"], "sheets": true}.
    It runs scripts/qa/action-count.py on each video the same way and prints ACTIONS (new actions a second, in the picture and in total; things
    moving at once; camera share; still share), TIMELINE (actions per second) and GAPS (over 1 s with no new action), plus 2 fps sheets.
    Always measure one of OUR reels in the same run, so the gap is a number.
@@ -43,7 +64,15 @@ A 1-frame-a-second sheet misses most small actions (a screen typing, a ripple, a
 3. Layers: count the elements on screen at once (hero, supporting objects, small detail, type, background life) at 3 moments.
 4. The card gets an "Action count" line: reference vs ours (actions a second in the picture, moving at once, longest gap) and the 3-5 action kinds
    we lack, each as a kit piece to build (owner: actions inside objects already on screen are cheap; more camera moves are not).
+5. Sound (28 Nov 2026): the same script also prints SOUND (audible hits a second: spectral-flux peaks over a floor, with a per-second list) and QUIET
+   (the longest stretch with no hit and no audible level). refs-study prints them for references and our reels together; read them next to the
+   TIMELINE (voice syllables count as hits, so compare like with like). Add one line "Sound hits a second: reference vs ours, longest quiet" to the card.
 The count is a guide, not a target to game: captions and camera moves are kept out of "picture" actions on purpose.
+
+## Done means built (owner, 28 Nov 2026)
+A study is finished only when it leaves at least one kit piece (or a dated todo line naming it) and one reviewer question in design/critic.md, and the
+action and sound count of the reference next to one of our reels. Weekly, the spare usage night counts our newest reels against the kept references
+(design/references.md "STUDY RULES").
 
 ## Every layer (what it is, how we would build it)
 

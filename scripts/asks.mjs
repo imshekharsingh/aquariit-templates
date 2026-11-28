@@ -10,6 +10,8 @@
 //                  a 4x2 sheet of 8 frames spread over the whole clip; ASKS {"full": [ids]} adds time-stamped sheets of the whole clip at 1 frame a second) as a "B64 ref-<id>.jpg <base64>" log line (stderr, not the summary):
 //                  node scripts/media/from-log.mjs <run id> <dir> turns them back into files. Study each into design/references.md, then refs-done
 //   refs-study:    ASKS {"ids": [10], "reels": ["study/showreel-x-preview.mp4"], "sheets": true}: the action count (scripts/qa/action-count.py) of references (any state) and our reels, plus 2 fps sheets
+//                  "lab": true (owner, 28 Nov 2026) runs the reference lab instead (scripts/qa/ref-lab.py): CROP, MOVES (ease, overshoot), sound HITS by kind, the 5 KEY moments
+//                  as one 6-frame strip each (B64 lab-<label>-km<n>-t<s>.jpg) with TEXT LIFE, a SCORECARD table and GAP lines for our reels; it includes the action count and sound lines. Default off keeps the fast path
 //   refs-done:     (also "checklist", "stills", "replies", "close": true, see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
 //          optional "reel": "showreel-..." or "preview": "showreel-pv-..." (task 12, 27 Nov 2026): the app shows that reel's cover and player beside the question,
@@ -74,21 +76,27 @@ if (ACTION === 'refs-study') {   // owner, 28 Nov 2026: count actions per second
   // ASKS {"ids": [10, 12], "reels": ["study/showreel-x-preview.mp4", "showreel-y.mp4"], "sheets": true}: any reference state; sheets = 2 frames a second, 20 s a sheet
   let q = {}; try { q = JSON.parse(process.env.ASKS || '{}') || {}; } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
   const ids = (q.ids || []).map(Number).filter((i) => Number.isInteger(i) && i > 0), reels = (q.reels || []).filter((r) => /^(study\/)?showreel-[a-z0-9-]{1,60}\.mp4$/.test(r));
-  if (!ids.length && !reels.length) die('refs-study: ASKS is {"ids": [10], "reels": ["showreel-x.mp4"], "sheets": true}');
-  const { execFileSync } = await import('node:child_process'), { mkdtempSync, readFileSync, readdirSync, createWriteStream } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
+  if (!ids.length && !reels.length) die('refs-study: ASKS is {"ids": [10], "reels": ["showreel-x.mp4"], "sheets": true, "lab": true}');
+  const { execFileSync, spawnSync } = await import('node:child_process'), { mkdtempSync, readFileSync, readdirSync, createWriteStream } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
   const { Readable } = await import('node:stream'), { pipeline } = await import('node:stream/promises'), td = mkdtempSync(join(tmpdir(), 'study-'));
   const jobs = [...ids.map((i) => ({ label: `ref-${i}`, url: `${SITE}/api/refs/${i}/file` })), ...reels.map((r) => ({ label: r.replace(/^study\//, '').replace(/\.mp4$/, ''), url: `${SITE}/reels/${r}` }))];
+  const got = [];
   for (const j of jobs) {
     const g = await fetch(j.url, { headers: { Cookie: cookie } });
     if (!g.ok) { console.log(`STUDY ${j.label}: not available (HTTP ${g.status}${g.status === 404 ? ': deleted or never uploaded' : ''})`); continue; }
     const src = join(td, j.label); await pipeline(Readable.fromWeb(g.body), createWriteStream(src));
-    try { console.log(execFileSync('python3', ['scripts/qa/action-count.py', src, j.label], { timeout: 600000 }).toString().trim()); } catch (e) { console.log(`STUDY ${j.label}: count failed (${e.message.split('\n')[0]})`); }
+    if (q.lab) { got.push(`${j.label}=${src}`); }
+    else try { console.log(execFileSync('python3', ['scripts/qa/action-count.py', src, j.label], { timeout: 600000 }).toString().trim()); } catch (e) { console.log(`STUDY ${j.label}: count failed (${e.message.split('\n')[0]})`); }
     if (q.sheets) {
       const pat = join(td, `${j.label}-s%02d.jpg`);
       try { execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', src, '-vf', "fps=2,scale=135:-2,drawtext=text='%{pts\\:hms}':x=3:y=3:fontsize=13:fontcolor=yellow:box=1:boxcolor=black@0.6,tile=8x5", '-q:v', '6', pat], { stdio: 'ignore', timeout: 300000 }); } catch (e) { console.log(`  (sheets ${j.label} failed)`); }
       let n = 0; for (const s of readdirSync(td).filter((x) => x.startsWith(`${j.label}-s`) && x.endsWith('.jpg')).sort()) { console.error(`B64 ${s} ${readFileSync(join(td, s)).toString('base64')}`); n++; }
       console.log(`  ${j.label}: ${n} sheets (2 frames a second, 20 s a sheet)`);
     }
+  }
+  if (q.lab && got.length) {   // one run for all videos: the scorecard and GAP lines compare them; the key-moment strips go to stderr as B64 lines
+    const r = spawnSync('python3', ['scripts/qa/ref-lab.py', ...got], { timeout: 2400000, maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'inherit'] });
+    console.log((r.stdout || '').toString().trim()); if (r.status !== 0) console.log(`LAB failed (exit ${r.status})`);
   }
 }
 if (ACTION === 'refs') {

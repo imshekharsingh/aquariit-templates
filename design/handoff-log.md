@@ -8,6 +8,14 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/critic-popover-focus-r2 · main account: reviewer verdict on the web focus test, render 2
+- Real MP4 (13:31 IST upload) vs the original: READY and SWAP for 19:00: the burst now lands on "popover", BEFORE stays broken through the hand-over, the ending moves (1 action gap vs 3). PACE (4.51 vs 4.5) and HUE (its own original) waived. Length: 15 s is right. Next-version fixes in review/web/showreel-50-popover-focus.md.
+## 2026-11-28 · claude/tech-pace-feedback · other account (Inputs): owner feedback on today's tech reel
+- design/owner-feedback.md 28 Nov line: slow transitions, needless waits, colour like the last tech reel. Tonight's reel posts as is (owner); tomorrow's tech build (this account) applies it.
+## 2026-11-28 · claude/critic-popover-focus-2 · main account: reviewer verdict on the web focus test
+- Real MP4 vs the original: READY (nothing broken) but KEEP ORIGINAL at 19:00: the green breakout lands ~1 s before "popover" and BEFORE's menu is closed as the light leaves it. Fix for a next version in review/web/showreel-50-popover-focus.md.
+## 2026-11-28 · claude/ref-process-rules · other account (Inputs): reference study rules
+- Owner yes: videos kept 30 days after close (app change queued to its own session), a study is done only with a kit piece + a reviewer question, weekly re-measure on the spare night. design/references.md "STUDY RULES", reverse-any-video "Done means built", runbook-spare (0a).
 ## 2026-11-28 · claude/gifted-clarke-qp3n4s · other account (Inputs): action list from the count, and a clearer Today board
 - design/references.md "R-ref 28 Nov": references 15-19 make 2.4-3.4 actions a second, v7 1.8 (ACTION LIST for v7 part b). References 9-14 were deleted when closed.
 - Board (owner: "there's no clarity"): src/journey.js puts a hidden reel dated today on the board as held; templates/index.html: [hidden] always hides, one plain line per card, folded cards, no model names, the top line names questions / reels to post.
@@ -1430,3 +1438,78 @@ Format (at most 6 lines):
 - Done: techkit/scenes/gold3d-v7.html block "PART B": live app screens (Notes types, Chat bubbles, Mail count 3 to 4), connection log card with 24 pips, stamps landing on Pay / the tangle / the hub / New and the apps, a selection box on the headline words and numbers, tool badges and ripple rings, the Notes slam landing slower and the Chat / Mail shadows fading in (the real cause of the 0.77-0.85 s FLICKER), FLICKER PASS at 60 fps on scene frames 0-1.6 s; review file "Part b plan"; stills sheet review/tech/study-28nov/v7-partb-stills.jpg; design/projects.json.
 - Measured (scene frames, scripts/qa/action-count.py): 2.27 actions a second before and after, 1.33 to 1.52 moving at once; the long camera moves (11 of 23 s) swallow anything added inside them, so the target is not reached by part b alone.
 - Left: the owner's choice (render as is / retime the four long camera moves first / stop at the pieces); render 5 only after that; then Output QA and a reviewer session (critic.md).
+## 2026-11-28 · claude/numbers-icon-fix4 · NUMBERS ignores still regions (item 6, follow-up)
+- Done: the padlock read as 6, 8, 6, 4, 6 at 56x72 px (aspect like a digit, so shape alone cannot tell it); output-qa.py drops a changing-value place whose pixels are static across the reads (a region that moves and disagrees with the voice still fails); the read dump prints on a FAIL.
+- Left: Output QA re-run on showreel-tech-tag-relay, board check, App probe. (fix5: the still-region crop read a missing width; dry-run proven on a still clip with flickering reads.)
+## 2026-11-28 · claude/kit-ref-pieces · Kit reference pieces: number fill, keyword jump, blur hand-off, sound count
+- Done: scripts/explainer/kitref.js (KREF.numberFill with tick cues, KREF.keyword with reserved box and width cut, KREF.handoff swap and focus modes; kit-inline entry), local test scene scripts/previews/kit-ref-pieces.html (one stills sheet, no render), SOUND and QUIET lines in scripts/qa/action-count.py, skill "Action count" updated.
+- Left: refs-study run (ids 15, 16, 18, 19; showreel-tech-ai-words, showreel-50-popover), SOUND numbers into references.md.
+
+## 2026-11-28 · claude/refs-keep-30d · Closed references keep their video 30 days
+- Done: Close sets closed_at and keeps the file; purgeClosedRefs (src/worker.js) deletes it 30 days after closing, run by the daily cron and by the refs list and close calls; GET /api/refs/<id>/file keeps working until then; app text says "kept 30 days, then deleted"; cases in scripts/qa/refs-test.mjs (kept, served, 29 days kept, 31 days purged, 404 after). npm run check passes.
+- Left: App probe after deploy, then the APP PROBE line in design/handoff.md Progress.
+
+## 2026-11-28 · claude/ref-lab · Reference lab: crop, moves, sound hits by kind, key-moment strips, scorecard
+- Done: scripts/qa/ref-lab.py (python, ffmpeg + numpy; reel crop inside a phone recording, motion tracks at 30 fps with ease and overshoot, sound hits by low/mid/high band with length and loudness, the 5 busiest seconds as one 6-frame strip each plus text arrival and size at 1080 wide, scorecard table and GAP lines for our reels); action-count.py split into frames(crop) / count() / sound_hits() so the lab builds on the sound count and does not repeat it; asks.mjs refs-study takes {"lab": true} (default off keeps the fast path), asks.yml timeout 45 min; scripts/qa/ref-lab-test.py (synthetic video: box with overshoot, three tone bursts, fading text, black-bar crop) runs in npm run check and skips when ffmpeg or numpy is missing; skill reverse-any-video "Study with the lab"; STUDY RULES 3 points at the lab.
+- Left: refs-study run with lab on ids 15, 16, 18, 19 and three of our reels, then "Lab results 28 Nov" in design/references.md. MOVES and TEXT are heuristics tested on synthetic video only; the first real run is the proof, check the strips.
+
+## 2026-11-28 · claude/web-popover-focus-qa · Web popover focus test: preview rendered, Output QA by hand
+- Done: one full-length preview render of showreel-50-popover-focus (run 46113700512, R2 study/); Output QA by hand on the preview MP4: all pass except HUE against its own original (waived); voice ends 12.6 s of 15 s. Reviewer session started.
+- Left: the reviewer's verdict in review/web/showreel-50-popover-focus.md; swap into the 19:00 post only on READY plus Inputs saying the owner likes it before 17:30 IST.
+
+## 2026-11-28 · claude/critic-popover-focus · Reviewer, showreel-50-popover-focus study preview: READY (stills only)
+- Done: independent review of the focus hand-off preview (run 46113700512, Output QA 46116075083) from local stills and the logged QA; the real MP4 could not be fetched (proxy refused the host). Lit pane is the talked-about one, dark pane stays maroon and readable, hand-over about 0.4 s on "The fix:", soft glow, both lit for the last 1.4 s. STOP 7.5, REWATCH 7.5, PREMIUM 7.5 / 8 / 7.5. Modest reach win over the original.
+- Left: the owner decides the swap; if swapped, check on the real MP4 that the green burst sits inside the "popover" sentence; next version keeps BEFORE's cut menu open through the hand-over.
+
+## 2026-11-28 · claude/qa-waiver-dash · Waiver matching reads the annotation's "- " prefix (item 6)
+- Done: the Output QA failure annotation arrives as "- NUMBERS: ..." so the first waiver version (claude/qa-waiver) never matched; qaStage strips the prefix; test case with the real form. App probe after the first version still showed an empty tech Ready box, which is how it was found.
+- Left: App probe again.
+## 2026-11-28 · claude/qa-waiver · The app honours a critic's check waiver (item 6)
+- Done: src/journey.js waiversOf() + qaStage(): a failed Output QA run whose every failing check has a "<CHECK> WAIVER (critic" line in the review file is "Output QA PASS (waived by the reviewer)"; any unwaived check, or a builder-written waiver, still fails. scripts/qa/qa-waiver-test.mjs in npm run check. todo line for the better NUMBERS rule.
+- Left: App probe (the tech Ready box must list showreel-tech-tag-relay).
+## 2026-11-28 · claude/handoff-numbers-progress · Item 6 stopped for a decision
+- Done: NUMBERS icon proportion rule, still-region rule (dry-run proven, but the real padlock crop is not pixel-static), board Ready follows the journey; read dump on a FAIL.
+- Left: showreel-tech-tag-relay still fails NUMBERS on the re-run; waiver or one more rule (Inputs decides); then the App probe.
+## 2026-11-28 · claude/kit-ref-sound-numbers · SOUND HITS numbers from refs-study (kit-ref task)
+- Done: refs-study run on references 15, 16, 18, 19 and showreel-tech-ai-words, showreel-50-popover; SOUND line in design/references.md R-ref 28 Nov (references 1.04-1.32 hits a second, ours 1.07-1.15).
+- Left: nothing; kit pieces are on main (PR 1713).
+
+## 2026-11-28 · claude/ref-lab-crop · Ref lab: phone-recording crop cuts the app's header, caption and button column
+- Done: first real run (refs 15, 16, 18, 19 and three of ours) showed the change-based crop kept the Reels header, status bar, caption and right buttons on refs 15, 16 and 19; ref-lab.py phone_trim() cuts 13 % top, 14 % bottom, 14 % right for recordings taller than 2:1 (our own 9:16 reels untouched); test cases in scripts/qa/ref-lab-test.py.
+- Left: re-run refs-study with lab, then the "Lab results 28 Nov" block.
+
+## 2026-11-28 · claude/ref-lab-results · Lab results 28 Nov: scorecard, gaps per channel, reviewer questions
+- Done: refs-study lab run on refs 15, 16, 18, 19 against v7 r4, ai-words and popover (second run, after the crop fix); results block in design/references.md "Lab results 28 Nov" (numbers, our 3 largest gaps per channel, the kit piece or reviewer question each needs); motion density questions in design/critic.md.
+- Left: kit pieces "live screen" and "tick cue" (tech v7 and web builders); Turns Out reel into the next lab run; the weekly re-measure.
+
+
+## 2026-11-28 · claude/qa-waiver-dash2 · Waiver matching reads the annotation's "- " prefix (item 6)
+- Done: the Output QA failure annotation arrives as "- NUMBERS: ..." so the first waiver version never matched; qaStage strips the prefix; test case with the real form. Found because the App probe after the first version still showed an empty tech Ready box.
+- Left: App probe again.
+
+## 2026-11-28 · claude/probe-journey · App probe prints the journey stages of today's reels (item 6)
+- Done: scripts/qa/app-live-probe.mjs prints JOURNEY / JOURNEY REEL lines (github state, warnings, render / checks / critic / ready per reel) so an empty Ready box says which stage holds it. The waiver logic itself is proven on the real run data (qaStage returns done "waived by the reviewer" for run 46117765710 and the real annotations); the live box was still empty after the deploy, cause not yet seen.
+- Left: App probe, read the JOURNEY REEL line for tech, fix what it shows.
+
+## 2026-11-28 · claude/web-popover-focus-r2 · Web popover focus test, render 2 prepared (owner yes)
+- Done: frame 0 arrives from its shadow (card lands with a small overshoot, glow fades up, menu sliced with a tick by 0.6 s); BEFORE's cut menu open through the hand-over; the AFTER breakout on the word "popover"; high tick cues, live code card from "fix", keyword jump on POPOVER, item beats in the last 2.4 s. Local stills clear (SUBJECT FILL 51%, FLOW ok), scene action count 4.4 a second, longest gap 0.9 s.
+- Left: ONE preview render 2 (Inbox > Tests), Output QA + action count on the MP4, the main account's full-video review before 17:30 IST. showreel-50-popover untouched.
+
+## 2026-11-28 · claude/journey-fewer-calls · Journey reads GitHub runs only for today's and later reels (item 6)
+- Done: the live probe's JOURNEY line showed the cause of the empty tech Ready box: "Too many subrequests by single Worker invocation" on the jobs / annotations calls (the tag reel's Output QA run was never read, so checks said "No result yet"). src/journey.js now fetches runs' jobs only for reels dated today or later (older ones are posted), about 12 calls instead of 40+. The waiver logic itself was fine.
+- Left: App probe: the tech Ready box must list showreel-tech-tag-relay.
+
+## 2026-11-28 · claude/web-popover-focus-r2b · Web popover focus test: owner notes added before the render (faster transitions, no waits, colour worlds)
+- Done: hand-over and transitions 0.35 s with a tiny overshoot; reel 13.8 s; item-by-item beats, count and ghost pulses, live code card; a warm red-amber light pool behind BEFORE and a cool green-teal pool behind AFTER; owner line in design/owner-feedback.md. Scene action count 4.4 a second, longest gap 0.7 s.
+- Left: the render. A render of the earlier version (run 46122018953) is still running because the cancel was blocked here; waiting for Inputs to choose between cancelling it (then this is render 2) or letting it finish (then this is render 3, needs the owner's yes with its cost).
+## 2026-11-28 · claude/handoff-item6-done · Item 6 done: tech reel Ready in the app
+- Done: App probe PASS (run 46122163605): tag-relay checks "Output QA PASS (waived by the reviewer)", ready for 20:30; item 6 marked done in design/handoff.md with the probe line; todo line for the remaining "built" subrequest warnings.
+- Left: nothing for item 6; the better NUMBERS rule is a dated todo.
+
+## 2026-11-28 · claude/web-popover-focus-qa2 · Web popover focus test: render 2 Output QA by hand
+- Done: Output QA by hand on render 2 (run 46122018953): two FAILs, both explained (PACE 4.51 words/s on an unchanged sentence against the 4.5 limit, HUE against its own original); everything else passes (DEMO 0.57, BLACKBG 6, DEAD none, MUTE 5.4%). Action count could not run on the MP4 here (host refused); scene capture 4.4 a second, longest gap 0.9 s.
+- Left: the owner-side full-video review; pace-only version on main (scripts/previews/web-popover-focus.html, 13.8 s) is NOT rendered; render 3 only with an owner yes.
+
+## 2026-11-28 · claude/web-popover-swap · Web: the 19:00 post becomes the focus version (owner yes), no new render
+- Done: R2 promote of the focus render 2 (study/showreel-50-popover-focus-preview, run 46122018953) over v/showreel-50-popover.mp4, old render 3 backed up as study/showreel-50-popover-r3-backup; swap note in review/web/showreel-50-popover.md. Same reel name, captions entry and slot, so the app card, Ready box, Post now and the journey follow it without any new run.
+- Left: the App probe (web tab Ready box lists the one reel), the owner posts at 19:00 IST.

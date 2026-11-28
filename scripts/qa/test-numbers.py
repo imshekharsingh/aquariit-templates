@@ -7,7 +7,7 @@
 #   card     a still date card "22" while the voice says "twenty one" (Mona 4.3 s)      -> PASS
 #   card4    a still "4" while the voice says "two" (Mona 26.1 s)                        -> PASS
 #   article  a small "3" label while the voice says "one" as an article (web form 8.8 s) -> PASS
-#   padlock  a closed padlock icon (square blob) while the voice says "six" / "four" (tech tag-relay 28 Nov) -> PASS; digit_like unit checks
+#   padlock  a closed padlock icon (square blob) while the voice says "six" / "four" (tech tag-relay 28 Nov) -> PASS (its pixels are still, so even a flickering OCR read is no counter; proven on the real tag-relay render); digit_like unit checks
 #   shapes   small digit-like shapes near "six" / "seven" (tech watch-5atm)             -> PASS
 # Run: python3 scripts/qa/test-numbers.py (needs ffmpeg, tesseract, numpy, Pillow). Exit 1 on any wrong verdict.
 import importlib.util, os, subprocess, sys, tempfile

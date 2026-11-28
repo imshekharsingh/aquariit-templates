@@ -453,7 +453,7 @@ let refReady = null;
 async function refDb(env) {
   if (!env.DB) return null;
   refReady = refReady || env.DB.exec("CREATE TABLE IF NOT EXISTS owner_refs (id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT NOT NULL, channel TEXT, url TEXT, file_key TEXT, file_type TEXT, file_name TEXT, size INTEGER, note TEXT, state TEXT NOT NULL DEFAULT 'new', reply TEXT, done_at TEXT)")
-    // flow (owner, 24 Nov 2026): checklist = JSON [{t, c: keep|skip|ask|null, th: [{w, t, at}]}], stills = number of report stills in R2 (refs/<id>-still-<n>.jpg), upload_id = a multipart upload in progress, closed_at = closed (video deleted)
+    // flow (owner, 24 Nov 2026): checklist = JSON [{t, c: keep|skip|ask|null, th: [{w, t, at}]}], stills = number of report stills in R2 (refs/<id>-still-<n>.jpg), upload_id = a multipart upload in progress, closed_at = closed (video kept 30 days, then deleted)
     .then(() => Promise.all(['checklist', 'stills', 'upload_id', 'closed_at'].map((c) => env.DB.prepare(`ALTER TABLE owner_refs ADD COLUMN ${c} TEXT`).run().catch(() => {}))))
     .catch((e) => { refReady = null; throw e; });
   await refReady;
@@ -463,6 +463,19 @@ async function refDb(env) {
 const REF_MAX = 1024 * 1024 * 1024, REF_SINGLE = 50 * 1024 * 1024, REF_PART = 90 * 1024 * 1024, REF_PART_SIZE = 64 * 1024 * 1024, REF_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/heic': 'heic', 'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm' };
 const REF_ST = ['new', 'studied', 'used'], REF_ID = /^\/api\/refs\/([0-9]{1,9})(\/file|\/state|\/delete|\/part|\/complete|\/abort|\/report|\/check|\/thread|\/close|\/still\/[0-9]{1,2})?$/;
 const jparse = (t) => { try { const v = JSON.parse(t); return Array.isArray(v) ? v : []; } catch { return []; } };
+const REF_KEEP_DAYS = 30;
+// closed references keep their video REF_KEEP_DAYS days after closed_at; then the file goes (row, report, stills and checklist stay). Runs on the daily cron and on the list and close calls.
+async function purgeClosedRefs(env, db, now = Date.now()) {
+  if (!env.REELS) return 0;
+  const { results } = await db.prepare('SELECT id, file_key, closed_at FROM owner_refs WHERE closed_at IS NOT NULL AND file_key IS NOT NULL').all();
+  let n = 0;
+  for (const r of results || []) {
+    const t = Date.parse(r.closed_at);
+    if (!(t > 0) || now - t <= REF_KEEP_DAYS * 864e5) continue;
+    try { await env.REELS.delete(r.file_key); await db.prepare('UPDATE owner_refs SET file_key = NULL WHERE id = ?1').bind(r.id).run(); n++; } catch { /* next run tries again */ }
+  }
+  return n;
+}
 const refOut = (r) => ({ id: r.id, created: r.created, channel: r.channel, url: r.url, file: r.file_key ? { type: r.file_type, name: r.file_name, size: r.size } : r.closed_at && r.file_name ? { type: r.file_type, name: r.file_name, size: r.size, deleted: true } : null,
   note: r.note, state: r.state, reply: r.reply, done_at: r.done_at, closed: r.closed_at || null, uploading: r.state === 'uploading',
   checklist: jparse(r.checklist), stills: Array.from({ length: Math.min(8, Number(r.stills) || 0) }, (_, i) => `/api/refs/${r.id}/still/${i + 1}`) });
@@ -473,6 +486,7 @@ async function refsApi(request, env, p, url) {
   if (!db) return jres({ error: 'no-db' }, 501);
   const m = REF_ID.exec(p);
   if (request.method === 'GET' && p === '/api/refs') {   // newest first; ?state=new gives only the ones waiting for Claude
+    await purgeClosedRefs(env, db).catch(() => {});
     const onlyNew = url.searchParams.get('state') === 'new';
     const { results } = await db.prepare(`SELECT * FROM owner_refs ${onlyNew ? "WHERE state = 'new' AND closed_at IS NULL " : ''}ORDER BY id DESC LIMIT 60`).all();
     return jres({ refs: (results || []).map(refOut) });
@@ -576,16 +590,17 @@ async function refsApi(request, env, p, url) {
     await db.prepare('UPDATE owner_refs SET checklist = ?2 WHERE id = ?1').bind(id, JSON.stringify(list)).run();
     return jres({ ok: true, item: list[i] });
   }
-  if (m && m[2] === '/close') {   // the owner closes it: the video is deleted from R2 the same day; the report, stills and checklist stay
+  if (m && m[2] === '/close') {   // the owner closes it: the video is kept REF_KEEP_DAYS days (owner rule, references.md STUDY RULES 1), then purgeClosedRefs deletes it; report, stills and checklist stay
     const id = Number(m[1]), r = await db.prepare('SELECT file_key, file_type, upload_id FROM owner_refs WHERE id = ?1').bind(id).first();
     if (!r) return jres({ ok: true, stored: false });
     let gone = false;
-    if (r.file_key && /^video\//.test(r.file_type || '') && env.REELS) {
-      if (r.upload_id) { try { await env.REELS.resumeMultipartUpload(r.file_key, r.upload_id).abort(); } catch { /* none */ } }
-      try { await env.REELS.delete(r.file_key); gone = true; } catch { return jres({ error: 'store-failed' }, 502); }   // not closed until the video is really gone
+    if (r.upload_id && r.file_key && env.REELS) {   // an unfinished upload cannot be kept: abort it
+      try { await env.REELS.resumeMultipartUpload(r.file_key, r.upload_id).abort(); } catch { /* none */ }
+      try { await env.REELS.delete(r.file_key); gone = true; } catch { return jres({ error: 'store-failed' }, 502); }
     }
     await db.prepare(`UPDATE owner_refs SET closed_at = ?2, upload_id = NULL${gone ? ', file_key = NULL' : ''}, state = CASE WHEN state = 'uploading' THEN 'new' ELSE state END WHERE id = ?1`).bind(id, now).run();
-    return jres({ ok: true, stored: true, videoDeleted: gone });
+    await purgeClosedRefs(env, db).catch(() => {});
+    return jres({ ok: true, stored: true, videoDeleted: gone, keptDays: gone ? 0 : REF_KEEP_DAYS });
   }
   if (m && m[2] === '/state') {   // a Claude run: studied / used, with a short note the app shows
     const st = b && REF_ST.includes(b.state) ? b.state : null, note = b && nStr(b.note, 500);
@@ -983,6 +998,7 @@ async function cronLog(env, cron, scheduled, result) {
 }
 async function runCron(env, cron, scheduled) {
   let r;
+  if (cron === SPARE_CRON) { try { const db = await refDb(env); if (db) await purgeClosedRefs(env, db); } catch { /* the list call purges too */ } }
   try { r = cron === SPARE_CRON ? await sparePush(env) : await notifyTick(env, scheduled || Date.now()); } catch (e) { r = { error: String(e && e.message || e) }; }
   await cronLog(env, cron, scheduled, JSON.stringify(r));
 }

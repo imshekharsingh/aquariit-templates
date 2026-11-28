@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Kit reference pieces test</title>
+<style>
+/* Local test scene (owner yes 28 Nov 2026): the three reference pieces of scripts/explainer/kitref.js on invented content, no render.
+   A: number fill (a wall of 1,000 tiles, the count ticking), B: keyword jump, C: blur hand-off between two cards. Pure function of t. */
+html,body{width:540px;height:960px;margin:0;overflow:hidden;background:#0d0f14;font-family:system-ui,sans-serif;color:#fff}
+#st{position:absolute;inset:0}
+#head{position:absolute;left:28px;top:36px;width:484px;font-weight:800;letter-spacing:-.03em;text-align:center}
+#num{position:absolute;left:0;width:540px;top:196px;text-align:center;font:900 72px/1 system-ui,sans-serif;letter-spacing:-.04em;color:#7ee0b0}
+.cd{position:absolute;left:40px;width:460px;height:150px;border-radius:22px;top:690px;padding:22px 26px;box-sizing:border-box;background:linear-gradient(160deg,#ff7a59,#c2417a);font:800 34px/1.15 system-ui,sans-serif;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+#cb{background:linear-gradient(160deg,#4cc9f0,#4361ee)}
+.cd small{display:block;font:600 16px/1.3 system-ui,sans-serif;opacity:.85;margin-top:8px}
+</style>
+</head>
+<body>
+<div id="st"><div id="head"></div><div id="num">0</div><div class="cd" id="ca">Before<small>the page jumps as it loads</small></div><div class="cd" id="cb">After<small>space is reserved, nothing moves</small></div></div>
+<script>
+/*kitref:begin*/
+// ---- Reference pieces kit (scripts/explainer/kitref.js; owner yes 28 Nov 2026, R-ref 28 Nov in design/references.md "action count") ----
+// Shared opt-in pieces for the web kit (KM), the 2.5D tech kit (KMAP) and Turns Out scenes: they need neither, but join KM / KMAP when present
+// (KM.numberFill ..., KMAP.numberFill ...). Every piece is a pure function of t (seekable): no Math.random (a seeded generator only), no timers.
+//   KREF.numberFill(host, o) -> { draw(t), cues, el, at(t) }   NUMBER-TO-PICTURE: a big number becomes many small things filling in.
+//       o.count (the number, default 1000), o.shape 'grid' | 'dots' | 'pins' | 'bars', o.t0, o.d (default 1.6 s), o.color, o.x, o.y, o.w, o.h
+//       (px of the picture box inside host), o.ticks (sound groups, default 10), o.unit ('' | ' %' ...), o.label (an element that shows the
+//       count, ticking with the fill; optional), o.seed. At most 360 small things are drawn; each stands for count / n of the number.
+//       cues = [{ t, k: 'tick', g, p }] one light tick per group (also pushed to KM.cue when the web kit is there).
+//   KREF.keyword(el, words, o) -> { draw(t), width }   KEYWORD JUMP: the word-by-word headline; word o.key (index) lands at 2-3x size (o.scale,
+//       default 2.2) or an accent style (o.accent: { weight, italic, color }, scale 1) with a small overshoot; the others stay put (the
+//       key's box is reserved at its final size). o.t0 first word time, o.gap per word, o.keyAt (default: its word time), o.size (font px of the
+//       others), o.maxW (default 484 of a 540 frame, i.e. 1080 wide with 28 px margins) : the key's scale is cut so it never runs past maxW.
+//   KREF.handoff(a, b, t, t0, o) -> k 0..1   BLUR HAND-OFF: card A blurs and dims (brightness down + blur, saturation kept, never grey) while
+//       card B sharpens and lifts, o.d (default .5 s), no camera move. o.mode 'swap' (default: B enters, A leaves) or 'focus' (both stay on
+//       screen: A lit -> dimmed, B dimmed -> lit; the web "focus hand-off"). o.blur px (default 9), o.dim brightness left (default .5).
+// Inlined into a scene between the kitref markers (scripts/channel3/kit-inline.mjs); a scene without the markers is unchanged.
+var KREF = (function(){
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); },
+      out3 = function(k){ return 1 - Math.pow(1 - k, 3); }, inOut = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; },
+      back = function(k, s){ s = s == null ? 1.7 : s; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2); },
+      fill = function(k){ return k < .15 ? k * k / .3 : .075 + (k - .15) * .925 / .85 > 1 ? 1 : .075 + (k - .15) * .925 / .85; };   // starts gently, then even: ticks are evenly spaced
+  function rng(seed){ var s = (seed || 1) >>> 0; return function(){ s = (s + 0x6D2B79F5) >>> 0; var z = s; z = Math.imul(z ^ z >>> 15, z | 1); z ^= z + Math.imul(z ^ z >>> 7, z | 61); return ((z ^ z >>> 14) >>> 0) / 4294967296; }; }
+  function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function numberFill(host, o){ o = o || {}; var count = o.count == null ? 1000 : o.count, shape = o.shape || 'grid', t0 = o.t0 || 0, d = o.d || 1.6, col = o.color || '#7aa2ff',
+      W = o.w || 440, H = o.h || 360, G = Math.max(1, o.ticks || 10), unit = o.unit || '', R = rng(o.seed || 7), n, pos = [], i;
+    var box = document.createElement('div'); box.setAttribute('aria-hidden', 'true'); box.setAttribute('data-key', 'numberfill');
+    box.style.cssText = 'position:absolute;left:' + (o.x || 50) + 'px;top:' + (o.y || 300) + 'px;width:' + W + 'px;height:' + H + 'px;pointer-events:none';
+    if (shape === 'bars') { n = Math.min(24, Math.max(6, Math.round(Math.sqrt(count)))); var bw = W / n;
+      for (i = 0; i < n; i++) pos.push({ x: i * bw + bw * .12, y: 0, w: bw * .76, h: H * (.3 + .7 * (i + 1) / n * (.88 + .12 * R())), bar: 1 }); }
+    else if (shape === 'dots' || shape === 'pins') { n = Math.min(360, Math.max(24, Math.round(count / 3))); var rad = Math.min(W, H) / 2, sz = Math.max(6, Math.min(18, rad * 1.5 / Math.sqrt(n) * 1.15));
+      for (i = 0; i < n; i++) { var r = rad * Math.sqrt((i + .5) / n), a = i * 2.39996323; pos.push({ x: W / 2 + r * Math.cos(a) - sz / 2, y: H / 2 + r * Math.sin(a) * (shape === 'pins' ? .86 : 1) - sz / 2, w: sz, h: sz, pin: shape === 'pins' }); } }
+    else { var cols = Math.max(4, Math.round(Math.sqrt(Math.min(count, 360) * W / H))), rows = Math.ceil(Math.min(count, 360) / cols); n = Math.min(count, 360); var cw = W / cols, ch = H / rows, g = Math.max(2, Math.min(cw, ch) * .14);
+      for (i = 0; i < n; i++) pos.push({ x: (i % cols) * cw + g / 2, y: Math.floor(i / cols) * ch + g / 2, w: cw - g, h: ch - g, tile: 1 }); }
+    // the order things fill in: a seeded shuffle blended with the natural order, so it reads as a wave with some life (same every time)
+    var order = pos.map(function(_, j){ return { j: j, k: j / pos.length + (R() - .5) * .22 }; }).sort(function(a, b){ return a.k - b.k; }).map(function(e){ return e.j; }), rank = [];
+    order.forEach(function(j, r){ rank[j] = r; });
+    var els = pos.map(function(p, j){ var e = document.createElement('div'), rd = p.tile ? Math.min(p.w, p.h) * .22 : p.bar ? 4 : p.w;
+      e.style.cssText = 'position:absolute;left:' + p.x.toFixed(1) + 'px;' + (p.bar ? 'bottom:0;' : 'top:' + p.y.toFixed(1) + 'px;') + 'width:' + p.w.toFixed(1) + 'px;height:' + p.h.toFixed(1) + 'px;background:' + col + ';border-radius:' +
+        (p.pin ? '50% 50% 50% 0' : rd.toFixed(1) + 'px') + ';opacity:0;box-shadow:0 0 0 1px rgba(255,255,255,.14) inset,0 3px 8px rgba(0,0,0,.3);' + (p.bar ? 'transform-origin:50% 100%;' : '') + (p.pin ? 'rotate:-45deg;' : '');
+      box.appendChild(e); return e; });
+    host.appendChild(box);
+    function level(t){ return fill(P(t, t0, t0 + d)); }   // 0..1 of the fill
+    var cues = []; (function(){ for (var q = 1; q <= G; q++) { var lo = 0, hi = 1; for (var s = 0; s < 24; s++) { var m = (lo + hi) / 2; if (fill(m) < q / G) lo = m; else hi = m; }
+      cues.push({ t: t0 + d * hi, k: 'tick', g: .06 + .05 * q / G, p: q % 8 * 2 }); } })();
+    if (typeof KM !== 'undefined' && KM && KM.cue) cues.forEach(function(c){ KM.cue(c); });
+    function at(t){ return count * level(t); }
+    function draw(t){ var L = level(t) * n, v = Math.round(at(t));
+      box.style.opacity = P(t, t0 - .15, t0) .toFixed(3);
+      for (var j = 0; j < els.length; j++) { var k = cl(L - rank[j]) ; var kk = out3(k), p = pos[j];   // each thing lands over about one step of the fill
+        els[j].style.opacity = Math.min(1, kk * 1.6).toFixed(3);
+        els[j].style.transform = p.bar ? 'scaleY(' + (kk * (1 + .04 * Math.sin(k * Math.PI))).toFixed(4) + ')' : 'scale(' + (.4 + .6 * back(k, 2.2)).toFixed(3) + ')'; }
+      if (o.label) o.label.textContent = fmt(v) + unit; return v; }
+    return { draw: draw, cues: cues, el: box, at: at };
+  }
+  function keyword(el, words, o){ o = o || {}; var key = o.key == null ? words.length - 1 : o.key, t0 = o.t0 || 0, gap = o.gap == null ? .22 : o.gap, size = o.size || 44, maxW = o.maxW || 484,
+      scale = o.accent ? 1 : (o.scale || 2.2), ac = o.accent || null, ws = [], keyBox, i;
+    el.style.cssText += ';display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:' + (size * .28).toFixed(1) + 'px;max-width:' + maxW + 'px;line-height:1.05;font-size:' + size + 'px';
+    el.innerHTML = '';
+    words.forEach(function(w, j){ var s = document.createElement('span'); s.textContent = w; s.style.cssText = 'display:inline-block;white-space:nowrap;opacity:0;will-change:transform'; el.appendChild(s); ws.push(s); });
+    keyBox = ws[key];
+    // measure the key at its final look (size and style) and cut the scale so it fits the frame width with the margins
+    if (ac) { if (ac.weight) keyBox.style.fontWeight = ac.weight; if (ac.italic) keyBox.style.fontStyle = 'italic'; if (ac.color) keyBox.style.color = ac.color; }
+    keyBox.style.fontSize = (size * scale).toFixed(1) + 'px'; var w1 = keyBox.getBoundingClientRect().width;
+    if (w1 > maxW) { scale = Math.max(1, scale * maxW / w1); keyBox.style.fontSize = (size * scale).toFixed(1) + 'px'; }
+    var keyAt = o.keyAt == null ? t0 + key * gap : o.keyAt, rest = scale > 1 ? 1 / scale : 1;
+    function draw(t){ for (var j = 0; j < ws.length; j++) { var tj = j === key ? keyAt : t0 + j * gap, k = P(t, tj, tj + .2);
+        if (j !== key) { ws[j].style.opacity = out3(k).toFixed(3); ws[j].style.transform = 'translateY(' + ((1 - out3(k)) * 10).toFixed(2) + 'px)'; continue; }
+        var kk = P(t, tj, tj + .34), s = scale > 1 ? rest + (1 - rest) * back(kk, 2.4) : .86 + .14 * back(kk, 3);   // from the others' size up, one small overshoot, settles at 1
+        ws[j].style.opacity = out3(P(t, tj, tj + .12)).toFixed(3); ws[j].style.transform = 'translateY(' + ((1 - out3(kk)) * 8).toFixed(2) + 'px) scale(' + s.toFixed(4) + ')'; ws[j].style.transformOrigin = '50% 78%'; } }
+    return { draw: draw, scale: scale, width: keyBox.getBoundingClientRect().width };
+  }
+  function handoff(a, b, t, t0, o){ o = o || {}; var d = o.d || .5, k = inOut(P(t, t0, t0 + d)), bl = o.blur == null ? 9 : o.blur, dim = o.dim == null ? .5 : o.dim, focus = o.mode === 'focus',
+      sat = function(x){ return ' saturate(' + (1 + .08 * x).toFixed(3) + ')'; };   // saturation kept (a touch up while dim), never a grey fade
+    a.style.filter = 'blur(' + (bl * k).toFixed(2) + 'px) brightness(' + (1 - (1 - dim) * k).toFixed(3) + ')' + sat(k);
+    a.style.transform = 'scale(' + (1 - .03 * k).toFixed(4) + ')'; a.style.opacity = focus ? '1' : (1 - P(k, .55, 1)).toFixed(3);
+    var kb = 1 - k; b.style.filter = 'blur(' + (bl * kb).toFixed(2) + 'px) brightness(' + (1 - (1 - dim) * kb).toFixed(3) + ')' + sat(kb);
+    b.style.transform = 'translateY(' + (kb * 14).toFixed(2) + 'px) scale(' + (1 - .035 * kb).toFixed(4) + ')'; b.style.opacity = focus ? '1' : P(k, 0, .45).toFixed(3);
+    return k;
+  }
+  var api = { numberFill: numberFill, keyword: keyword, handoff: handoff };
+  if (typeof KM !== 'undefined' && KM) { KM.numberFill = numberFill; KM.keyword = keyword; KM.handoff = handoff; }
+  if (typeof KMAP !== 'undefined' && KMAP) { KMAP.numberFill = numberFill; KMAP.keyword = keyword; KMAP.handoff = handoff; }
+  return api;
+})();
+/*kitref:end*/
+(function(){
+  var $ = function(id){ return document.getElementById(id); }, st = $('st'), DUR = 7;
+  var nf = KREF.numberFill(st, { count: 1000, shape: 'grid', t0: .6, d: 2.4, color: '#7ee0b0', x: 50, y: 290, w: 440, h: 330, ticks: 12, label: $('num') });
+  var kw = KREF.keyword($('head'), 'One number fills a whole wall'.split(' '), { key: 1, t0: .2, gap: .22, size: 40, scale: 2.4 });
+  function seek(t){ nf.draw(t); kw.draw(t); KREF.handoff($('ca'), $('cb'), t, 4.6, { d: .5 }); }
+  window.seek = seek; window.DURATION = DUR; seek(0);
+})();
+</script>
+</body>
+</html>

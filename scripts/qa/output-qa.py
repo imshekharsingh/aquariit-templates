@@ -60,7 +60,7 @@ FB = {   # the owner-feedback.md lines each check guards
 T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=.95, stray_p=.5,
          sat_s=.6, sat_v=.4, sat_frac=.25, hue_jump=45, ring_sat=.12,
          edge_frac=.06, edge_dist=48, edge_secs=1.0,
-         ocr_conf=70, num_win=1.0, num_pre=2.0, num_step=.25, num_conf=80, num_h=.03, num_said=.5, sync_win=1.0, sync_pre=.5, sync_conf=50, sync_ratio=.8,
+         ocr_conf=70, num_win=1.0, num_pre=2.0, num_step=.25, num_conf=80, num_still=4.0, num_h=.03, num_said=.5, sync_win=1.0, sync_pre=.5, sync_conf=50, sync_ratio=.8,
          big_h=.08, big_edge=.03, big_ocr_h=.05, big_secs=.3, subs={'tech': [.66, .84], 'c3': [.66, .80], 'web': [.70, .90]},
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
          mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
@@ -694,7 +694,7 @@ def num_reads(mp4, tt, td, band):
         cy = (t + b) / 2
         if band[0] * 1920 <= cy <= band[1] * 1920: continue
         v, cx, h = int(m.group(1)), (l + r) / 2, b - t
-        if not any(v == g[0] and abs(cx - g[1]) < h and abs(cy - g[2]) < h / 2 for g in got): got.append((v, cx, cy, h))
+        if not any(v == g[0] and abs(cx - g[1]) < h and abs(cy - g[2]) < h / 2 for g in got): got.append((v, cx, cy, h, conf, r - l))
     return got
 
 
@@ -714,11 +714,25 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
         for tt in times: reads[tt] = num_reads(mp4, tt, td, band)
     tracks = []   # one per screen place: [cx, cy, h, [(t, value), ...]]
     for tt in times:
-        for v, cx, cy, h in reads[tt]:
+        for v, cx, cy, h, cf, wd in reads[tt]:
             tr = next((x for x in tracks if abs(cx - x[0]) < max(1.5 * x[2], 65) and abs(cy - x[1]) < x[2] / 2 and .6 < h / x[2] < 1.6), None)
-            if tr: tr[3].append((tt, v))
-            else: tracks.append([cx, cy, h, [(tt, v)]])
+            if tr: tr[3].append((tt, v)); tr[4].append((tt, v, round(cf), round(wd), round(h)))
+            else: tracks.append([cx, cy, h, [(tt, v)], [(tt, v, round(cf), round(wd), round(h))]])
     counters = [x for x in tracks if len({v for _, v in x[3]}) >= 2]
+    # 28 Nov 2026: a closed padlock icon was read as 6, 8, 6, 4, 6 on a STILL region (OCR noise). A place whose pixels do not change between the reads
+    # is no counter, whatever the OCR says; a region whose pixels change and whose value disagrees with the voice still fails.
+    if counters:
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as td2:
+            def still(x):
+                crops = []
+                for tt, v, cf, wd, hh in sorted(x[4]):
+                    p2 = os.path.join(td2, f's{tt:.2f}.png'); grab(mp4, tt, p2)
+                    im = Image.open(p2).convert('L'); cx, cy = x[0], x[1]; w2, h2 = max(r[3] for r in x[4]) * .6 + 10, x[2] * .6 + 10
+                    crops.append(np.asarray(im.crop((int(cx - w2), int(cy - h2), int(cx + w2), int(cy + h2))), float))
+                return len(crops) >= 2 and max(float(np.abs(c - crops[0]).mean()) for c in crops[1:]) < T['num_still']
+            moved = [x for x in counters if not still(x)]
+        counters = moved
     bad = []
     for v, ts in said:
         for x in counters:
@@ -732,6 +746,7 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
     for cx, cy, n, v, ts, tt in bad: first.setdefault((cx, cy, n, v, ts), tt)
     bad = [f'counter at ({cx:.0f}, {cy:.0f}) shows "{n}" from {tt:.1f} s while the voice says {v} at {ts:.1f} s' for (cx, cy, n, v, ts), tt in sorted(first.items(), key=lambda a: a[1])]
     nread = sum(len(r) for r in reads.values())
+    if bad: print('NUMBERS detail (t, value, conf, w, h):', [[x[4][:14]] for x in counters], flush=True)
     line('NUMBERS', 'FAIL' if bad else 'PASS', f'{len(said)} spoken numbers ({", ".join(str(v) for v, _ in said)}); {nread} large numbers read in {len(times)} frames, '
          f'{len(tracks)} places, {len(counters)} changing (counters); rolled past the voice: {"; ".join(bad[:6]) or "none"}')
 
