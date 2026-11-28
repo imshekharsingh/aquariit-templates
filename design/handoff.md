@@ -461,3 +461,4 @@ Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md
   its daily task is done by the main account when the owner says so.
 - Open items for context: "Add reference" Inbox section (design/todo.md P1); Wikimedia refuses many GitHub-runner downloads (HTTP 429),
   the Media workflow also uses Openverse and the Library of Congress.
+- 28 Nov, item 6 (small fix) PARTLY DONE, STOPPED for a decision: the board no longer shows Ready from a stage row against the journey (merged, tested). The Output QA NUMBERS check still fails showreel-tech-tag-relay (run 46117765710): the padlock place reads 6/8/6/4/6 and its crop is not pixel-static, so the still-region rule did not drop it. Needs the Inputs session: a reviewer-signed waiver for this one reel, or one more rule off today's critical path. App probe not run (tech Ready box stays empty until QA passes or is waived).
