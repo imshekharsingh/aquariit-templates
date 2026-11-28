@@ -14,6 +14,7 @@ Then reply "Ready" and at most 3 short lines: today's reels, what waits on the o
 ## How the owner wants to be talked to (from CLAUDE.md and recent days)
 - The answer in one line first, then numbered steps or short bullets. Plain words: no tool names, run numbers, branch names or check codes.
 - Anything that needs the owner goes last, as one action.
+- Say "reviewer", never "critic" (owner, 28 Nov 2026); the repo markers keep the old word.
 - DISCUSS, DON'T JUST FOLLOW: for each request say what will work, what will not and why, recommend, then the owner decides.
 - Never ask the owner for status you can read. Tell each stage of a reel without being asked.
 - Ask before anything costly (over about $5, a 3rd render, a new side job) with a plain cost estimate.

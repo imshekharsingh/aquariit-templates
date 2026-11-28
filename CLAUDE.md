@@ -78,6 +78,8 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
   (read the Instagram collect POSTED lines). Every message to the owner (chat, app, reports; owner, 24 Nov 2026): the answer in one line first,
   then numbered steps or short bullets, plain words with no tool names, run numbers, branch names or check codes, and anything that needs the
   owner last as one action. Tell the owner each stage of a reel without being asked (owner, 24 Nov 2026).
+- In everything the owner reads, the critic is called the "reviewer" (owner, 28 Nov 2026). Inside the repo the marker "CRITIC: READY", the critic tag and
+  design/critic.md keep their names (scripts and the probe read them).
 - Read workflow files before dispatching; most check out main, so merge before a run tests a branch. Any step done by hand twice becomes a script.
 
 ## Git and deploy
