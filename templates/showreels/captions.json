@@ -2487,7 +2487,7 @@
    "#contrast"
   ],
   "style": {
-   "lengthS": 21,
+   "lengthS": 17.4,
    "wordsPerS": 2,
    "shotChanges": 0,
    "hookType": "claim",
@@ -3318,7 +3318,7 @@
    "#gadgets"
   ],
   "style": {
-   "lengthS": 29.6,
+   "lengthS": 30.4,
    "wordsPerS": 2.6,
    "shotChanges": 8,
    "hookType": "question",

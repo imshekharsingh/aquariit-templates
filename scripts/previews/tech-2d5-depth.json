@@ -1,0 +1,20 @@
+{
+ "name": "showreel-pv-tech-2d5-depth",
+ "channel": "tech",
+ "seek": "scripts/previews/tech-2d5-depth.html",
+ "dur": 10,
+ "fps": 60,
+ "blur": 2,
+ "shutter": 0.4,
+ "width": 540,
+ "height": 960,
+ "vignette": false,
+ "grain": 2,
+ "cover": 8.6,
+ "voice": {
+  "text": "Tap your phone at the till. One: it sends a token, not your card number. Two: the terminal reads it. Three: your bank says yes.",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "note": "Study sample for the 2.5D map kit's depth pieces (task 22, 28 Nov 2026; scripts/explainer/kitmap.js, review/tech/kit-2d5-depth.md): the object moment, light, materials, contact shadows, shadow-first builds. Never posted: no captions.json entry. Rendered with Showreel 'seconds' 11 into R2 study/. At most 2 renders. Render 2 (the last): channel tech (render 1 was judged as web), the end no longer holds still (DEAD 9.2-11.0 s)."
+}

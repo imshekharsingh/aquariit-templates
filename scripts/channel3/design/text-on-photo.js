@@ -43,8 +43,8 @@
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ffc44d', '#ff7a45');
   // spoken sentences with breaths (rules-c3.md V1-V3); the before is the everyday draft: white words straight on a bright photo, no dimming, no backing (B1)
-  var TEXT = "This poster is hard to read. The photo is too busy. Turns out, words need calm behind them. First, dim the photo. Next, make the words bold. Then put the date on a band. Now it reads from across the street.";
-  var DUR = 19.6, BX = 70, BY = 396, BW = 400, V, PH, A = {}, CAM, CUR = [];
+  var TEXT = "This poster is hard to read. The photo is too busy. Turns out, words need calm behind them. First, dim the photo. Next, make the words bold. Then add a solid band. Now it reads, even from far away.";
+  var DUR = 17.4, BX = 70, BY = 396, BW = 400, V, PH, A = {}, CAM, CUR = [];
   // A: the words as a tool leaves them (white, regular weight); B: bold and larger, on the dimmed photo
   var TX = {
     t0: { A: { f: "500 36px 'Space Grotesk'", c: '#ffffff', y: 98, ls: '.02em' }, B: { f: "700 42px 'Space Grotesk'", c: '#ffffff', y: 94, ls: '.01em' } },
@@ -60,7 +60,7 @@
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
     A.hook = at('This') - .1; A.busy = at('busy'); A.turns = at('Turns'); A.calm = at('calm'); A.f1 = at('First'); A.dim = at('dim'); A.f2 = at('Next'); A.bold = at('bold'); A.f3 = at('Then'); A.band = at('band'); A.same = at('Now');
-    A.readable = at('street'); A.proof = A.readable + .8; A.e1 = A.proof + 1.2; A.e2 = A.e1 + .9; A.end = Math.min(DUR - .2, A.e2 + 1.5);   // the payoff word, the before/after proof, the ticks, the frame, a hold
+    A.readable = at('away'); A.proof = A.readable + .8; A.e1 = A.proof + 1.2; A.e2 = A.e1 + .9; A.end = Math.min(DUR - .2, A.e2 + 1.5);   // the payoff word, the before/after proof, the ticks, the frame, a hold
     window.COVER = .6;
     var S = DT.S; S.sting(0); [.35, .65].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4);
     S.drag(A.hook, .6, 120, 420); S.drag(A.hook + .6, .6, 420, 120); S.stamp(A.busy + .1, 270); S.tint(A.calm, 270);
@@ -87,9 +87,9 @@
     for (var i = 0; i < 4; i++) $('bm' + i).setAttribute('transform', 'rotate(' + (sw * (i % 2 ? -1 : 1) + Math.sin(t * 1.3 + i) * 4 * calm).toFixed(2) + ' ' + (67 + i * 90) + ' 0)');
     BOK.forEach(function(b){ b.e.setAttribute('opacity', (b.o * (.6 + .4 * Math.sin(t * 3.1 + b.ph) * calm + .4 * (1 - calm))).toFixed(3)); });
     var jp = Math.max(0, Math.sin(Math.PI * P(t, A.e2, A.e2 + .45))) + .7 * Math.max(0, Math.sin(Math.PI * P(t, A.e2 + .5, A.e2 + .95))); $('crowd').setAttribute('transform', 'translate(0,' + (-9 * jp).toFixed(2) + ')');   // the crowd jumps on the payoff
-    $('beams').style.opacity = (1 - .3 * k1 + .3 * P(t, A.e2, A.e2 + .5)).toFixed(3);
+    $('beams').style.opacity = (1 - .3 * k1 + .3 * P(t, A.same, A.same + .5)).toFixed(3);
     $('ph').style.filter = 'saturate(1)';
-    var dk = $('dk'); dk.style.opacity = (.85 * k1).toFixed(3); dk.style.transform = 'scaleY(' + (.2 + .8 * k1).toFixed(3) + ')';
+    var dk = $('dk'); dk.style.opacity = (.7 * k1).toFixed(3); dk.style.transform = 'scaleY(' + (.2 + .8 * k1).toFixed(3) + ')';
     $('bnd').style.transform = 'scaleX(' + cl(k2).toFixed(4) + ')';
     IDS.forEach(function(id, i){ var el = $(id), a = TX[id].A, b = TX[id].B, t0f = A.scan + .1 + i * .2, kf = cl((t - t0f) / .45);
       font(el, kf >= .5 ? b : a); DT.flipChars(el, t, t0f, .45, a, b);
@@ -102,7 +102,7 @@
     DT.hook(t, '<i>Hard</i> <i>to</i> <em><i>read.</i></em>', A.hook);
     // frame 0: the problems ringed (the words on the glare, the small print with nothing behind it)
     var ro = 1 - P(t, A.turns - .3, A.turns);
-    [[.35, { x: BX + 20, y: BY + 66, w: 360, h: 66, r: 14 }, 'WHITE ON GLARE', BX + 8, BY + 334], [.65, { x: BX + 30, y: BY + 150, w: 340, h: 94, r: 14 }, 'NOTHING BEHIND IT', BX + 190, BY + 334]].forEach(function(r, i){
+    [[.35, { x: BX + 20, y: BY + 66, w: 360, h: 66, r: 14 }, 'WHITE ON GLARE', BX + 8, BY + 290], [.65, { x: BX + 30, y: BY + 150, w: 340, h: 94, r: 14 }, 'NOTHING BEHIND IT', BX + 190, BY + 334]].forEach(function(r, i){
       DT.box('ring' + i, r[1], ro, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], ro, 'r sm'); });
     DT.chip('busy', 'TOO <b>BUSY</b>', 300, 396, P(t, A.busy - .1, A.busy + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
     DT.chip('calm', 'WORDS NEED <b>CALM</b>', 100, 396, P(t, A.calm - .1, A.calm + .2) - P(t, A.f1 - .2, A.f1 + .1));
@@ -127,9 +127,9 @@
     var cp = DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.same, end: 1, sym: '✓', label: 'READABLE' }]);
     DT.title(t, [{ t: A.hook, html: 'White on a <em>busy photo</em>' }, { t: A.f1, html: 'Fix 1 · <em>dim the photo</em>' }, { t: A.f2, html: 'Fix 2 · <em>bold words</em>' }, { t: A.f3, html: 'Fix 3 · <em>a solid band</em>' }, { t: A.same, html: 'Same photo. <em>Readable.</em>' }]);
-    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .8), function(w){ return /^(read|busy|calm|dim|photo|bold|band|street)/i.test(w) ? 'var(--amb)' : null; });
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .8), function(w){ return /^(read|busy|calm|dim|photo|bold|band|away)/i.test(w) ? 'var(--amb)' : null; });
   }
-  function cursorKeys(){ CUR = [[A.f1 + .1, 420, 700, 0], [A.dim - .05, 270, 740, 1], [A.dim + .7, 270, 560, 1], [A.d1 + .2, 300, 560, 0]]; }
+  function cursorKeys(){ CUR = [[A.f1 + .1, 420, 700, 0], [A.dim - .05, 270, 740, 1], [A.dim + .7, 270, 700, 1], [A.d1 + .2, 300, 700, 0]]; }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); cursorKeys(); } };
   window.seek = seek; window.DURATION = DUR; window.__A = A;
   Promise.all(["500 36px 'Space Grotesk'", "700 42px 'Space Grotesk'", "900 31px 'Unbounded'"].map(function(f){ return document.fonts.load(f); }))

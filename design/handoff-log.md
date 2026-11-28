@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+
+
+## 2026-11-28 · claude/inputs-session-brief · owner chat: an "Inputs" session on the other account
+- Owner will chat with the other account in one "Inputs" session for the rest of the week; design/inputs-brief.md gives it the full context (read order, reply style, 28 Nov state). handoff.md GO NOW item 5. The main account only coordinates its scheduled tasks.
+## 2026-11-28 · claude/handoff-takes-all-till-tue · owner chat: the other account does everything 29 Nov - 2 Dec
+- Owner: all tasks until Tuesday go to the handoff account, daily reels included; this account keeps only the hourly probe (checks and reports) and the owner chat. design/handoff.md "GO NOW 28 Nov", CLAUDE.md Sessions line. Daily studio run and Turns Out daily tasks switched off; the owner chat turns them back on Wed 3 Dec.
+- Today (28 Nov): all three reels needed a 3rd render (owner yes ~09:10); they finish on this account.
 ## 2026-11-27 22:53 IST · claude/tabs-order · other account: task 20, channel tabs in posting order, the tab follows the workflow
 - Done: templates/index.html chanOrder() orders the tabs by today's next reel to post (postAt, else the slot), posted channels last; only workflow entry points set the channel (board Open to post / Open reel, reel link or reminder, tab tap, All reels = the channel due next); the saved last tab and the Growth picker no longer switch it (Growth shows its own pick). scripts/qa/app-tabs-test.mjs in npm run check.
 - Left: App probe PASS on the live app (Progress).
@@ -1346,3 +1353,38 @@ Format (at most 6 lines):
 - Left: render 2, Output QA, independent critic (opus), post 20:30 IST.
 - For the other account: the Pipeline merge job fails when main moved under a claude/ branch (captions.json add/add): merge origin/main into the branch keeping both entries, then push.
 
+## 2026-11-28 · claude/critic-tech-tag-relay-r2 · Critic, showreel-tech-tag-relay render 2: NOT READY (last words clipped)
+- Done: independent critic on the real MP4 of render 2; item 18 CRITIC: NOT READY: the payoff line "and only you can read where" is never finished on screen (caption fades at 29.1-29.3 s under the voice) and "where" is cut by the 29.6 s end; everything else passes (frame 0, title, captions, loop picture, facts, sound). PREMIUM 7.5 / 7.0 / 7.5.
+- Left: fix 1 (reel 30.4 s, the move home after the voice) needs render 3, which needs the owner's yes with its cost; then a critic pass on render 3.
+## 2026-11-28 · claude/tech-28nov-r3 · Tech showreel-tech-tag-relay: render 2 passed Output QA, critic NOT READY (last caption cut), render 3 fix ready, waiting for the owner's yes
+- Done: render 2 (run 46089101336) passed Output QA (PACE, LOUD -14.0, 32 of 32 cues, FLICKER at 60 fps); independent critic (opus) NOT READY 7.5 / 7.0 / 7.5: the payoff caption "and only you can read where" fades while the voice is still talking and the loop restarts mid-word (the real voice ends about 1 s later than the simulated one). Fix (timing only): reel 30.4 s, move home at 29.8 s, last caption lit until the voice ends, lit links fade back for the loop; FLICKER PASS at 60 fps locally, preflight-all PASS.
+- Left: the owner's yes for render 3 (asked of the owner chat, about $12), render 3, Output QA, a fresh critic, post 20:30 IST.
+- For the other account: plan a payoff hold from the real voice end, not the simulated one (an Output QA voice-end line would catch it).
+
+## 2026-11-28 · claude/c3-text-on-photo-28nov-r2 · Turns Out text-on-photo: render 1 failed Output QA (PACE, ELEMENTS), fixed for render 2
+- Done: render 1 (run 46087823761) failed PACE (two sentences of short words read at 6.4 and 4.7 words/s) and ELEMENTS (3.6 s with nothing new at the end). Sentences 6 and 7 rewritten ("Then add a solid band." / "Now it reads, even from far away."), reel cut from 19.6 s to 17.4 s. preflight-all PASS 757435d0, npm run check passes.
+- Left: merge, render 2 (the last without the owner's yes), Output QA, critic.
+## 2026-11-28 · claude/kit-2d5-depth · 2.5D map kit with 3D's depth (task 22)
+- Done: comparison page, scripts/explainer/kitmap.js (KMAP.card / build / object), kit-inline entry, study sample scripts/previews/tech-2d5-depth; local FLICKER pass.
+- Left: render 1, Output QA, 2.5D depth ready for critic.
+
+## 2026-11-28 · claude/critic-c3-text-on-photo-28nov · Critic, showreel-c3-text-on-photo render 2: NOT READY (frame-0 tags overlap, flat after)
+- Done: independent critic on the real MP4 of render 2 (run 46093523921, 17.4 s, -14.0 LUFS); gold sheet, contact sheet, 24 phone-size frames, full-size crops. Fixes land on their words, the before is honest, voice natural, BEFORE/AFTER tagged and held. NOT READY: the "WHITE ON GLARE" and "NOTHING BEHIND IT" tags overlap 0-4.5 s (frame 0 and cover); the after (12-17.4 s) is muddy next to gold (GOLD: below). STOP 7, REWATCH 7, PREMIUM 7.5 / 6 / 6.5.
+- Left: builder applies the EXACT FIX in the review file (tag moved up a row, dark layer .7 with beams back on "Now", cursor off the small print), preflight-all, render 3 needs the owner's yes with its cost, Output QA, fresh critic, post today.
+## 2026-11-28 · claude/c3-text-on-photo-28nov-r3 · Turns Out text-on-photo: critic NOT READY on render 2, fix for render 3 prepared
+- Done: render 2 (run 46093523921) passed Output QA; the critic (opus) wrote NOT READY (PREMIUM 7.5 / 6 / 6.5: the two frame-0 labels, a flat finish next to gold). Fix applied in the scene: first label one row up, dark layer .7, beams back on "Now", cursor off the small print. preflight-all PASS 6fbe4850. Measured on the scene: the two labels had a gap of about 20 px, so "overlap" was too strong a word, the stacked rows make it certain anyway.
+- Left: render 3 needs the owner's yes with its cost (asked in the Owner chat); then Output QA and a fresh critic. Reel stays hidden and on hold until READY.
+## 2026-11-28 · claude/kit-2d5-depth-r2 · 2.5D depth study: render 1 fixes (task 22)
+- Done: channel tech, payoff end (DEAD), phone move tied to step one, flat line caps; local FLICKER pass.
+- Left: render 2 (the last), Output QA, ready for critic.
+## 2026-11-28 · claude/t22-ready · 2.5D depth study ready for critic (task 22)
+- Done: render 2 Output QA (FLICKER and DEAD pass); review file for the critic.
+- Left: the main account's critic.
+
+## 2026-11-28 · claude/critic-kit-2d5-depth · 2.5D depth study: critic NOT READY on render 2 (task 22)
+- Done: critic on the real MP4 (PREMIUM 6.5 / 6.0 / 6.5): lone dark shadow blobs and line ticks at 4.55 s and 6.95 s, frame 0 title only, lower half empty; builders keep the 27 Nov kit; exact fix for kitmap.js in review/tech/showreel-pv-tech-2d5-depth.md.
+- Left: the other account applies the fix to kitmap.js; no third render without the owner's yes.
+
+## 2026-11-28 · claude/critic-web-28nov-popover-r3 · Critic, showreel-50-popover render 3: READY
+- Done: independent critic on the real MP4 of render 3 (run 46106486981, 15.0 s, -14.0 LUFS); contact sheet, gold side-by-side, 60 fps steps round 3.43 s and the re-open. All five render 1 fixes are on screen and render 2's grey is gone; the 3.43 s FLICKER warn is the subtitle page turning (intended). GOLD matches, STOP 7, REWATCH 7, PREMIUM 7.5 / 8 / 7.5.
+- Left: the builder / owner chat moves it to Ready to post for the 19:00 IST slot; next web reel applies the HIGH upgrade (one wide hero card after the fix).
