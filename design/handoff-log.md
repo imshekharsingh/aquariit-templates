@@ -1361,3 +1361,23 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/c3-text-on-photo-28nov-r2 · Turns Out text-on-photo: render 1 failed Output QA (PACE, ELEMENTS), fixed for render 2
 - Done: render 1 (run 46087823761) failed PACE (two sentences of short words read at 6.4 and 4.7 words/s) and ELEMENTS (3.6 s with nothing new at the end). Sentences 6 and 7 rewritten ("Then add a solid band." / "Now it reads, even from far away."), reel cut from 19.6 s to 17.4 s. preflight-all PASS 757435d0, npm run check passes.
 - Left: merge, render 2 (the last without the owner's yes), Output QA, critic.
+## 2026-11-28 · claude/kit-2d5-depth · 2.5D map kit with 3D's depth (task 22)
+- Done: comparison page, scripts/explainer/kitmap.js (KMAP.card / build / object), kit-inline entry, study sample scripts/previews/tech-2d5-depth; local FLICKER pass.
+- Left: render 1, Output QA, 2.5D depth ready for critic.
+
+## 2026-11-28 · claude/critic-c3-text-on-photo-28nov · Critic, showreel-c3-text-on-photo render 2: NOT READY (frame-0 tags overlap, flat after)
+- Done: independent critic on the real MP4 of render 2 (run 46093523921, 17.4 s, -14.0 LUFS); gold sheet, contact sheet, 24 phone-size frames, full-size crops. Fixes land on their words, the before is honest, voice natural, BEFORE/AFTER tagged and held. NOT READY: the "WHITE ON GLARE" and "NOTHING BEHIND IT" tags overlap 0-4.5 s (frame 0 and cover); the after (12-17.4 s) is muddy next to gold (GOLD: below). STOP 7, REWATCH 7, PREMIUM 7.5 / 6 / 6.5.
+- Left: builder applies the EXACT FIX in the review file (tag moved up a row, dark layer .7 with beams back on "Now", cursor off the small print), preflight-all, render 3 needs the owner's yes with its cost, Output QA, fresh critic, post today.
+## 2026-11-28 · claude/c3-text-on-photo-28nov-r3 · Turns Out text-on-photo: critic NOT READY on render 2, fix for render 3 prepared
+- Done: render 2 (run 46093523921) passed Output QA; the critic (opus) wrote NOT READY (PREMIUM 7.5 / 6 / 6.5: the two frame-0 labels, a flat finish next to gold). Fix applied in the scene: first label one row up, dark layer .7, beams back on "Now", cursor off the small print. preflight-all PASS 6fbe4850. Measured on the scene: the two labels had a gap of about 20 px, so "overlap" was too strong a word, the stacked rows make it certain anyway.
+- Left: render 3 needs the owner's yes with its cost (asked in the Owner chat); then Output QA and a fresh critic. Reel stays hidden and on hold until READY.
+## 2026-11-28 · claude/kit-2d5-depth-r2 · 2.5D depth study: render 1 fixes (task 22)
+- Done: channel tech, payoff end (DEAD), phone move tied to step one, flat line caps; local FLICKER pass.
+- Left: render 2 (the last), Output QA, ready for critic.
+## 2026-11-28 · claude/t22-ready · 2.5D depth study ready for critic (task 22)
+- Done: render 2 Output QA (FLICKER and DEAD pass); review file for the critic.
+- Left: the main account's critic.
+
+## 2026-11-28 · claude/critic-kit-2d5-depth · 2.5D depth study: critic NOT READY on render 2 (task 22)
+- Done: critic on the real MP4 (PREMIUM 6.5 / 6.0 / 6.5): lone dark shadow blobs and line ticks at 4.55 s and 6.95 s, frame 0 title only, lower half empty; builders keep the 27 Nov kit; exact fix for kitmap.js in review/tech/showreel-pv-tech-2d5-depth.md.
+- Left: the other account applies the fix to kitmap.js; no third render without the owner's yes.
