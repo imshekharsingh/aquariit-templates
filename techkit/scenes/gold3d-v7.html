@@ -229,7 +229,7 @@ const ACT = (() => {
         x.fillStyle = side ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.6)'; rrect(x, bx + 18, top + 14, bw - 36, 8, 4); x.fill(); rrect(x, bx + 18, top + 28, (bw - 36) * .6, 8, 4); x.fill(); x.restore(); } }
     for (let i = 0; i < 26; i++) { const k = prog(t, tB(i) - .6, tB(i) - .02); if (k > 0 && k < 1) { const a = Math.sin(Math.PI * k); x.fillStyle = `rgba(255,255,255,${(.8 * a).toFixed(2)})`; for (let d = 0; d < 3; d++) { x.beginPath(); x.arc(52 + d * 22, h - 34 - 3 * Math.sin(t * 9 + d * 1.3), 7, 0, 7); x.fill(); } } }
     x.restore(); };
-  const EVM = [2.6, 9.9, 15.7, 19.7];
+  const EVM = [2.6, 9.9, 15.7, 19.7, 21.5];
   const drawMail = (x, w, h, t) => {
     x.clearRect(0, 0, w, h); x.save(); rrect(x, 0, 0, w, h, 26); x.clip(); x.fillStyle = 'rgba(30,22,6,.96)'; x.fillRect(0, 0, w, h);
     x.fillStyle = 'rgba(255,182,46,.92)'; x.fillRect(0, 0, w, 34);
@@ -260,9 +260,10 @@ const ACT = (() => {
     x.fillStyle = color; x.font = `900 ${text.length > 8 ? 92 : 116}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(text, 280, 116); cv.tx.needsUpdate = true;
     const m = plane(w, w * 220 / 560, cv, 6), shock = new THREE.Mesh(new THREE.RingGeometry(.9, 1.0, 48), new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(1.5), toneMapped: false, transparent: true, depthWrite: false, opacity: 0 })); shock.renderOrder = 5;
     const g = new THREE.Group(); g.add(m); g.position.set(...at); (parent || S.scene).add(g); S.scene.add(shock); m.material.opacity = 0; return { g, m, shock, t0, t1, rot, w }; };
-  const STAMPS = [mkStamp('PAID', '#2fd27a', 1.0, -.1, [0, .72, .24], 6.8, 8.6, tools[0]), mkStamp('24 CABLES', '#ff5a5a', 3.4, -.07, [1.5, 1.7, -.9], CASC[1] + .05, WORST + 1.4), mkStamp('11 CABLES', '#2fd27a', 2.6, .06, [0, HUB_P.y + 1.35, HUB_P.z + .2], HUBW[1] + .1, NEW_IN - .25),
+  const STAMPS = [mkStamp('$4', '#2fd27a', .8, -.05, [0, .72, .24], 5.5, 6.2, tools[0]), mkStamp('$9', '#2fd27a', .8, .05, [0, .72, .24], 6.2, 6.9, tools[0]), mkStamp('PAID', '#2fd27a', 1.0, -.1, [0, .72, .24], 6.9, 8.6, tools[0]), mkStamp('24 CABLES', '#ff5a5a', 3.4, -.07, [1.5, 1.7, -.9], CASC[1] + .05, WORST + 1.4), mkStamp('11 CABLES', '#2fd27a', 2.6, .06, [0, HUB_P.y + 1.35, HUB_P.z + .2], HUBW[1] + .1, NEW_IN - .25),
     mkStamp('+1 CABLE', '#2fd27a', 1.5, -.08, [NEW_P[0], NEW_P[1] + 1.2, NEW_P[2] + .3], PAY + .15, PAY + 2.0),
-    mkStamp('SAVED', '#22d3ee', .95, -.06, [0, 1.95, .3], 1.55, 2.5, apps[0]), mkStamp('3 NEW', '#ff4f8a', .95, .06, [0, 1.95, .3], 2.05, 3.0, apps[1]), mkStamp('+1 MAIL', '#ffb62e', 1.0, -.05, [0, 1.95, .3], 2.65, 3.6, apps[2])];
+    mkStamp('SAVED', '#22d3ee', .95, -.06, [0, 1.95, .3], 1.55, 2.5, apps[0]), mkStamp('3 NEW', '#ff4f8a', .95, .06, [0, 1.95, .3], 2.05, 3.0, apps[1]), mkStamp('+1 MAIL', '#ffb62e', 1.0, -.05, [0, 1.95, .3], 2.65, 3.6, apps[2]),
+    mkStamp('SYNCED', '#22d3ee', .95, -.06, [0, 1.95, .3], 20.9, 21.6, apps[0]), mkStamp('3 NEW', '#ff4f8a', .95, .06, [0, 1.95, .3], 21.6, 22.3, apps[1]), mkStamp('+1 MAIL', '#ffb62e', 1.0, -.05, [0, 1.95, .3], 22.25, 22.72, apps[2])];
   const stampUpdate = (t) => STAMPS.forEach((s) => { const u = prog(t, s.t0, s.t0 + .24), out = sm(prog(t, s.t1 - .3, s.t1)), vis = u > 0 && out < 1; s.g.visible = vis; s.shock.visible = vis;
     if (!vis) return; const sc = 1.9 - .9 * eout(u); s.g.scale.setScalar(sc); s.m.material.opacity = sm(u * 3) * (1 - out) * (s.g.parent !== S.scene ? dimAt(t, s.g.parent) : 1);
     if (s.g.parent === S.scene) { s.g.quaternion.copy(S.cam.quaternion); s.g.rotateZ(s.rot); } else { s.g.rotation.z = s.rot; }
@@ -279,13 +280,13 @@ const ACT = (() => {
   const STEP_T = (j) => CASC[0] + .6 + Math.floor(ORDER.indexOf(j) / 2) * .42;   // the log fills one pair of tools at a time (0.42 s apart): discrete beats
   const ALL = tangle.map((q) => ({ k: q.k, i: q.i, j: q.j, t: q.k === 0 ? logT(0) : STEP_T(q.j) })).sort((a, b) => a.t - b.t || a.k - b.k);
   const logUpdate = (t) => {
-    const sec = t >= PAY - .3 ? 3 : t >= COLLAPSE[0] - .2 ? 2 : 1, winA = sm(prog(t, CASC[0] + .1, CASC[0] + .5)) * (1 - sm(prog(t, HUB_IN - .55, HUB_IN - .2))),
+    const sec = t >= PAY - .3 ? 3 : t >= COLLAPSE[0] - .2 ? 2 : 1, winA = sm(prog(t, 8.45, 8.85)) * (1 - sm(prog(t, HUB_IN - .55, HUB_IN - .2))),
       winB = sm(prog(t, COLLAPSE[0] - .2, COLLAPSE[0] + .15)) * (1 - sm(prog(t, NEW_IN - .5, NEW_IN - .15))), winC = sm(prog(t, PAY - .3, PAY)) * (1 - sm(prog(t, TOTAL - 2.6, TOTAL - 2.3)));
     const a = Math.max(winA, winB, winC); logEl.style.opacity = a.toFixed(3); logEl.style.transform = `translateY(${((1 - a) * 40).toFixed(1)}px)`;
     logEl.style.left = (sec === 3 ? 26 : 736) + 'px'; logEl.style.top = (sec === 3 ? 760 : 640) + 'px';
     if (a < .01) return;
     let n = 0; const done = ALL.filter((r) => t >= r.t); n = done.length;
-    if (sec === 1) { pipEls.forEach((e, p) => { const q = ALL[p], on = q && t >= q.t; e.style.background = on ? APPC[q.i] : 'rgba(255,255,255,.1)'; e.style.transform = `scale(${on ? (1 + .5 * pulse(t, q.t + .06, .12)).toFixed(3) : 1})`; }); hEl.textContent = 'PLUGS'; cEl.textContent = n + '/24';
+    if (sec === 1) { pipEls.forEach((e, p) => { const q = ALL[p], on = q && t >= q.t; e.style.background = on ? APPC[q.i] : 'rgba(255,255,255,.1)'; e.style.transform = `scale(${on ? (1 + .5 * pulse(t, q.t + .06, .12) + (p === 0 ? .9 * (pulse(t, 8.75, .12) + pulse(t, 9.15, .12)) : 0)).toFixed(3) : 1})`; }); hEl.textContent = 'PLUGS'; cEl.textContent = n + '/24';
       const seen = [], uniq = []; for (const r of done) if (!seen.includes(r.j)) { seen.push(r.j); uniq.push(r); } const last = uniq.slice(-4).reverse();
       rowEls.forEach((e, r) => { const q = last[r], age = q ? t - (q.k === 0 ? logT(0) : STEP_T(q.j)) : 9; e.style.opacity = q ? (1 - r * .2).toFixed(2) : 0; e.style.background = `rgba(91,226,154,${(.34 * (1 - sm(prog(age, 0, .4)))).toFixed(3)})`; e.style.borderRadius = '10px'; e.style.padding = '0 8px';
         if (q) e.innerHTML = `${dotHtml('#e6e9f1')}<span>→ ${TOOLS[q.j][0]}</span><span style="margin-left:auto;color:#5be29a">✓ ✓ ✓</span>`; }); }
