@@ -8,6 +8,8 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-28 · claude/tech-pace-feedback · other account (Inputs): owner feedback on today's tech reel
+- design/owner-feedback.md 28 Nov line: slow transitions, needless waits, colour like the last tech reel. Tonight's reel posts as is (owner); tomorrow's tech build (this account) applies it.
 ## 2026-11-28 · claude/critic-popover-focus-2 · main account: reviewer verdict on the web focus test
 - Real MP4 vs the original: READY (nothing broken) but KEEP ORIGINAL at 19:00: the green breakout lands ~1 s before "popover" and BEFORE's menu is closed as the light leaves it. Fix for a next version in review/web/showreel-50-popover-focus.md.
 ## 2026-11-28 · claude/ref-process-rules · other account (Inputs): reference study rules

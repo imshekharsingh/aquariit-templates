@@ -6,6 +6,7 @@ owner catches something new, the same day.
 Each line also becomes an automated Output QA check the same day (scripts/qa/output-qa.py, run on GitHub on the final MP4 after every render;
 owner, 12 Nov 2026): a reel whose Output QA fails is NOT READY. A line no script can measure says so and stays a critic question.
 
+- 28 Nov: tech (showreel-tech-tag-relay) "the transition feels slowed ... a wait that seems unnecessary as we move forward ... color grading seems like the previous reel, I don't find any difference". From the next tech reel: moves 0.3-0.4 s with a 0.4-0.5 s settle only where a word or number must be read; nothing idle over 0.5 s; each reel gets its own colour world, so frame 0 next to the last 3 tech reels looks new at a glance. Output QA DEAD / action-count gaps catch the waits; colour sameness stays a reviewer question.
 - 27 Nov: 2.5D elements just appeared. Elements come alive from their shadow in two tiers (owner chose): main elements shadow first, then draw on and settle; small lines and labels a quiet trace or fade with their shadow; everything breathes after; all through the reel (design/direction.md "2.5D map reels" note 7). Critic question; Output QA FLICKER catches the full-size pop-ins.
 - 5 Nov: a tech term said wrong ("Wi-Fi" read as two words). Listen for every technical word.
 - 7 Nov: a reel barely moved (one small phone still for 18 s). Does something change every 1.5-2 s?
