@@ -87,9 +87,9 @@
     for (var i = 0; i < 4; i++) $('bm' + i).setAttribute('transform', 'rotate(' + (sw * (i % 2 ? -1 : 1) + Math.sin(t * 1.3 + i) * 4 * calm).toFixed(2) + ' ' + (67 + i * 90) + ' 0)');
     BOK.forEach(function(b){ b.e.setAttribute('opacity', (b.o * (.6 + .4 * Math.sin(t * 3.1 + b.ph) * calm + .4 * (1 - calm))).toFixed(3)); });
     var jp = Math.max(0, Math.sin(Math.PI * P(t, A.e2, A.e2 + .45))) + .7 * Math.max(0, Math.sin(Math.PI * P(t, A.e2 + .5, A.e2 + .95))); $('crowd').setAttribute('transform', 'translate(0,' + (-9 * jp).toFixed(2) + ')');   // the crowd jumps on the payoff
-    $('beams').style.opacity = (1 - .3 * k1 + .3 * P(t, A.e2, A.e2 + .5)).toFixed(3);
+    $('beams').style.opacity = (1 - .3 * k1 + .3 * P(t, A.same, A.same + .5)).toFixed(3);
     $('ph').style.filter = 'saturate(1)';
-    var dk = $('dk'); dk.style.opacity = (.85 * k1).toFixed(3); dk.style.transform = 'scaleY(' + (.2 + .8 * k1).toFixed(3) + ')';
+    var dk = $('dk'); dk.style.opacity = (.7 * k1).toFixed(3); dk.style.transform = 'scaleY(' + (.2 + .8 * k1).toFixed(3) + ')';
     $('bnd').style.transform = 'scaleX(' + cl(k2).toFixed(4) + ')';
     IDS.forEach(function(id, i){ var el = $(id), a = TX[id].A, b = TX[id].B, t0f = A.scan + .1 + i * .2, kf = cl((t - t0f) / .45);
       font(el, kf >= .5 ? b : a); DT.flipChars(el, t, t0f, .45, a, b);
@@ -102,7 +102,7 @@
     DT.hook(t, '<i>Hard</i> <i>to</i> <em><i>read.</i></em>', A.hook);
     // frame 0: the problems ringed (the words on the glare, the small print with nothing behind it)
     var ro = 1 - P(t, A.turns - .3, A.turns);
-    [[.35, { x: BX + 20, y: BY + 66, w: 360, h: 66, r: 14 }, 'WHITE ON GLARE', BX + 8, BY + 334], [.65, { x: BX + 30, y: BY + 150, w: 340, h: 94, r: 14 }, 'NOTHING BEHIND IT', BX + 190, BY + 334]].forEach(function(r, i){
+    [[.35, { x: BX + 20, y: BY + 66, w: 360, h: 66, r: 14 }, 'WHITE ON GLARE', BX + 8, BY + 290], [.65, { x: BX + 30, y: BY + 150, w: 340, h: 94, r: 14 }, 'NOTHING BEHIND IT', BX + 190, BY + 334]].forEach(function(r, i){
       DT.box('ring' + i, r[1], ro, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], ro, 'r sm'); });
     DT.chip('busy', 'TOO <b>BUSY</b>', 300, 396, P(t, A.busy - .1, A.busy + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
     DT.chip('calm', 'WORDS NEED <b>CALM</b>', 100, 396, P(t, A.calm - .1, A.calm + .2) - P(t, A.f1 - .2, A.f1 + .1));
@@ -129,7 +129,7 @@
     DT.title(t, [{ t: A.hook, html: 'White on a <em>busy photo</em>' }, { t: A.f1, html: 'Fix 1 · <em>dim the photo</em>' }, { t: A.f2, html: 'Fix 2 · <em>bold words</em>' }, { t: A.f3, html: 'Fix 3 · <em>a solid band</em>' }, { t: A.same, html: 'Same photo. <em>Readable.</em>' }]);
     KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .8), function(w){ return /^(read|busy|calm|dim|photo|bold|band|away)/i.test(w) ? 'var(--amb)' : null; });
   }
-  function cursorKeys(){ CUR = [[A.f1 + .1, 420, 700, 0], [A.dim - .05, 270, 740, 1], [A.dim + .7, 270, 560, 1], [A.d1 + .2, 300, 560, 0]]; }
+  function cursorKeys(){ CUR = [[A.f1 + .1, 420, 700, 0], [A.dim - .05, 270, 740, 1], [A.dim + .7, 270, 700, 1], [A.d1 + .2, 300, 700, 0]]; }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); cursorKeys(); } };
   window.seek = seek; window.DURATION = DUR; window.__A = A;
   Promise.all(["500 36px 'Space Grotesk'", "700 42px 'Space Grotesk'", "900 31px 'Unbounded'"].map(function(f){ return document.fonts.load(f); }))
