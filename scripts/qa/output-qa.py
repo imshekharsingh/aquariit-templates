@@ -694,7 +694,7 @@ def num_reads(mp4, tt, td, band):
         cy = (t + b) / 2
         if band[0] * 1920 <= cy <= band[1] * 1920: continue
         v, cx, h = int(m.group(1)), (l + r) / 2, b - t
-        if not any(v == g[0] and abs(cx - g[1]) < h and abs(cy - g[2]) < h / 2 for g in got): got.append((v, cx, cy, h))
+        if not any(v == g[0] and abs(cx - g[1]) < h and abs(cy - g[2]) < h / 2 for g in got): got.append((v, cx, cy, h, conf, r - l))
     return got
 
 
@@ -714,10 +714,10 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
         for tt in times: reads[tt] = num_reads(mp4, tt, td, band)
     tracks = []   # one per screen place: [cx, cy, h, [(t, value), ...]]
     for tt in times:
-        for v, cx, cy, h in reads[tt]:
+        for v, cx, cy, h, cf, wd in reads[tt]:
             tr = next((x for x in tracks if abs(cx - x[0]) < max(1.5 * x[2], 65) and abs(cy - x[1]) < x[2] / 2 and .6 < h / x[2] < 1.6), None)
-            if tr: tr[3].append((tt, v))
-            else: tracks.append([cx, cy, h, [(tt, v)]])
+            if tr: tr[3].append((tt, v)); tr[4].append((tt, v, round(cf), round(wd), round(h)))
+            else: tracks.append([cx, cy, h, [(tt, v)], [(tt, v, round(cf), round(wd), round(h))]])
     counters = [x for x in tracks if len({v for _, v in x[3]}) >= 2]
     bad = []
     for v, ts in said:
@@ -732,6 +732,7 @@ def numbers_check(mp4, text, heard, band=(.66, .84)):
     for cx, cy, n, v, ts, tt in bad: first.setdefault((cx, cy, n, v, ts), tt)
     bad = [f'counter at ({cx:.0f}, {cy:.0f}) shows "{n}" from {tt:.1f} s while the voice says {v} at {ts:.1f} s' for (cx, cy, n, v, ts), tt in sorted(first.items(), key=lambda a: a[1])]
     nread = sum(len(r) for r in reads.values())
+    if bad: print('NUMBERS detail (t, value, conf, w, h):', [[x[4][:14]] for x in counters], flush=True)
     line('NUMBERS', 'FAIL' if bad else 'PASS', f'{len(said)} spoken numbers ({", ".join(str(v) for v, _ in said)}); {nread} large numbers read in {len(times)} frames, '
          f'{len(tracks)} places, {len(counters)} changing (counters); rolled past the voice: {"; ".join(bad[:6]) or "none"}')
 
