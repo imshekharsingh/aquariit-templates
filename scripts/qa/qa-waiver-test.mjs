@@ -8,6 +8,7 @@ const W = waiversOf('x\nNUMBERS WAIVER (critic, 28 Nov 2026): not a number.\nHUE
 ok('waiversOf reads critic waivers only', W.length === 1 && W[0] === 'NUMBERS');
 const rv = { waivers: W }, num = 'NUMBERS: counter at (608, 978) shows "6"', hue = 'HUE: too close';
 ok('all failing checks waived = done', qaStage(render, run([num]), rv, rStage).s === 'done');
+ok('the real annotation form "- NUMBERS: ..." is waived too', qaStage(render, run(['- ' + num]), rv, rStage).s === 'done');
 ok('one unwaived failing check = fail', qaStage(render, run([num, hue]), rv, rStage).s === 'fail');
 ok('a builder-written waiver is not a waiver', qaStage(render, run([hue]), { waivers: waiversOf('HUE WAIVER (builder): mine.') }, rStage).s === 'fail');
 ok('no waivers = fail', qaStage(render, run([num]), { waivers: [] }, rStage).s === 'fail');
