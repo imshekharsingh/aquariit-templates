@@ -156,8 +156,8 @@ export function qaStage(render, qaRun, rv, rStage) {
   if (pick && pick.live) return { s: 'now', t: 'Running the checks', at: pick.at, live: true };
   if (pick && pick.ok) return { s: 'done', t: 'Output QA PASS', at: pick.at };
   if (pick && pick.fail) {   // every failing check waived by the critic = done (any unwaived failing check still fails)
-    const names = [...new Set(pick.fail.map((x) => (/^([A-Z]{3,10}): /.exec(x) || [])[1]).filter(Boolean))];
-    if (names.length && pick.fail.every((x) => /^[A-Z]{3,10}: /.test(x)) && names.every((n) => rv && (rv.waivers || []).includes(n))) return { s: 'done', t: 'Output QA PASS (waived by the reviewer)', at: pick.at };
+    const lines = pick.fail.map((x) => String(x).replace(/^[-*\s]+/, '')), names = [...new Set(lines.map((x) => (/^([A-Z]{3,10}): /.exec(x) || [])[1]).filter(Boolean))];   // the GitHub annotation reads "- NUMBERS: ..."
+    if (names.length && lines.every((x) => /^[A-Z]{3,10}: /.test(x)) && names.every((n) => rv && (rv.waivers || []).includes(n))) return { s: 'done', t: 'Output QA PASS (waived by the reviewer)', at: pick.at };
     return { s: 'fail', ...qaReason(pick.fail), at: pick.at }; }
   if (rStage.s === 'now') return { s: 'wait', t: 'After the render' };
   if (rv && rv.qa) return rv.qa.pass ? { s: 'done', t: 'Output QA PASS' } : { s: 'fail', t: 'Failed', why: rv.qa.why || 'See the review file.' };

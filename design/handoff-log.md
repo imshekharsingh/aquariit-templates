@@ -1470,3 +1470,7 @@ Format (at most 6 lines):
 - Done: first real run (refs 15, 16, 18, 19 and three of ours) showed the change-based crop kept the Reels header, status bar, caption and right buttons on refs 15, 16 and 19; ref-lab.py phone_trim() cuts 13 % top, 14 % bottom, 14 % right for recordings taller than 2:1 (our own 9:16 reels untouched); test cases in scripts/qa/ref-lab-test.py.
 - Left: re-run refs-study with lab, then the "Lab results 28 Nov" block.
 
+
+## 2026-11-28 · claude/qa-waiver-dash2 · Waiver matching reads the annotation's "- " prefix (item 6)
+- Done: the Output QA failure annotation arrives as "- NUMBERS: ..." so the first waiver version never matched; qaStage strips the prefix; test case with the real form. Found because the App probe after the first version still showed an empty tech Ready box.
+- Left: App probe again.
