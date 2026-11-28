@@ -20,12 +20,12 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #hero{color:var(--paper)}
 #hero,#hero *{-webkit-text-fill-color:currentColor}
 /* the demo card (built twice by KM.split): header, two skeleton lines, the Share button; the menu opens under the button */
-.pcard{position:absolute;left:8px;top:4px;width:222px;height:204px;border-radius:22px;background:#3a1c22;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.pcard{position:absolute;left:8px;top:4px;width:222px;height:204px;border-radius:22px;background:#582733;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .pav{position:absolute;left:16px;top:8px;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#3f5a49,#2a3d31)}
 .pln{position:absolute;height:11px;border-radius:6px;background:var(--skel)}
 .pbt{position:absolute;left:16px;top:62px;width:190px;height:42px;border-radius:21px;background:var(--acc);color:var(--on);font:700 19px/42px var(--f);letter-spacing:-.01em;padding-left:20px;transform-origin:50% 50%}
 .pbt i{position:absolute;right:30px;top:0;font-style:normal;font-size:15px;transform-origin:50% 50%}
-.pmn{position:absolute;left:24px;top:112px;width:190px;border-radius:18px;background:#4a252d;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),0 14px 28px -10px rgba(0,0,0,.7);transform-origin:30px 0;opacity:0}
+.pmn{position:absolute;left:24px;top:112px;width:190px;border-radius:18px;background:#68303c;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),0 14px 28px -10px rgba(0,0,0,.7);transform-origin:30px 0;opacity:0}
 .pcard .pmn{left:16px;top:108px}
 .pmn b{position:absolute;left:0;width:190px;height:48px;font:600 20px/48px var(--f);letter-spacing:-.015em;padding-left:50px;white-space:nowrap}
 .pmn b::before{content:"";position:absolute;left:20px;top:16px;width:16px;height:16px;border-radius:5px;background:var(--wc)}
@@ -35,6 +35,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .pedge{position:absolute;left:2px;width:234px;height:0;border-top:2.5px dashed rgba(255,255,255,.8);z-index:5;opacity:0}
 .pgh{z-index:4;position:absolute;left:24px;width:190px;height:48px;border-radius:18px;border:2px dashed var(--red);font:500 17px/44px var(--m);color:var(--red);letter-spacing:.02em;padding-left:50px;opacity:0;white-space:nowrap}
 .pcut{position:absolute;left:10px;width:218px;height:4px;border-radius:2px;background:var(--red);opacity:0;z-index:4}
+.pshadow{position:absolute;left:8px;top:4px;width:222px;height:204px;border-radius:22px;background:#7a2a36;filter:blur(8px);opacity:0;z-index:1}
 .pveil{position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(10,10,12,.62);opacity:0;z-index:3}
 .ptp{position:absolute;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.18);border:2.5px solid rgba(255,255,255,.75);opacity:0;z-index:6}
 .ptag{position:absolute;left:52px;top:308px;padding:4px 14px;border-radius:999px;font:500 22px/22px var(--m);letter-spacing:.02em;color:var(--acc);background:rgba(111,224,138,.14);box-shadow:inset 0 0 0 1.5px var(--ring);opacity:0}
@@ -684,24 +685,29 @@ var KM = (function(){
     menu = mkEl('div', 'pmn', broken ? card : body, 'height:' + (ITEMS.length * 48) + 'px');
     ITEMS.forEach(function(s, k){ var r = mkEl('b', '', menu, 'top:' + (k * 48) + 'px'); r.textContent = s; r.style.setProperty('--wc', 'var(--red)'); rows.push(r); });
     for (i = 2; i < 4; i++) { var g = mkEl('div', 'pgh', body, 'top:' + (112 + i * 48) + 'px'); g.textContent = ITEMS[i]; gh.push(g); } cut = mkEl('div', 'pcut', body, 'top:' + (CB - 3) + 'px');
-    var edge = null; if (broken) PN.veil = mkEl('div', 'pveil', body); else { var tag = mkEl('div', 'ptag', body); tag.textContent = 'popover'; PN.tag = tag; edge = mkEl('div', 'pedge', body, 'top:' + CB + 'px'); }
+    var edge = null, shd = null; if (broken) { PN.veil = mkEl('div', 'pveil', body); shd = mkEl('div', 'pshadow', body); } else { var tag = mkEl('div', 'ptag', body); tag.textContent = 'popover'; PN.tag = tag; edge = mkEl('div', 'pedge', body, 'top:' + CB + 'px'); }
     var cnt = mkEl('div', 'pcnt', pane); cnt.style.color = 'var(--red)';
-    PN.push({ btn: btn, chev: chev, menu: menu, rows: rows, gh: gh, cut: cut, tp: tp, broken: broken, cnt: cnt, card: card, edge: edge, pane: pane });
+    PN.push({ btn: btn, chev: chev, menu: menu, rows: rows, gh: gh, cut: cut, tp: tp, broken: broken, cnt: cnt, card: card, edge: edge, pane: pane, shd: shd });
     return function(t, k){ var n = PN[broken ? 0 : 1], ok = openK(t), w = winAt(t) || [-9, -9], u = t - w[0], i, press, tapO, tapS;
       // the tap on Share (a slim ring, a press), at each open
       press = E.out3(P(u, -.1, .02)) * (1 - E.out3(P(u, .02, .2))); tapO = cl((u + .22) * 6) * (1 - P(u, .12, .36));
+      if (n.broken) { var ee = P(t, .1, .5), eb = E.back(ee, 1.6); n.card.style.opacity = E.out3(P(t, .08, .22)).toFixed(3);
+        n.card.style.transform = 'translateY(' + (-22 * (1 - E.out3(ee))).toFixed(2) + 'px) scale(' + (1.16 - .16 * eb).toFixed(4) + ')';   // the card lands from its shadow with a small overshoot
+        n.shd.style.opacity = (.75 * (1 - E.out3(P(t, .3, .55)))).toFixed(3); var sk = E.out3(P(t, 0, .45)); n.shd.style.transformOrigin = '50% 0'; n.shd.style.transform = 'scale(' + (1.07 - .07 * sk).toFixed(4) + ',' + (1.8 - .8 * sk).toFixed(4) + ')'; }
+      var bump = function(x){ return x < 0 || x > .4 ? 0 : x < .1 ? x / .1 : 1 - (x - .1) / .3; };
       var fx = n.broken ? 0 : E.out3(P(t, A.fixAt, A.fixAt + .5)), fixed = !n.broken && t >= A.fixAt;
-      n.menu.classList.toggle('fx', fixed); n.card.classList.toggle('fx', fixed); n.btn.classList.toggle('bd', !fixed); n.pane.style.background = fixed ? '#0f2418' : '#34161c';
+      n.menu.classList.toggle('fx', fixed); n.card.classList.toggle('fx', fixed); n.btn.classList.toggle('bd', !fixed); n.pane.style.background = fixed ? '#0f2418' : '#4a2029';
       for (i = 0; i < n.rows.length; i++) n.rows[i].style.setProperty('--wc', fixed ? 'var(--acc)' : 'var(--red)');
       if (!n.broken) n.menu.style.clipPath = fx < 1 ? 'inset(0 0 ' + (96 * (1 - fx)).toFixed(1) + 'px 0)' : 'none';
       n.btn.style.transform = 'scale(' + (1 - .06 * press).toFixed(4) + ')'; n.chev.style.transform = 'rotate(' + (180 * E.inOut3(ok)).toFixed(1) + 'deg)';
       n.tp.style.left = (8 + 16 + 95 - 28 + 14 * (1 - E.out3(P(u, -.22, -.02)))).toFixed(1) + 'px'; n.tp.style.top = (4 + 62 + 21 - 28 + 26 * (1 - E.out3(P(u, -.22, -.02)))).toFixed(1) + 'px'; n.tp.style.opacity = (tapO * .95).toFixed(3);
       n.menu.style.opacity = cl(ok * 3).toFixed(3); n.menu.style.transform = 'translateY(' + (-10 * (1 - ok)).toFixed(2) + 'px) scale(' + (.94 + .06 * ok).toFixed(4) + ')';
-      for (i = 0; i < n.rows.length; i++) { var rk = E.back(P(u, .05 + i * .06, .05 + i * .06 + .28), 1.1); n.rows[i].style.opacity = cl(rk * 3 * ok * 3).toFixed(3); n.rows[i].style.transform = 'translateY(' + (-8 * (1 - rk)).toFixed(2) + 'px)'; }
+      for (i = 0; i < n.rows.length; i++) { var rk = E.back(P(u, .05 + i * .06, .05 + i * .06 + .28), 1.1); n.rows[i].style.opacity = cl(rk * 3 * ok * 3).toFixed(3); var bp = n.broken ? 0 : bump(t - (A.rp + i * .3)); n.rows[i].style.transform = 'translateY(' + (-8 * (1 - rk)).toFixed(2) + 'px) scale(' + (1 + .05 * bp).toFixed(4) + ')';
+        n.rows[i].style.background = bp > .001 ? 'rgba(111,224,138,' + (.22 * bp).toFixed(3) + ')' : 'transparent'; n.rows[i].style.borderRadius = '14px'; }
       // the count in the pane's header: items shown of 4 (BEFORE steps to 2 and stays, AFTER steps to 4), a small pop on each change
-      var shown = n.broken ? 2 : (fixed ? 4 : 2), cp = 1 + .22 * (1 - E.out3(P(t, TB[0], TB[0] + .3))) + (n.broken ? 0 : .35 * (1 - E.out3(P(t, A.fixAt, A.fixAt + .35))) * (t >= A.fixAt ? 1 : 0));
+      var shown = n.broken ? 2 : (fixed ? 4 : 2), cp = 1 + .22 * (1 - E.out3(P(t, TB[0], TB[0] + .3))) + (n.broken ? 0 : .35 * (1 - E.out3(P(t, A.fixAt, A.fixAt + .35))) * (t >= A.fixAt ? 1 : 0) + .28 * bump(t - A.cp));
       n.cnt.style.color = fixed ? 'var(--acc)' : 'var(--red)';
-      var cs = shown + '<small>of 4</small>'; if (n.cnt.__v !== cs) { n.cnt.innerHTML = cs; n.cnt.__v = cs; } n.cnt.style.transform = 'scale(' + cp.toFixed(3) + ')';
+      var cs = shown + '<small>of 4</small>'; if (n.cnt.__v !== cs) { n.cnt.innerHTML = cs; n.cnt.__v = cs; } n.cnt.style.transform = 'scale(' + cp.toFixed(3) + ')'; if (n.broken) n.cnt.style.opacity = E.out3(P(t, .3, .5)).toFixed(3);
       { var gk = E.out3(P(t, A.cut, A.cut + .3)) * ok * (1 - fx);
         n.gh.forEach(function(g, j){ g.style.opacity = (gk * .8 * E.out3(P(t, A.cut + j * .12, A.cut + j * .12 + .25))).toFixed(3); });
         n.cut.style.opacity = (ok * (1 - fx)).toFixed(3); n.cut.style.transform = 'scaleX(' + (E.out3(P(u, .15, .45))).toFixed(3) + ')'; n.cut.style.transformOrigin = '0 50%'; }
@@ -714,18 +720,22 @@ var KM = (function(){
     A.hookIn = (W[HOOK_N - 1] ? W[HOOK_N - 1].s - V.lead : 1.2) + .3; A.leave = Math.max(S[1] - .1, A.hookIn + .45);
     A.fix = S[FIX_S]; A.typeEnd = Math.min(A.fix + 1.7, (S[FIX_S + 1] || A.fix + 2.4) - .3); A.pay = S[S.length - 1]; A.end = V.end;
     A.wideIn = A.leave + .12; A.half = A.wideIn + .5; A.cut = A.wideIn + 1.0;
-    A.wipe = A.typeEnd + .7; A.k = A.typeEnd + .3; A.fixAt = A.fix + .5;   // A.fixAt: the AFTER menu breaks out as the focus lands on it (hand-off A.fix to A.fix + .5); A.k: the old break-out time, still anchors the card edge, the push and the re-open
+    A.wipe = A.typeEnd + .7; A.k = A.typeEnd + .3; A.pop = at('popover', 1, A.fix + 1.5); A.fixAt = A.pop; A.rp = DUR - 2.0; A.cp = DUR - .85;   // A.fixAt: the AFTER menu breaks out on the word popover (the light hand-off stays on fix, A.fix to A.fix + .5); A.k: the old break-out time, still anchors the card edge, the push and the re-open
     CAM = KM.rig({ x: 255, y: 480, z: 1, drift: 0 });
     T.morph = KM.transition('morph', A.fix - .1, .5);
     // the menu opens at once and again before 2 s (rule 20); it stays open while the problem is told, then closes before the fix and opens again, fixed
-    OPN = [[-.6, 1.2], [1.45, A.fix - .2], [A.fixAt - .05, A.k + 2.7]];
+    OPN = [[.25, 1.2], [1.45, A.fix + .5], [A.fixAt - .05, A.k + 2.7]];
     var oc = A.k + 3.2; OPN.push([oc, oc + 1.35]); OPN.push([oc + 1.75, DUR + 1]);
     OPN.forEach(function(w){ if (w[0] > .05) KM.tap(w[0] - .02, 270); if (w[0] > .05) KM.cue({ t: w[0] + .08, k: 'pop', g: .22, p: 3 }); });
-    TB = KM.bugs([.3, OPN[1][0] + .3], { g: .4 });   // the cut: the menu is already open and sliced at frame 0, it flinches at 0.3 s, then again as it lands at 1.75 s
+    TB = KM.bugs([.55, OPN[1][0] + .3], { g: .4 });   // the cut: the menu is already open and sliced at frame 0, it flinches at 0.3 s, then again as it lands at 1.75 s
     window.COVER = +(Math.min(TB[1] - .06, A.leave - .02)).toFixed(2);   // the cover: the hook complete, the menu cut, no reaction word
     KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
-    for (var c = 0, t0 = A.fix + .35; t0 + c * .09 < A.typeEnd; c++) KM.cue({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7 });
+    for (var c = 0, t0 = A.fix + .05; t0 + c * .09 < A.typeEnd; c++) KM.cue({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7 });
     KM.cue({ t: A.fixAt, k: 'pop', g: .34, p: 4 }); KM.cue({ t: A.fixAt + .12, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
+    // high tick cues on every small action (render 2, lab learning): the slice, the hand-over, each row landing, the count steps, the closing item pulses
+    KM.cue({ t: .6, k: 'tick', g: .14, p: 10 }); KM.cue({ t: A.fix + .25, k: 'tick', g: .12, p: 12 });
+    for (var q = 0; q < 4; q++) { KM.cue({ t: A.fixAt + .1 + q * .08, k: 'tick', g: .12, p: 8 + q * 2 }); KM.cue({ t: A.rp + q * .3 + .02, k: 'tick', g: .13, p: 8 + q * 2 }); }
+    KM.cue({ t: A.fixAt + .14, k: 'tick', g: .13, p: 13 }); KM.cue({ t: A.fixAt + .28, k: 'tick', g: .13, p: 15 }); KM.cue({ t: A.cp + .02, k: 'tick', g: .15, p: 14 });
     KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
     SP = KM.split($('sp'), { t0: -.01, d: .01, build: build, faults: TB, y: PY, h: PH_, gap: 12, side: 26, labels: ['BEFORE', 'AFTER'] });
     SP.panes.forEach(function(pn){ pn.removeAttribute('data-key'); }); SP.panes[1].style.background = '#0f2418';   // the panes are the subject (inside #hero), not key actions
@@ -753,11 +763,11 @@ var KM = (function(){
     SP.panes[1].style.boxShadow = '0 18px 40px -18px rgba(0,0,0,.6),inset 0 0 0 ' + (1.5 + 1.5 * fk).toFixed(2) + 'px ' + (fxd ? 'rgba(111,224,138,' + (.35 + .5 * fk).toFixed(3) + ')' : 'rgba(255,255,255,.14)');
     // ---- the focus hand-off (owner's idea, 28 Nov): the lit pane has a soft glow edge and a lift, the other stays visible but dark and slightly blurred (brightness filter keeps its hue);
     //      BEFORE is lit while the problem is told, the hand-off to AFTER takes .5 s at the fix word, and both are lit for the last second (the proof frame) ----
-    var ho = E.inOut3(P(t, A.fix, A.fix + .5)), en = E.inOut3(P(t, DUR - 1.4, DUR - .9)), lits = [1 - ho * (1 - en), ho], rgbs = ['255,95,109', '111,224,138'];
+    var hr = P(t, A.fix, A.fix + .5), ho0 = E.inOut3(P(hr, .35, 1)), ho1 = E.inOut3(P(hr, 0, .65)), en = E.inOut3(P(t, DUR - 1.4, DUR - .9)), lits = [1 - ho0 * (1 - en), ho1], gl = [.6 + .4 * E.out3(P(t, .1, .6)), 1], rgbs = ['255,95,109', '111,224,138'];
     SP.panes.forEach(function(pn, q){ var L = lits[q];
-      pn.style.filter = L >= .999 ? 'none' : 'brightness(' + mix(.38, 1, L).toFixed(3) + ') saturate(' + mix(1.15, 1, L).toFixed(3) + ') blur(' + mix(1.2, 0, L).toFixed(2) + 'px)';
+      pn.style.filter = L >= .999 ? 'none' : 'brightness(' + mix(.4, 1, L).toFixed(3) + ') saturate(' + mix(1.15, 1, L).toFixed(3) + ') blur(' + mix(1.2, 0, L).toFixed(2) + 'px)';
       pn.style.transformOrigin = '50% 0'; pn.style.transform += ' scale(' + (1 + .02 * L).toFixed(4) + ')';
-      pn.style.boxShadow += ',0 ' + (14 * L).toFixed(1) + 'px ' + (26 * L).toFixed(1) + 'px -10px rgba(0,0,0,' + (.55 * L).toFixed(3) + '),0 0 ' + (4 + 34 * L).toFixed(1) + 'px rgba(' + rgbs[q] + ',' + (.4 * L).toFixed(3) + '),inset 0 0 0 ' + (1.5 * L).toFixed(2) + 'px rgba(' + rgbs[q] + ',' + (.5 * L).toFixed(3) + ')'; });
+      pn.style.boxShadow += ',0 ' + (14 * L).toFixed(1) + 'px ' + (26 * L).toFixed(1) + 'px -10px rgba(0,0,0,' + (.55 * L).toFixed(3) + '),0 0 ' + (4 + 34 * L).toFixed(1) + 'px rgba(' + rgbs[q] + ',' + (.4 * L * gl[q]).toFixed(3) + '),inset 0 0 0 ' + (1.5 * L).toFixed(2) + 'px rgba(' + rgbs[q] + ',' + (.5 * L).toFixed(3) + ')'; });
     var tp2 = P(t, A.fixAt + .15, A.fixAt + .45); PN.tag.style.opacity = cl(tp2 * 3).toFixed(3); PN.tag.style.transform = 'scale(' + mix(.6, 1, E.back(tp2, 2)).toFixed(3) + ')';
     // the reaction words sit in the empty part of the BEFORE pane, under the card
     [['rx1', 52, 0], ['rx2', 72, 1]].forEach(function(q){ $(q[0]).style.left = q[1] + 'px'; $(q[0]).style.top = (PY + 50 + CB + 40) + 'px'; KM.react($(q[0]), t, TB[q[2]] + .2, { rot: q[2] ? 5 : -7 }); });
@@ -773,7 +783,8 @@ var KM = (function(){
     // ---- the fix: the rule's place becomes the code card; the two lit parts are typed and swept ----
     var mk = T.morph(t), cd = $('code');
     KM.morph(cd, BOX, CARD, mk); cd.style.opacity = P(t, A.fix - .1, A.fix + .1).toFixed(3);
-    KM.type($('cd'), CODE, t, A.fix + .35, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
+    KM.type($('cd'), CODE, t, A.fix + .02, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
+    { var bg = $('cd').querySelector('.big'); if (bg) { bg.style.display = 'inline-block'; bg.style.transformOrigin = '0 70%'; bg.style.transform = 'scale(' + (1 + .24 * E.out3(P(t, A.pop, A.pop + .1)) * (1 - E.inOut3(P(t, A.pop + .1, A.pop + .45)))).toFixed(4) + ')'; } }   // keyword jump on the spoken word popover
     [].forEach.call($('cd').querySelectorAll('b'), function(b, k){ KM.sweep(b, t, A.typeEnd + .05 + k * .12, .4, 'var(--soft)'); });
     // ---- the subtitles sit between the top zone and the panes ----
     KM.cutBelow($('vp'), $('fe'), 960, 0);

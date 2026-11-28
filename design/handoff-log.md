@@ -1482,3 +1482,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/probe-journey · App probe prints the journey stages of today's reels (item 6)
 - Done: scripts/qa/app-live-probe.mjs prints JOURNEY / JOURNEY REEL lines (github state, warnings, render / checks / critic / ready per reel) so an empty Ready box says which stage holds it. The waiver logic itself is proven on the real run data (qaStage returns done "waived by the reviewer" for run 46117765710 and the real annotations); the live box was still empty after the deploy, cause not yet seen.
 - Left: App probe, read the JOURNEY REEL line for tech, fix what it shows.
+
+## 2026-11-28 · claude/web-popover-focus-r2 · Web popover focus test, render 2 prepared (owner yes)
+- Done: frame 0 arrives from its shadow (card lands with a small overshoot, glow fades up, menu sliced with a tick by 0.6 s); BEFORE's cut menu open through the hand-over; the AFTER breakout on the word "popover"; high tick cues, live code card from "fix", keyword jump on POPOVER, item beats in the last 2.4 s. Local stills clear (SUBJECT FILL 51%, FLOW ok), scene action count 4.4 a second, longest gap 0.9 s.
+- Left: ONE preview render 2 (Inbox > Tests), Output QA + action count on the MP4, the main account's full-video review before 17:30 IST. showreel-50-popover untouched.
