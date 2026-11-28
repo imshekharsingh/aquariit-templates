@@ -32,6 +32,19 @@ Use ffmpeg, python and your own eyes on frames you extract (the reel itself stay
 5. Captions: group size (words), when each group switches (from the caption band's pixels), where the band sits.
 6. Sound: where the hits land against the picture, music in or out, loudness if you can measure it.
 
+## Action count (owner, 28 Nov 2026: "more actions and elements")
+A 1-frame-a-second sheet misses most small actions (a screen typing, a ripple, a badge ticking). Count them, then read them:
+1. Measure: the "Owner answers" workflow, action refs-study, ASKS {"ids": [<reference ids>], "reels": ["<our reel>.mp4", "study/<preview>.mp4"], "sheets": true}.
+   It runs scripts/qa/action-count.py on each video the same way and prints ACTIONS (new actions a second, in the picture and in total; things
+   moving at once; camera share; still share), TIMELINE (actions per second) and GAPS (over 1 s with no new action), plus 2 fps sheets.
+   Always measure one of OUR reels in the same run, so the gap is a number.
+2. Read: on the sheets, at the busiest seconds of the TIMELINE, name each action: what moves, what kind (enters, leaves, changes inside, reacts,
+   counts, camera), how long, and on which object. Write an ACTION LIST: for each kind, how often it happens per 10 s in the reference.
+3. Layers: count the elements on screen at once (hero, supporting objects, small detail, type, background life) at 3 moments.
+4. The card gets an "Action count" line: reference vs ours (actions a second in the picture, moving at once, longest gap) and the 3-5 action kinds
+   we lack, each as a kit piece to build (owner: actions inside objects already on screen are cheap; more camera moves are not).
+The count is a guide, not a target to game: captions and camera moves are kept out of "picture" actions on purpose.
+
 ## Every layer (what it is, how we would build it)
 
 - **A component** (text, captions, stickers, cards, UI, charts, maps): we rebuild the TECHNIQUE in our kit with our own content.

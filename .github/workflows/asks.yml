@@ -6,12 +6,12 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: read (answers + new feedback; also tidies the Inbox), list (everything the owner sees), tidy, add, clear, mark, unmark, feedback (new feedback only), feedback-done, refs (new references + previews) or refs-done
+        description: read (answers + new feedback; also tidies the Inbox), list (everything the owner sees), tidy, add, clear, mark, unmark, feedback (new feedback only), feedback-done, refs (new references + previews), refs-done or refs-study (action count of references and our reels)
         type: choice
-        options: [read, list, tidy, add, clear, mark, unmark, feedback, feedback-done, refs, refs-done]
+        options: [read, list, tidy, add, clear, mark, unmark, feedback, feedback-done, refs, refs-done, refs-study]
         default: read
       asks:
-        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"} · unmark: ["showreel-x"] · feedback-done: {"ids":[3],"note":"what was done"} · refs-done: {"ids":[3],"state":"studied|used","note":"..."} · refs: {"full":[9,10]} (whole clip, 1 frame a second)'
+        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"} · unmark: ["showreel-x"] · feedback-done: {"ids":[3],"note":"what was done"} · refs-done: {"ids":[3],"state":"studied|used","note":"..."} · refs: {"full":[9,10]} (whole clip, 1 frame a second) · refs-study: {"ids":[10],"reels":["study/showreel-x-preview.mp4"],"sheets":true}'
         type: string
         required: false
 
@@ -30,8 +30,11 @@ jobs:
             scripts
             templates/showreels
       - name: ffmpeg for reference previews
-        if: inputs.action == 'refs'
+        if: inputs.action == 'refs' || inputs.action == 'refs-study'
         run: which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null)
+      - name: numpy for the action count
+        if: inputs.action == 'refs-study'
+        run: python3 -c 'import numpy' 2>/dev/null || pip install -q numpy
       - name: Owner answers
         env:
           ACTION: ${{ inputs.action }}
