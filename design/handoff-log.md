@@ -1429,3 +1429,7 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/kit-ref-pieces · Kit reference pieces: number fill, keyword jump, blur hand-off, sound count
 - Done: scripts/explainer/kitref.js (KREF.numberFill with tick cues, KREF.keyword with reserved box and width cut, KREF.handoff swap and focus modes; kit-inline entry), local test scene scripts/previews/kit-ref-pieces.html (one stills sheet, no render), SOUND and QUIET lines in scripts/qa/action-count.py, skill "Action count" updated.
 - Left: refs-study run (ids 15, 16, 18, 19; showreel-tech-ai-words, showreel-50-popover), SOUND numbers into references.md.
+
+## 2026-11-28 · claude/refs-keep-30d · Closed references keep their video 30 days
+- Done: Close sets closed_at and keeps the file; purgeClosedRefs (src/worker.js) deletes it 30 days after closing, run by the daily cron and by the refs list and close calls; GET /api/refs/<id>/file keeps working until then; app text says "kept 30 days, then deleted"; cases in scripts/qa/refs-test.mjs (kept, served, 29 days kept, 31 days purged, 404 after). npm run check passes.
+- Left: App probe after deploy, then the APP PROBE line in design/handoff.md Progress.

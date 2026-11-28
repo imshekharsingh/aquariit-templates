@@ -1628,7 +1628,7 @@
     if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { if (!vw.thumb) { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); } }
       else if (/^video\//.test(r.file.type) && !r.file.deleted) { var v = el('video', 'th'); v.controls = true; v.preload = 'none'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
       else box.appendChild(el('p', null, r.file.name || 'File')); }
-    if (r.file && r.file.deleted) box.appendChild(el('p', 'note', 'The video was deleted when you closed this. The report, stills and checklist are kept.'));
+    if (r.file && r.file.deleted) box.appendChild(el('p', 'note', 'The video was deleted 30 days after you closed this. The report, stills and checklist are kept.'));
     if (r.note) box.appendChild(el('p', null, r.note));
     if (r.uploading) box.appendChild(el('p', 'note', 'Still uploading, or the upload stopped. Delete it and add it again if it does not finish.'));
     if (r.reply) box.appendChild(el('p', 'note', 'Claude: ' + r.reply));
@@ -1648,7 +1648,7 @@
       box.appendChild(cl); }
     var act = el('div', 'fact');
     if (!r.closed && (r.state === 'studied' || r.state === 'used')) { var cb = el('button', 'btn g', 'Close'); cb.type = 'button';
-      cb.addEventListener('click', function(){ if (!confirm(r.file && /^video\//.test(r.file.type) ? 'Close this reference? The video is deleted today. The report, stills and checklist stay.' : 'Close this reference? The report, stills and checklist stay.')) return; cb.disabled = true;
+      cb.addEventListener('click', function(){ if (!confirm(r.file && /^video\//.test(r.file.type) ? 'Close this reference? The video is kept 30 days, then deleted. The report, stills and checklist stay.' : 'Close this reference? The report, stills and checklist stay.')) return; cb.disabled = true;
         fetch('/api/refs/' + r.id + '/close', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: '{}' })
           .then(function(x){ if (!x.ok) throw 0; refLoad(); }).catch(function(){ cb.disabled = false; cb.textContent = 'Try again'; }); }); act.appendChild(cb); }
     if (r.closed) box.appendChild(el('p', 'note', 'Closed'));
