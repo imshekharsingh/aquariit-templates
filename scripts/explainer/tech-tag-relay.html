@@ -297,7 +297,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#08090d;font-famil
   // ---- captions: word by word from the real voice (window.setVoice); the box comes with its first word; groups cross-fade (no instant swap)
   var WORDS = [], GR = [], KEY = { tag: 1, bluetooth: 1, signal: 1, device: 1, devices: 1, locked: 1, servers: 1, map: 1, network: 1, million: 1, yes: 1, only: 1 }, capEls = [], capG = -1;
   // the script itself (the config's voice.text): captions show its words WITH their marks ("One:", "in,", "text."), so every step number keeps its pause
-  var SCRIPT = 'Can a tag be found far from your phone? One: the tag sends a short Bluetooth signal. Two: any nearby Galaxy device with offline finding hears it. Three: it is locked, so only you can read it. Four: the servers get it, but cannot read it. Five: you open the map, and see where it was. Six: more than nine hundred million Galaxy devices form this network. So yes: other people\'s devices find it, and only you can read where.'.split(/\s+/);
+  var SCRIPT = 'Can a tag be found far from your phone? One: the tag sends a short Bluetooth signal. Two: any nearby Galaxy device with offline finding hears it. Three: it is locked, so only you can read it. Four: the servers get it, but cannot read it. Five: you open the map, and see it. Six: more than nine hundred million Galaxy devices form this network. So yes: other people\'s devices find it, and only you can read where.'.split(/\s+/);
   var letters = function(x){ return String(x).toLowerCase().replace(/[^a-z0-9]/g, ''); };
   // a group is one sentence (critic, render 1: no lone words left in the box); a sentence of 10+ words splits once at its comma
   function groups(){ GR = []; var cur = [];
