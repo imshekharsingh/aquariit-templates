@@ -5,10 +5,10 @@
       "id": "3d-kit-v7",
       "name": "3D kit v7: the last sample",
       "account": "other",
-      "stage": "done",
-      "line": "Closed after render 4 (the last): every check passes but one small flicker as Notes slams in at 0.8 s; the cascade is fixed. Its parts can go into the 2.5D tech reels.",
-      "pct": 100,
-      "updatedAt": "2026-11-27T21:52:00Z",
+      "stage": "checking",
+      "line": "Part b (more actions inside the objects): built and measured on scene frames. It adds live app screens, a connection log, stamps and selection boxes and fixes the opening flicker, but it does not reach 2.5 actions a second: 11 of 23 seconds are camera moves, where nothing counts. Waiting for the owner's choice before render 5.",
+      "pct": 60,
+      "updatedAt": "2026-11-28T07:05:00Z",
       "history": [
         {
           "at": "2026-11-26T13:12:00Z",
@@ -89,6 +89,11 @@
           "at": "2026-11-27T21:52:00Z",
           "stage": "done",
           "line": "Closed after render 4 (the last): every check passes but one small flicker as Notes slams in at 0.8 s; the cascade is fixed. Its parts can go into the 2.5D tech reels."
+        },
+        {
+          "at": "2026-11-28T07:05:00Z",
+          "stage": "checking",
+          "line": "Part b (more actions inside the objects): built and measured on scene frames. It adds live app screens, a connection log, stamps and selection boxes and fixes the opening flicker, but it does not reach 2.5 actions a second: 11 of 23 seconds are camera moves, where nothing counts. Waiting for the owner's choice before render 5."
         }
       ],
       "steps": [

@@ -31,7 +31,7 @@ world.props.visible = false;   // fix 5 (U5): no background props (they read as 
 const L = W3D.lib;
 
 // ---------- the beats, from the voice cues ----------
-const A_IN = [-.35, .55, .95];                                        // fix 4: a chain: Notes is already slamming in at frame 0 (lands at .35; started a little earlier so frame 0's label sits below the subtitle fade and reads), Chat launches off it, Mail is pushed by Chat
+const A_IN = [-.5, .8, 1.2];                                        // fix 4: a chain: Notes is already slamming in at frame 0 (lands at .35; started a little earlier so frame 0's label sits below the subtitle fade and reads), Chat launches off it, Mail is pushed by Chat
 const BOARD = 2.6, T_IN = 4.0;   // render 4 critic fix 2: the board's frame is in view by 3.0 s                                        // fix 1: the board builds 3.0-3.9; fix 2: the tools stack 4.0-5.3 on "eight tools"
 const ORDER = [6, 4, 2, 0, 1, 3, 5, 7], STEP = .15;                   // an S path: down the left column, up the right
 const W1 = Math.max(T_IN + 1.6, C.wires - .1), W1_END = W1 + 1.4;
@@ -44,7 +44,7 @@ const PAY = C.same + .4;
 
 // ---------- the cast ----------
 const TILT = +(window.__TILT ?? .15);   // plan critic item 4: Notes leans back less while it slams in, so frame 0 reads "Notes" (the label faced the key light)
-const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slam', s: -1, amp: .4, d: 1.0, tilt: TILT }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'rise', s: 1, amp: .5, d: .5 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'slideTurn', s: 1, amp: .45, d: .5 }];
+const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slam', s: -1, amp: .4, d: 1.4, tilt: TILT }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'rise', s: 1, amp: .5, d: .5 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'slideTurn', s: 1, amp: .45, d: .5 }];
 const TOOLS = [['Pay', 0x6b3cff, 'pay'], ['Photos', 0xe0449a, 'photos'], ['Files', 0x2f7bff, 'files'], ['Maps', 0x1fb86a, 'maps'], ['Calendar', 0xff6a3c, 'calendar'], ['Docs', 0x7a4cff, 'files'], ['Tasks', 0x1294d6, 'tasks'], ['Music', 0xd9a21b, 'music']];
 const WALL_Y = 2.3, WALL_Z = -6.5, HUB_P = V(0, 1.25, -2.2), NEW_P = [2.85, HUB_P.y - .05, -1.7], R = .048, FL = R + .006;
 const AX = (i) => (i - 1) * 1.88, TX = (j) => (j % 2 - .5) * 2.2, TY = (j) => WALL_Y + Math.floor(j / 2) * 1.45, SIDE = (j) => (j % 2 ? 1 : -1);
@@ -195,6 +195,132 @@ function dimPass(t) { for (const d of DIM) { const f = dimAt(t, d.o); for (const
   if (live || body) { q.m.color.multiplyScalar(f); if (q.m.emissive) q.m.emissive.multiplyScalar(f); }
   else { q.m.color.copy(q.c).multiplyScalar(f); if (q.e) q.m.emissive.copy(q.e).multiplyScalar(f); }
   if (q.env != null) q.m.envMapIntensity = q.env * f; if (q.cc != null) q.m.clearcoat = q.cc * f; if (q.spi != null) q.m.specularIntensity = q.spi * f; } } }
+// ---------- PART B (owner yes 28 Nov 2026): more actions and elements INSIDE the objects already on screen, no new camera moves ----------
+// App screens that live (Notes types, Chat pops bubbles, Mail count 3 -> 4 ...), a connection log with 24 pips (number to picture), tool badges and ripples as each
+// cable lands, stamps that land on objects, a selection box that snaps round each number as it is said. Every value is a pure function of t.
+const ACT = (() => {
+  const eb = (u) => eback(u, 1.2);
+  const cvs = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); const tx = new THREE.CanvasTexture(c); tx.encoding = THREE.sRGBEncoding; tx.anisotropy = 4; return { c, x, tx, w, h }; };
+  const plane = (w, h, cv, ord) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: cv.tx, transparent: true, toneMapped: false, depthWrite: false })); m.userData.noShadow = true; m.renderOrder = ord ?? 3; return m; };
+  const rrect = (x, a, b, w, h, r) => { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); };
+  const FONT = '"Inter Display",Inter,"DejaVu Sans",system-ui,sans-serif';
+  // ----- app screens: a dark card over the tile's glyph, below its name -----
+  const SW = 360, SH2 = 236;
+  const mkScreen = (tile, draw) => { const cv = cvs(SW, SH2), m = plane(1.28, 1.28 * SH2 / SW, cv, 3); m.position.set(0, .72, .19); tile.add(m); return { cv, m, draw, t_: -9 }; };
+  const appFace = (a, t, appIdx, base) => { const lv = dimAt(t, apps[appIdx]); a.m.material.color.setScalar(lv); a.m.material.opacity = base; };
+  const LW = [.82, .62, .9, .5, .76, .58, .88, .7, .46, .84, .66, .92, .54, .78, .6, .86, .72, .5, .8, .64, .9, .56, .74, .68];
+  const drawNotes = (x, w, h, t) => {
+    x.clearRect(0, 0, w, h); x.save(); rrect(x, 0, 0, w, h, 26); x.clip(); x.fillStyle = 'rgba(8,16,28,.96)'; x.fillRect(0, 0, w, h);
+    x.fillStyle = 'rgba(34,211,238,.9)'; x.fillRect(0, 0, w, 34); x.fillStyle = 'rgba(255,255,255,.9)'; for (let i = 0; i < 3; i++) { x.beginPath(); x.arc(22 + i * 22, 17, 6, 0, 7); x.fill(); }
+    const RH = 46, T0 = .95, DT = 1.1, L = Math.max(0, (t - T0) / DT), scroll = Math.max(0, L - 3.0) * RH;
+    for (let i = 0; i < 24; i++) { const p = clamp((t - (T0 + i * DT)) / (DT * .85)); if (p <= 0) break; const y = 62 + i * RH - scroll; if (y < 30 || y > h) continue;
+      const W2 = (w - 56) * LW[i % LW.length], cw = [.4, .33, .27], head = i % 5 === 0; x.fillStyle = head ? 'rgba(34,211,238,.95)' : 'rgba(205,222,240,.88)'; let px = 28, left = p * W2;
+      for (let c = 0; c < 3; c++) { const cwid = (W2 - 20) * cw[c], seg = Math.min(cwid, Math.max(0, left)); if (seg > 0) { rrect(x, px, y, seg, head ? 18 : 15, 6); x.fill(); } left -= cwid + 10; px += cwid + 10; }
+      if (p < 1) { const cx = 28 + p * W2; x.fillStyle = `rgba(34,211,238,${(.55 + .35 * Math.sin(t * 7)).toFixed(2)})`; x.fillRect(cx + 3, y - 6, 8, 28); } }
+    x.restore(); };
+  const CBS = [[0, .62], [1, .5], [0, .72], [1, .44], [0, .58], [1, .66]];
+  const drawChat = (x, w, h, t) => {
+    x.clearRect(0, 0, w, h); x.save(); rrect(x, 0, 0, w, h, 26); x.clip(); x.fillStyle = 'rgba(30,10,24,.96)'; x.fillRect(0, 0, w, h);
+    x.fillStyle = 'rgba(255,79,138,.9)'; x.fillRect(0, 0, w, 34); x.fillStyle = 'rgba(255,255,255,.9)'; x.beginPath(); x.arc(22, 17, 8, 0, 7); x.fill();
+    const tB = (i) => 1.3 + i * .95, RH = 64; let c = 0; for (let i = 0; i < 26; i++) c += sm(prog(t, tB(i), tB(i) + .3));
+    for (let i = 0; i < 26; i++) { const age = c - i; if (t < tB(i) - .6 || age > 3.4) continue; const [side, wf] = CBS[i % CBS.length], bw = (w - 60) * wf, bh = 44, top = h - 18 - RH * age + (age < 1 ? 0 : 0);
+      const pop = t >= tB(i) ? eb(prog(t, tB(i), tB(i) + .32)) : 0, al = clamp(1 - Math.max(0, age - 2.4)) * (t >= tB(i) ? 1 : 0), bx = side ? w - 30 - bw : 30;
+      if (al > 0.01 && pop > 0.01) { x.save(); x.globalAlpha = al; x.translate(bx + (side ? bw : 0), top + bh); x.scale(pop, pop); x.translate(-(bx + (side ? bw : 0)), -(top + bh)); x.fillStyle = side ? '#ff4f8a' : '#3a2a44'; rrect(x, bx, top, bw, bh, 20); x.fill();
+        x.fillStyle = side ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.6)'; rrect(x, bx + 18, top + 14, bw - 36, 8, 4); x.fill(); rrect(x, bx + 18, top + 28, (bw - 36) * .6, 8, 4); x.fill(); x.restore(); } }
+    for (let i = 0; i < 26; i++) { const k = prog(t, tB(i) - .6, tB(i) - .02); if (k > 0 && k < 1) { const a = Math.sin(Math.PI * k); x.fillStyle = `rgba(255,255,255,${(.8 * a).toFixed(2)})`; for (let d = 0; d < 3; d++) { x.beginPath(); x.arc(52 + d * 22, h - 34 - 3 * Math.sin(t * 9 + d * 1.3), 7, 0, 7); x.fill(); } } }
+    x.restore(); };
+  const EVM = [2.6, 9.9, 15.7, 19.7];
+  const drawMail = (x, w, h, t) => {
+    x.clearRect(0, 0, w, h); x.save(); rrect(x, 0, 0, w, h, 26); x.clip(); x.fillStyle = 'rgba(30,22,6,.96)'; x.fillRect(0, 0, w, h);
+    x.fillStyle = 'rgba(255,182,46,.92)'; x.fillRect(0, 0, w, 34);
+    const RH = 62, us = EVM.map((e) => eout(prog(t, e, e + .45))), tot = us.reduce((a, b) => a + b, 0); const cols = ['#22d3ee', '#ff4f8a', '#7a4cff', '#22c55e', '#2f7bff', '#ff6a3c', '#ffb62e'];
+    const row = (y, k, al, fresh) => { if (y < 30 || y > h + 10) return; x.save(); x.globalAlpha = al; x.fillStyle = 'rgba(255,255,255,.07)'; rrect(x, 16, y, w - 32, RH - 10, 14); x.fill(); x.fillStyle = cols[k % cols.length]; x.beginPath(); x.arc(46, y + (RH - 10) / 2, 15, 0, 7); x.fill();
+      x.fillStyle = 'rgba(255,255,255,.88)'; rrect(x, 74, y + 12, 120 + (k * 37 % 60), 10, 5); x.fill(); x.fillStyle = 'rgba(255,255,255,.45)'; rrect(x, 74, y + 30, 170 + (k * 23 % 70), 8, 4); x.fill(); if (fresh > 0) { x.fillStyle = `rgba(80,160,255,${fresh.toFixed(2)})`; x.beginPath(); x.arc(w - 40, y + (RH - 10) / 2, 9, 0, 7); x.fill(); } x.restore(); };
+    for (let b = 0; b < 3; b++) row(46 + RH * (b + tot), b + 8, 1, 0);
+    EVM.forEach((e, n) => { let later = 0; for (let m = n + 1; m < EVM.length; m++) later += us[m]; row(46 + RH * later - (1 - us[n]) * RH, n, us[n], us[n] * (1 - sm(prog(t, e + 1.2, e + 2.0)))); });
+    const cnt = 3 + tot, d0 = Math.floor(cnt + 1e-6), f = cnt - d0, pul = 1 + .4 * pulse(t, EVM.reduce((a, e) => (t >= e ? e : a), -9) + .18, .16) * (t >= EVM[0] ? 1 : 0);
+    x.save(); x.translate(w - 40, 17); x.scale(pul, pul); x.fillStyle = '#e5322d'; x.beginPath(); x.arc(0, 0, 24, 0, 7); x.fill(); x.beginPath(); x.rect(-24, -24, 48, 48); x.clip();
+    x.fillStyle = '#fff'; x.font = `800 30px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.globalAlpha = 1 - f; x.fillText(String(d0), 0, -f * 26 + 1); x.globalAlpha = f; x.fillText(String(d0 + 1), 0, (1 - f) * 26 + 1); x.restore();
+    x.restore(); };
+  const screens = [mkScreen(apps[0], drawNotes), mkScreen(apps[1], drawChat), mkScreen(apps[2], drawMail)];
+  // ----- tools: a badge with the cables landed on it, a face flash and a ripple ring each time one lands -----
+  const logT = (k) => k === 0 ? W1 + 1.3 : CASC[0] + .6 + (k - 1) * .062;     // the log ticks the cables one by one (landing times are packed into 0.65 s; the log streams them over 1.4 s)
+  const UPS = TOOLS.map((_, j) => [0, 1, 2].map((i) => logT(i * 8 + j)));
+  const DOWN = TOOLS.map((_, j) => [0, 1, 2].map((i) => retT(i * 8 + j) + .1));
+  const HUBTK = TOOLS.map((_, j) => hubT(3 + j) + .45);
+  const PAYR = TOOLS.map((_, j) => PAY + 1.4 + ORDER.indexOf(j) * .09);
+  const EVT = TOOLS.map((_, j) => [...UPS[j], HUBTK[j]]);
+  const ringMat = (c) => new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(1.6), toneMapped: false, transparent: true, depthWrite: false, opacity: 0, side: THREE.DoubleSide });
+  const tOv = tools.map((tile, j) => { const bcv = cvs(112, 112), badge = plane(.42, .42, bcv, 4); badge.position.set(.5, 1.12, .2); tile.add(badge);
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(1.12, 1.12), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })); fl.position.set(0, .65, .195); fl.userData.noShadow = true; fl.renderOrder = 3; tile.add(fl);
+    const ring = new THREE.Mesh(new THREE.RingGeometry(.64, .72, 48), ringMat(TOOLS[j][1])); ring.position.set(TX(j), TY(j) + .65, WALL_Z + .3); ring.renderOrder = 4; S.scene.add(ring); return { bcv, badge, fl, ring, last: -9 }; });
+  const drawBadge = (o, n, green, t) => { const { x, w, h } = o.bcv; x.clearRect(0, 0, w, h); if (n < 1) { o.badge.visible = false; return; } o.badge.visible = true; x.fillStyle = green ? '#2fd27a' : '#fff'; x.beginPath(); x.arc(w / 2, h / 2, 50, 0, 7); x.fill(); x.fillStyle = green ? '#06220f' : '#14151c'; x.font = `800 74px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(n), w / 2, h / 2 + 4); o.bcv.tx.needsUpdate = true; };
+  // ----- stamps: a billboard that lands on an object (scale 1.9 -> 1, a ring of shock), holds, fades -----
+  const mkStamp = (text, color, w, rot, at, t0, t1, parent) => { const cv = cvs(560, 220), x = cv.x; x.clearRect(0, 0, 560, 220); x.fillStyle = 'rgba(10,10,11,.84)'; rrect(x, 16, 16, 528, 188, 30); x.fill(); x.strokeStyle = color; x.lineWidth = 12; rrect(x, 16, 16, 528, 188, 30); x.stroke();
+    x.fillStyle = color; x.font = `900 ${text.length > 8 ? 92 : 116}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(text, 280, 116); cv.tx.needsUpdate = true;
+    const m = plane(w, w * 220 / 560, cv, 6), shock = new THREE.Mesh(new THREE.RingGeometry(.9, 1.0, 48), new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(1.5), toneMapped: false, transparent: true, depthWrite: false, opacity: 0 })); shock.renderOrder = 5;
+    const g = new THREE.Group(); g.add(m); g.position.set(...at); (parent || S.scene).add(g); S.scene.add(shock); m.material.opacity = 0; return { g, m, shock, t0, t1, rot, w }; };
+  const STAMPS = [mkStamp('PAID', '#2fd27a', 1.0, -.1, [0, .72, .24], 6.8, 8.6, tools[0]), mkStamp('24 CABLES', '#ff5a5a', 3.4, -.07, [1.5, 1.7, -.9], CASC[1] + .05, WORST + 1.4), mkStamp('11 CABLES', '#2fd27a', 2.6, .06, [0, HUB_P.y + 1.35, HUB_P.z + .2], HUBW[1] + .1, NEW_IN - .25),
+    mkStamp('+1 CABLE', '#2fd27a', 1.5, -.08, [NEW_P[0], NEW_P[1] + 1.2, NEW_P[2] + .3], PAY + .15, PAY + 2.0),
+    mkStamp('SAVED', '#22d3ee', .95, -.06, [0, 1.95, .3], 1.55, 2.5, apps[0]), mkStamp('3 NEW', '#ff4f8a', .95, .06, [0, 1.95, .3], 2.05, 3.0, apps[1]), mkStamp('+1 MAIL', '#ffb62e', 1.0, -.05, [0, 1.95, .3], 2.65, 3.6, apps[2])];
+  const stampUpdate = (t) => STAMPS.forEach((s) => { const u = prog(t, s.t0, s.t0 + .24), out = sm(prog(t, s.t1 - .3, s.t1)), vis = u > 0 && out < 1; s.g.visible = vis; s.shock.visible = vis;
+    if (!vis) return; const sc = 1.9 - .9 * eout(u); s.g.scale.setScalar(sc); s.m.material.opacity = sm(u * 3) * (1 - out) * (s.g.parent !== S.scene ? dimAt(t, s.g.parent) : 1);
+    if (s.g.parent === S.scene) { s.g.quaternion.copy(S.cam.quaternion); s.g.rotateZ(s.rot); } else { s.g.rotation.z = s.rot; }
+    const wp = s.g.getWorldPosition(new THREE.Vector3()), k = prog(t, s.t0 + .18, s.t0 + .7); s.shock.position.copy(wp); s.shock.quaternion.copy(S.cam.quaternion); s.shock.scale.setScalar(s.w * (.32 + .32 * eout(k)) * (s.g.parent === S.scene ? 1 : s.g.parent.scale.x)); s.shock.material.opacity = k > 0 && k < 1 ? .5 * (1 - k) : 0; });
+  // ----- the connection log (screen space, the number block's twin on the other side) with 24 pips: the number as a picture -----
+  const APPC = ['#22d3ee', '#ff4f8a', '#ffb62e'];
+  const logEl = document.createElement('div'); logEl.style.cssText = 'position:absolute;top:620px;width:320px;padding:18px 20px 14px;border-radius:26px;background:rgba(10,10,11,.97);pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#c9cfdb;opacity:0;box-shadow:0 0 0 2px rgba(255,255,255,.08) inset';
+  logEl.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:baseline;height:40px"><span data-h style="font-weight:700;font-size:24px;letter-spacing:.08em">LOG</span><span data-c style="font-weight:800;font-size:36px;color:#fff;white-space:nowrap"></span></div><div data-p style="display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:10px 0 14px"></div><div data-r></div>';
+  document.body.appendChild(logEl);
+  const pipEls = Array.from({ length: 24 }, () => { const e = document.createElement('i'); e.style.cssText = 'display:block;aspect-ratio:1;border-radius:7px;background:rgba(255,255,255,.1)'; logEl.querySelector('[data-p]').appendChild(e); return e; });
+  const rowEls = Array.from({ length: 4 }, () => { const e = document.createElement('div'); e.style.cssText = 'height:44px;line-height:44px;font-weight:700;font-size:34px;color:#e6e9f1;white-space:nowrap;overflow:hidden;display:flex;gap:12px;align-items:center'; logEl.querySelector('[data-r]').appendChild(e); return e; });
+  const hEl = logEl.querySelector('[data-h]'), cEl = logEl.querySelector('[data-c]');
+  const dotHtml = (c) => `<b style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${c}"></b>`;
+  const STEP_T = (j) => CASC[0] + .6 + Math.floor(ORDER.indexOf(j) / 2) * .42;   // the log fills one pair of tools at a time (0.42 s apart): discrete beats
+  const ALL = tangle.map((q) => ({ k: q.k, i: q.i, j: q.j, t: q.k === 0 ? logT(0) : STEP_T(q.j) })).sort((a, b) => a.t - b.t || a.k - b.k);
+  const logUpdate = (t) => {
+    const sec = t >= PAY - .3 ? 3 : t >= COLLAPSE[0] - .2 ? 2 : 1, winA = sm(prog(t, CASC[0] + .1, CASC[0] + .5)) * (1 - sm(prog(t, HUB_IN - .55, HUB_IN - .2))),
+      winB = sm(prog(t, COLLAPSE[0] - .2, COLLAPSE[0] + .15)) * (1 - sm(prog(t, NEW_IN - .5, NEW_IN - .15))), winC = sm(prog(t, PAY - .3, PAY)) * (1 - sm(prog(t, TOTAL - 2.6, TOTAL - 2.3)));
+    const a = Math.max(winA, winB, winC); logEl.style.opacity = a.toFixed(3); logEl.style.transform = `translateY(${((1 - a) * 40).toFixed(1)}px)`;
+    logEl.style.left = (sec === 3 ? 26 : 736) + 'px'; logEl.style.top = (sec === 3 ? 760 : 640) + 'px';
+    if (a < .01) return;
+    let n = 0; const done = ALL.filter((r) => t >= r.t); n = done.length;
+    if (sec === 1) { pipEls.forEach((e, p) => { const q = ALL[p], on = q && t >= q.t; e.style.background = on ? APPC[q.i] : 'rgba(255,255,255,.1)'; e.style.transform = `scale(${on ? (1 + .5 * pulse(t, q.t + .06, .12)).toFixed(3) : 1})`; }); hEl.textContent = 'PLUGS'; cEl.textContent = n + '/24';
+      const seen = [], uniq = []; for (const r of done) if (!seen.includes(r.j)) { seen.push(r.j); uniq.push(r); } const last = uniq.slice(-4).reverse();
+      rowEls.forEach((e, r) => { const q = last[r], age = q ? t - (q.k === 0 ? logT(0) : STEP_T(q.j)) : 9; e.style.opacity = q ? (1 - r * .2).toFixed(2) : 0; e.style.background = `rgba(91,226,154,${(.34 * (1 - sm(prog(age, 0, .4)))).toFixed(3)})`; e.style.borderRadius = '10px'; e.style.padding = '0 8px';
+        if (q) e.innerHTML = `${dotHtml('#e6e9f1')}<span>→ ${TOOLS[q.j][0]}</span><span style="margin-left:auto;color:#5be29a">✓ ✓ ✓</span>`; }); }
+    else if (sec === 2) { const gone = RET.reduce((s, k) => s + sm(prog(t, retT(k) + .1, retT(k) + .3)), 0), hubOn = hubW.reduce((s, q) => s + sm(prog(t, hubT(q.k) + .4, hubT(q.k) + .5)), 0);
+      pipEls.forEach((e, p) => { const q = ALL[p], off = sm(prog(t, retT(q.k) + .1, retT(q.k) + .3)); if (off < .98) { e.style.background = APPC[q.i]; e.style.opacity = (1 - .75 * off).toFixed(2); } else { const g = p < hubOn; e.style.background = g ? '#2fd27a' : 'rgba(255,255,255,.1)'; e.style.opacity = g ? '1' : '.4'; } e.style.transform = 'scale(1)'; });
+      hEl.textContent = 'LOG'; cEl.textContent = gone < 23.5 ? Math.round(24 - gone) + '/24' : Math.round(hubOn) + '/11';
+      const upto = Math.floor(hubOn), last = Array.from({ length: Math.min(4, upto) }, (_, r) => upto - 1 - r), HL = [...APPS.map((x) => x.n), ...TOOLS.map((x) => x[0])];
+      rowEls.forEach((e, r) => { const q = last[r]; e.style.opacity = q != null ? (1 - r * .22).toFixed(2) : 0; if (q != null) e.innerHTML = `${dotHtml('#2fd27a')}<span>Hub → ${HL[q]}</span><span style="margin-left:auto;color:#5be29a">✓</span>`; }); }
+    else { const nw = sm(prog(t, NEW_W[1] - .1, NEW_W[1] + .3)); pipEls.forEach((e, p) => { e.style.background = p < 11 ? '#2fd27a' : p === 11 ? '#2fd27a' : 'rgba(255,255,255,.1)'; e.style.opacity = p < 11 ? '1' : p === 11 ? sm(prog(t, PAY - .25, PAY + .1)).toFixed(2) : '.45'; e.style.transform = p === 11 ? `scale(${(1 + .6 * pulse(t, PAY + .15, .14)).toFixed(3)})` : 'scale(1)'; });
+      hEl.textContent = 'LOG'; cEl.textContent = (11 + (t >= PAY - .1 ? 1 : 0)) + '/12';
+      const FIN = [19.2, 19.55, 19.9], FL_ = [['Hub → New', PAY - .25], ['Hub → 3 apps', FIN[0]], ['Hub → 8 tools', FIN[1]], ['All 12 linked', FIN[2]]];   // the log confirms each link in turn on the payoff hold, one beat every 0.35 s
+      rowEls.forEach((e, r) => { const L2 = FL_[r], age = t - L2[1], on = sm(prog(t, L2[1], L2[1] + .2)); e.style.opacity = (r === 0 ? sm(prog(t, PAY - .25, PAY + .1)) : on).toFixed(2); e.style.background = `rgba(91,226,154,${(.34 * (1 - sm(prog(age, 0, .4))) * (age > -.01 ? 1 : 0)).toFixed(3)})`; e.style.borderRadius = '10px'; e.style.padding = '0 8px';
+        e.innerHTML = `${dotHtml('#2fd27a')}<span>${L2[0]}</span><span style="margin-left:auto;color:#5be29a">✓</span>`; }); } };
+  // ----- a selection box that snaps round each thing said (the captions' own blue box, on the numbers and the headline) -----
+  const selEl = document.createElement('div'); selEl.style.cssText = 'position:absolute;pointer-events:none;z-index:7;border:5px solid #4a8cff;border-radius:10px;background:rgba(74,140,255,.16);opacity:0'; document.body.appendChild(selEl);
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => { const h = document.createElement('i'); h.style.cssText = `position:absolute;width:16px;height:16px;background:#fff;border:3px solid #4a8cff;${a < 0 ? 'left' : 'right'}:-11px;${b < 0 ? 'top' : 'bottom'}:-11px`; selEl.appendChild(h); });
+  const numRect = (at, bx) => [at[0] - 112, bx[1] + 52, at[0] + 112, bx[1] + 214];
+  const SEL = [{ t0: 1.55, d: 1.0, rect: () => LAST_HEAD && LAST_HEAD.box }, { t0: T_IN + .5, d: 1.2, rect: () => LAST_HEAD && LAST_HEAD.box }, { t0: C.twenty + .3, d: .75, rect: () => LAST_HEAD && LAST_HEAD.box }, { t0: C.same + .3, d: .6, rect: () => LAST_HEAD && LAST_HEAD.box }, { t0: CASC[1] - .1, d: 1.2, rect: () => LAST_NUM && NUM_AT && numRect(NUM_AT.n24, LAST_NUM.box) },
+    { t0: COLLAPSE[0] + 1.0, d: 1.2, rect: () => LAST_NUM && numRect(NUM_AT.n11, LAST_NUM.box) }, { t0: PAY + .55, d: 1.2, rect: () => LAST_NUM && numRect(NUM_AT.n12, LAST_NUM.box) }];
+  const JUMPS = [];   // keyword jump: the headline word bounces once as it is said
+  const selUpdate = (t) => { if (LAST_HEAD && LAST_HEAD.el) { const jp = JUMPS.reduce((a, t0) => a + Math.sin(Math.PI * prog(t, t0, t0 + .38)), 0); LAST_HEAD.el.style.transform = `scale(${(1 + .1 * jp).toFixed(3)})`; }
+    let on = null; for (const s of SEL) if (t >= s.t0 && t < s.t0 + s.d) on = s; if (!on) { selEl.style.opacity = '0'; return; } const r = on.rect(); if (!r) { selEl.style.opacity = '0'; return; }
+    const u = eout(prog(t, on.t0, on.t0 + .24)), o = Math.min(sm(prog(t, on.t0, on.t0 + .1)), 1 - sm(prog(t, on.t0 + on.d - .25, on.t0 + on.d))), pad = 12, W2 = r[2] - r[0] + 2 * pad, H2 = r[3] - r[1] + 2 * pad;
+    selEl.style.left = (r[0] - pad) + 'px'; selEl.style.top = (r[1] - pad) + 'px'; selEl.style.width = W2 + 'px'; selEl.style.height = H2 + 'px'; selEl.style.opacity = o.toFixed(3); selEl.style.transform = `scale(${(1 + .35 * (1 - u)).toFixed(3)})`; };
+  // ----- update, called at the end of frame(t) -----
+  function update(t) {
+    screens.forEach((s, i) => { s.draw(s.cv.x, SW, SH2, t); s.cv.tx.needsUpdate = true; const vis = apps[i].visible; s.m.visible = vis; appFace(s, t, i, sm(prog(t, A_IN[i] + APPS[i].d - .1, A_IN[i] + APPS[i].d + .4))); });
+    tools.forEach((tile, j) => { const o = tOv[j], ev = EVT[j], ups = UPS[j].filter((e) => t >= e).length, downs = DOWN[j].filter((e) => t >= e).length, hubOn = t >= HUBTK[j] ? 1 : 0, n = Math.max(0, ups - downs) + hubOn * (ups - downs <= 0 ? 1 : 0);
+      const green = ups - downs <= 0 && hubOn; drawBadge(o, n, green, t);
+      const last = Math.max(-9, ...ev.filter((e) => t >= e)), age = t - last, lv = dimAt(t, tile), pop = age < .3 ? eb(age / .3) : 1; o.badge.scale.setScalar(.5 + .5 * pop); o.badge.material.color.setScalar(lv);
+      o.fl.material.opacity = (age < .35 ? .42 * Math.pow(1 - age / .35, 1.5) : 0) * lv; o.fl.visible = tile.visible && o.fl.material.opacity > .01;
+      const rk = age / .6; o.ring.visible = tile.visible && last > -5 && rk < 1; if (o.ring.visible) { o.ring.scale.setScalar(.9 + .8 * eout(rk)); o.ring.material.opacity = .6 * Math.pow(1 - rk, 1.6) * lv; o.ring.quaternion.copy(S.cam.quaternion); } });
+    stampUpdate(t); logUpdate(t); }
+  return { update, selUpdate, STAMPS, logEl, selEl };
+})();
 const focus = V(0, 1.6, -3); S.focus = focus;
 const flash = new THREE.Mesh(new THREE.BoxGeometry(1, 1, .02), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.4, 2.8), toneMapped: false, transparent: true, depthWrite: false })); flash.visible = false; S.scene.add(flash);
 function frame(t) {
@@ -208,7 +334,7 @@ function frame(t) {
     if (u >= 1) { const bump = 0, push = 0,   /* no bump or push: quick scale pulses on big near tiles read as flicker at 30 fps */ idle = sm(prog(t, A_IN[i] + A.d, A_IN[i] + A.d + .6));   // the idle sway fades in after the landing (owner 27 Nov: no snaps)
       m.position.y += Math.sin(t * 1.3 + i * 2) * .05 * idle; m.position.x += push; m.rotation.z = Math.sin(t * .9 + i) * .03 * idle; m.rotation.y = Math.sin(t * .6 + i * 1.7) * .05 * idle; m.rotation.x = -lean; m.scale.setScalar(1 + bump); } });
   shadows.forEach((s, i) => s.update());
-  apps.forEach((m, i) => { const f = sm(prog(t, A_IN[i] - .2, A_IN[i] + .15)); shadows[i].soft.material.opacity *= f; shadows[i].tight.material.opacity *= f; });   // the shadow grows in before the tile lands
+  apps.forEach((m, i) => { const f = sm(prog(t, A_IN[i] + .02, A_IN[i] + .4)); shadows[i].soft.material.opacity *= f; shadows[i].tight.material.opacity *= f; });   // the shadow grows in before the tile lands
   // board (fix 1): outline draws, panel rises, slots unfold, the edge light runs round to slot 1
   fMat.opacity = .85 * sm(prog(t, BOARD, BOARD + .12)) * (1 - .7 * sm(prog(t, BOARD + .9, BOARD + 1.4)));
   fLines.forEach((m, n) => { m.scale.x = Math.max(.001, sm(prog(t, BOARD + n * .08, BOARD + n * .08 + .4))); });   // each outline line draws over 0.4 s (0.1 s blinked)
@@ -258,7 +384,7 @@ function frame(t) {
   newW.reveal(sm(prog(t, NEW_W[0], NEW_W[1])) * .3 + prog(t, NEW_W[0], NEW_W[1]) * .7);   // a near-even speed (the tip swept past the close camera) newW.pulse(Math.max(prog(t, NEW_W[1], NEW_W[1] + .6), prog(t, PAY + 1.6, PAY + 2.1), prog(t, TOTAL - 1.3, TOTAL - .7)));
   // light sweeps: Notes (big moment 1), along one tangle cable plug to plug for 1 s (big moment 2), the hub (big moment 3), green along the 11
   let sw = 0; sweep.color.setRGB(1, .95, .86);
-  { const k = prog(t, .5, 1.4); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(V(-3.4, 1.8, 3.4).lerp(V(-.4, 1.4, 3.4), k)); } }   // plan critic item 4: after the landing, so frame 0 reads "Notes"
+  { const k = prog(t, .95, 1.8); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(V(-3.4, 1.8, 3.4).lerp(V(-.4, 1.4, 3.4), k)); } }   // plan critic item 4: after the landing, so frame 0 reads "Notes"
   { const k = prog(t, WORST - .2, WORST + .8); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(tangle[1].w.curve.getPointAt(k)).add(V(0, 1.3, 0)); sw *= .6; } }   // higher and softer (a sharp highlight raced across the near cables)
   { const k = prog(t, LAND - .3, LAND + .5); if (k > 0 && k < 1) { sw = Math.sin(Math.PI * k); sweep.position.copy(V(-2.4, 2.6, -.6).lerp(V(2.4, 2.4, -.6), k)); } }
   { const k = prog(t, C.eleven + .4, C.eleven + 1.4); if (k > 0 && k < 1) { sw = .8 * Math.sin(Math.PI * k); sweep.color.setRGB(.7, 1, .8); sweep.position.copy(hubW[3].w.curve.getPointAt(k)).add(V(0, .45, 0)); } }
@@ -275,11 +401,11 @@ function frame(t) {
     : sec === 2 ? { top: '3 + 8', from: 24, to: 24 - 13 * rollK(t), k: 1, label: 'cables', bar: (24 - 13 * rollK(t)) / 24,   /* r4: one smooth roll over ~2 s (the wave's 0.5 s roll flashed the digits) */ anchor: anchorOf(V(-1.3, HUB_P.y + 1.05, HUB_P.z)), at: NUM_AT.n11 }
     : { top: '3 × 8', from: 0, to: 24, k: n24, label: 'cables', bar: lerp(0, 1, eout(n24)), color: (() => { const r = pulse(t, C.twenty + .5, .22); return `rgb(255,${Math.round(255 - 165 * r)},${Math.round(255 - 165 * r)})`; })(), anchor: anchorOf(V(-.4, FL, -1.4)), at: NUM_AT.n24, tick: prog(t, C.twenty + .35, C.twenty + .75) };
   LAST_NUM = NUM.set(t, { ...q, show, typed, labelIn });
-  dimPass(t);
+  dimPass(t); ACT.update(t);
   if (t < 1.3) { const np = new THREE.Box3().setFromObject(apps[0]).getCenter(new THREE.Vector3()); focus.copy(p.look).lerp(np, 1 - prog(t, 1.0, 1.3)); }   // Notes sharp while it slams in
 }
-let LAST_HEAD = null; const HEAD = (t) => { const a = HEAD_(t), b = PILL_(t); LAST_HEAD = { box: a.box, pill: b.box }; return LAST_HEAD; };   // both leave at END_T, before the loop joins frame 0
-window.render = (t) => { t = clamp(t, 0, TOTAL); frame(t); S.draw(t); cap(t); HEAD(t); };
+let LAST_HEAD = null; const HEAD = (t) => { const a = HEAD_(t), b = PILL_(t); LAST_HEAD = { box: a.box, pill: b.box, el: a.el }; return LAST_HEAD; };   // both leave at END_T, before the loop joins frame 0
+window.render = (t) => { t = clamp(t, 0, TOTAL); frame(t); S.draw(t); cap(t); HEAD(t); ACT.selUpdate(t); };
 // the headline never sits on an object: which tiles (or the hub, the New tile) its words touch at t
 window.__headCheck = (t) => { frame(clamp(t, 0, TOTAL)); HEAD(clamp(t, 0, TOTAL)); const bs = [LAST_HEAD && LAST_HEAD.box, LAST_HEAD && LAST_HEAD.pill].filter(Boolean); if (!bs.length) return []; return [...apps, ...tools, hub, newTool].filter((m) => { if (!m.visible) return false; const c = new THREE.Box3().setFromObject(m).getCenter(new THREE.Vector3()).project(S.cam); return c.z < 1 && bs.some((b) => W3D.overlaps(W3D.screenBox(S, m, -10), b)); }).map(nameOf); };
 window.__layoutCheck = (t) => { frame(clamp(t, 0, TOTAL)); return { band: 0, wall: false }; };

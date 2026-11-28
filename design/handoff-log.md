@@ -1425,3 +1425,8 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/numbers-icon-fix · Output QA NUMBERS ignores icons; board Ready follows the journey (item 6)
 - Done: output-qa.py digit_like(): a read needs digit proportions (a square padlock blob is not a digit), padlock case and unit checks in scripts/qa/test-numbers.py; templates/index.html bRowReady(): a "ready" stage row no longer overrides a journey that is not ready, cases in scripts/qa/app-board-test.mjs.
 - Left: Output QA re-run on showreel-tech-tag-relay after merge, then the App probe.
+
+## 2026-11-28 · claude/v7-actions · 3D kit v7 part b: more actions inside the objects, plan and one stills sheet (no render)
+- Done: techkit/scenes/gold3d-v7.html block "PART B": live app screens (Notes types, Chat bubbles, Mail count 3 to 4), connection log card with 24 pips, stamps landing on Pay / the tangle / the hub / New and the apps, a selection box on the headline words and numbers, tool badges and ripple rings, the Notes slam landing slower and the Chat / Mail shadows fading in (the real cause of the 0.77-0.85 s FLICKER), FLICKER PASS at 60 fps on scene frames 0-1.6 s; review file "Part b plan"; stills sheet review/tech/study-28nov/v7-partb-stills.jpg; design/projects.json.
+- Measured (scene frames, scripts/qa/action-count.py): 2.27 actions a second before and after, 1.33 to 1.52 moving at once; the long camera moves (11 of 23 s) swallow anything added inside them, so the target is not reached by part b alone.
+- Left: the owner's choice (render as is / retime the four long camera moves first / stop at the pieces); render 5 only after that; then Output QA and a reviewer session (critic.md).

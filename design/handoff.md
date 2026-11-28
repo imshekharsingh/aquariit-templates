@@ -439,6 +439,7 @@ for (owner, 20 Nov 2026). The one thing it never does: create, change or fire sc
 Keeping the two accounts in sync is the main account's job; this account only has to leave a clear trail.
 Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md. Nothing else up front.
 - 28 Nov 11:10 IST, other account: web focus test, scene and preview config built (scripts/previews/web-popover-focus.*), local stills clear (SUBJECT FILL 41%, OVERLAP none, SAFE ZONE ok, FLOW ok); push, merge and ONE full-length preview render next (showreel-50-popover and its MP4 untouched).
+- 28 Nov, other account (v7 part b, branch claude/v7-actions): Progress: the plan is written (review/tech/showreel-tech-gold3d-v7.md "Part b plan") with one stills sheet (review/tech/study-28nov/v7-partb-stills.jpg); no render. Built inside the objects: live app screens, a connection log with 24 pips, stamps, selection boxes, tool badges and ripples; the opening FLICKER (Notes at 0.77 s) is fixed and passes at 60 fps locally. Measured on scene frames: 2.27 actions a second before and after, 1.33 to 1.52 moving at once, five camera-bound gaps (11 of 23 s are camera moves, where nothing counts), so the 2.5 / 2 / 1.2 s target is NOT reached by part b alone. Waiting for the owner's choice: render as is, retime the four long camera moves first (recommended), or stop at the pieces.
 
 ## How to work
 - Use the cheaper model unless the task needs more. One task per session.
