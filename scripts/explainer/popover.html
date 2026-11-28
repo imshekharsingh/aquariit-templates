@@ -24,20 +24,21 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .pav{position:absolute;left:16px;top:8px;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#3f5a49,#2a3d31)}
 .pln{position:absolute;height:11px;border-radius:6px;background:var(--skel)}
 .pbt{position:absolute;left:16px;top:62px;width:190px;height:42px;border-radius:21px;background:var(--acc);color:var(--on);font:700 19px/42px var(--f);letter-spacing:-.01em;padding-left:20px;transform-origin:50% 50%}
-.pbt i{position:absolute;right:18px;top:0;font-style:normal;font-size:15px;transform-origin:50% 50%}
+.pbt i{position:absolute;right:30px;top:0;font-style:normal;font-size:15px;transform-origin:50% 50%}
 .pmn{position:absolute;left:24px;top:112px;width:190px;border-radius:18px;background:#2a2a32;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),0 14px 28px -10px rgba(0,0,0,.7);transform-origin:30px 0;opacity:0}
 .pcard .pmn{left:16px;top:108px}
 .pmn b{position:absolute;left:0;width:190px;height:48px;font:600 20px/48px var(--f);letter-spacing:-.015em;padding-left:50px;white-space:nowrap}
 .pmn b::before{content:"";position:absolute;left:20px;top:16px;width:16px;height:16px;border-radius:5px;background:var(--wc)}
 .pmn.fx{background:#1c4a30;box-shadow:inset 0 0 0 2.5px var(--acc),0 16px 32px -10px rgba(0,0,0,.75)}
 .pcard.fx{background:#163826}
-.pbt.bd{filter:saturate(.4)}
+.pbt.bd{filter:none}
+.pedge{position:absolute;left:2px;width:234px;height:0;border-top:2.5px dashed rgba(255,255,255,.8);z-index:5;opacity:0}
 .pgh{z-index:4;position:absolute;left:24px;width:190px;height:48px;border-radius:18px;border:2px dashed var(--red);font:500 17px/44px var(--m);color:var(--red);letter-spacing:.02em;padding-left:50px;opacity:0;white-space:nowrap}
 .pcut{position:absolute;left:10px;width:218px;height:4px;border-radius:2px;background:var(--red);opacity:0;z-index:4}
 .pveil{position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(10,10,12,.62);opacity:0;z-index:3}
 .ptp{position:absolute;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.18);border:2.5px solid rgba(255,255,255,.75);opacity:0;z-index:6}
 .ptag{position:absolute;left:52px;top:308px;padding:4px 14px;border-radius:999px;font:500 22px/22px var(--m);letter-spacing:.02em;color:var(--acc);background:rgba(111,224,138,.14);box-shadow:inset 0 0 0 1.5px var(--ring);opacity:0}
-.pcnt{position:absolute;right:42px;top:6px;font:800 34px/38px var(--f);letter-spacing:-.04em;white-space:nowrap;transform-origin:100% 60%;font-variant-numeric:tabular-nums}
+.pcnt{position:absolute;right:46px;top:0;font:800 52px/50px var(--f);letter-spacing:-.04em;white-space:nowrap;transform-origin:100% 60%;font-variant-numeric:tabular-nums}
 .pcnt small{font:500 14px/1 var(--m);letter-spacing:.06em;color:var(--dim);margin-left:6px}
 /* screen space: the label row, the hook, the rule picture, the code card, the subtitles, the measurement */
 #lbl{left:34px;top:130px;font:500 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
@@ -677,28 +678,34 @@ var KM = (function(){
   function mkEl(tag, cls, parent, css){ var e = document.createElement(tag); if (cls) e.className = cls; if (css) e.style.cssText = css; if (parent) parent.appendChild(e); return e; }
   // the same card, built twice: broken = the menu lives INSIDE the card (overflow: hidden clips it at the card's edge); fixed = the menu is a popover, above the card
   function build(body, broken){
-    var card = mkEl('div', 'pcard' + (broken ? '' : ' fx'), body), rows = [], gh = [], i, btn, chev, menu, cut = null, tp = mkEl('div', 'ptp', body), pane = body.parentNode;
+    var card = mkEl('div', 'pcard', body), rows = [], gh = [], i, btn, chev, menu, cut = null, tp = mkEl('div', 'ptp', body), pane = body.parentNode;
     mkEl('div', 'pav', card); mkEl('div', 'pln', card, 'left:76px;top:16px;width:118px'); mkEl('div', 'pln', card, 'left:76px;top:36px;width:74px');
-    btn = mkEl('div', 'pbt' + (broken ? ' bd' : ''), card); btn.innerHTML = 'Share<i>▾</i>'; chev = btn.querySelector('i');
-    menu = mkEl('div', 'pmn' + (broken ? '' : ' fx'), broken ? card : body, 'height:' + (ITEMS.length * 48) + 'px');
-    ITEMS.forEach(function(s, k){ var r = mkEl('b', '', menu, 'top:' + (k * 48) + 'px'); r.textContent = s; r.style.setProperty('--wc', broken ? 'var(--red)' : 'var(--acc)'); rows.push(r); });
-    if (broken) { for (i = 2; i < 4; i++) { var g = mkEl('div', 'pgh', body, 'top:' + (112 + i * 48) + 'px'); g.textContent = ITEMS[i]; gh.push(g); } cut = mkEl('div', 'pcut', body, 'top:' + (CB - 3) + 'px'); PN.veil = mkEl('div', 'pveil', body); }
-    else { var tag = mkEl('div', 'ptag', body); tag.textContent = 'popover'; PN.tag = tag; }
-    var cnt = mkEl('div', 'pcnt', pane); cnt.style.color = broken ? 'var(--red)' : 'var(--acc)';
-    PN.push({ btn: btn, chev: chev, menu: menu, rows: rows, gh: gh, cut: cut, tp: tp, broken: broken, cnt: cnt });
+    btn = mkEl('div', 'pbt bd', card); btn.innerHTML = 'Share<i>▾</i>'; chev = btn.querySelector('i');
+    menu = mkEl('div', 'pmn', broken ? card : body, 'height:' + (ITEMS.length * 48) + 'px');
+    ITEMS.forEach(function(s, k){ var r = mkEl('b', '', menu, 'top:' + (k * 48) + 'px'); r.textContent = s; r.style.setProperty('--wc', 'var(--red)'); rows.push(r); });
+    for (i = 2; i < 4; i++) { var g = mkEl('div', 'pgh', body, 'top:' + (112 + i * 48) + 'px'); g.textContent = ITEMS[i]; gh.push(g); } cut = mkEl('div', 'pcut', body, 'top:' + (CB - 3) + 'px');
+    var edge = null; if (broken) PN.veil = mkEl('div', 'pveil', body); else { var tag = mkEl('div', 'ptag', body); tag.textContent = 'popover'; PN.tag = tag; edge = mkEl('div', 'pedge', body, 'top:' + CB + 'px'); }
+    var cnt = mkEl('div', 'pcnt', pane); cnt.style.color = 'var(--red)';
+    PN.push({ btn: btn, chev: chev, menu: menu, rows: rows, gh: gh, cut: cut, tp: tp, broken: broken, cnt: cnt, card: card, edge: edge, pane: pane });
     return function(t, k){ var n = PN[broken ? 0 : 1], ok = openK(t), w = winAt(t) || [-9, -9], u = t - w[0], i, press, tapO, tapS;
       // the tap on Share (a slim ring, a press), at each open
       press = E.out3(P(u, -.1, .02)) * (1 - E.out3(P(u, .02, .2))); tapO = cl((u + .22) * 6) * (1 - P(u, .12, .36));
+      var fx = n.broken ? 0 : E.out3(P(t, A.fixAt, A.fixAt + .5)), fixed = !n.broken && t >= A.fixAt;
+      n.menu.classList.toggle('fx', fixed); n.card.classList.toggle('fx', fixed); n.btn.classList.toggle('bd', !fixed); n.pane.style.background = fixed ? '#0f2418' : 'var(--glass,#17171b)';
+      for (i = 0; i < n.rows.length; i++) n.rows[i].style.setProperty('--wc', fixed ? 'var(--acc)' : 'var(--red)');
+      if (!n.broken) n.menu.style.clipPath = fx < 1 ? 'inset(0 0 ' + (96 * (1 - fx)).toFixed(1) + 'px 0)' : 'none';
       n.btn.style.transform = 'scale(' + (1 - .06 * press).toFixed(4) + ')'; n.chev.style.transform = 'rotate(' + (180 * E.inOut3(ok)).toFixed(1) + 'deg)';
       n.tp.style.left = (8 + 16 + 95 - 28 + 14 * (1 - E.out3(P(u, -.22, -.02)))).toFixed(1) + 'px'; n.tp.style.top = (4 + 62 + 21 - 28 + 26 * (1 - E.out3(P(u, -.22, -.02)))).toFixed(1) + 'px'; n.tp.style.opacity = (tapO * .95).toFixed(3);
       n.menu.style.opacity = cl(ok * 3).toFixed(3); n.menu.style.transform = 'translateY(' + (-10 * (1 - ok)).toFixed(2) + 'px) scale(' + (.94 + .06 * ok).toFixed(4) + ')';
       for (i = 0; i < n.rows.length; i++) { var rk = E.back(P(u, .05 + i * .06, .05 + i * .06 + .28), 1.1); n.rows[i].style.opacity = cl(rk * 3 * ok * 3).toFixed(3); n.rows[i].style.transform = 'translateY(' + (-8 * (1 - rk)).toFixed(2) + 'px)'; }
       // the count in the pane's header: items shown of 4 (BEFORE steps to 2 and stays, AFTER steps to 4), a small pop on each change
-      var shown = n.broken ? 2 : 4, cp = 1 + .22 * (1 - E.out3(P(t, TB[0], TB[0] + .3)));
+      var shown = n.broken ? 2 : (fixed ? 4 : 2), cp = 1 + .22 * (1 - E.out3(P(t, TB[0], TB[0] + .3))) + (n.broken ? 0 : .35 * (1 - E.out3(P(t, A.fixAt, A.fixAt + .35))) * (t >= A.fixAt ? 1 : 0));
+      n.cnt.style.color = fixed ? 'var(--acc)' : 'var(--red)';
       var cs = shown + '<small>of 4</small>'; if (n.cnt.__v !== cs) { n.cnt.innerHTML = cs; n.cnt.__v = cs; } n.cnt.style.transform = 'scale(' + cp.toFixed(3) + ')';
-      if (n.broken) { var gk = E.out3(P(t, A.cut, A.cut + .3)) * ok;
+      { var gk = E.out3(P(t, A.cut, A.cut + .3)) * ok * (1 - fx);
         n.gh.forEach(function(g, j){ g.style.opacity = (gk * .8 * E.out3(P(t, A.cut + j * .12, A.cut + j * .12 + .25))).toFixed(3); });
-        n.cut.style.opacity = ok.toFixed(3); n.cut.style.transform = 'scaleX(' + (E.out3(P(u, .15, .45))).toFixed(3) + ')'; n.cut.style.transformOrigin = '0 50%'; }
+        n.cut.style.opacity = (ok * (1 - fx)).toFixed(3); n.cut.style.transform = 'scaleX(' + (E.out3(P(u, .15, .45))).toFixed(3) + ')'; n.cut.style.transformOrigin = '0 50%'; }
+      if (n.edge) n.edge.style.opacity = (P(t, A.fixAt + .5, A.fixAt + .8) * (1 - P(t, A.fixAt + 2.3, A.fixAt + 2.6)) * ok).toFixed(3);
     };
   }
   function anchors(words){
@@ -707,19 +714,18 @@ var KM = (function(){
     A.hookIn = (W[HOOK_N - 1] ? W[HOOK_N - 1].s - V.lead : 1.2) + .3; A.leave = Math.max(S[1] - .1, A.hookIn + .45);
     A.fix = S[FIX_S]; A.typeEnd = Math.min(A.fix + 1.7, (S[FIX_S + 1] || A.fix + 2.4) - .3); A.pay = S[S.length - 1]; A.end = V.end;
     A.wideIn = A.leave + .12; A.half = A.wideIn + .5; A.cut = A.wideIn + 1.0;
-    A.wipe = A.typeEnd + .7;
+    A.wipe = A.typeEnd + .7; A.fixAt = A.typeEnd + .3;
     CAM = KM.rig({ x: 255, y: 480, z: 1, drift: 0 });
     T.morph = KM.transition('morph', A.fix - .1, .5);
     // the menu opens at once and again before 2 s (rule 20); it stays open while the problem is told, then closes before the fix and opens again, fixed
-    OPN = [[-.6, 1.2], [1.45, A.typeEnd + .4]];
-    for (var oc = A.wipe + .12; oc < DUR - 1.7; oc += 1.55) OPN.push([oc, oc + 1.25]);
-    OPN.push([OPN[OPN.length - 1][0] + 1.55, DUR + 1]);
+    OPN = [[-.6, 1.2], [1.45, A.fixAt + 2.7]];
+    var oc = A.fixAt + 3.2; OPN.push([oc, oc + 1.35]); OPN.push([oc + 1.75, DUR + 1]);
     OPN.forEach(function(w){ if (w[0] > .05) KM.tap(w[0] - .02, 270); if (w[0] > .05) KM.cue({ t: w[0] + .08, k: 'pop', g: .22, p: 3 }); });
     TB = KM.bugs([.3, OPN[1][0] + .3], { g: .4 });   // the cut: the menu is already open and sliced at frame 0, it flinches at 0.3 s, then again as it lands at 1.75 s
     window.COVER = +(Math.min(TB[1] - .06, A.leave - .02)).toFixed(2);   // the cover: the hook complete, the menu cut, no reaction word
     KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
     for (var c = 0, t0 = A.fix + .35; t0 + c * .09 < A.typeEnd; c++) KM.cue({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7 });
-    KM.cue({ t: A.typeEnd + .15, k: 'pop', g: .3, p: 4 }); KM.cue({ t: OPN[2][0] + .5, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
+    KM.cue({ t: A.fixAt, k: 'pop', g: .34, p: 4 }); KM.cue({ t: A.fixAt + .12, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
     KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
     SP = KM.split($('sp'), { t0: -.01, d: .01, build: build, faults: TB, y: PY, h: PH_, gap: 12, side: 26, labels: ['BEFORE', 'AFTER'] });
     SP.panes.forEach(function(pn){ pn.removeAttribute('data-key'); }); SP.panes[1].style.background = '#0f2418';   // the panes are the subject (inside #hero), not key actions
@@ -729,8 +735,8 @@ var KM = (function(){
     KM.sfx($('wide'), A.wideIn, 'enter', { size: 'medium', g: .6 }); KM.sfx($('wl'), A.half, 'enter', { size: 'small', g: .8, deg: 2 });
     ['rx1', 'rx2'].forEach(function(id, k){ KM.sfx($(id), TB[k] + .22, 'enter', { size: 'small', g: .7, deg: k }); });
     KM.sfx($('code'), A.fix - .1, 'enter', { size: 'medium' }); KM.mark($('cd'), 'tree', 'the typing ticks');
-    KM.sfx(PN.tag, A.typeEnd + .25, 'enter', { size: 'small', g: .6 }); KM.sfx(PN.tag, A.typeEnd + .55, 'land', { size: 'small', g: .5 });
-    KM.sfxRun(PN[1].rows, OPN[1][0] + .05, .06, 'land', { size: 'small', g: .5 });
+    KM.sfx(PN.tag, A.fixAt + .15, 'enter', { size: 'small', g: .6 }); KM.sfx(PN.tag, A.fixAt + .45, 'land', { size: 'small', g: .5 });
+    KM.sfxRun(PN[1].rows, A.fixAt + .1, .08, 'land', { size: 'small', g: .5 });
     var hs = $('hook').querySelectorAll('.ln > span'); for (var h = 0; h < hs.length; h++) KM.sfx(hs[h], h === 0 ? 0 : V.words[h].s - V.lead, 'enter', { size: 'small', g: .6, deg: h % 3 });
     KM.publish();
   }
@@ -739,13 +745,13 @@ var KM = (function(){
     var c = CAM.apply($('world'), t), i;
     KM.lights(t, c);
     // the panes, drawn from t: both menus open in step; the BEFORE one is cut at the card's edge, the AFTER one is a popover
-    var push = 1 + .04 * E.inOut3(P(t, A.wideIn, A.wideIn + .8)) * (1 - E.inOut3(P(t, A.fix - .3, A.fix + .5)));
-    $('sp').style.transform = 'scale(' + push.toFixed(4) + ')';
+    var push = 1 + .04 * E.inOut3(P(t, A.wideIn, A.wideIn + .8)) * (1 - E.inOut3(P(t, A.fix - .3, A.fix + .5))) + .06 * E.inOut3(P(t, A.fixAt, A.fixAt + .7)) * (1 - E.inOut3(P(t, A.fixAt + 2.3, A.fixAt + 3.2)));
+    $('sp').style.transformOrigin = '330px 580px'; $('sp').style.transform = 'scale(' + push.toFixed(4) + ')';
     SP.draw(t);
-    var fk = E.inOut3(P(t, A.typeEnd + .3, A.typeEnd + .8));   // after the fix the eye is on AFTER: BEFORE steps back
-    PN.veil.style.opacity = fk.toFixed(3); SP.chips[1].style.color = '#dcffe5'; SP.chips[1].style.background = 'rgba(111,224,138,.22)';
-    SP.panes[1].style.boxShadow = '0 18px 40px -18px rgba(0,0,0,.6),inset 0 0 0 ' + (1.5 + 1.5 * fk).toFixed(2) + 'px rgba(111,224,138,' + (.35 + .5 * fk).toFixed(3) + ')';
-    var tp2 = P(t, A.typeEnd + .25, A.typeEnd + .55); PN.tag.style.opacity = cl(tp2 * 3).toFixed(3); PN.tag.style.transform = 'scale(' + mix(.6, 1, E.back(tp2, 2)).toFixed(3) + ')';
+    var fk = E.inOut3(P(t, A.fixAt, A.fixAt + .5)), fxd = t >= A.fixAt;   // after the fix the eye is on AFTER: BEFORE steps back
+    PN.veil.style.opacity = fk.toFixed(3); SP.chips[1].style.color = fxd ? '#dcffe5' : '#e4e4e8'; SP.chips[1].style.background = fxd ? 'rgba(111,224,138,.22)' : 'rgba(255,255,255,.12)';
+    SP.panes[1].style.boxShadow = '0 18px 40px -18px rgba(0,0,0,.6),inset 0 0 0 ' + (1.5 + 1.5 * fk).toFixed(2) + 'px ' + (fxd ? 'rgba(111,224,138,' + (.35 + .5 * fk).toFixed(3) + ')' : 'rgba(255,255,255,.14)');
+    var tp2 = P(t, A.fixAt + .15, A.fixAt + .45); PN.tag.style.opacity = cl(tp2 * 3).toFixed(3); PN.tag.style.transform = 'scale(' + mix(.6, 1, E.back(tp2, 2)).toFixed(3) + ')';
     // the reaction words sit in the empty part of the BEFORE pane, under the card
     [['rx1', 52, 0], ['rx2', 72, 1]].forEach(function(q){ $(q[0]).style.left = q[1] + 'px'; $(q[0]).style.top = (PY + 50 + CB + 40) + 'px'; KM.react($(q[0]), t, TB[q[2]] + .2, { rot: q[2] ? 5 : -7 }); });
     // ---- the hook: it is on screen from frame 0 (all words in by 0 s); it lifts away before the first sentence ----
