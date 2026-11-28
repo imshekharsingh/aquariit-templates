@@ -1335,3 +1335,6 @@ Format (at most 6 lines):
 ## 2026-11-28 · claude/c3-text-on-photo-28nov · Turns Out text-on-photo: stills check round 1 REDO applied
 - Done: rings and tags at full strength from t 0, one green frame clear of the bold title and band, BEFORE thumbnail raised 66 scene px, chips held about 1 s, last subtitle cleared 0.8 s after the voice, photo kept saturated with beams at .7. SAFE ZONE ok, OVERLAP none.
 - Left: second outside stills check, preflight-all, one render, Output QA, critic.
+## 2026-11-28 · claude/stills-c3-text-on-photo-28nov-r2 · Turns Out: outside stills check round 2 of showreel-c3-text-on-photo: APPROVED
+- Done: one new stills sheet plus position measurements on the builder's fix commit (no render, no scene or config change). All six round 1 points are fixed and nothing regressed; verdict written in review/c3/showreel-c3-text-on-photo.direction.md.
+- Left: the builder corrects card line 9 (one green frame, not two), then preflight-all, one render, Output QA, critic.
